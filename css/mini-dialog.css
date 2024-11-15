@@ -1,0 +1,85 @@
+.mini-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+}
+
+.mini-dialog-bg {
+    background-color: var(--bg-3);
+    opacity: 0.8;
+    width: 100%;
+    height: 100%;
+}
+
+.mini-dialog-content {
+    background-color: var(--bg-1);
+    padding: 0;
+    border-radius: var(--radius-large);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    max-width: 800px;
+    max-height: 600px;
+    filter: var(--drop-shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+@media (max-width: 900px) {
+    .mini-dialog-content {
+        top: 0;
+        left: 0;
+        transform: none;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+}
+
+.mini-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--padding-w2);
+    border-bottom: 1px solid var(--bg-3);
+    font-weight: 400;
+}
+
+.mini-dialog-close {
+    outline: none;
+    border: none;
+    background-color: transparent;
+    color: var(--text-1);
+    cursor: pointer;
+    padding: var(--padding-2);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+.mini-dialog-close:hover {
+    background-color: var(--bg-3);
+}
+
+.mini-dialog-body {
+    position: relative;
+    overflow: auto;
+    padding: var(--padding-4);
+    height: 100%;
+}
+
+.mini-dialog-body > * {
+    height: 100%;
+}

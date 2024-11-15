@@ -1,0 +1,33 @@
+:root {
+    --bg-1: #ffffff;
+    --bg-2: #f0f0f0;
+    --bg-3: #d3d3d3;
+
+    --text-1: rgb(55, 53, 47);
+    --text-2: #808080;
+
+    --border-1: #e0e0e0;
+
+    --button-bg-normal: #000000;
+    --button-bg-red: #ff0000;
+    --button-bg-blue: #0000ff;
+
+    --font: 'Inter', sans-serif;
+    --font-cursive: 'Satisfy', cursive;
+    --font-heading: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --radius: 4px;
+    --radius-large: 12px;
+
+    --padding-1: 2px;
+    --padding-2: 4px;
+    --padding-3: 8px;
+    --padding-4: 16px;
+
+    --padding-w1: 8px 16px;
+    --padding-w2: 10px 20px;
+
+    --gap-1: 5px;
+    --gap-2: 10px;
+}

@@ -1,0 +1,74 @@
+function showMenu() {
+    showLeftSidebar('left-menu', 'Menu');
+}
+
+function hideMenu() {
+    hideLeftSidebar();
+}
+
+function toggleMenu() {
+    toggleLeftSidebarNew('left-menu', 'Menu');
+}
+
+function getURLParam(str) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(str);
+}
+
+function setURLParam(id) {
+    window.history.replaceState({}, '', window.location.pathname + '?id=' + id);
+}
+
+async function initScript() {
+    var u = await document.querySelector('auth-component').getUserInfo();
+    if (getURLParam("id") == null || getURLParam("id") == '') {
+        const id = Date.now() + Math.random().toString(36).substring(2, 22) + 'uwu';
+        const id2 = Date.now() + Math.random().toString(36).substring(2, 22) + 'owo';
+
+        console.log('No ID found in URL, generating new ID:', id, id2, getURLParam("id"));
+
+        // TODO https://stackoverflow.com/a/52171480
+        console.log(u);
+
+        window.wisk.utils.showLoading("Creating new document...");
+
+        var fetchUrl = 'https://cloud.wisk.cc/v1/new';
+        var fetchOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + u.token
+                
+            },
+            body: JSON.stringify({})
+        }
+
+        var response = await fetch(fetchUrl, fetchOptions);
+        var data = await response.json();
+        
+        setURLParam(data.id);
+    } 
+
+    window.wisk.editor.pageId = getURLParam("id");
+
+    document.addEventListener('mousemove', function() {
+        document.getElementById('nav').classList.remove('nav-disappear');
+    });
+
+    live();
+}
+
+var firstTime = true;
+window.onSignIn = function() {
+    if (firstTime) {
+        firstTime = false;
+        initScript();
+    }
+}
+
+window.onSignOut = function() {
+    // alert('You need to sign in to use this service. (for now, we are working on making it work without sign in)');
+    // window.location.href = '/';
+    window.showToast('You need to sign in', 5000);
+    document.querySelector('auth-component').show();
+}

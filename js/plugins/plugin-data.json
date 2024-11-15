@@ -1,0 +1,862 @@
+{
+    "icon-path": "/js/plugins/icons/",
+    "example": {
+        "example": {
+            "name": "example",
+            "title": "Example",
+            "author": "Google",
+            "contact": "https://wisk.cc",
+            "icon": "access-manager.svg",
+            "tags": ["example", "demo"],
+            "description": "An example plugin",
+            "contents": [
+                {
+                    "title": "Example",
+                    "icon": "example.svg",
+                    "category": "mini-dialog full-dialog (not implemented) right-sidebar left-sidebar component auto context-box (not implemented)",
+                    "component": "example",
+                    "nav": false,
+                    "loadAsModule": false
+                }
+            ]
+        }
+    },
+
+    "list": {
+        "share-manager": {
+            "name": "share-manager",
+            "title": "Share",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "access-manager.svg",
+            "tags": ["access", "permissions", "security", "privacy", "share"],
+            "description": "Manage your sharing settings",
+            "contents": [
+                {
+                    "title": "Share",
+                    "icon": "access-manager.svg",
+                    "category": "mini-dialog",
+                    "component": "share-component",
+                    "nav": true,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "export-manager": {
+            "name": "export-manager",
+            "title": "Export",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "export-manager.svg",
+            "tags": ["export", "download", "data"],
+            "description": "Export data",
+            "contents": [
+                {
+                    "title": "Export",
+                    "icon": "export-manager.svg",
+                    "category": "mini-dialog",
+                    "component": "export-component",
+                    "nav": true,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "ai-chat": {
+            "name": "ai-chat",
+            "title": "AI Chat",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "ai-chat.svg",
+            "tags": ["AI", "chat", "bot", "gpt", "chatgpt"],
+            "description": "AI assistant chat",
+            "contents": [
+                {
+                    "title": "AI Chat",
+                    "icon": "ai-chat.svg",
+                    "category": "right-sidebar",
+                    "component": "ai-chat",
+                    "nav": true,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "left-menu": {
+            "name": "left-menu",
+            "title": "Left Menu",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "menu.svg",
+            "tags": ["Menu", "left", "sidebar"],
+            "description": "Left sidebar menu",
+            "contents": [
+                {
+                    "title": "Left Menu",
+                    "icon": "menu.svg",
+                    "category": "left-sidebar",
+                    "component": "left-menu",
+                    "nav": false,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "more": {
+            "name": "more",
+            "title": "Options",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "more.svg",
+            "tags": ["plugin", "manage", "install", "uninstall", "options", "settings"],
+            "description": "Manage your options",
+            "contents": [
+                {
+                    "title": "Options",
+                    "icon": "more.svg",
+                    "category": "mini-dialog",
+                    "component": "options-component",
+                    "nav": true,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "text-element": {
+            "name": "text-element",
+            "title": "Text Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "text.svg",
+            "tags": ["text", "paragraph"],
+            "description": "A simple text element",
+            "contents": [
+                {
+                    "title": "Text",
+                    "icon": "text.svg",
+                    "category": "component",
+                    "component": "text-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "code-element": {
+            "name": "code-element",
+            "title": "Code Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "code.svg",
+            "tags": ["code", "pre"],
+            "description": "A simple code element",
+            "contents": [
+                {
+                    "title": "Code",
+                    "icon": "code.svg",
+                    "category": "component",
+                    "component": "code-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "callout-element": {
+            "name": "callout-element",
+            "title": "Callout Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "callout.svg",
+            "tags": ["callout", "text"],
+            "description": "Callout element for notes, tips, warnings, etc.",
+            "contents": [
+                {
+                    "title": "Callout",
+                    "icon": "callout.svg",
+                    "category": "component",
+                    "component": "callout-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "heading1-element": {
+            "name": "heading1-element",
+            "title": "Heading 1 Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "heading1.svg",
+            "tags": ["heading", "title", "h1"],
+            "description": "Heading 1 element",
+            "contents": [
+                {
+                    "title": "Heading 1",
+                    "icon": "heading1.svg",
+                    "category": "component",
+                    "component": "heading1-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "heading2-element": {
+            "name": "heading2-element",
+            "title": "Heading 2 Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "heading2.svg",
+            "tags": ["heading", "title", "h2"],
+            "description": "Heading 2 element",
+            "contents": [
+                {
+                    "title": "Heading 2",
+                    "icon": "heading2.svg",
+                    "category": "component",
+                    "component": "heading2-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "heading3-element": {
+            "name": "heading3-element",
+            "title": "Heading 3 Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "heading3.svg",
+            "tags": ["heading", "title", "h3"],
+            "description": "Heading 3 element",
+            "contents": [
+                {
+                    "title": "Heading 3",
+                    "icon": "heading3.svg",
+                    "category": "component",
+                    "component": "heading3-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "heading4-element": {
+            "name": "heading4-element",
+            "title": "Heading 4 Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "heading4.svg",
+            "tags": ["heading", "title", "h4"],
+            "description": "Heading 4 element",
+            "contents": [
+                {
+                    "title": "Heading 4",
+                    "icon": "heading4.svg",
+                    "category": "component",
+                    "component": "heading4-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "heading5-element": {
+            "name": "heading5-element",
+            "title": "Heading 5 Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "heading5.svg",
+            "tags": ["heading", "title", "h5"],
+            "description": "Heading 5 element",
+            "contents": [
+                {
+                    "title": "Heading 5",
+                    "icon": "heading5.svg",
+                    "category": "component",
+                    "component": "heading5-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "image-element": {
+            "name": "image-element",
+            "title": "Image Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "image.svg",
+            "tags": ["image", "picture", "photo"],
+            "description": "Image element",
+            "contents": [
+                {
+                    "title": "Image",
+                    "icon": "image.svg",
+                    "category": "component",
+                    "component": "image-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "canvas-element": {
+            "name": "canvas-element",
+            "title": "Canvas",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "canvas.svg",
+            "tags": ["canvas", "picture", "photo"],
+            "description": "An infinite canvas element for drawing",
+            "contents": [
+                {
+                    "title": "Canvas",
+                    "icon": "canvas.svg",
+                    "category": "component",
+                    "component": "canvas-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "list-element": {
+            "name": "list-element",
+            "title": "List Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "list.svg",
+            "tags": ["list", "bullet", "ordered", "unordered"],
+            "description": "List element",
+            "contents": [
+                {
+                    "title": "List",
+                    "icon": "list.svg",
+                    "category": "component",
+                    "component": "list-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "checkbox-element": {
+            "name": "checkbox-element",
+            "title": "Checkbox Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "checkbox.svg",
+            "tags": ["checkbox", "check", "box"],
+            "description": "Checkbox element",
+            "contents": [
+                {
+                    "title": "Checkbox",
+                    "icon": "checkbox.svg",
+                    "category": "component",
+                    "component": "checkbox-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "quote-element": {
+            "name": "quote-element",
+            "title": "Quote Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "quote.svg",
+            "tags": ["quote", "line", "separator"],
+            "description": "Quote element",
+            "contents": [
+                {
+                    "title": "Quote",
+                    "icon": "quote.svg",
+                    "category": "component",
+                    "component": "quote-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "embed-element": {
+            "name": "embed-element",
+            "title": "Embed Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "embed.svg",
+            "tags": ["embed", "line", "separator"],
+            "description": "embed element",
+            "contents": [
+                {
+                    "title": "Embed",
+                    "icon": "embed.svg",
+                    "category": "component",
+                    "component": "embed-element",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "table-element": {
+            "name": "table-element",
+            "title": "Table Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "table.svg",
+            "tags": ["table", "line", "separator"],
+            "description": "Table element",
+            "contents": [
+                {
+                    "title": "Table",
+                    "icon": "table.svg",
+                    "category": "component",
+                    "component": "table-element",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "database-element": {
+            "name": "database-element",
+            "title": "Database Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "database.svg",
+            "tags": ["database", "data", "table"],
+            "description": "Database element",
+            "contents": [
+                {
+                    "title": "Database",
+                    "icon": "database.svg",
+                    "category": "component",
+                    "component": "database-element",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true,
+                    "width": "max"
+                }
+            ]
+        },
+
+        "latex-element": {
+            "name": "latex-element",
+            "title": "LaTeX Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "latex.svg",
+            "tags": ["latex", "math", "equation"],
+            "description": "LaTeX element",
+            "contents": [
+                {
+                    "title": "LaTeX",
+                    "icon": "latex.svg",
+                    "category": "component",
+                    "component": "latex-element",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "mermaid-element": {
+            "name": "mermaid-element",
+            "title": "Mermaid Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "mermaid.svg",
+            "tags": ["mermaid", "diagram", "flowchart", "sequence", "gantt"],
+            "description": "Mermaid element",
+            "contents": [
+                {
+                    "title": "Mermaid",
+                    "icon": "mermaid.svg",
+                    "category": "component",
+                    "component": "mermaid-element",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true,
+                    "width": "mini"
+                }
+            ]
+        },
+        
+        "three-viewer-element": {
+            "name": "three-viewer-element",
+            "title": "3D Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "3d.svg",
+            "tags": ["3d", "model", "object", "viewer"],
+            "description": "3d Object viewer element made with three.js",
+            "contents": [
+                {
+                    "title": "3D Viewer",
+                    "icon": "3d.svg",
+                    "category": "component",
+                    "component": "three-viewer-element",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "chart-element": {
+            "name": "chart-element",
+            "title": "Chart Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "chart.svg",
+            "tags": ["chart", "diagram", "bar", "line", "pie", "radar", "scatter"],
+            "description": "Chart element",
+            "contents": [
+                {
+                    "title": "Chart",
+                    "icon": "chart.svg",
+                    "category": "component",
+                    "component": "chart-element",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "divider-element": {
+            "name": "divider-element",
+            "title": "Divider Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "divider.svg",
+            "tags": ["divider", "separator", "line"],
+            "description": "Divider element",
+            "contents": [
+                {
+                    "title": "Divider",
+                    "icon": "divider.svg",
+                    "category": "component",
+                    "component": "divider-element",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "py-interpreter": {
+            "name": "py-interpreter",
+            "title": "Python Interpreter",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "py-interpreter.svg",
+            "tags": ["python", "interpreter", "console", "shell", "code", "runner"],
+            "description": "Python interpreter on the browser, no server required. You can use the `from js import window, document` to call editor apis and checkout the https://wisk.cc/docs to see how you can interact with the editor apis. This element auto runs on page load.",
+            "contents": [
+                {
+                    "title": "Python Interpreter",
+                    "icon": "py-interpreter.svg",
+                    "category": "component",
+                    "component": "py-interpreter",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "javascript-code-block": {
+            "name": "javascript-code-block",
+            "title": "Execute JavaScript",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "javascript.svg",
+            "tags": ["javascript", "code", "runner", "execute", "run"],
+            "description": "JavaScript code block, execute your javascript code, it auto runs on page load and the javascript code is executed in the browser. Checkout the https://wisk.cc/docs to see how you can interact with the editor apis",
+            "contents": [
+                {
+                    "title": "Execute JavaScript",
+                    "icon": "javascript.svg",
+                    "category": "component",
+                    "component": "javascript-code-block",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "lua-code-block": {
+            "name": "lua-code-block",
+            "title": "Execute Lua",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "lua.svg",
+            "tags": ["lua", "code", "runner", "execute", "run"],
+            "description": "Lua code block, execute your lua code, it auto runs on page load and the lua code is executed in the browser. Checkout the https://wisk.cc/docs to see how you can interact with the editor apis",
+            "contents": [
+                {
+                    "title": "Execute Lua",
+                    "icon": "lua.svg",
+                    "category": "component",
+                    "component": "lua-code-block",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "tier-list": {
+            "name": "tier-list",
+            "title": "Tier List",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "tier-list.svg",
+            "tags": ["tier", "list", "ranking", "ranking", "tierlist"],
+            "description": "Tier list maker, create your own tier list",
+            "contents": [
+                {
+                    "title": "Tier List",
+                    "icon": "tier-list.svg",
+                    "category": "component",
+                    "component": "tier-list",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "symbols": {
+            "name": "symbols",
+            "title": "Common Symbols",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "symbols.svg",
+            "tags": ["symbols", "math", "greek", "latin", "arrows", "emoji"],
+            "description": "Commonly used symbols",
+            "contents": [
+                {
+                    "title": "Common Symbols",
+                    "icon": "symbols-2.svg",
+                    "category": "mini-dialog",
+                    "component": "symbols-element",
+                    "nav": true,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "nightwave-plaza-radio": {
+            "name": "nightwave-plaza-radio",
+            "title": "Nightwave Plaza Radio",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "nightwave-plaza.svg",
+            "tags": ["radio", "music", "nightwave", "plaza", "lofi"],
+            "description": "Nightwave Plaza is a 24/7 online vaporwave and future funk radio station. You can visit them at https://plaza.one/",
+            "contents": [
+                {
+                    "title": "Nightwave Plaza Radio",
+                    "icon": "nightwave-plaza-2.svg",
+                    "category": "mini-dialog",
+                    "component": "nightwave-plaza-radio",
+                    "nav": true,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "music-maker": {
+            "name": "music-maker",
+            "title": "Music Maker",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "music-maker.svg",
+            "tags": ["music", "maker", "composer", "piano", "keyboard"],
+            "description": "Music maker, create your own music (actually its a step sequencer, but you can create music with it too!)",
+            "contents": [
+                {
+                    "title": "Music Maker",
+                    "icon": "music-maker.svg",
+                    "category": "component",
+                    "component": "music-maker",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "whitenoise-radio": {
+            "name": "whitenoise-radio",
+            "title": "White Noise Player",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "whitenoise.svg",
+            "tags": ["radio", "music", "white", "noise", "ambient"],
+            "description": "White Noise Player is a simple white noise player, we took the sounds from https://youtu.be/AslKWwxPNbY",
+            "contents": [
+                {
+                    "title": "White Noise Player",
+                    "icon": "whitenoise-2.svg",
+                    "category": "mini-dialog",
+                    "component": "whitenoise-radio",
+                    "nav": true,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "pomodoro-timer": {
+            "name": "pomodoro-timer",
+            "title": "Pomodoro Timer",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "pomodoro-timer.svg",
+            "tags": ["timer", "pomodoro", "work", "study", "focus"],
+            "description": "Pomodoro Timer is a simple timer to help you focus on your work or study",
+            "contents": [
+                {
+                    "title": "Pomodoro Timer",
+                    "icon": "pomodoro-timer-2.svg",
+                    "category": "mini-dialog",
+                    "component": "pomodoro-timer",
+                    "nav": true,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "word-count": {
+            "name": "word-count",
+            "title": "Word Count",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "word-count.svg",
+            "tags": ["word", "count", "text", "editor"],
+            "description": "Shows the word count of the document in the navigation bar",
+            "contents": [
+                {
+                    "title": "Word Count",
+                    "icon": "word-count-2.svg",
+                    "category": "mini-dialog",
+                    "component": "word-count",
+                    "nav": true,
+                    "textual": false,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "tweaks-element": {
+            "name": "tweaks-element",
+            "title": "Tweaks",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "tweaks.svg",
+            "tags": ["tweaks", "settings", "options", "customize"],
+            "description": "Tweaks gives you experimental features focused on customization. Since these features are experimental, they may not work as expected and they may break your experience.",
+            "contents": [
+                {
+                    "title": "Tweaks",
+                    "icon": "tweaks-2.svg",
+                    "category": "mini-dialog",
+                    "component": "tweaks-element",
+                    "nav": true,
+                    "textual": false,
+                    "loadAsModule": true,
+                    "experimental": true
+                }
+            ]
+        },
+
+        "brainrot": {
+            "name": "brainrot",
+            "title": "Brainrot",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "brainrot.svg",
+            "tags": ["brain", "rot", "game", "puzzle", "riddle"],
+            "description": "Brainrot is a video player for all you zoomers out there, video taken from https://youtu.be/J2gdK8cHX3A",
+            "contents": [
+                {
+                    "title": "Brainrot",
+                    "icon": "brainrot.svg",
+                    "category": "auto",
+                    "component": "brainrot-element",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "vim": {
+            "name": "vim",
+            "title": "Vim",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "vim.svg",
+            "tags": ["vim", "editor", "text", "code"],
+            "description": "Vim is a experimantal plugin that brings vim keybindings to the editor",
+            "contents": [
+                {
+                    "title": "Vim",
+                    "icon": "vim.svg",
+                    "category": "auto",
+                    "component": "vim",
+                    "nav": false,
+                    "loadAsModule": false,
+                    "experimental": true
+                }
+            ]
+        }
+    }
+}
