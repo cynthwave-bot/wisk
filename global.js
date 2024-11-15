@@ -3,7 +3,7 @@ var SERVER = "http://localhost:8788";
 if (window.location.href.includes("ngrok")) {
     SERVER = window.location.href.split(".ngrok-free.app")[0] + ".ngrok-free.app";
 } else if (window.location.href.includes("wisk.cc")) {
-    SERVER = "https://wisk.cc";
+    SERVER = "https://app.wisk.cc";
 }
 
 function byId(id) {

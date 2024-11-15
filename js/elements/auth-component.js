@@ -306,7 +306,9 @@ class AuthComponent extends LitElement {
     }
 
     handleOverlayClick(e) {
+        // disppatch event to window
         this.hide();
+        window.dispatchEvent(new CustomEvent("auth-component-close"));
     }
 
     handleDialogClick(e) {

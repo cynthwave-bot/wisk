@@ -1,3 +1,5 @@
+<img src="https://wisk.cc/a7/forget/report.png" alt="Wisk Editor Interface" style="border: 1px solid #ccc; border-radius: 7px;">
+
 # Wisk
 
 A plugin-based document editor built with vanilla JavaScript and Web Components. Works offline, syncs across devices, and supports real-time collaboration.
@@ -7,7 +9,6 @@ A plugin-based document editor built with vanilla JavaScript and Web Components.
 - **Documentation**: Full documentation available at [wisk.cc/docs](https://wisk.cc/docs)
 - **Website**: Visit [wisk.cc](https://wisk.cc) for more information
 
-<img src="https://wisk.cc/a7/forget/report.png" alt="Wisk Editor Interface" style="border: 1px solid #ccc; border-radius: 7px;">
 
 ## Overview
 

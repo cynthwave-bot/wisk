@@ -58,17 +58,30 @@ async function initScript() {
     live();
 }
 
+var wasSignedOut = false;
+
 var firstTime = true;
 window.onSignIn = function() {
     if (firstTime) {
         firstTime = false;
         initScript();
     }
+    if (wasSignedOut) {
+        window.location.href = '/';
+    }
 }
 
+
 window.onSignOut = function() {
+    wasSignedOut = true;
     // alert('You need to sign in to use this service. (for now, we are working on making it work without sign in)');
     // window.location.href = '/';
     window.showToast('You need to sign in', 5000);
     document.querySelector('auth-component').show();
 }
+
+// when auth-component-close event is fired show the toast and auth-component
+window.addEventListener('auth-component-close', function() {
+    window.showToast('You need to sign in', 5000);
+    document.querySelector('auth-component').show();
+});
