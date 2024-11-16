@@ -541,7 +541,7 @@ class OptionsComponent extends LitElement {
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
                             <label for="pluginSearch">Plugins</label>
                         </div>
-                        <input id="pluginSearch" type="text" placeholder="Search all plugins" class="plugin-search" @input="${this.handleSearch}"/>
+                        <input id="pluginSearch" type="text" placeholder="Search plugins" class="plugin-search" @input="${this.handleSearch}" style="flex: 1"/>
                     </div>
 
                     <div class="plugin-list">

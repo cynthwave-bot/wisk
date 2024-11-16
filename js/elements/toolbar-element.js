@@ -86,15 +86,6 @@ class ToolbarElement extends LitElement {
             min-width: 200px;
         }
 
-        .dialog input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid var(--border-1);
-            border-radius: var(--radius);
-            background: var(--bg-1);
-            color: var(--text-1);
-        }
-
         .dialog-buttons {
             display: flex;
             gap: 8px;
@@ -113,9 +104,10 @@ class ToolbarElement extends LitElement {
         }
 
         .dialog button.cancel {
-            background: var(--bg-2);
+            background: var(--bg-1);
+            border: none;
         }
-
+        
         .ai-commands {
             display: flex;
             flex-direction: column;
@@ -152,6 +144,8 @@ class ToolbarElement extends LitElement {
         .source-item p {
             font-size: 12px;
             color: var(--text-2);
+            word-wrap: break-word;
+            width: 100%;
         }
 
         .loading-overlay {
@@ -238,6 +232,7 @@ class ToolbarElement extends LitElement {
             background: var(--bg-1);
             color: var(--text-1);
             margin-bottom: 16px;
+            flex: 1; width: auto; margin-bottom: 0; border: none; background-color: transparent;
         }
 
         .ai-commands button {
@@ -309,7 +304,7 @@ class ToolbarElement extends LitElement {
 
         .tone-menu {
             left: 90%;
-            top: 50%;
+            top: 60%;
         }
 
         input {
@@ -365,7 +360,7 @@ class ToolbarElement extends LitElement {
             transition: all 0.2s ease;
             margin: 2px;
             display: flex;
-            gap: var(--gap-2);
+            gap: var(--gap-1);
             align-items: center;
             flex-wrap: wrap;
             padding: var(--padding-1) var(--padding-3);
@@ -376,6 +371,20 @@ class ToolbarElement extends LitElement {
             background-color: var(--bg-1);
             box-shadow: 0 0 0 2px var(--bg-3);
         }
+        .save {
+            background: var(--bg-2);
+            border: 1px solid var(--border-1);
+            color: var(--text-1);
+        }
+        .save:hover {
+            background: var(--bg-3);
+        }
+
+        .dialog-buttons button.save {
+            background: var(--bg-2);
+            border: 1px solid var(--border-1);
+        }
+
     `;
 
     static properties = {
@@ -488,7 +497,7 @@ class ToolbarElement extends LitElement {
     handleLinkKeyDown(e) {
         if (e.key === "Enter") {
             e.preventDefault(); // Prevent newline insertion
-            this.handleLinkSubmit();
+            this.handleLinkSubmit(e);
         }
     }
 
@@ -638,6 +647,13 @@ class ToolbarElement extends LitElement {
         e?.preventDefault();
 
         let url = this.linkUrl;
+
+        if (url.trim() === "") {
+            window.showToast("URL is empty", 3000);
+            return;
+        }
+
+
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
             url = "https://" + url;
         }
@@ -680,6 +696,7 @@ class ToolbarElement extends LitElement {
 
     render() {
         return html`
+
             ${this.mode === "dialog" || this.mode === "preview" ? html`<div class="backdrop" @click=${this.closeDialog}></div>` : ""}
 
             <div class="toolbar ${this.visible ? "visible" : ""}" style="">
@@ -710,6 +727,8 @@ class ToolbarElement extends LitElement {
                           </div>
                       `
                     : ""}
+
+
                 ${this.mode === "dialog" || this.mode === "preview"
                     ? html`
                           <div class="dialog-container">
@@ -775,10 +794,13 @@ class ToolbarElement extends LitElement {
             case "link":
                 return html`
                     <div class="dialog">
-                        <input type="text" placeholder="Enter URL" .value=${this.linkUrl} @input=${(e) => (this.linkUrl = e.target.value)} @keydown=${this.handleLinkKeyDown} />
+                        <div class="od">
+                            <img src="/a7/forget/link.svg" alt="Link" style="height: 18px; filter: var(--themed-svg);" />
+                            <input type="text" placeholder="Enter URL" .value=${this.linkUrl} @input=${(e) => (this.linkUrl = e.target.value)} @keydown=${this.handleLinkKeyDown} class="ai-input" />
+                        </div>
                         <div class="dialog-buttons">
                             <button class="cancel" @click=${this.closeDialog}>Cancel</button>
-                            <button @click=${this.handleLinkSubmit}>Save</button>
+                            <button @click=${this.handleLinkSubmit} class="save">Save</button>
                         </div>
                     </div>
                 `;
@@ -788,7 +810,7 @@ class ToolbarElement extends LitElement {
                     <div class="dialog">
                         <div class="od">
                             <img src="/a7/plugins/toolbar/ai.svg" alt="AI" style="height: 24px;" />
-                            <input type="text" placeholder="Ask AI anything..." class="ai-input" style="flex: 1; width: auto; margin-bottom: 0; border: none; background-color: transparent;" @keydown=${(e) => e.key === "Enter" && this.handleToolbarAction("ai-custom", e.target.value)} />
+                            <input type="text" placeholder="Ask AI anything..." class="ai-input" style="" @keydown=${(e) => e.key === "Enter" && this.handleToolbarAction("ai-custom", e.target.value)} />
                         </div>
                         <div class="ai-commands">
                             <div class="command-section">
@@ -834,6 +856,8 @@ class ToolbarElement extends LitElement {
                                         <button @click=${() => this.handleToolbarAction("ai-operation", "paraphrase-friendly")}>Friendly</button>
                                     </div>
                                 </div>
+
+                                <button @click=${() => this.handleToolbarAction("ai-operation", "improve-writing")}><img src="/a7/plugins/toolbar/edit.svg" alt="wand" style="height: 16px;" /> Write opposing argument </button>
                             </div>
 
                             <div class="command-section">
@@ -864,8 +888,10 @@ class ToolbarElement extends LitElement {
                 return html`
                     <div class="dialog">
                         <div style="display: flex; gap: 8px; margin-bottom: 8px">
-                            <input type="text" placeholder="Search sources" id="source-search" value=${this.selectedText} />
-                            <button style="border: 1px solid var(--border-1); font-size: 12px" @click=${this.updateSearch}>Search</button>
+                            <div class="od" style="margin-bottom: 0; flex: 1; padding: var(--padding-1) var(--padding-2)">
+                                <input type="text" placeholder="Search sources" id="source-search" value=${this.selectedText} class="ai-input" />
+                            </div>
+                            <button style="border: none; font-size: 12px; padding: var(--padding-3)" @click=${this.updateSearch}><img src="/a7/plugins/toolbar/search.svg" alt="Search" style="height: 16px; filter: var(--themed-svg)" /></button>
                         </div>
                         ${this.sources.map(
                             (source) => html`
