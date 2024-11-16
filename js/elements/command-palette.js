@@ -9,7 +9,7 @@ class CommandPalette extends HTMLElement {
 
     addGlobalShortcut() {
         document.addEventListener("keydown", (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+            if ((e.ctrlKey || e.metaKey) && e.key === "e") {
                 e.preventDefault();
                 this.show();
             }
@@ -256,7 +256,7 @@ class CommandPalette extends HTMLElement {
                 display: flex;
                 flex-direction: column;
                 gap: var(--gap-1);
-                max-height: 300px;
+                max-height: 350px;
                 overflow-y: auto;
                 padding: var(--padding-4);
             }

@@ -6,7 +6,7 @@ var deletedElementsLeft = [];
 var configChanges = [];
 
 var tips = [
-    "You can use the command palette by pressing Ctrl+k or Cmd+k",
+    "You can use the command palette by pressing Ctrl+e or Cmd+e",
     "You can create and install plugins to extend the functionality of your editor",
     "You can create and use custom themes to personalize your editor"
 ];
