@@ -208,7 +208,7 @@ class OptionsComponent extends LitElement {
             padding: var(--padding-3);
         }
         .options-section--column {
-            gap: var(--gap-3);
+            gap: var(--gap-2);
             flex-direction: column;
             align-items: flex-start;
         }
@@ -627,15 +627,32 @@ class OptionsComponent extends LitElement {
                     </div>
 
                     <div class="options-section options-section--column">
-                        <h1 style="color: var(--text-1)">Wisk</h1>
-                        <h3 style="color: var(--text-1)">Your Workspace, Built Your Way.</h3>
-                        <p style="color: var(--text-2)">Notes, reports, tasks, and collaboration — offline and customizable. (yes we have AI too!)</p>
+                        <h1 style="color: var(--text-1); display: flex; width: 100%; align-items: center; justify-content: center; gap: 12px;">
+                            <img src="/a7/wisk-logo.svg" alt="Wisk" class="resp-img" style="width: 38px; filter: var(--themed-svg)" draggable="false"/> Wisk
+                        </h1>
+                        <h3 style="color: var(--text-1); width: 100%; text-align: center;">Your Workspace, Built Your Way.</h3>
+                        <p style="color: var(--text-2); text-align: center; width: 100%">
+                            Notes, reports, tasks, and collaboration — offline and customizable. (yes we have AI too!)
+                        </p>
                     </div>
 
                     <hr style="border: 1px solid var(--border-1); margin: 20px 10px"/>
 
                     <div class="options-section options-section--column">
-                        <p style="color: var(--text-2)">Credits</p>
+                        <h3 style="color: var(--text-2)">License</h3>
+                        <div style="display: flex; flex-direction: column; gap: var(--gap-1)">
+                            <p style="color: var(--text-2)">
+                                Licensed under the Functional Source License (FSL), Version 1.1, with Apache License Version 2.0 as the Future License.
+                                See the <a href="https://app.wisk.cc/LICENSE.md" target="_blank" class="link-blue">LICENSE.md</a> for more details.
+
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr style="border: 1px solid var(--border-1); margin: 20px 10px"/>
+
+                    <div class="options-section options-section--column">
+                        <h3 style="color: var(--text-2)">Credits</h3>
                         <div style="display: flex; flex-direction: column; gap: var(--gap-1)">
                             <p style="color: var(--text-2)">
                                 All icons in the webapp are from

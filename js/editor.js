@@ -514,9 +514,14 @@ function handleEditorClick(event) {
     }
 }
 
-// Update Management
 window.wisk.editor.justUpdates = async function (elementId) {
     if (elementId) {
+
+        if (elementId === window.wisk.editor.elements[0].id) {
+            console.log("updating name");
+            window.wisk.editor.addConfigChange([{path: "document.name", values: { name: byQuery("#" + elementId).getTextContent().text }}]);
+        }
+
         const element = window.wisk.editor.getElement(elementId);
         if (element) {
             const domElement = document.getElementById(elementId);
