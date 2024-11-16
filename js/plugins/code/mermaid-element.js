@@ -7,9 +7,13 @@ var mermaidReady = new Promise((resolve) => {
     }
     if (!document.querySelector('script[src*="mermaid"]')) {
         const mermaidScript = document.createElement('script');
-        mermaidScript.src = 'https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js';
+        mermaidScript.src = '/a7/cdn/mermaid.min-11.4.0.js';
         mermaidScript.onload = () => {
-            window.mermaid.initialize({ startOnLoad: false });
+            window.mermaid.initialize({ 
+                startOnLoad: false,
+                suppressErrors: true,
+                suppressErrorRendering: true
+            });
             resolve();
         };
         document.head.appendChild(mermaidScript);
@@ -163,10 +167,11 @@ class MermaidElement extends LitElement {
         try {
             await mermaidReady;
             
-            // Initialize with theme config
             window.mermaid.initialize({
                 ...this.getMermaidConfig(),
-                startOnLoad: false
+                startOnLoad: false,
+                suppressErrors: true,
+                suppressErrorRendering: true
             });
             
             // Generate unique ID for this render
