@@ -28,6 +28,19 @@ class AIChat extends LitElement {
             flex-direction: column;
             gap: var(--gap-3);
         }
+        .clear-chat {
+            align-self: center;
+            margin-top: var(--padding-3);
+            padding: var(--padding-3);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            color: var(--text-1);
+        }
+        .clear-chat:hover {
+            background: var(--bg-3);
+        }
         .message {
             display: flex;
             flex-direction: column;
@@ -162,6 +175,12 @@ class AIChat extends LitElement {
             cursor: pointer;
             font-size: 14px;
         }
+        .selected-text {
+            font-size: 14px;
+            color: var(--text-2);
+            border-left: 2px solid var(--border-1);
+            padding-left: var(--padding-2);
+        }
         .suggest:hover {
             text-decoration: underline;
         }
@@ -251,25 +270,25 @@ class AIChat extends LitElement {
                     ops: message,
                     selectedText: this.selectedText,
                     document: md,
-                    messages: this.messages // Only past messages
+                    messages: this.messages
                 }),
             });
             
             var completion = await response.json();
             completion = completion.content.trim();
             
-            // Add both messages after successful response
+            // Add both messages after successful response, including selected text
             this.messages = [
                 ...this.messages, 
                 {
                     content: message,
                     by: 'user',
-                    context: this.selectedText || ''
+                    selectedText: this.selectedText || '' // Store selected text with the message
                 },
                 {
                     content: completion,
                     by: 'assistant',
-                    context: ''
+                    selectedText: ''
                 }
             ];
             
@@ -340,6 +359,9 @@ class AIChat extends LitElement {
                 <div class="chat">
                     ${this.messages.map(message => html`
                         <div class="message ${message.by}">
+                            ${message.selectedText ? html`
+                                <div class="selected-text">${message.selectedText}</div>
+                            ` : ''}
                             <div class="message-header-${message.by.toLowerCase()}">${message.by === 'user' ? 'You' : 'Assistant'}</div>
                             <div class="message-content-${message.by.toLowerCase()}">${message.content}</div>
                         </div>
@@ -356,6 +378,10 @@ class AIChat extends LitElement {
                             <div class="message-content-assistant">Thinking...</div>
                         </div>
                     ` : ''}
+
+                    <button class="clear-chat" @click=${() => { this.messages = []; this.requestUpdate(); }}>
+                        Clear Chat
+                    </button>
                 </div>
                 
                 <div class="input">
@@ -376,8 +402,8 @@ class AIChat extends LitElement {
                         <div class="in1" style="${this.selectedText? '' : 'padding: var(--padding-3)'}">
                             <div class="in2" style="display: ${this.selectedText? 'block' : 'none'}">
                                 <div class="in3">
-                                    <img src="/a7/plugins/ai-chat/enter.svg" style="height: 18px; width: 18px" /> 
-                                    <img src="/a7/plugins/ai-chat/x.svg" style="height: 18px; width: 18px" @click=${() => this.clearSelection()} />
+                                    <img src="/a7/plugins/ai-chat/enter.svg" style="height: 18px; width: 18px; filter: var(--themed-svg)" />
+                                    <img src="/a7/plugins/ai-chat/x.svg" style="height: 18px; width: 18px; filter: var(--themed-svg)" @click=${() => this.clearSelection()} />
                                 </div>
                                 <p class="px1">${this.selectedText}</p>
                             </div>
