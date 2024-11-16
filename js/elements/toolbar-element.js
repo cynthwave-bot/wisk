@@ -12,7 +12,7 @@ class ToolbarElement extends LitElement {
         :host {
             --dialog-margin-top--dont-mess-with-this: 40px;
         }
-        
+
         .toolbar {
             position: fixed;
             background: var(--bg-1);
@@ -72,9 +72,9 @@ class ToolbarElement extends LitElement {
             margin-top: var(--dialog-margin-top--dont-mess-with-this, 40px);
             width: 100%;
             max-height: 500px;
-            background: var(--bg-2);
+            background: var(--bg-1);
             border: 1px solid var(--border-1);
-            border-radius: var(--radius-large);
+            border-radius: var(--radius);
             filter: var(--drop-shadow);
             padding: var(--padding-3);
             display: flex;
@@ -134,7 +134,8 @@ class ToolbarElement extends LitElement {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 10px;  border-bottom: 1px solid var(--border-1);
+            gap: 10px;
+            border-bottom: 1px solid var(--border-1);
             padding: var(--padding-3) 0;
         }
 
@@ -176,8 +177,12 @@ class ToolbarElement extends LitElement {
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .backdrop {
@@ -188,7 +193,7 @@ class ToolbarElement extends LitElement {
             height: 100%;
             z-index: 99;
         }
-        
+
         .source-item * {
             margin: 0;
             padding: 0;
@@ -200,9 +205,177 @@ class ToolbarElement extends LitElement {
             font-size: 12px;
         }
 
-        *::-webkit-scrollbar { width: 15px; }
-        *::-webkit-scrollbar-track { background: var(--bg-1); }
-        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
+        *::-webkit-scrollbar {
+            width: 15px;
+        }
+        *::-webkit-scrollbar-track {
+            background: var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--bg-3);
+            border-radius: 20px;
+            border: 4px solid var(--bg-1);
+        }
+
+        .command-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .command-section h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-2);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .ai-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius);
+            background: var(--bg-1);
+            color: var(--text-1);
+            margin-bottom: 16px;
+        }
+
+        .ai-commands button {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            text-align: left;
+            padding: var(--padding-2);
+            background: var(--bg-1);
+            border: none;
+            border-radius: 4px;
+            color: var(--text-1);
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .ai-commands button:hover {
+            background: var(--bg-2);
+        }
+
+        .submenu-container {
+        }
+
+        .submenu-container:hover .submenu {
+            display: block;
+        }
+
+        .submenu {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: var(--bg-1);
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius);
+            box-shadow: var(--drop-shadow);
+            min-width: 150px;
+            z-index: 1002;
+        }
+
+        .submenu button {
+            padding: var(--padding-2) var(--padding-3);
+            width: 100%;
+            text-align: left;
+            border: none;
+            background: transparent;
+            color: var(--text-1);
+            cursor: pointer;
+        }
+
+        .submenu button:hover {
+            background: var(--bg-2);
+        }
+
+        .submenu-trigger {
+            position: relative;
+        }
+
+        .translate-menu {
+            left: 90%;
+            top: 20%;
+        }
+
+        .paraphrase-menu {
+            left: 90%;
+            top: 30%;
+        }
+
+        .tone-menu {
+            left: 90%;
+            top: 50%;
+        }
+
+        input {
+            outline: none;
+        }
+
+        .preview-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .preview-content {
+            padding: var(--padding-3);
+            border-radius: var(--radius);
+            margin-bottom: var(--padding-3);
+            white-space: pre-wrap;
+            user-select: text;
+        }
+
+        .preview-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .preview-buttons button {
+            padding: 8px 16px;
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius);
+            cursor: pointer;
+            color: var(--text-1);
+        }
+
+        .preview-buttons button.accept {
+            background: var(--bg-2);
+            border: 1px solid var(--border-1);
+        }
+
+        .preview-buttons button.accept:hover {
+            background: var(--bg-3);
+        }
+
+        .preview-buttons button.discard {
+            background: var(--bg-1);
+            border: none;
+        }
+        .od {
+            color: var(--text-1);
+            background-color: var(--bg-2);
+            border-radius: var(--radius);
+            outline: none;
+            border: 1px solid var(--bg-3);
+            transition: all 0.2s ease;
+            margin: 2px;
+            display: flex;
+            gap: var(--gap-2);
+            align-items: center;
+            flex-wrap: wrap;
+            padding: var(--padding-1) var(--padding-3);
+            margin-bottom: 16px;
+        }
+        .od:has(input:focus) {
+            border-color: var(--border-2);
+            background-color: var(--bg-1);
+            box-shadow: 0 0 0 2px var(--bg-3);
+        }
     `;
 
     static properties = {
@@ -214,26 +387,32 @@ class ToolbarElement extends LitElement {
         visible: { type: Boolean },
         linkUrl: { type: String, state: true },
         sources: { type: Array },
-        loading: { type: Boolean }
+        loading: { type: Boolean },
+        previewText: { type: String },
     };
 
     constructor() {
         super();
-        this.mode = 'simple';
-        this.dialogName = '';
-        this.selectedText = '';
-        this.elementId = '';
-        this.elementText = '';
+        this.mode = "simple";
+        this.dialogName = "";
+        this.selectedText = "";
+        this.elementId = "";
+        this.elementText = "";
         this.visible = false;
-        this.linkUrl = '';
+        this.linkUrl = "";
         this.sources = [];
         this.loading = false;
 
-        const editor = document.querySelector('.editor');
+        const editor = document.querySelector(".editor");
         if (editor) {
-            editor.addEventListener('scroll', () => { this.updateToolbarPosition(); });
-            window.addEventListener('resize', () => { this.updateToolbarPosition(); });
+            editor.addEventListener("scroll", () => {
+                this.updateToolbarPosition();
+            });
+            window.addEventListener("resize", () => {
+                this.updateToolbarPosition();
+            });
         }
+        this.previewText = "";
     }
 
     updateToolbarPosition() {
@@ -248,57 +427,74 @@ class ToolbarElement extends LitElement {
             return;
         }
 
-        const toolbar = this.shadowRoot.querySelector('.toolbar');
-        this.style.setProperty('--dialog-margin-top--dont-mess-with-this', `${ (position.height > 200 ? 200 : position.height) + 20}px`);
+        const toolbar = this.shadowRoot.querySelector(".toolbar");
+        this.style.setProperty("--dialog-margin-top--dont-mess-with-this", `${(position.height > 200 ? 200 : position.height) + 20}px`);
 
-        toolbar.style.left = `${Math.max(10, Math.min(position.x - (toolbar.offsetWidth / 2), window.innerWidth - toolbar.offsetWidth - 10))}px`;
+        toolbar.style.left = `${Math.max(10, Math.min(position.x - toolbar.offsetWidth / 2, window.innerWidth - toolbar.offsetWidth - 10))}px`;
         toolbar.style.top = `${Math.max(10, position.y - 45)}px`;
     }
 
-
-    async handleToolbarAction(action) {
-        switch(action) {
-            case 'link':
-                this.mode = 'dialog';
-                this.dialogName = 'link';
+    async handleToolbarAction(action, operation) {
+        switch (action) {
+            case "link":
+                this.mode = "dialog";
+                this.dialogName = "link";
                 break;
-            case 'ai-improve':
-                this.mode = 'dialog';
-                this.dialogName = 'ai-chat';
+            case "ai-improve":
+                this.mode = "dialog";
+                this.dialogName = "ai-chat";
                 break;
-            case 'find-source':
-                this.mode = 'dialog';
-                this.dialogName = 'sources';
+            case "find-source":
+                this.mode = "dialog";
+                this.dialogName = "sources";
                 this.fetchSources();
                 break;
-            case 'make-longer':
-            case 'make-shorter':
-            case 'fix-spelling-grammar':
-            case 'improve-writing':
-            case 'summarize':
+            case "make-longer":
+            case "make-shorter":
+            case "fix-spelling-grammar":
+            case "improve-writing":
+            case "summarize":
                 await this.handleAIOperation(action);
                 break;
+            case "ai-operation":
+                await this.handleAIOperation(operation);
+                break;
+
+            case "ai-submenu":
+                // Handle submenu operations (translate/tone)
+                if (operation === "translate") {
+                    // Handle translate submenu
+                    console.log("Show translate submenu");
+                } else if (operation === "tone") {
+                    // Handle tone submenu
+                    console.log("Show tone submenu");
+                }
+                break;
+
+            case "ai-custom":
+                await this.handleAIOperation(operation);
+                break;
             default:
-                this.dispatchEvent(new CustomEvent('toolbar-action', {
-                    detail: { action, elementId: this.elementId, selectedText: this.selectedText },
-                    bubbles: true,
-                    composed: true
-                }));
+                this.dispatchEvent(
+                    new CustomEvent("toolbar-action", {
+                        detail: { action, elementId: this.elementId, selectedText: this.selectedText },
+                        bubbles: true,
+                        composed: true,
+                    }),
+                );
         }
     }
 
     handleLinkKeyDown(e) {
-        if (e.key === 'Enter') {
+        if (e.key === "Enter") {
             e.preventDefault(); // Prevent newline insertion
             this.handleLinkSubmit();
         }
     }
 
     async handleAIOperation(operation) {
+        this.mode = "loading";
 
-        window.showToast('Processing...', 3000);
-
-        this.loading = true;
         this.requestUpdate();
 
         try {
@@ -307,7 +503,7 @@ class ToolbarElement extends LitElement {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + auth.token,
+                    Authorization: "Bearer " + auth.token,
                 },
                 body: JSON.stringify({
                     ops: operation,
@@ -318,141 +514,159 @@ class ToolbarElement extends LitElement {
 
             if (response.ok) {
                 const data = await response.json();
-                
-                // Dispatch event with improved text
-                this.dispatchEvent(new CustomEvent('ai-operation-complete', {
-                    detail: {
-                        elementId: this.elementId,
-                        newText: data.content
-                    },
-                    bubbles: true,
-                    composed: true
-                }));
 
-                this.closeDialog();
+                // Instead of dispatching event, show preview
+                this.previewText = data.content;
+                this.mode = "preview";
+                this.dialogName = "preview";
             } else {
-                throw new Error('AI operation failed');
+                throw new Error("AI operation failed");
             }
         } catch (error) {
-            console.error('AI operation error:', error);
-            window.showToast('AI operation failed', 3000);
+            console.error("AI operation error:", error);
+            window.showToast("AI operation failed", 3000);
         } finally {
             this.loading = false;
             this.requestUpdate();
         }
     }
 
-    async handleCreateReference(source) {
+    handleAcceptPreview() {
+        // Dispatch event with improved text
+        this.dispatchEvent(
+            new CustomEvent("ai-operation-complete", {
+                detail: {
+                    elementId: this.elementId,
+                    newText: this.previewText,
+                },
+                bubbles: true,
+                composed: true,
+            }),
+        );
 
-        window.wisk.utils.showLoading('Adding source...')
+        this.closeDialog();
+    }
+
+    handleDiscardPreview() {
+        this.previewText = "";
+        this.closeDialog();
+    }
+
+    async handleCreateReference(source) {
+        window.wisk.utils.showLoading("Adding source...");
 
         var user = await document.getElementById("auth").getUserInfo();
-        var response = await fetch('https://cloud.wisk.cc/v1/source', {
-            method: 'POST',
+        var response = await fetch("https://cloud.wisk.cc/v1/source", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + user.token
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + user.token,
             },
-            body: JSON.stringify({ ops: 'get-url', url: source.url })
+            body: JSON.stringify({ ops: "get-url", url: source.url }),
         });
 
         window.wisk.utils.hideLoading();
-        
+
         var data = {};
         if (response.ok) {
             data = await response.json();
             data = data[0];
             console.log(data);
         } else {
-            window.showToast('Failed to load sources', 3000);
+            window.showToast("Failed to load sources", 3000);
             return;
         }
 
         // Save selection before opening dialog
-        this.dispatchEvent(new CustomEvent('save-selection', {
-            detail: { elementId: this.elementId },
-            bubbles: true,
-            composed: true
-        }));
+        this.dispatchEvent(
+            new CustomEvent("save-selection", {
+                detail: { elementId: this.elementId },
+                bubbles: true,
+                composed: true,
+            }),
+        );
 
         // Dispatch create-reference event with source details
-        this.dispatchEvent(new CustomEvent('create-reference', {
-            detail: {
-                elementId: this.elementId,
-                title: source.title,
-                authors: data.authors || [],
-                date: data.publish_date || "",
-                publisher: data.meta_site_name || "",
-                url: source.url
-            },
-            bubbles: true,
-            composed: true
-        }));
+        this.dispatchEvent(
+            new CustomEvent("create-reference", {
+                detail: {
+                    elementId: this.elementId,
+                    title: source.title,
+                    authors: data.authors || [],
+                    date: data.publish_date || "",
+                    publisher: data.meta_site_name || "",
+                    url: source.url,
+                },
+                bubbles: true,
+                composed: true,
+            }),
+        );
 
         // Close the dialog after creating reference
         this.closeDialog();
     }
 
-
     async fetchSources() {
-        this.mode = 'loading';
+        this.mode = "loading";
         try {
             const auth = await document.getElementById("auth").getUserInfo();
-            const response = await fetch('https://cloud.wisk.cc/v1/source', {
-                method: 'POST',
+            const response = await fetch("https://cloud.wisk.cc/v1/source", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + auth.token
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + auth.token,
                 },
-                body: JSON.stringify({ ops: 'find-source', selectedText: this.selectedText })
+                body: JSON.stringify({ ops: "find-source", selectedText: this.selectedText }),
             });
 
             if (response.ok) {
                 const data = await response.json();
                 this.sources = data.results;
-                this.mode = 'dialog';
-                this.dialogName = 'sources';
+                this.mode = "dialog";
+                this.dialogName = "sources";
             } else {
-                throw new Error('Failed to fetch sources');
+                throw new Error("Failed to fetch sources");
             }
         } catch (error) {
-            console.error('Error:', error);
-            window.showToast('Failed to load sources', 3000);
-            this.mode = 'simple';
+            console.error("Error:", error);
+            window.showToast("Failed to load sources", 3000);
+            this.mode = "simple";
         }
     }
 
     handleLinkSubmit(e) {
         e?.preventDefault();
-        
+
         let url = this.linkUrl;
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            url = 'https://' + url;
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "https://" + url;
         }
 
-        this.dispatchEvent(new CustomEvent('create-link', {
-            detail: { url, elementId: this.elementId },
-            bubbles: true,
-            composed: true
-        }));
+        this.dispatchEvent(
+            new CustomEvent("create-link", {
+                detail: { url, elementId: this.elementId },
+                bubbles: true,
+                composed: true,
+            }),
+        );
 
-        this.mode = 'simple';
-        this.linkUrl = '';
+        this.mode = "simple";
+        this.linkUrl = "";
     }
 
     closeDialog() {
-        this.mode = 'simple';
-        this.dialogName = '';
+        this.mode = "simple";
+        this.dialogName = "";
     }
 
     showToolbar(x, y, elementId, selectedText, elementText) {
-        document.querySelector('ai-chat').setSelection(elementId, selectedText);
+        document.querySelector("ai-chat").setSelection(elementId, selectedText);
 
         this.selectedText = selectedText;
         this.elementId = elementId;
         this.elementText = elementText;
         this.visible = true;
-        
+
         setTimeout(() => {
             this.updateToolbarPosition();
         }, 0);
@@ -460,78 +674,78 @@ class ToolbarElement extends LitElement {
 
     hideToolbar() {
         this.visible = false;
-        this.mode = 'simple';
-        this.dialogName = '';
+        this.mode = "simple";
+        this.dialogName = "";
     }
 
     render() {
         return html`
-            ${this.mode === 'dialog' ? html`<div class="backdrop" @click=${this.closeDialog}></div>` : ''}
-            
-            <div class="toolbar ${this.visible ? 'visible' : ''}" style="">
-                <button @click=${() => this.handleToolbarAction('ai-improve')} title="Improve with AI" data-wide>
-                    <img src="/a7/forget/ai.svg" alt="AI" /> AI Commands</button>
+            ${this.mode === "dialog" || this.mode === "preview" ? html`<div class="backdrop" @click=${this.closeDialog}></div>` : ""}
+
+            <div class="toolbar ${this.visible ? "visible" : ""}" style="">
+                <button @click=${() => this.handleToolbarAction("ai-improve")} title="Improve with AI" data-wide><img src="/a7/forget/ai.svg" alt="AI" /> AI Commands</button>
                 <div class="separator"></div>
-                <button @click=${() => this.handleToolbarAction('find-source')} title="Find Source" data-wide>
-                    <img src="/a7/forget/source.svg" alt="Source" /> Find Source</button>
+                <button @click=${() => this.handleToolbarAction("find-source")} title="Find Source" data-wide><img src="/a7/forget/source.svg" alt="Source" /> Find Source</button>
                 <div class="separator"></div>
-                <button @click=${() => this.handleToolbarAction('bold')} title="Bold">
+                <button @click=${() => this.handleToolbarAction("bold")} title="Bold">
                     <img src="/a7/forget/bold.svg" alt="Bold" />
                 </button>
-                <button @click=${() => this.handleToolbarAction('italic')} title="Italic">
+                <button @click=${() => this.handleToolbarAction("italic")} title="Italic">
                     <img src="/a7/forget/italics.svg" alt="Italic" />
                 </button>
-                <button @click=${() => this.handleToolbarAction('underline')} title="Underline">
-                    <img src="/a7/forget/underline.svg" alt="Underline"/>
+                <button @click=${() => this.handleToolbarAction("underline")} title="Underline">
+                    <img src="/a7/forget/underline.svg" alt="Underline" />
                 </button>
-                <button @click=${() => this.handleToolbarAction('strikeThrough')} title="Strikethrough">
+                <button @click=${() => this.handleToolbarAction("strikeThrough")} title="Strikethrough">
                     <img src="/a7/forget/strikethrough.svg" alt="Strikethrough" />
                 </button>
-                <button @click=${() => this.handleToolbarAction('link')} title="Add Link">
+                <button @click=${() => this.handleToolbarAction("link")} title="Add Link">
                     <img src="/a7/forget/link.svg" alt="Link" />
                 </button>
 
-                ${this.mode === 'loading' ? html`
-                    <div class="loading-overlay">
-                        <div class="loading-indicator"></div>
-                    </div>
-                ` : ''}
-
-                ${this.mode === 'dialog' ? html`
-                    <div class="dialog-container">
-                        <div style="overflow: auto; width: 100%;">
-                        ${this.renderDialog()}
-                        <div>
-                    </div>
-                ` : ''}
+                ${this.mode === "loading"
+                    ? html`
+                          <div class="loading-overlay">
+                              <div class="loading-indicator"></div>
+                          </div>
+                      `
+                    : ""}
+                ${this.mode === "dialog" || this.mode === "preview"
+                    ? html`
+                          <div class="dialog-container">
+                              <div style="overflow: auto; width: 100%;">
+                                  ${this.renderDialog()}
+                                  <div></div>
+                              </div>
+                          </div>
+                      `
+                    : ""}
             </div>
         `;
     }
-
     async updateSearch() {
-
-        window.showToast('Searching for sources...', 3000);
+        window.showToast("Searching for sources...", 3000);
         this.loading = true;
         this.sources = [];
         this.requestUpdate();
 
         var user = await document.getElementById("auth").getUserInfo();
-        var search = this.shadowRoot.getElementById('source-search').value;
+        var search = this.shadowRoot.getElementById("source-search").value;
 
-        var response = await fetch('https://cloud.wisk.cc/v1/source', {
-            method: 'POST',
+        var response = await fetch("https://cloud.wisk.cc/v1/source", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + user.token
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + user.token,
             },
-            body: JSON.stringify({ ops: 'find-source', selectedText: search })
+            body: JSON.stringify({ ops: "find-source", selectedText: search }),
         });
 
         if (response.ok) {
             var data = await response.json();
             this.sources = data.results;
         } else {
-            window.showToast('Failed to load sources', 3000);
+            window.showToast("Failed to load sources", 3000);
         }
 
         this.loading = false;
@@ -540,56 +754,129 @@ class ToolbarElement extends LitElement {
     }
 
     openAIChat() {
-        window.wisk.editor.toggleRightSidebar('ai-chat', "AI Chat");
+        window.wisk.editor.toggleRightSidebar("ai-chat", "AI Chat");
     }
 
     renderDialog() {
-        switch(this.dialogName) {
-            case 'link':
+        switch (this.dialogName) {
+            case "preview":
                 return html`
                     <div class="dialog">
-                        <input type="text" 
-                            placeholder="Enter URL" 
-                            .value=${this.linkUrl}
-                            @input=${(e) => this.linkUrl = e.target.value}
-                            @keydown=${this.handleLinkKeyDown} />
+                        <div class="preview-container">
+                            <div class="preview-content">${this.previewText}</div>
+                            <div class="preview-buttons">
+                                <button class="discard" @click=${this.handleDiscardPreview}>Discard</button>
+                                <button class="accept" @click=${this.handleAcceptPreview}>Accept</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+            case "link":
+                return html`
+                    <div class="dialog">
+                        <input type="text" placeholder="Enter URL" .value=${this.linkUrl} @input=${(e) => (this.linkUrl = e.target.value)} @keydown=${this.handleLinkKeyDown} />
                         <div class="dialog-buttons">
                             <button class="cancel" @click=${this.closeDialog}>Cancel</button>
                             <button @click=${this.handleLinkSubmit}>Save</button>
                         </div>
                     </div>
                 `;
-            case 'ai-chat':
+
+            case "ai-chat":
                 return html`
                     <div class="dialog">
-                        <div class="ai-commands">
-                            <button @click=${() => this.handleToolbarAction('make-longer')}>Make Longer</button>
-                            <button @click=${() => this.handleToolbarAction('make-shorter')}>Make Shorter</button>
-                            <button @click=${() => this.handleToolbarAction('fix-spelling-grammar')}>Fix Grammar</button>
-                            <button @click=${() => this.handleToolbarAction('improve-writing')}>Improve Writing</button>
-                            <button @click=${() => this.handleToolbarAction('summarize')}>Summarize</button>
-                            <button @click=${() => this.openAIChat()}>Toggle AI Chat</button>
+                        <div class="od">
+                            <img src="/a7/plugins/toolbar/ai.svg" alt="AI" style="height: 24px;" />
+                            <input type="text" placeholder="Ask AI anything..." class="ai-input" style="flex: 1; width: auto; margin-bottom: 0; border: none; background-color: transparent;" @keydown=${(e) => e.key === "Enter" && this.handleToolbarAction("ai-custom", e.target.value)} />
                         </div>
-                        <div class="dialog-buttons">
-                            <button class="cancel" @click=${this.closeDialog}>Close</button>
+                        <div class="ai-commands">
+                            <div class="command-section">
+                                <h3>Suggested</h3>
+                                <button @click=${() => this.handleToolbarAction("ai-operation", "improve-writing")}><img src="/a7/plugins/toolbar/wand.svg" alt="wand" style="height: 16px;" /> Improve writing</button>
+                                <button @click=${() => this.handleToolbarAction("ai-operation", "fix-spelling-grammar")}><img src="/a7/plugins/toolbar/check.svg" alt="check" style="height: 16px;" /> Fix spelling & grammar</button>
+                                <div class="submenu-container">
+                                    <button class="submenu-trigger">
+                                        <img src="/a7/plugins/toolbar/translate.svg" alt="Translate" style="height: 16px;" /> Translate to
+                                        <div style="flex: 1"></div>
+                                        <img src="/a7/plugins/toolbar/right.svg" alt=">" style="height: 14px;" />
+                                    </button>
+                                    <div class="submenu translate-menu">
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-ko")}>Korean</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-zh")}>Chinese</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-ja")}>Japanese</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-en")}>English</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-es")}>Spanish</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-fr")}>French</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-de")}>German</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-it")}>Italian</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-pt")}>Portuguese</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-id")}>Indonesian</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-vi")}>Vietnamese</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-th")}>Thai</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-hi")}>Hindi</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-ar")}>Arabic</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "translate-ru")}>Russian</button>
+                                    </div>
+                                </div>
+                                <div class="submenu-container">
+                                    <button class="submenu-trigger">
+                                        <img src="/a7/plugins/toolbar/refresh.svg" alt="Translate" style="height: 16px;" /> Paraphrase
+                                        <div style="flex: 1"></div>
+                                        <img src="/a7/plugins/toolbar/right.svg" alt=">" style="height: 14px;" />
+                                    </button>
+                                    <div class="submenu paraphrase-menu">
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "paraphrase-academically")}>Academically</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "paraphrase-casually")}>Casually</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "paraphrase-persuasively")}>Persuasively</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "paraphrase-boldly")}>Boldly</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "paraphrase-straightforwardly")}>Straightforwardly</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "paraphrase-friendly")}>Friendly</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="command-section">
+                                <h3>Edit</h3>
+                                <button @click=${() => this.handleToolbarAction("ai-operation", "make-shorter")}><img src="/a7/plugins/toolbar/shorter.svg" alt="Shorten" style="height: 16px;" /> Make shorter</button>
+                                <div class="submenu-container">
+                                    <button class="submenu-trigger">
+                                        <img src="/a7/plugins/toolbar/tone.svg" alt="Tone" style="height: 16px;" /> Change tone
+                                        <div style="flex: 1"></div>
+                                        <img src="/a7/plugins/toolbar/right.svg" alt=">" style="height: 14px;" />
+                                    </button>
+                                    <div class="submenu tone-menu">
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "tone-professional")}>Professional</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "tone-casual")}>Casual</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "tone-straightforward")}>Straightforward</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "tone-confident")}>Confident</button>
+                                        <button @click=${() => this.handleToolbarAction("ai-operation", "tone-friendly")}>Friendly</button>
+                                    </div>
+                                </div>
+                                <button @click=${() => this.handleToolbarAction("ai-operation", "simplify")}><img src="/a7/plugins/toolbar/simplify.svg" alt="Simplify" style="height: 16px;" /> Simplify language</button>
+                                <button @click=${() => this.handleToolbarAction("ai-operation", "make-longer")}><img src="/a7/plugins/toolbar/longer.svg" alt="Lengthen" style="height: 16px;" /> Make longer</button>
+                            </div>
                         </div>
                     </div>
                 `;
-            case 'sources':
+
+            case "sources":
                 return html`
                     <div class="dialog">
                         <div style="display: flex; gap: 8px; margin-bottom: 8px">
                             <input type="text" placeholder="Search sources" id="source-search" value=${this.selectedText} />
                             <button style="border: 1px solid var(--border-1); font-size: 12px" @click=${this.updateSearch}>Search</button>
                         </div>
-                        ${this.sources.map(source => html`
-                            <div class="source-item">
-                                <h3>${source.title}</h3>
-                                <p>${source.content}</p>
-                                <a class="url" href=${source.url} target="_blank">${source.url.length > 40 ? source.url.slice(0, 40) + '...' : source.url}</a>
-                                <button @click=${() => this.handleCreateReference(source)} style="border: 1px solid var(--border-1);">Add Source</button>
-                            </div>
-                        `)}
+                        ${this.sources.map(
+                            (source) => html`
+                                <div class="source-item">
+                                    <h3>${source.title}</h3>
+                                    <p>${source.content}</p>
+                                    <a class="url" href=${source.url} target="_blank">${source.url.length > 40 ? source.url.slice(0, 40) + "..." : source.url}</a>
+                                    <button @click=${() => this.handleCreateReference(source)} style="border: 1px solid var(--border-1);">Add Source</button>
+                                </div>
+                            `,
+                        )}
                         <div class="dialog-buttons">
                             <button class="cancel" @click=${this.closeDialog}>Close</button>
                         </div>
