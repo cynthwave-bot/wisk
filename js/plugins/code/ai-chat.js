@@ -1,4 +1,5 @@
 import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { marked } from "/a7/cdn/marked.esm-9.1.2.min.js";
 
 class AIChat extends LitElement {
     static styles = css`
@@ -196,6 +197,79 @@ class AIChat extends LitElement {
         *::-webkit-scrollbar-track { background: var(--bg-1); }
         *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
         *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+
+        .message-content-assistant {
+            font-size: 14px;
+            color: var(--text-1);
+            white-space: normal;
+            user-select: text;
+        }
+
+        .markdown-content {
+            line-height: 1.5;
+        }
+
+        .markdown-content p {
+            margin-bottom: 1em;
+        }
+
+        .markdown-content code {
+            background-color: var(--bg-3);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .markdown-content pre {
+            background-color: var(--bg-3);
+            padding: var(--padding-3);
+            border-radius: var(--radius);
+            overflow-x: auto;
+            margin: 1em 0;
+        }
+
+        .markdown-content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .markdown-content ul, .markdown-content ol {
+            margin-left: 1.5em;
+            margin-bottom: 1em;
+        }
+
+        .markdown-content h1, .markdown-content h2, .markdown-content h3,
+        .markdown-content h4, .markdown-content h5, .markdown-content h6 {
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+            font-weight: bold;
+        }
+
+        .markdown-content blockquote {
+            border-left: 3px solid var(--border-1);
+            padding-left: 1em;
+            margin: 1em 0;
+            color: var(--text-2);
+        }
+
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+        }
+
+        .markdown-content th, .markdown-content td {
+            border: 1px solid var(--border-1);
+            padding: 0.5em;
+            text-align: left;
+        }
+
+        .markdown-content th {
+            background-color: var(--bg-3);
+        }
+        img {
+            max-width: 100%;
+        }
     `;
 
     static properties = {
@@ -222,6 +296,11 @@ class AIChat extends LitElement {
             },
         ];
         window.wisk.plugins.AIChatSetSelection = this.setSelection.bind(this);
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            headerIds: false
+        });
     }
 
     setSelection(elementId, text) {
@@ -231,6 +310,15 @@ class AIChat extends LitElement {
 
     toggleSources() {
         this.expandSources = !this.expandSources;
+    }
+
+    renderMarkdown(content) {
+        try {
+            return marked(content);
+        } catch (error) {
+            console.error('Error rendering markdown:', error);
+            return content;
+        }
     }
 
     toggleSuggestions() {
@@ -363,7 +451,9 @@ class AIChat extends LitElement {
                                 <div class="selected-text">${message.selectedText}</div>
                             ` : ''}
                             <div class="message-header-${message.by.toLowerCase()}">${message.by === 'user' ? 'You' : 'Assistant'}</div>
-                            <div class="message-content-${message.by.toLowerCase()}">${message.content}</div>
+                            <div class="message-content-${message.by.toLowerCase()}">${message.by === 'assistant' ? 
+                                    html`<div class="markdown-content" .innerHTML=${this.renderMarkdown(message.content)}></div>` : 
+                                    message.content}</div>
                         </div>
                     `)}
                     ${(this.messages.length === 0) ? html`
@@ -378,10 +468,6 @@ class AIChat extends LitElement {
                             <div class="message-content-assistant">Thinking...</div>
                         </div>
                     ` : ''}
-
-                    <button class="clear-chat" @click=${() => { this.messages = []; this.requestUpdate(); }}>
-                        Clear Chat
-                    </button>
                 </div>
                 
                 <div class="input">

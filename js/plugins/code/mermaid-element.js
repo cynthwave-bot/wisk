@@ -7,7 +7,7 @@ var mermaidReady = new Promise((resolve) => {
     }
     if (!document.querySelector('script[src*="mermaid"]')) {
         const mermaidScript = document.createElement('script');
-        mermaidScript.src = '/a7/cdn/mermaid.min-11.4.0.js';
+        mermaidScript.src = '/a7/cdn/mermaid-11.4.0.min.js';
         mermaidScript.onload = () => {
             window.mermaid.initialize({ 
                 startOnLoad: false,
