@@ -19,8 +19,8 @@ class ToolbarElement extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             filter: var(--drop-shadow);
-            padding: var(--padding-w1);
-            gap: 4px;
+            padding: var(--padding-2);
+            gap: var(--gap-2);
             z-index: 100;
             display: none;
             width: max-content;
@@ -52,6 +52,7 @@ class ToolbarElement extends LitElement {
 
         .toolbar button:hover {
             background: var(--bg-3);
+            opacity: 1;
         }
 
         .separator {
@@ -701,9 +702,7 @@ class ToolbarElement extends LitElement {
 
             <div class="toolbar ${this.visible ? "visible" : ""}" style="">
                 <button @click=${() => this.handleToolbarAction("ai-improve")} title="Improve with AI" data-wide><img src="/a7/forget/ai.svg" alt="AI" /> AI Commands</button>
-                <div class="separator"></div>
                 <button @click=${() => this.handleToolbarAction("find-source")} title="Find Source" data-wide><img src="/a7/forget/source.svg" alt="Source" /> Find Source</button>
-                <div class="separator"></div>
                 <button @click=${() => this.handleToolbarAction("bold")} title="Bold">
                     <img src="/a7/forget/bold.svg" alt="Bold" />
                 </button>
