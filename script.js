@@ -14,11 +14,9 @@ function getURLParam(str) {
 
     // if url contains wisk.site then get the id from path url which is everything after the wisk.site/
     if (window.location.href.includes("wisk.site")) {
-        function getCleanedPath(url) {
-            const match = url.match(/wisk\.site\/([^/]+)/);
-            return match ? match[1] : null;
-        }
-        return getCleanedPath(window.location.href);
+        var split = window.location.href.split("wisk.site/");
+        var id = split[1];
+        return id;
     }
 
     const urlParams = new URLSearchParams(window.location.search);
