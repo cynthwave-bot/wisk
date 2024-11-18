@@ -96,4 +96,5 @@ window.addEventListener('auth-component-close', function() {
 
 if (window.location.href.includes(".wisk.site/")) {
     live();
+    document.querySelector('menu-1').style.display = 'none';
 }

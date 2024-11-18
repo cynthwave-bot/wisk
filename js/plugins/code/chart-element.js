@@ -54,7 +54,6 @@ class ChartElement extends LitElement {
             padding: 4px 8px;
             border-radius: 4px;
             cursor: pointer;
-            ${window.wisk.editor.wiskSite ? css`display: none;` : ''}
         }
         :host(:hover) .edit-button {
             opacity: 1;
@@ -497,7 +496,7 @@ class ChartElement extends LitElement {
             <div class="chart-container">
                 <canvas></canvas>
                 ${this.error ? html`<div class="error">${this.error}</div>` : ''}
-                <button class="edit-button" @click=${this.handleEdit}>Edit</button>
+                <button class="edit-button" style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}}" @click=${this.handleEdit}>Edit</button>
             </div>
 
             ${this._showDialog ? html`
