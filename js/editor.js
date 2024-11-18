@@ -44,7 +44,10 @@ const createFullWidthWrapper = (elementId, block, imageContainer) => {
     wrapper.id = `full-width-wrapper-${elementId}`;
     wrapper.classList.add("full-width-wrapper");
     wrapper.appendChild(block);
-    wrapper.appendChild(imageContainer);
+
+    if (!window.wisk.editor.wiskSite) {
+        wrapper.appendChild(imageContainer);
+    }
     return wrapper;
 };
 
@@ -422,8 +425,10 @@ async function initializeElements() {
     const block = createBlockElement(firstElement.id, firstElement.component);
     const imageContainer = document.createElement("div");
     imageContainer.classList.add("hover-images");
+
     const plusButton = createHoverButton("/a7/forget/plus.svg", () => whenPlusClicked(firstElement.id));
     imageContainer.appendChild(plusButton);
+
     const fullWidthWrapper = createFullWidthWrapper(firstElement.id, block, imageContainer);
     container.appendChild(fullWidthWrapper);
     document.getElementById("editor").appendChild(container);
@@ -476,15 +481,11 @@ async function initializeRemainingElements() {
     }
 
     setTimeout(() => {
-        setTimeout(() => {
-            setTimeout(() => {
                 if (window.wisk.editor.wiskSite) {
                     console.log("-- DISABLING EVERYTHING --");
                     disableEverything();
                 }
-            }, 0);
-        }, 0);
-    }, 0);
+    }, 50);
 }
 
 window.wisk.editor.htmlToMarkdown = function (html) {
