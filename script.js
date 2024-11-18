@@ -11,6 +11,16 @@ function toggleMenu() {
 }
 
 function getURLParam(str) {
+
+    // if url contains wisk.site then get the id from path url which is everything after the wisk.site/
+    if (window.location.href.includes("wisk.site")) {
+        function getCleanedPath(url) {
+            const match = url.match(/wisk\.site\/([^/]+)/);
+            return match ? match[1] : null;
+        }
+        return getCleanedPath(window.location.href);
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(str);
 }

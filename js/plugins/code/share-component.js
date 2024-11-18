@@ -181,9 +181,12 @@ class ShareComponent extends LitElement {
     async togglePublish() {
         this.isPublished = !this.isPublished;
 
-        this.url = await this.liveUrl();
+        await window.wisk.editor.addConfigChange([{path: "document.config.access.public", values: { public: this.isPublished }}]);
+        
+        if (this.isPublished) {
+            this.url = await this.liveUrl();
+        }
 
-        // Add your publish/unpublish logic here
         window.showToast(this.isPublished ? "Document published!" : "Document unpublished", 3000);
         await this.requestUpdate();
     }

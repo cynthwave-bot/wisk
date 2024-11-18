@@ -72,6 +72,33 @@ async function sendAuth() {
 
 async function live() {
     console.log("PAGE LIVE", window.wisk.editor.pageId);
+
+    if (window.wisk.editor.wiskSite) {
+        var u = await document.querySelector('auth-component').getUserInfo();
+
+        var fetchUrl = 'https://cloud.wisk.cc/v1/new?doc=' + window.wisk.editor.pageId;
+        var fetchOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + u.token
+
+            },
+        }
+
+        var response = await fetch(fetchUrl, fetchOptions);
+
+        if (response.status !== 200) {
+            window.location.href = '/404.html';
+            return;
+        }
+
+        var data = await response.json();
+        initEditor(data);
+        return;
+    }
+
+
     try {
         await initializeWebSocket();
         await sendAuth();

@@ -28,6 +28,7 @@ window.wisk.editor = {
     pageId: "",
     elements: [],
     data: {},
+    wiskSite: false,
     createNewBlock: function(elementId, blockType, value, focusIdentifier) {},
     deleteBlock: function(elementId) {},
     focusBlock: function(elementId, identifier) {},
@@ -44,3 +45,9 @@ window.wisk.utils = {
     showLoading: function(message) {},
     hideLoading: function() {},
 };
+
+if (window.location.href.includes(".wisk.site")) {
+    window.wisk.editor.wiskSite = true;
+    const subdomain = window.location.href.split("https://")[1].split(".wisk.site")[0];
+    SERVER = "https://" + subdomain + ".wisk.site";
+}

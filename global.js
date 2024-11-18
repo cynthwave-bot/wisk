@@ -7,7 +7,6 @@ if (window.location.href.includes("ngrok")) {
 }
 
 if (window.location.href.includes(".wisk.site")) {
-    // get the subdomain and set the server
     const subdomain = window.location.href.split("https://")[1].split(".wisk.site")[0];
     SERVER = "https://" + subdomain + ".wisk.site";
 }
