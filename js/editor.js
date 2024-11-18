@@ -8,7 +8,8 @@ var configChanges = [];
 var tips = [
     "You can use the command palette by pressing Ctrl+e or Cmd+e",
     "You can create and install plugins to extend the functionality of your editor",
-    "You can create and use custom themes to personalize your editor"
+    "You can create and use custom themes to personalize your editor",
+    "When AI Chat gets too long, clear the chat by clicking the Clear Chat button, that'll improve the results",
 ];
 
 document.getElementById("tip").innerText = "Tip: " + tips[Math.floor(Math.random() * tips.length)];
