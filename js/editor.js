@@ -281,12 +281,18 @@ const smartReorderElements = (allElements) => {
 async function initEditor(doc) {
     console.log("INIT EDITOR", doc);
     window.wisk.editor.data = doc.data;
+    document.title = doc.name;
 
     // Load plugins
     if (doc.data.config.plugins && !Array.isArray(doc.data.config.plugins)) {
         doc.data.config.plugins = [];
     }
-    await Promise.all(doc.data.config.plugins.filter((plugin) => !window.wisk.plugins.loadedPlugins.includes(plugin)).map((plugin) => window.wisk.plugins.loadPlugin(plugin)));
+
+    await Promise.all(
+        doc.data.config.plugins
+        .filter((plugin) => !window.wisk.plugins.loadedPlugins.includes(plugin))
+        .map((plugin) => window.wisk.plugins.loadPlugin(plugin)),
+    );
 
     window.wisk.theme.setTheme(doc.data.config.theme);
 
@@ -521,6 +527,7 @@ window.wisk.editor.justUpdates = async function (elementId) {
     if (elementId) {
 
         if (elementId === window.wisk.editor.elements[0].id) {
+            document.title = byQuery("#" + elementId).getTextContent().text;
             window.wisk.editor.addConfigChange([{path: "document.name", values: { name: byQuery("#" + elementId).getTextContent().text }}]);
         }
 

@@ -85,6 +85,9 @@ class ToolbarElement extends LitElement {
             z-index: 1001;
             width: 100%;
             min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .dialog-buttons {
@@ -889,19 +892,23 @@ class ToolbarElement extends LitElement {
                         <div style="display: flex; gap: 8px; margin-bottom: 8px">
                             <div class="od" style="margin-bottom: 0; flex: 1; padding: var(--padding-1) var(--padding-2)">
                                 <input type="text" placeholder="Search sources" id="source-search" value=${this.selectedText} class="ai-input" />
+                                <button style="border: none; font-size: 12px; padding: var(--padding-3); background: transparent" @click=${this.updateSearch}><img src="/a7/plugins/toolbar/search.svg" alt="Search" style="height: 16px; filter: var(--themed-svg)" /></button>
                             </div>
-                            <button style="border: none; font-size: 12px; padding: var(--padding-3)" @click=${this.updateSearch}><img src="/a7/plugins/toolbar/search.svg" alt="Search" style="height: 16px; filter: var(--themed-svg)" /></button>
                         </div>
-                        ${this.sources.map(
-                            (source) => html`
-                                <div class="source-item">
-                                    <h3>${source.title}</h3>
-                                    <p>${source.content}</p>
-                                    <a class="url" href=${source.url} target="_blank">${source.url.length > 40 ? source.url.slice(0, 40) + "..." : source.url}</a>
-                                    <button @click=${() => this.handleCreateReference(source)} style="border: 1px solid var(--border-1);">Add Source</button>
-                                </div>
-                            `,
-                        )}
+                        <div style="overflow: auto; padding: var(--padding-3) 0">
+                            ${this.sources.map(
+                                (source) => html`
+                                    <div class="source-item">
+                                        <h3 style="user-select: text">${source.title}</h3>
+                                        <p style="user-select: text">${source.content}</p>
+                                        <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; align-items: center;">
+                                            <a class="url" href=${source.url} target="_blank">${source.url.length > 40 ? source.url.slice(0, 40) + "..." : source.url}</a>
+                                            <button @click=${() => this.handleCreateReference(source)} style="border: 1px solid var(--border-1); color: var(--button-bg-blue)">Add Source</button>
+                                        </div>
+                                    </div>
+                                `,
+                            )}
+                        </div>
                         <div class="dialog-buttons">
                             <button class="cancel" @click=${this.closeDialog}>Close</button>
                         </div>
