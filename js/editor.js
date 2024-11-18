@@ -112,9 +112,7 @@ window.wisk.editor.createBlockBase = function (elementId, blockType, value, remo
     const prevElement = document.getElementById(`div-${elementId}`);
     const blockElement = createBlockElement(id, blockType);
 
-    if (!window.wisk.editor.wiskSite) {
-        const imageContainer = createHoverImageContainer(id);
-    }
+    const imageContainer = createHoverImageContainer(id);
 
     const fullWidthWrapper = createFullWidthWrapper(id, blockElement, imageContainer);
     const container = createBlockContainer(id, blockType);
@@ -465,9 +463,7 @@ async function initializeRemainingElements() {
         const container = createBlockContainer(element.id, element.component);
         const block = createBlockElement(element.id, element.component);
 
-        if (!window.wisk.editor.wiskSite) {
-            const imageContainer = createHoverImageContainer(element.id);
-        }
+        const imageContainer = createHoverImageContainer(element.id);
 
         const fullWidthWrapper = createFullWidthWrapper(element.id, block, imageContainer);
         container.appendChild(fullWidthWrapper);
@@ -481,11 +477,11 @@ async function initializeRemainingElements() {
     }
 
     setTimeout(() => {
-                if (window.wisk.editor.wiskSite) {
-                    console.log("-- DISABLING EVERYTHING --");
-                    disableEverything();
-                }
-    }, 50);
+        if (window.wisk.editor.wiskSite) {
+            console.log("-- DISABLING EVERYTHING --");
+            disableEverything();
+        }
+    }, 100);
 }
 
 window.wisk.editor.htmlToMarkdown = function (html) {
