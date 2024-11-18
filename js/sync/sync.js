@@ -74,15 +74,15 @@ async function live() {
     console.log("PAGE LIVE", window.wisk.editor.pageId);
 
     if (window.wisk.editor.wiskSite) {
-        var u = await document.querySelector('auth-component').getUserInfo();
-
-        var fetchUrl = 'https://cloud.wisk.cc/v1/new?doc=' + window.wisk.editor.pageId;
+        // TODO
+        // FIXX THIS THIS IS REALLY BAD
+        // the way im adding wisk.site
+        // but i have to ship early
+        var fetchUrl = 'https://cloud.wisk.cc/v1/new?doc=' + getURLParam('uwu');
         var fetchOptions = {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + u.token
-
+                'Content-Type': 'application/json'
             },
         }
 
