@@ -8,28 +8,42 @@ class ShareComponent extends LitElement {
             margin: 0px;
             padding: 0px;
         }
-        :host {
+        .tabs {
+            display: flex;
+            gap: var(--gap-2);
+            border-bottom: 1px solid var(--border-1);
+            margin-bottom: var(--gap-3);
+            padding: 0 var(--padding-3);
+        }
+        .tab {
+            padding: var(--padding-2) var(--padding-3);
+            color: var(--text-2);
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+        .tab.active {
+            color: var(--text-1);
+        }
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--text-1);
+            border-radius: 2px 2px 0 0;
         }
         .option-section {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             color: var(--text-1);
-            align-items: center;
             opacity: 1;
             transform: translateY(0);
             transition: opacity 0.3s ease, transform 0.3s ease;
-            padding: var(--padding-3);
+            padding: 0 var(--padding-3) var(--padding-3);
             gap: var(--gap-3);
-        }
-        select {
-            padding: var(--padding-w2);
-            color: var(--text-1);
-            border: 1px solid var(--border-1);
-            background-color: var(--bg-2);
-            outline: none;
-            border-radius: var(--radius);
-            transition: border-color 0.2s ease, background-color 0.2s ease;
         }
         button {
             padding: var(--padding-w2);
@@ -42,16 +56,10 @@ class ShareComponent extends LitElement {
             font-weight: 500;
             filter: var(--drop-shadow);
         }
-        .placeholder-div {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--gap-2);
-        }
-        .placeholder {
-            width: 100px;
-            height: 100px;
-            border: 1px solid var(--bg-3);
-            border-radius: var(--radius);
+        .secondary-button {
+            background-color: var(--bg-2);
+            color: var(--text-1);
+            border: 1px solid var(--border-1);
         }
         .od {
             padding: var(--padding-2);
@@ -62,7 +70,6 @@ class ShareComponent extends LitElement {
             border: 1px solid var(--bg-3);
             transition: all 0.2s ease;
             width: 100%;
-            margin-right: 2px;
         }
         .email {
             outline: none;
@@ -71,7 +78,6 @@ class ShareComponent extends LitElement {
             background-color: transparent;
             color: var(--text-1);
         }
-
         .od:has(.email:focus) {
             border-color: var(--border-2);
             background-color: var(--bg-1);
@@ -86,6 +92,7 @@ class ShareComponent extends LitElement {
             align-items: center;
             justify-content: center;
             font-size: 0.9em;
+            gap: var(--gap-1);
         }
         .ox {
             display: flex;
@@ -96,28 +103,38 @@ class ShareComponent extends LitElement {
             border: none;
             flex-wrap: wrap;
         }
-        input[type="checkbox"] {
-            accent-color: var(--button-bg-blue);
-            background-color: var(--bg-2);
-            border: 1px solid var(--border-1);
-            border-radius: var(--radius);
-            cursor: pointer;
-            outline: none;
-            transition: all 0.2s ease;
+        .url-container {
+            display: flex;
+            gap: var(--gap-2);
+            align-items: center;
+        }
+        .note {
+            color: var(--text-2);
+            font-size: 0.9em;
         }
     `;
 
-    static properties = {};
+    static properties = {
+        activeTab: { type: String },
+        users: { type: Array },
+        isPublished: { type: Boolean },
+        liveUrl: { type: String }
+    };
 
     constructor() {
         super();
-        this.users = ["soham@gmail.com", "example@hello.com"];
+        this.activeTab = 'share';
+        this.users = [];
+        this.isPublished = false;
+        this.liveUrl = 'https://example.com/your-document'; // This should be dynamic
     }
 
     async opened() {
-        this.users = window.wisk.editor.data.config.access;
+        this.users = window.wisk.editor.data.config.access || [];
         await this.requestUpdate();
-        this.shadowRoot.querySelector(".email").focus();
+        if (this.activeTab === 'share') {
+            this.shadowRoot.querySelector(".email")?.focus();
+        }
     }
 
     async addUser() {
@@ -128,12 +145,10 @@ class ShareComponent extends LitElement {
             return;
         }
 
-        var usermail = document.querySelector('auth-component').user.email;
-
         await window.wisk.editor.addConfigChange([{path: "document.config.access.add", values: { email: email }}]);
 
         this.shadowRoot.querySelector(".email").value = "";
-        this.users.push(email);
+        this.users = [...this.users, email];
         this.requestUpdate();
     }
 
@@ -142,34 +157,87 @@ class ShareComponent extends LitElement {
         await window.wisk.editor.addConfigChange([{path: "document.config.access.remove", values: { email: user }}]);
         window.showToast("User removed!", 3000);
 
-        return () => {
-            this.users = this.users.filter((u) => u !== user);
-            this.requestUpdate();
-        }
+        this.users = this.users.filter((u) => u !== user);
+        this.requestUpdate();
     }
 
-    render() {
+    async togglePublish() {
+        this.isPublished = !this.isPublished;
+        // Add your publish/unpublish logic here
+        window.showToast(this.isPublished ? "Document published!" : "Document unpublished", 3000);
+        await this.requestUpdate();
+    }
+
+    copyUrl() {
+        navigator.clipboard.writeText(this.liveUrl);
+        window.showToast("URL copied to clipboard!", 3000);
+    }
+
+    renderShareTab() {
         return html`
             <div class="option-section">
                 <div style="display: flex; gap: var(--gap-2); align-items: stretch; width: 100%; flex-wrap: wrap" class="od">
                     <img src="/a7/plugins/share-component/plus.svg" alt="plus" style="filter: var(--themed-svg); padding-left: var(--padding-3)" />
-                    <input type="text" placeholder="Share" class="email" @keydown=${(e) => {if (e.key === "Enter") this.addUser()}} />
-                    <button @click=${this.addUser}>Add em!</button>
+                    <input type="text" placeholder="Add people or groups" class="email" @keydown=${(e) => {if (e.key === "Enter") this.addUser()}} />
+                    <button @click=${this.addUser}>Invite</button>
                 </div>
 
                 <div class="od ox">
-                    <p>Shared with (these have editor access): ${this.users.length? "": "No one yet!"}</p> 
+                    <p>People with access ${this.users.length ? "" : "(none yet)"}</p> 
                     ${this.users.map((user) => html`
-                        <span class="user">${user}
-                            <img src="/a7/plugins/share-component/x.svg" alt="x" style="filter: var(--themed-svg)" @click=${() => this.removeUser(user)} />
+                        <span class="user">
+                            ${user}
+                            <img src="/a7/plugins/share-component/x.svg" alt="x" style="filter: var(--themed-svg); cursor: pointer;" @click=${() => this.removeUser(user)} />
                         </span>
                     `)}
                 </div>
+            </div>
+        `;
+    }
 
-                <div class="od ox" style="display: none">
-                    <label for="perm" style="flex: 1">Share publicly</label>
-                    <input type="checkbox" id="perm" style="width: 20px; height: 20px;"/>
+    renderPublishTab() {
+        return html`
+            <div class="option-section">
+                <div class="od" style="display: flex; flex-direction: column; gap: var(--gap-3); background-color: var(--bg-2); padding: var(--padding-3); border-radius: var(--radius); box-shadow: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: var(--gap-1); flex-direction: column">
+                            <div>${this.isPublished ? 'Published' : 'Not published'}</div>
+                            <div class="note">${this.isPublished ? 'Anyone with the link can view this document' : 'Only invited people can access'}</div>
+                        </div>
+                        <button 
+                            class=${this.isPublished ? 'secondary-button' : ''} 
+                            @click=${this.togglePublish}
+                        >
+                            ${this.isPublished ? 'Unpublish' : 'Publish'}
+                        </button>
+                    </div>
+
+                    ${this.isPublished ? html`
+                        <div class="url-container">
+                            <input type="text" class="od" .value=${this.liveUrl} readonly />
+                            <button @click=${this.copyUrl}>Copy</button>
+                        </div>
+                    ` : ''}
                 </div>
+            </div>
+        `;
+    }
+
+    render() {
+        return html`
+            <div>
+                <div class="tabs">
+                    <div class="tab ${this.activeTab === 'share' ? 'active' : ''}" 
+                         @click=${() => this.activeTab = 'share'}>
+                        Share
+                    </div>
+                    <div class="tab ${this.activeTab === 'publish' ? 'active' : ''}"
+                         @click=${() => this.activeTab = 'publish'}>
+                        Publish
+                    </div>
+                </div>
+
+                ${this.activeTab === 'share' ? this.renderShareTab() : this.renderPublishTab()}
             </div>
         `;
     }

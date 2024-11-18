@@ -125,6 +125,12 @@ class AuthComponent extends LitElement {
         this.mode = "signin";
         this.visible = false;
         this.user = null;
+        this.wiskSite = false;
+
+        if (window.location.hostname.endsWith("wisk.site")) {
+            this.wiskSite = true;
+            return;
+        }
 
         const firebaseConfig = {
             apiKey: "AIzaSyAdMU0HRiJMV6GX8eX7JKbi3_088siSbdM",
@@ -147,6 +153,10 @@ class AuthComponent extends LitElement {
     }
 
     show() {
+        if (this.wiskSite) {
+            return;
+        }
+
         this.visible = true;
         this._originalBodyOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
@@ -159,6 +169,14 @@ class AuthComponent extends LitElement {
     }
 
     async getUserInfo() {
+        if (this.wiskSite) {
+            return {
+                token: "wisk-site",
+                uuid: "wisk-site",
+                email: "wisk-site"
+            }
+        }
+
         const user = this.auth.currentUser;
         if (user) {
             const token = await user.getIdToken();
