@@ -118,7 +118,6 @@ class ShareComponent extends LitElement {
         activeTab: { type: String },
         users: { type: Array },
         isPublished: { type: Boolean },
-        liveUrl: { type: String }
     };
 
     constructor() {
@@ -126,7 +125,25 @@ class ShareComponent extends LitElement {
         this.activeTab = 'share';
         this.users = [];
         this.isPublished = false;
-        this.liveUrl = 'https://example.com/your-document'; // This should be dynamic
+        this.url = "";
+    }
+
+    async liveUrl() {
+        var user = await document.querySelector("auth-component").getUserInfo();
+        var response = await fetch("https://cloud.wisk.cc/v1/user", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${user.token}`,
+            },
+        });
+
+        if (response.status !== 200) {
+            window.showToast("Error downloading file", 5000);
+            return;
+        }
+        var data = await response.json();
+
+        return "https://" + data.username + ".wisk.site/" + window.wisk.editor.pageId;
     }
 
     async opened() {
@@ -163,13 +180,16 @@ class ShareComponent extends LitElement {
 
     async togglePublish() {
         this.isPublished = !this.isPublished;
+
+        this.url = await this.liveUrl();
+
         // Add your publish/unpublish logic here
         window.showToast(this.isPublished ? "Document published!" : "Document unpublished", 3000);
         await this.requestUpdate();
     }
 
-    copyUrl() {
-        navigator.clipboard.writeText(this.liveUrl);
+    async copyUrl() {
+        navigator.clipboard.writeText(this.url);
         window.showToast("URL copied to clipboard!", 3000);
     }
 
@@ -214,7 +234,7 @@ class ShareComponent extends LitElement {
 
                     ${this.isPublished ? html`
                         <div class="url-container">
-                            <input type="text" class="od" .value=${this.liveUrl} readonly />
+                            <input type="text" class="od" .value=${this.url} readonly />
                             <button @click=${this.copyUrl}>Copy</button>
                         </div>
                     ` : ''}
