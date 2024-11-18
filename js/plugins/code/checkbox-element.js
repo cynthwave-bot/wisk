@@ -748,7 +748,7 @@ class CheckboxElement extends HTMLElement {
         `;
         const content = `
             <div id="list-outer">
-                <input type="checkbox" id="checkbox" name="checkbox" value="checkbox">
+                <input type="checkbox" id="checkbox" name="checkbox" value="checkbox" ${window.wisk.editor.wiskSite ? 'onclick="return false"' : ''} />
                 <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" placeholder="Enter text here..." ></div>
             </div>
         `;

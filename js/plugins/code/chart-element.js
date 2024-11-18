@@ -54,7 +54,7 @@ class ChartElement extends LitElement {
             padding: 4px 8px;
             border-radius: 4px;
             cursor: pointer;
-            ${window.wisk.editor.wiskSite ? 'display: none;' : ''}
+            ${window.wisk.editor.wiskSite ? css`display: none;` : ''}
         }
         :host(:hover) .edit-button {
             opacity: 1;

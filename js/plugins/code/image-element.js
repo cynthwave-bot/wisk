@@ -420,26 +420,18 @@ class ImageElement extends HTMLElement {
                 max-width: 100%;
                 border-radius: var(--radius);
             }
-            ${window.wisk.editor.wiskSite ? `
-                .upload-img::after {
-                    content: "";
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(255, 255, 255, 0.5);
-                    pointer-events: none;
-                }
-            ` : ''}
             </style>
         `;
 
         const content = `
             <div class="upload-img">
-                <input type="file" id="file" accept="image/*" />
-                <img src="" id="img-editable" alt="Uploaded image" />
-                <button id="upload-button">Upload Image</button>
+                ${window.wisk.editor.wiskSite ? `
+                    <img src="" id="img-editable" alt="Uploaded image" />
+                `:`
+                    <input type="file" id="file" accept="image/*" />
+                    <img src="" id="img-editable" alt="Uploaded image" />
+                    <button id="upload-button">Upload Image</button>
+                `}
             </div>
             <p id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false"></p>
         `;
