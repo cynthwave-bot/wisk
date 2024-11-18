@@ -21,14 +21,11 @@ const createHoverImageContainer = (elementId) => {
     const imageContainer = document.createElement("div");
     imageContainer.classList.add("hover-images");
 
+    const addButton = createHoverButton("/a7/forget/plus.svg", () => whenPlusClicked(elementId));
+    const deleteButton = createHoverButton("/a7/forget/trash.svg", () => whenTrashClicked(elementId));
 
-    if (!window.wisk.editor.wiskSite) {
-        const addButton = createHoverButton("/a7/forget/plus.svg", () => whenPlusClicked(elementId));
-        const deleteButton = createHoverButton("/a7/forget/trash.svg", () => whenTrashClicked(elementId));
-
-        imageContainer.appendChild(addButton);
-        imageContainer.appendChild(deleteButton);
-    }
+    imageContainer.appendChild(addButton);
+    imageContainer.appendChild(deleteButton);
 
     return imageContainer;
 };
@@ -111,7 +108,11 @@ window.wisk.editor.createBlockBase = function (elementId, blockType, value, remo
 
     const prevElement = document.getElementById(`div-${elementId}`);
     const blockElement = createBlockElement(id, blockType);
-    const imageContainer = createHoverImageContainer(id);
+
+    if (!window.wisk.editor.wiskSite) {
+        const imageContainer = createHoverImageContainer(id);
+    }
+
     const fullWidthWrapper = createFullWidthWrapper(id, blockElement, imageContainer);
     const container = createBlockContainer(id, blockType);
 
@@ -285,16 +286,94 @@ const smartReorderElements = (allElements) => {
 };
 
 function disableEverything(root = document) {
-    // Disable in regular DOM
-    const elements = root.querySelectorAll('input, button, select, textarea, [contenteditable="true"]');
-    elements.forEach(el => {
-        if (el.hasAttribute('contenteditable')) {
-            el.setAttribute('contenteditable', 'false');
+    // Handle contenteditable - need to get ALL variations
+    const editableElements = root.querySelectorAll('[contenteditable]');
+    editableElements.forEach(el => {
+        el.contentEditable = false;
+    });
+    
+    // Also catch any elements that might have contenteditable set via JavaScript
+    root.querySelectorAll('*').forEach(el => {
+        if (el.isContentEditable) {
+            el.contentEditable = false;
         }
-        el.disabled = true;
     });
 
-    // Disable in Shadow DOM
+    // Get ALL potentially interactive elements
+    const interactiveElements = root.querySelectorAll(`
+        input, 
+        button, 
+        select, 
+        textarea, 
+        [role="button"],
+        [role="textbox"],
+        [role="combobox"],
+        [role="listbox"],
+        a[href],
+        [tabindex]:not([tabindex="-1"]),
+        [contenteditable],
+        [contenteditable=""],
+        [contenteditable="true"],
+        iframe,
+        object,
+        embed,
+        [draggable="true"],
+        audio[controls],
+        video[controls],
+        details,
+        dialog,
+        menu,
+        select,
+        .clickable,
+        [onclick],
+        [onmousedown],
+        [onmouseup],
+        [onkeydown],
+        [onkeyup],
+        [onkeypress]
+    `);
+
+    interactiveElements.forEach(el => {
+        // Disable standard form elements
+        if ('disabled' in el) {
+            el.disabled = true;
+        }
+        
+        // Remove click handlers
+        el.onclick = null;
+        el.onmousedown = null;
+        el.onmouseup = null;
+        el.onkeydown = null;
+        el.onkeyup = null;
+        el.onkeypress = null;
+        
+        // Prevent pointer events
+        el.style.pointerEvents = 'none';
+        
+        // Remove from tab order
+        if (el.tabIndex !== -1) {
+            el.tabIndex = -1;
+        }
+        
+        // Disable dragging
+        el.draggable = false;
+        
+        // Remove all event listeners (for good measure)
+        el.replaceWith(el.cloneNode(true));
+    });
+
+    // Handle iframes
+    root.querySelectorAll('iframe').forEach(iframe => {
+        try {
+            if (iframe.contentDocument) {
+                disableEverything(iframe.contentDocument);
+            }
+        } catch (e) {
+            // Cross-origin iframe, can't access
+        }
+    });
+
+    // Handle Shadow DOM
     root.querySelectorAll('*').forEach(element => {
         if (element.shadowRoot) {
             disableEverything(element.shadowRoot);
@@ -324,7 +403,9 @@ async function initEditor(doc) {
     deletedElements = page.deletedElements;
     window.wisk.editor.elements = page.elements;
 
-    document.getElementById("last-space").addEventListener("click", handleEditorClick);
+    if (!window.wisk.editor.wiskSite) {
+        document.getElementById("last-space").addEventListener("click", handleEditorClick);
+    }
 
     await initializeElements();
 
@@ -378,7 +459,11 @@ async function initializeRemainingElements() {
 
         const container = createBlockContainer(element.id, element.component);
         const block = createBlockElement(element.id, element.component);
-        const imageContainer = createHoverImageContainer(element.id);
+
+        if (!window.wisk.editor.wiskSite) {
+            const imageContainer = createHoverImageContainer(element.id);
+        }
+
         const fullWidthWrapper = createFullWidthWrapper(element.id, block, imageContainer);
         container.appendChild(fullWidthWrapper);
         document.getElementById("editor").appendChild(container);
@@ -391,9 +476,14 @@ async function initializeRemainingElements() {
     }
 
     setTimeout(() => {
-        if (window.wisk.editor.wiskSite) {
-            disableEverything();
-        }
+        setTimeout(() => {
+            setTimeout(() => {
+                if (window.wisk.editor.wiskSite) {
+                    console.log("-- DISABLING EVERYTHING --");
+                    disableEverything();
+                }
+            }, 0);
+        }, 0);
     }, 0);
 }
 

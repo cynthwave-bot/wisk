@@ -48,6 +48,4 @@ window.wisk.utils = {
 
 if (window.location.href.includes(".wisk.site")) {
     window.wisk.editor.wiskSite = true;
-    const subdomain = window.location.href.split("https://")[1].split(".wisk.site")[0];
-    SERVER = "https://" + subdomain + ".wisk.site";
 }
