@@ -6,6 +6,12 @@ if (window.location.href.includes("ngrok")) {
     SERVER = "https://app.wisk.cc";
 }
 
+if (window.location.href.includes(".wisk.site")) {
+    // get the subdomain and set the server
+    const subdomain = window.location.href.split("https://")[1].split(".wisk.site")[0];
+    SERVER = "https://" + subdomain + ".wisk.site";
+}
+
 function byId(id) {
     return document.getElementById(id);
 }
