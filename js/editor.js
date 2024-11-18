@@ -283,6 +283,9 @@ async function initEditor(doc) {
     window.wisk.editor.data = doc.data;
 
     // Load plugins
+    if (doc.data.config.plugins && !Array.isArray(doc.data.config.plugins)) {
+        doc.data.config.plugins = [];
+    }
     await Promise.all(doc.data.config.plugins.filter((plugin) => !window.wisk.plugins.loadedPlugins.includes(plugin)).map((plugin) => window.wisk.plugins.loadPlugin(plugin)));
 
     window.wisk.theme.setTheme(doc.data.config.theme);

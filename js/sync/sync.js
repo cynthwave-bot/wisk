@@ -33,12 +33,13 @@ function initializeWebSocket() {
         });
 
         socket.addEventListener('error', (event) => {
-            console.error('WebSocket error:', event);
-            reject(event);
+            alert('Connection with server failed. Click OK to reload the page.');
+            location.reload();
         });
 
         socket.addEventListener('close', (event) => {
-            console.log('WebSocket connection closed:', event.code, event.reason);
+            alert('Connection with server closed. Click OK to reload the page.');
+            location.reload();
         });
     });
 }

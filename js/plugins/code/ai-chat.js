@@ -48,8 +48,7 @@ class AIChat extends LitElement {
             gap: var(--gap-2);
             padding: var(--padding-3);
             border-radius: var(--radius);
-            background: var(--bg-2);
-            border: 1px solid var(--border-1);
+            background: var(--bg-3);
         }
         .message.user {
             align-self: flex-end;
@@ -468,6 +467,8 @@ class AIChat extends LitElement {
                             <div class="message-content-assistant">Thinking...</div>
                         </div>
                     ` : ''}
+
+                    <button class="clear-chat" @click=${() => this.messages = []}>Clear Chat</button>
                 </div>
                 
                 <div class="input">
