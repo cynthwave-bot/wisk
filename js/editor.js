@@ -12,18 +12,23 @@ var tips = [
     "When AI Chat gets too long, clear the chat by clicking the Clear Chat button, that'll improve the results",
 ];
 
-document.getElementById("tip").innerText = "Tip: " + tips[Math.floor(Math.random() * tips.length)];
+if (!window.wisk.editor.wiskSite) {
+    document.getElementById("tip").innerText = "Tip: " + tips[Math.floor(Math.random() * tips.length)];
+}
 
 // Utility functions
 const createHoverImageContainer = (elementId) => {
     const imageContainer = document.createElement("div");
     imageContainer.classList.add("hover-images");
 
-    const addButton = createHoverButton("/a7/forget/plus.svg", () => whenPlusClicked(elementId));
-    const deleteButton = createHoverButton("/a7/forget/trash.svg", () => whenTrashClicked(elementId));
 
-    imageContainer.appendChild(addButton);
-    imageContainer.appendChild(deleteButton);
+    if (!window.wisk.editor.wiskSite) {
+        const addButton = createHoverButton("/a7/forget/plus.svg", () => whenPlusClicked(elementId));
+        const deleteButton = createHoverButton("/a7/forget/trash.svg", () => whenTrashClicked(elementId));
+
+        imageContainer.appendChild(addButton);
+        imageContainer.appendChild(deleteButton);
+    }
 
     return imageContainer;
 };
@@ -279,6 +284,24 @@ const smartReorderElements = (allElements) => {
     window.wisk.editor.elements.sort((a, b) => allElements.indexOf(a.id) - allElements.indexOf(b.id));
 };
 
+function disableEverything(root = document) {
+    // Disable in regular DOM
+    const elements = root.querySelectorAll('input, button, select, textarea, [contenteditable="true"]');
+    elements.forEach(el => {
+        if (el.hasAttribute('contenteditable')) {
+            el.setAttribute('contenteditable', 'false');
+        }
+        el.disabled = true;
+    });
+
+    // Disable in Shadow DOM
+    root.querySelectorAll('*').forEach(element => {
+        if (element.shadowRoot) {
+            disableEverything(element.shadowRoot);
+        }
+    });
+}
+
 async function initEditor(doc) {
     console.log("INIT EDITOR", doc);
     window.wisk.editor.data = doc.data;
@@ -366,6 +389,12 @@ async function initializeRemainingElements() {
             document.getElementById(element.id).setValue("", element.value);
         }, 0);
     }
+
+    setTimeout(() => {
+        if (window.wisk.editor.wiskSite) {
+            disableEverything();
+        }
+    }, 0);
 }
 
 window.wisk.editor.htmlToMarkdown = function (html) {
