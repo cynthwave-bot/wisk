@@ -107,6 +107,8 @@ class CheckboxElement extends HTMLElement {
     }
 
     onCheckboxChange(event) {
+        if (window.wisk.editor.wiskSite) return;
+
         this.checked = event.target.checked;
         this.sendUpdates();
     }
@@ -747,7 +749,7 @@ class CheckboxElement extends HTMLElement {
         const content = `
             <div id="list-outer">
                 <input type="checkbox" id="checkbox" name="checkbox" value="checkbox">
-                <div id="editable" contenteditable="true" spellcheck="false" placeholder="Enter text here..." ></div>
+                <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" placeholder="Enter text here..." ></div>
             </div>
         `;
         this.shadowRoot.innerHTML = style + content;

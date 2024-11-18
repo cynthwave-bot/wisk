@@ -395,6 +395,7 @@ class ImageElement extends HTMLElement {
                 background: repeating-linear-gradient(-45deg, var(--bg-1), var(--bg-1) 5px, var(--bg-3) 5px, var(--bg-3) 10px);
                 border-radius: var(--radius);
                 cursor: pointer;
+                position: relative;
             }
             #editable {
                 outline: none;
@@ -419,6 +420,18 @@ class ImageElement extends HTMLElement {
                 max-width: 100%;
                 border-radius: var(--radius);
             }
+            ${window.wisk.editor.wiskSite ? `
+                .upload-img::after {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(255, 255, 255, 0.5);
+                    pointer-events: none;
+                }
+            ` : ''}
             </style>
         `;
 
@@ -428,7 +441,7 @@ class ImageElement extends HTMLElement {
                 <img src="" id="img-editable" alt="Uploaded image" />
                 <button id="upload-button">Upload Image</button>
             </div>
-            <p id="editable" contenteditable="true" spellcheck="false"></p>
+            <p id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false"></p>
         `;
         this.shadowRoot.innerHTML = style + content;
     }

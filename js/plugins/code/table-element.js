@@ -128,20 +128,20 @@ class TableElement extends HTMLElement {
                     width: auto;
                 }
             </style>
-            <div class="table-controls">
+            <div class="table-controls" ${window.wisk.editor.wiskSite ? 'style="display: none;"' : ''}>
                 <button id="add-row">Add Row</button>
                 <button id="add-column">Add Column</button>
             </div>
             <table id="table">
                 <thead>
                     <tr>
-                        ${headers.map((header, i) => `<th contenteditable="plaintext-only" data-row="-1" data-col="${i}">${header}</th>`).join('')}
+                        ${headers.map((header, i) => `<th contenteditable="${!window.wisk.editor.wiskSite}" data-row="-1" data-col="${i}">${header}</th>`).join('')}
                     </tr>
                 </thead>
                 <tbody>
                     ${rows.map((row, i) => `
                         <tr>
-                            ${row.map((cell, j) => `<td contenteditable="plaintext-only" data-row="${i}" data-col="${j}">${cell}</td>`).join('')}
+                            ${row.map((cell, j) => `<td contenteditable="${!window.wisk.editor.wiskSite}" data-row="${i}" data-col="${j}">${cell}</td>`).join('')}
                         </tr>
                     `).join('')}
                 </tbody>

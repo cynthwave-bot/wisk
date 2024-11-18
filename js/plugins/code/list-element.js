@@ -720,7 +720,7 @@ class ListElement extends HTMLElement {
         const content = `
             <div id="container">
                 <div id="dot"></div>
-                <div id="editable" contenteditable="true" spellcheck="false" ></div>
+                <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" ></div>
             </div>
         `;
         this.shadowRoot.innerHTML = style + content;

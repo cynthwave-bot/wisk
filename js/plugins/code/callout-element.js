@@ -649,13 +649,15 @@ class CalloutElement extends HTMLElement {
         const content = `
             <div class="container">
                 <button class="emoji-button">${this.value.emoji}</button>
-                <div id="editable" contenteditable="true" spellcheck="false" data-placeholder="${this.placeholder}"></div>
+                <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
             </div>
         `;
         this.shadowRoot.innerHTML = style + content;
 
         this.emojiButton = this.shadowRoot.querySelector('.emoji-button');
         this.emojiButton.addEventListener('click', (e) => {
+            if (window.wisk.editor.wiskSite) return;
+
             e.stopPropagation();
             if (this.emojiMenu.style.display === 'none') {
                 this.emojiMenu.style.display = 'grid';

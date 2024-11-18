@@ -475,13 +475,6 @@ async function initializeRemainingElements() {
             document.getElementById(element.id).setValue("", element.value);
         }, 0);
     }
-
-    setTimeout(() => {
-        if (window.wisk.editor.wiskSite) {
-            console.log("-- DISABLING EVERYTHING --");
-            disableEverything();
-        }
-    }, 100);
 }
 
 window.wisk.editor.htmlToMarkdown = function (html) {

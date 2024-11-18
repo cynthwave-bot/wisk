@@ -144,6 +144,7 @@ class PyInterpreter extends LitElement {
         #run {
             padding: var(--padding-w2);
             background: transparent;
+            ${window.wisk.editor.wiskSite ? "display: none;" : ""}
         }
         #run:hover {
             background: var(--bg-1);
@@ -435,7 +436,7 @@ class PyInterpreter extends LitElement {
                     }}>Import Package</button>
                 </div>
             </div>
-            <div class="uwu">
+            <div class="uwu" style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}">
                 <textarea 
                     placeholder="print('hello world')" 
                     rows="2" 

@@ -159,7 +159,10 @@ class JavaScriptCodeBlock extends LitElement {
     render() {
         return html`
             <div class="op">
-                <button class="btn btnx" @click=${this.executeCode}>
+                <button class="btn btnx" @click=${() => {
+                        if (window.wisk.editor.wiskSite) return;
+                        this.executeCode();
+                }}>
                     <img src="/a7/plugins/nightwave-plaza/play.svg" style="width: 26px; height: 26px; filter: var(--themed-svg);" alt="Run" />
                 </button>
 
@@ -169,6 +172,7 @@ class JavaScriptCodeBlock extends LitElement {
                     .value=${this.code}
                     spellcheck="false"
                     placeholder="console.log('Hello, World!')"
+                    ${window.wisk.editor.wiskSite ? 'readonly' : ''}
                 ></textarea>
 
                 <div class="output ${this.output ? 'has-content' : ''} ${this.outputType}">${this.output}</div>

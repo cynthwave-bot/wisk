@@ -680,6 +680,11 @@ class ToolbarElement extends LitElement {
     }
 
     showToolbar(x, y, elementId, selectedText, elementText) {
+        if (window.wisk.editor.wiskSite) {
+            return;
+        }
+
+
         document.querySelector("ai-chat").setSelection(elementId, selectedText);
 
         this.selectedText = selectedText;

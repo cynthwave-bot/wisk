@@ -167,7 +167,7 @@ class EmbedElement extends HTMLElement {
             <div class="outer">
                 <div class="table-controls">
                     <div class="link">https://</div>
-                    <div class="link" id="editable" contenteditable="true" spellcheck="false">${this.link}</div>
+                    <div class="link" id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false">${this.link}</div>
                 </div>
                 <iframe src="https://${this.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>

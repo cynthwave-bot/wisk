@@ -269,7 +269,7 @@ class CodeElement extends HTMLElement {
             *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
             </style>
         `;
-        const content = `<pre id="editable" contenteditable="true" spellcheck="false" ></pre>`;
+        const content = `<pre id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" ></pre>`;
         this.shadowRoot.innerHTML = style + content;
     }
 

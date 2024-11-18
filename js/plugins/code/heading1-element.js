@@ -546,7 +546,7 @@ class Heading1Element extends HTMLElement {
             }
             </style>
         `;
-        const content = `<h1 id="editable" contenteditable="true" spellcheck="false" data-placeholder="${this.placeholder}"></h1>`;
+        const content = `<h1 id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></h1>`
         this.shadowRoot.innerHTML = style + content;
     }
 

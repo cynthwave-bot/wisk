@@ -547,7 +547,7 @@ class QuoteElement extends HTMLElement {
             }
             </style>
         `;
-        const content = `<div id="editable" contenteditable="true" spellcheck="false" data-placeholder="${this.placeholder}"></div>`;
+        const content = `<div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>`;
         this.shadowRoot.innerHTML = style + content;
     }
 

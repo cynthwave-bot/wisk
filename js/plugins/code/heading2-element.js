@@ -543,7 +543,7 @@ class Heading2Element extends HTMLElement {
             }
             </style>
         `;
-        const content = `<h2 id="editable" contenteditable="true" spellcheck="false" data-placeholder="${this.placeholder}"></h2>`;
+        const content = `<h2 id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></h2>`
         this.shadowRoot.innerHTML = style + content;
     }
 
