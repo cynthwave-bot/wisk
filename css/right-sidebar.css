@@ -2,7 +2,7 @@
     flex-shrink: 0;
     flex-grow: 0;
     width: 100%;
-    max-width: 500px;
+    max-width: 1000px;
     background-color: var(--bg-1);
     border: none;
     border-left: 1px solid var(--border-1);
@@ -70,4 +70,21 @@
     padding: var(--padding-w2);
     border-bottom: 1px solid var(--bg-3);
     font-weight: 400;
+}
+/* Right sidebar specific resize handle */
+.resize-handle-left {
+    left: -5px;
+    cursor: col-resize;
+}
+
+/* Ensure smooth transitions for right sidebar */
+.right-sidebar {
+    transition: right 0.2s, width 0.05s;
+}
+
+/* Mobile overrides for right sidebar */
+@media (max-width: 900px) {
+    .right-sidebar {
+        width: 90% !important;
+    }
 }

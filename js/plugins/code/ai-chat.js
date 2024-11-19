@@ -46,23 +46,22 @@ class AIChat extends LitElement {
             display: flex;
             flex-direction: column;
             gap: var(--gap-2);
-            padding: var(--padding-3);
+            padding: var(--padding-3) 0;
             border-radius: var(--radius);
-            background: var(--bg-3);
+            background: transparent;
         }
         .message.user {
-            align-self: flex-end;
             background: var(--bg-1);
-            max-width: 80%;
         }
         .message.assistant {
-            align-self: flex-start;
-            max-width: 80%;
         }
         .message-header-user {
             font-size: 12px;
             color: var(--text-2);
-            display: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: var(--gap-2);
         }
         .message-content-user {
             font-size: 14px;
@@ -73,7 +72,10 @@ class AIChat extends LitElement {
         .message-header-assistant {
             font-size: 12px;
             color: var(--text-2);
-            display: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: var(--gap-2);
         }
         .message-content-assistant {
             font-size: 14px;
@@ -449,7 +451,14 @@ class AIChat extends LitElement {
                             ${message.selectedText ? html`
                                 <div class="selected-text">${message.selectedText}</div>
                             ` : ''}
-                            <div class="message-header-${message.by.toLowerCase()}">${message.by === 'user' ? 'You' : 'Assistant'}</div>
+                            <div class="message-header-${message.by.toLowerCase()}">
+                                ${message.by === 'user' ? html`
+                                    <img src="/a7/plugins/ai-chat/user.svg" style="height: 22px; width: 22px; filter: var(--themed-svg)" />
+                                ` : html`
+                                    <img src="/a7/plugins/ai-chat/ai.svg" style="height: 22px; width: 22px; filter: var(--themed-svg)" />
+                                `}
+                                ${message.by === 'user' ? 'You' : 'Assistant'}
+                            </div>
                             <div class="message-content-${message.by.toLowerCase()}">${message.by === 'assistant' ? 
                                     html`<div class="markdown-content" .innerHTML=${this.renderMarkdown(message.content)}></div>` : 
                                     message.content}</div>
@@ -457,13 +466,19 @@ class AIChat extends LitElement {
                     `)}
                     ${(this.messages.length === 0) ? html`
                         <div class="message assistant">
-                            <div class="message-header-assistant">Assistant</div>
+                            <div class="message-header-assistant">
+                                <img src="/a7/plugins/ai-chat/ai.svg" style="height: 22px; width: 22px; filter: var(--themed-svg)" />
+                                Assistant
+                            </div>
                             <div class="message-content-assistant">Hello! How can I help you today?</div>
                         </div>
                     ` : ''}
                     ${this.loading ? html`
                         <div class="message assistant">
-                            <div class="message-header-assistant">Assistant</div>
+                            <div class="message-header-assistant">
+                                <img src="/a7/plugins/ai-chat/ai-animated.svg" style="height: 30px; width: 30px; filter: var(--themed-svg)" />
+                                Assistant
+                            </div>
                             <div class="message-content-assistant">Thinking...</div>
                         </div>
                     ` : ''}

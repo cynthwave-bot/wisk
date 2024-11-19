@@ -2,7 +2,7 @@
     flex-shrink: 0;
     flex-grow: 0;
     width: 100%;
-    max-width: 500px;
+    max-width: 1000px;
     background-color: var(--bg-1);
     border: none;
     border-right: 1px solid var(--border-1);
@@ -71,4 +71,49 @@
     padding: var(--padding-w2);
     border-bottom: 1px solid var(--bg-3);
     font-weight: 400;
+}
+/* Resize handle styles */
+.resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    top: 0;
+    z-index: 150;
+    transition: background-color 0.2s;
+}
+
+.resize-handle-right {
+    right: -5px;
+    cursor: col-resize;
+}
+
+.resize-handle:hover {
+    background-color: var(--bg-3);
+}
+
+/* Prevent text selection while resizing */
+.sidebar-resizing {
+    cursor: col-resize;
+    user-select: none;
+}
+
+.sidebar-resizing iframe,
+.sidebar-resizing .left-sidebar-body {
+    pointer-events: none;
+}
+
+/* Hide resize handle on mobile */
+@media (max-width: 900px) {
+    .resize-handle {
+        display: none;
+    }
+    
+    .left-sidebar {
+        width: 90% !important;
+    }
+}
+
+/* Ensure smooth transitions */
+.left-sidebar {
+    transition: left 0.2s, width 0.05s;
 }
