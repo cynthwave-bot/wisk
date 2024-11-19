@@ -27,20 +27,6 @@ body {
     padding-right: 0;
 }
 
-.loading-div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    gap: 20px;
-    background-color: var(--bg-1);
-    display: none;
-}
 .plugin-icon {
     filter: var(--themed-svg);
     width: 22px;

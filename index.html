@@ -19,10 +19,10 @@
 
 <style>
 .spinner {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    border: 6.4px solid var(--text-1);
+    border: 3.5px solid var(--text-1);
     animation: spinner-bulqg1 0.96s infinite linear alternate, spinner-oaa3wk 1.92s infinite linear;
 }
 @keyframes spinner-bulqg1 {
@@ -43,22 +43,25 @@
     display: flex; align-items: center; justify-content: center;
 }
 .spr p { font-family: 'Inter', sans-serif; font-size: 18px; margin-left: 16px; }
+.loading-div { display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; gap: 20px; display: none; }
+.backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-2); opacity: 0.5; z-index: 1000; }
+.u1 { z-index: 1001; display: flex; align-items: center; justify-content: center; gap: var(--gap-2); padding: 40px; background: var(--bg-1); border-radius: var(--radius-large); border: 1px solid var(--border-1); filter: var(--drop-shadow); max-width: 400px; width: 90%; }
 </style>
         
     </head>
     <body>
-
-        <toolbar-element id="formatting-toolbar"></toolbar-element>
-
         <div class="spr loading-div">
-            <div class="spinner"></div>
-            <div style="display: flex; gap: 5px; flex-direction: column;">
-                <p class="loading-text-top">Loading...</p>
-                <p class="loading-text-bottom">Loading...</p>
+            <div class="backdrop"></div>
+            <div class="u1">
+                <div class="spinner"></div>
+                <div style="display: flex; gap: 5px; flex-direction: column">
+                    <p class="loading-text-bottom">Loading...</p>
+                </div>
             </div>
         </div>
 
         <auth-component id="auth"></auth-component>
+        <toolbar-element id="formatting-toolbar"></toolbar-element>
 
         <selector-element></selector-element>
         <command-palette style="z-index: 9999; position: fixed"></command-palette>
