@@ -7,7 +7,7 @@ function hideMenu() {
 }
 
 function toggleMenu() {
-    toggleLeftSidebarNew('left-menu', 'Menu');
+    window.wisk.editor.toggleLeftSidebar('left-menu', 'Menu');
 }
 
 function getURLParam(str) {

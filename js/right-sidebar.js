@@ -1,16 +1,18 @@
-// Initialize width management
+// Initialize width management - only for desktop
 const DEFAULT_RIGHT_WIDTH = 450;
 const MIN_RIGHT_WIDTH = 200;
 const MAX_RIGHT_WIDTH = 1000;
 
 let rightSidebarWidth = parseInt(localStorage.getItem('rightSidebarWidth')) || DEFAULT_RIGHT_WIDTH;
 
-// Initialize resize functionality
 function initializeRightSidebarResize() {
     const sidebar = byQuery('.right-sidebar');
-    if (!sidebar) return;
+    if (!sidebar || window.innerWidth < 900) return;
     
-    sidebar.style.position = 'relative';
+    // Only set position relative in desktop mode
+    if (window.innerWidth >= 900) {
+        sidebar.style.position = 'relative';
+    }
     
     // Create resize handle if it doesn't exist
     if (!sidebar.querySelector('.resize-handle')) {
@@ -23,6 +25,7 @@ function initializeRightSidebarResize() {
         handle.addEventListener('mousedown', initResize);
         
         function initResize(e) {
+            if (window.innerWidth < 900) return;
             startX = e.clientX;
             startWidth = parseInt(getComputedStyle(sidebar).width, 10);
             
@@ -32,6 +35,7 @@ function initializeRightSidebarResize() {
         }
         
         function resize(e) {
+            if (window.innerWidth < 900) return;
             const diff = startX - e.clientX;
             let newWidth = Math.min(Math.max(startWidth + diff, MIN_RIGHT_WIDTH), MAX_RIGHT_WIDTH);
             sidebar.style.width = `${newWidth}px`;
@@ -49,26 +53,31 @@ function initializeRightSidebarResize() {
     }
 }
 
-// Modified sidebar management functions
 function showRightSidebar(component, title) {
     const sidebar = byQuery('.right-sidebar');
     byQuery('.right-sidebar-title').innerText = title;
     byQuery('.right-sidebar-body').innerHTML = `<${component}></${component}>`;
     sidebar.classList.remove('right-sidebar-hidden');
-    if (byQuery(component).opened) byQuery(component).opened();
     
-    // Apply saved width
     if (window.innerWidth >= 900) {
         sidebar.style.width = `${rightSidebarWidth}px`;
+        sidebar.style.position = 'relative';
+        initializeRightSidebarResize();
+    } else {
+        sidebar.style.position = 'fixed';
+        sidebar.style.removeProperty('width');
     }
     
-    // Initialize resize handle
-    initializeRightSidebarResize();
+    if (byQuery(component).opened) byQuery(component).opened();
     window.dispatchEvent(new Event('resize'));
 }
 
 function hideRightSidebar() {
-    byQuery('.right-sidebar').classList.add('right-sidebar-hidden');
+    const sidebar = byQuery('.right-sidebar');
+    sidebar.classList.add('right-sidebar-hidden');
+    if (window.innerWidth >= 900) {
+        sidebar.style.removeProperty('width');
+    }
     window.dispatchEvent(new Event('resize'));
 }
 
@@ -85,17 +94,21 @@ function toggleRightSidebarNew(component, title) {
         });
         sidebar.classList.remove('right-sidebar-hidden');
         
-        // Apply saved width
         if (window.innerWidth >= 900) {
             sidebar.style.width = `${rightSidebarWidth}px`;
+            sidebar.style.position = 'relative';
+            initializeRightSidebarResize();
+        } else {
+            sidebar.style.position = 'fixed';
+            sidebar.style.removeProperty('width');
         }
-        
-        // Initialize resize handle
-        initializeRightSidebarResize();
     } else {
         const visibleComponent = Array.from(allComponents).find(comp => comp.style.display !== 'none');
         if (visibleComponent && visibleComponent.tagName.toLowerCase() === component.toLowerCase()) {
             sidebar.classList.add('right-sidebar-hidden');
+            if (window.innerWidth >= 900) {
+                sidebar.style.removeProperty('width');
+            }
         } else {
             titleElement.innerText = title;
             allComponents.forEach(comp => {
@@ -106,14 +119,22 @@ function toggleRightSidebarNew(component, title) {
     window.dispatchEvent(new Event('resize'));
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+// Handle window resize
+window.addEventListener('resize', () => {
     const sidebar = byQuery('.right-sidebar');
-    if (sidebar && !sidebar.classList.contains('right-sidebar-hidden')) {
-        initializeRightSidebarResize();
-        if (window.innerWidth >= 900) {
+    if (!sidebar) return;
+    
+    if (window.innerWidth >= 900) {
+        sidebar.style.position = 'relative';
+        if (!sidebar.classList.contains('right-sidebar-hidden')) {
             sidebar.style.width = `${rightSidebarWidth}px`;
+            initializeRightSidebarResize();
         }
+    } else {
+        sidebar.style.position = 'fixed';
+        sidebar.style.removeProperty('width');
+        const handle = sidebar.querySelector('.resize-handle');
+        if (handle) handle.remove();
     }
 });
 

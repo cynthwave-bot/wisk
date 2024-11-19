@@ -1,16 +1,18 @@
-// Initialize width management
+// Initialize width management - only for desktop
 const DEFAULT_LEFT_WIDTH = 450;
 const MIN_LEFT_WIDTH = 200;
 const MAX_LEFT_WIDTH = 1000;
 
 let leftSidebarWidth = parseInt(localStorage.getItem('leftSidebarWidth')) || DEFAULT_LEFT_WIDTH;
 
-// Initialize resize functionality
 function initializeLeftSidebarResize() {
     const sidebar = byQuery('.left-sidebar');
-    if (!sidebar) return;
+    if (!sidebar || window.innerWidth < 900) return;
     
-    sidebar.style.position = 'relative';
+    // Only set position relative in desktop mode
+    if (window.innerWidth >= 900) {
+        sidebar.style.position = 'relative';
+    }
     
     // Create resize handle if it doesn't exist
     if (!sidebar.querySelector('.resize-handle')) {
@@ -23,6 +25,7 @@ function initializeLeftSidebarResize() {
         handle.addEventListener('mousedown', initResize);
         
         function initResize(e) {
+            if (window.innerWidth < 900) return;
             startX = e.clientX;
             startWidth = parseInt(getComputedStyle(sidebar).width, 10);
             
@@ -32,6 +35,7 @@ function initializeLeftSidebarResize() {
         }
         
         function resize(e) {
+            if (window.innerWidth < 900) return;
             const diff = e.clientX - startX;
             let newWidth = Math.min(Math.max(startWidth + diff, MIN_LEFT_WIDTH), MAX_LEFT_WIDTH);
             sidebar.style.width = `${newWidth}px`;
@@ -49,26 +53,31 @@ function initializeLeftSidebarResize() {
     }
 }
 
-// Modified sidebar management functions
 function showLeftSidebar(component, title) {
     const sidebar = byQuery('.left-sidebar');
     byQuery('.left-sidebar-title').innerText = title;
     byQuery('.left-sidebar-body').innerHTML = `<${component}></${component}>`;
     sidebar.classList.remove('left-sidebar-hidden');
-    if (byQuery(component).opened) byQuery(component).opened();
     
-    // Apply saved width
     if (window.innerWidth >= 900) {
         sidebar.style.width = `${leftSidebarWidth}px`;
+        sidebar.style.position = 'relative';
+        initializeLeftSidebarResize();
+    } else {
+        sidebar.style.position = 'fixed';
+        sidebar.style.removeProperty('width');
     }
     
-    // Initialize resize handle
-    initializeLeftSidebarResize();
+    if (byQuery(component).opened) byQuery(component).opened();
     window.dispatchEvent(new Event('resize'));
 }
 
 function hideLeftSidebar() {
-    byQuery('.left-sidebar').classList.add('left-sidebar-hidden');
+    const sidebar = byQuery('.left-sidebar');
+    sidebar.classList.add('left-sidebar-hidden');
+    if (window.innerWidth >= 900) {
+        sidebar.style.removeProperty('width');
+    }
     window.dispatchEvent(new Event('resize'));
 }
 
@@ -85,17 +94,21 @@ function toggleLeftSidebarNew(component, title) {
         });
         sidebar.classList.remove('left-sidebar-hidden');
         
-        // Apply saved width
         if (window.innerWidth >= 900) {
             sidebar.style.width = `${leftSidebarWidth}px`;
+            sidebar.style.position = 'relative';
+            initializeLeftSidebarResize();
+        } else {
+            sidebar.style.position = 'fixed';
+            sidebar.style.removeProperty('width');
         }
-        
-        // Initialize resize handle
-        initializeLeftSidebarResize();
     } else {
         const visibleComponent = Array.from(allComponents).find(comp => comp.style.display !== 'none');
         if (visibleComponent && visibleComponent.tagName.toLowerCase() === component.toLowerCase()) {
             sidebar.classList.add('left-sidebar-hidden');
+            if (window.innerWidth >= 900) {
+                sidebar.style.removeProperty('width');
+            }
         } else {
             titleElement.innerText = title;
             allComponents.forEach(comp => {
@@ -106,14 +119,22 @@ function toggleLeftSidebarNew(component, title) {
     window.dispatchEvent(new Event('resize'));
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+// Handle window resize
+window.addEventListener('resize', () => {
     const sidebar = byQuery('.left-sidebar');
-    if (sidebar && !sidebar.classList.contains('left-sidebar-hidden')) {
-        initializeLeftSidebarResize();
-        if (window.innerWidth >= 900) {
+    if (!sidebar) return;
+    
+    if (window.innerWidth >= 900) {
+        sidebar.style.position = 'relative';
+        if (!sidebar.classList.contains('left-sidebar-hidden')) {
             sidebar.style.width = `${leftSidebarWidth}px`;
+            initializeLeftSidebarResize();
         }
+    } else {
+        sidebar.style.position = 'fixed';
+        sidebar.style.removeProperty('width');
+        const handle = sidebar.querySelector('.resize-handle');
+        if (handle) handle.remove();
     }
 });
 

@@ -223,7 +223,20 @@ class LeftMenu extends LitElement {
         });
     }
 
+    openInEditor() {
+        var url = "https://app.wisk.cc?id=" + window.wisk.editor.pageId;
+        window.open(url, "_blank");
+    }
+
     render() {
+        if (window.wisk.editor.wiskSite) {
+            return html`
+            <div class="outer">
+                <button @click=${this.openInEditor} class="new" style="cursor: pointer;"> Open in Editor </button>
+            </div>
+            `
+        }
+
         return html`
             <div class="outer">
                 <div style="display: flex; gap: 10px">
