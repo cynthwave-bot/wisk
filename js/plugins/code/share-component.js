@@ -147,6 +147,12 @@ class ShareComponent extends LitElement {
     }
 
     async opened() {
+        this.isPublished = window.wisk.editor.data.config.public;
+
+        if (this.isPublished) {
+            this.url = await this.liveUrl();
+        }
+
         this.users = window.wisk.editor.data.config.access || [];
         await this.requestUpdate();
         if (this.activeTab === 'share') {
@@ -221,7 +227,7 @@ class ShareComponent extends LitElement {
     renderPublishTab() {
         return html`
             <div class="option-section">
-                <div class="od" style="display: flex; flex-direction: column; gap: var(--gap-3); background-color: var(--bg-2); padding: var(--padding-3); border-radius: var(--radius); box-shadow: none;">
+                <div class="od" style="display: flex; flex-direction: column; gap: var(--gap-3); background-color: transparent; padding: 0; border: none; box-shadow: none;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div style="display: flex; gap: var(--gap-1); flex-direction: column">
                             <div>${this.isPublished ? 'Published' : 'Not published'}</div>

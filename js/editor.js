@@ -162,6 +162,9 @@ window.wisk.editor.handleChanges = async function (updateObject) {
             await handleElementChange(change.values, allElements);
         }
         if (change.path.startsWith("document.config.access")) {
+            if (change.path.includes("public")) {
+                window.wisk.editor.data.config.public = change.values.public;
+            }
             if (change.path.includes("add")) {
                 window.wisk.editor.data.config.access.push(change.values.email);
             }
