@@ -77,7 +77,7 @@ class ExportComponent extends LitElement {
         var user = await document.querySelector("auth-component").getUserInfo();
         var token = user.token;
 
-        window.showToast("Downloading file...", 10000);
+        window.wisk.utils.showLoading("Downloading file...");
 
         var md = "";
         var references = [];
@@ -114,6 +114,7 @@ class ExportComponent extends LitElement {
 
         if (response.status !== 200) {
             window.showToast("Error downloading file", 5000);
+            window.wisk.utils.hideLoading();
             return;
         }
 
@@ -130,6 +131,7 @@ class ExportComponent extends LitElement {
         a.click();
 
         URL.revokeObjectURL(url);
+        window.wisk.utils.hideLoading();
     }
 
     render() {

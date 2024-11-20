@@ -870,6 +870,7 @@ class ToolbarElement extends LitElement {
                             <div class="command-section">
                                 <h3>Edit</h3>
                                 <button @click=${() => this.handleToolbarAction("ai-operation", "make-shorter")}><img src="/a7/plugins/toolbar/shorter.svg" alt="Shorten" style="height: 16px;" /> Make shorter</button>
+                                <button @click=${() => this.handleToolbarAction("ai-operation", "make-longer")}><img src="/a7/plugins/toolbar/longer.svg" alt="Lengthen" style="height: 16px;" /> Make longer</button>
                                 <div class="submenu-container">
                                     <button class="submenu-trigger">
                                         <img src="/a7/plugins/toolbar/tone.svg" alt="Tone" style="height: 16px;" /> Change tone
@@ -885,7 +886,6 @@ class ToolbarElement extends LitElement {
                                     </div>
                                 </div>
                                 <button @click=${() => this.handleToolbarAction("ai-operation", "simplify")}><img src="/a7/plugins/toolbar/simplify.svg" alt="Simplify" style="height: 16px;" /> Simplify language</button>
-                                <button @click=${() => this.handleToolbarAction("ai-operation", "make-longer")}><img src="/a7/plugins/toolbar/longer.svg" alt="Lengthen" style="height: 16px;" /> Make longer</button>
                             </div>
                         </div>
                     </div>

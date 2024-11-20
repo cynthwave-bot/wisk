@@ -112,6 +112,8 @@ class LeftMenu extends LitElement {
     }
 
     opened() {
+        if (window.wisk.editor.wiskSite) return;
+
         this.setList();
     }
 
