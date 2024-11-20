@@ -41,6 +41,11 @@ class BrainrotElement extends LitElement {
     constructor() {
         super();
         this.show = true;
+        this.links = [
+            "https://s3.cynthwave.com/brainrot/gta5.mp4",
+            "https://s3.cynthwave.com/brainrot/minecraft.mp4",
+            "https://s3.cynthwave.com/brainrot/subwaysurfers.mp4",
+        ]
     }
 
     toggleShow() {
@@ -50,7 +55,7 @@ class BrainrotElement extends LitElement {
 
     render() {
         return html`
-            ${this.show ? html`<video src="/a7/plugins/brainrot/subwaysurferspcgameplay.mp4" autoplay loop muted
+            ${this.show ? html`<video src="${this.links[Math.floor(Math.random() * this.links.length)]}" autoplay loop muted
                 @click=${() => this.toggleShow()}></video>` :
                 html`<button @click=${() => this.toggleShow()}>Show Brainrot</button>`
             }

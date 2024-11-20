@@ -176,7 +176,7 @@ class PyInterpreter extends LitElement {
         }
         .error {
             padding: var(--padding-w2);
-            border: 1px solid var(--button-bg-red);
+            border: 1px solid var(--fg-red);
             border-radius: var(--radius);
             margin-bottom: var(--gap-3);
         }

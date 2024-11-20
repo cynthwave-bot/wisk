@@ -53,10 +53,10 @@ class JavaScriptCodeBlock extends LitElement {
             display: block;
         }
         .error {
-            color: var(--button-bg-red);
+            color: var(--fg-red);
         }
         .success {
-            color: var(--button-bg-green);
+            color: var(--fg-green);
         }
         .btnx {
             background: var(--bg-2);

@@ -43,7 +43,7 @@ class LatexElement extends LitElement {
             border-radius: var(--radius);
         }
         .error {
-            color: var(--button-bg-red);
+            color: var(--fg-red);
         }
         .edit-button {
             position: absolute;

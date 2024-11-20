@@ -62,7 +62,7 @@ class ThreeViewerElement extends LitElement {
             border-radius: var(--radius);
         }
         .error {
-            color: var(--button-bg-red);
+            color: var(--fg-red);
         }
         .upload-area {
             width: 100%;

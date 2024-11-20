@@ -268,8 +268,8 @@ class DatabaseElement extends LitElement {
             cursor: pointer;
             opacity: 0;
             transition: opacity 0.3s;
-            background-color: var(--button-bg-blue);
-            color: var(--bg-1);
+            background-color: var(--bg-blue);
+            color: var(--fg-blue);
             width: 20px;
             height: 20px;
             display: flex;

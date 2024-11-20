@@ -95,13 +95,13 @@ class OptionsComponent extends LitElement {
             border: 1px solid var(--bg-3);
         }
         .btn-primary {
-            background-color: var(--button-bg-blue);
-            color: var(--bg-1);
+            background-color: var(--bg-blue);
+            color: var(--fg-blue);
             font-weight: bold;
         }
         .btn-danger {
-            background-color: var(--button-bg-red);
-            color: var(--bg-1);
+            background-color: var(--bg-red);
+            color: var(--fg-red);
             font-weight: bold;
         }
         .installer-confirm {
@@ -332,8 +332,8 @@ class OptionsComponent extends LitElement {
             transition: all 0.2s ease;
         }
         .btn-primary {
-            background-color: var(--button-bg-blue);
-            color: var(--bg-1);
+            background-color: var(--fg-blue);
+            color: var(--bg-blue);
             font-weight: bold;
         }
         .btn-primary:hover:not(:disabled) {
@@ -389,7 +389,7 @@ class OptionsComponent extends LitElement {
             gap: var(--gap-3);
         }
         .link-blue {
-            color: var(--button-bg-blue);
+            color: var(--fg-blue);
         }
         li {
             padding-left: 10px;
@@ -530,7 +530,7 @@ class OptionsComponent extends LitElement {
                     <div style="flex: 1"></div>
                     <p style="color: var(--text-2); padding: 10px 0">
                         btw you can also create your own plugins and themes, check out the 
-                        <a href="/docs" target="_blank" style="color: var(--button-bg-blue)">docs</a>
+                        <a href="https://wisk.cc/docs" target="_blank" style="color: var(--fg-blue)">docs</a>
                     </p>
                 </div>
 

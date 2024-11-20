@@ -23,9 +23,9 @@ window.wisk.plugins = {
         "chart-element",
 
         // other elements
-        'export-manager',
-        'share-manager',
         'ai-chat',
+        'share-manager',
+        'export-manager',
         "more",
         "left-menu",
     ],

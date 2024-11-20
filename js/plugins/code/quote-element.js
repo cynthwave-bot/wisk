@@ -520,7 +520,7 @@ class QuoteElement extends HTMLElement {
                 font-size: 1.5rem;
                 line-height: 1.5;
                 border: none;
-                border-left: 5px solid var(--button-bg-red);
+                border-left: 5px solid var(--fg-red);
                 padding: var(--padding-4);
             }
 
@@ -532,11 +532,11 @@ class QuoteElement extends HTMLElement {
                 opacity: 0.6;
             }
             a {
-                color: var(--button-bg-blue);
+                color: var(--fg-blue);
                 text-decoration: underline;
             }
             .reference-number {
-                color: var(--button-bg-blue);
+                color: var(--fg-blue);
                 cursor: pointer;
                 text-decoration: none;
                 margin: 0 1px;

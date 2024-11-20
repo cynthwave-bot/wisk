@@ -30,7 +30,7 @@ class TweaksElement extends LitElement {
             height: 120px;
         }
         a {
-            color: var(--button-bg-blue);
+            color: var(--fg-blue);
             padding: var(--padding-w2);
             display: block;
         }

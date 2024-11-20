@@ -58,6 +58,22 @@ class CheckboxElement extends HTMLElement {
         return false;
     }
 
+    getSelectionPosition() {
+        const selection = this.shadowRoot.getSelection();
+        if (!selection.rangeCount) return null;
+
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+
+        return {
+            x: rect.left + (rect.width / 2),
+            y: rect.top,
+            width: rect.width,
+            height: rect.height,
+            selectedText: selection.toString()
+        };
+    }
+
     clearSelection() {
         this.savedSelection = null;
     }
@@ -730,15 +746,15 @@ class CheckboxElement extends HTMLElement {
                 vertical-align: middle;
                 height: 16px;
                 width: 16px;
-                accent-color: var(--button-bg-blue);
+                accent-color: var(--fg-blue);
                 background-color: var(--bg-1);
             }
             a {
-                color: var(--button-bg-blue);
+                color: var(--fg-blue);
                 text-decoration: underline;
             }
             .reference-number {
-                color: var(--button-bg-blue);
+                color: var(--fg-blue);
                 cursor: pointer;
                 text-decoration: none;
                 margin: 0 1px;

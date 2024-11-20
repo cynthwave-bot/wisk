@@ -40,7 +40,7 @@ class ChartElement extends LitElement {
             height: 400px !important;
         }
         .error {
-            color: var(--button-bg-red);
+            color: var(--fg-red);
         }
         .edit-button {
             position: absolute;
@@ -132,7 +132,6 @@ class ChartElement extends LitElement {
             background: transparent;
         }
         .templates-close:hover {
-            color: var(--button-bg-red);
         }
         .templates-dialog h3 {
             margin-bottom: 16px

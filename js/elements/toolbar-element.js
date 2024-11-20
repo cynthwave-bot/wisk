@@ -908,7 +908,7 @@ class ToolbarElement extends LitElement {
                                         <p style="user-select: text">${source.content}</p>
                                         <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; align-items: center;">
                                             <a class="url" href=${source.url} target="_blank">${source.url.length > 40 ? source.url.slice(0, 40) + "..." : source.url}</a>
-                                            <button @click=${() => this.handleCreateReference(source)} style="border: 1px solid var(--border-1); color: var(--button-bg-blue)">Add Source</button>
+                                            <button @click=${() => this.handleCreateReference(source)} style="border: 1px solid var(--border-1); color: var(--fg-blue)">Add Source</button>
                                         </div>
                                     </div>
                                 `,

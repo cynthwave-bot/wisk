@@ -52,6 +52,7 @@ class ListElement extends HTMLElement {
         };
     }
 
+
     checkIfVirtualKeyboard() {
         return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     }
@@ -705,11 +706,11 @@ class ListElement extends HTMLElement {
                 transition: padding-left 0.1s ease-in-out;
             }
             a {
-                color: var(--button-bg-blue);
+                color: var(--fg-blue);
                 text-decoration: underline;
             }
             .reference-number {
-                color: var(--button-bg-blue);
+                color: var(--fg-blue);
                 cursor: pointer;
                 text-decoration: none;
                 margin: 0 1px;
