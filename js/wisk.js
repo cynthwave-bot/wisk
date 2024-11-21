@@ -1,5 +1,7 @@
 window.wisk = window.wisk || {};
 
+window.wisk.auth = document.querySelector("auth-component");
+
 window.wisk.plugins = {
     defaultPlugins: [],
     loadedPlugins: [],

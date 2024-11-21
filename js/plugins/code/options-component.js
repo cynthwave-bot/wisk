@@ -94,16 +94,6 @@ class OptionsComponent extends LitElement {
             outline: none;
             border: 1px solid var(--bg-3);
         }
-        .btn-primary {
-            background-color: var(--bg-blue);
-            color: var(--fg-blue);
-            font-weight: bold;
-        }
-        .btn-danger {
-            background-color: var(--bg-red);
-            color: var(--fg-red);
-            font-weight: bold;
-        }
         .installer-confirm {
             background-color: var(--bg-1);
             display: flex;
@@ -403,6 +393,22 @@ class OptionsComponent extends LitElement {
             border-radius: var(--radius);
             margin-right: 5px;
         }
+        .btn-primary {
+            background-color: var(--bg-blue);
+            color: var(--fg-blue);
+            font-weight: 500;
+            padding: var(--padding-w2);
+            cursor: pointer;
+            border: none;
+        }
+        .btn-danger {
+            background-color: var(--bg-red);
+            color: var(--fg-red);
+            font-weight: 500;
+            padding: var(--padding-w2);
+            cursor: pointer;
+            border: none;
+        }
     `;
 
     static properties = {
@@ -427,6 +433,10 @@ class OptionsComponent extends LitElement {
 
     showAboutView() {
         this.currentView = 'about';
+    }
+
+    showSettingsView() {
+        this.currentView = 'settings';
     }
 
     loadPlugins() {
@@ -515,6 +525,11 @@ class OptionsComponent extends LitElement {
                     <div class="plugins-toggle options-section" @click="${this.showPluginsManager}">
                         <label>Plugins</label>
                         <img src="/a7/iconoir/right.svg" alt="Plugins" class="icon" draggable="false"/>
+                    </div>
+
+                    <div class="plugins-toggle options-section" @click="${this.showSettingsView}">
+                        <label>Settings</label>
+                        <img src="/a7/iconoir/right.svg" alt="About" class="icon" draggable="false"/>
                     </div>
 
                     <div class="plugins-toggle options-section" @click="${this.showAboutView}">
@@ -616,6 +631,22 @@ class OptionsComponent extends LitElement {
                         </div>
                     </div>
                 </div>
+
+                <!-- Settings View -->
+                <div class="view ${this.currentView === 'settings' ? 'active' : ''}">
+                    <div class="plugins-header">
+                        <div class="plugins-header">
+                            <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
+                            <label>Settings</label>
+                        </div>
+                    </div>
+
+                    <div class="options-section options-section--animated">
+                        <label for="signOut">Sign Out</label>
+                        <button id="signOut" class="options-select btn-danger" @click="${() => window.wisk.auth.logOut()}">Sign Out</button>
+                    </div>
+                </div>
+
 
                 <!-- About View -->
                 <div class="view ${this.currentView === 'about' ? 'active' : ''}">

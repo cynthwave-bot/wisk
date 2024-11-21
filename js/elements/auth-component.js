@@ -353,6 +353,8 @@ class AuthComponent extends LitElement {
     async logOut() {
         try {
             await signOut(this.auth);
+            window.location.href = "/";
+
             this.user = null;
             this.setMode("signin");
             console.log("> logged out");
