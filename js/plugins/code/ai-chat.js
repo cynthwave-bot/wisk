@@ -481,7 +481,7 @@ class AIChat extends LitElement {
     render() {
         return html`
             <div class="container">
-                <div class="sources" style="display: ${this.wiskMode? 'none' : 'block'}">
+                <div class="sources" style="display: ${this.wiskMode? 'none' : 'block'}; border-top: 1px solid var(--border-1)">
                     <button class="sources-button" @click=${this.toggleSources}>
                         Chat will use: ${this.sources.length} source${this.sources.length > 1? "s" : ""}
                         <div style="flex: 1"></div>
