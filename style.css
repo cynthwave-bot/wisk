@@ -3,6 +3,7 @@
     margin: 0;
     box-sizing: border-box;
     text-decoration: none;
+    transition: all ease 0.2s;
 }
 html, body { 
     height: 100svh;

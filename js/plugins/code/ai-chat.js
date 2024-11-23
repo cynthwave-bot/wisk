@@ -20,7 +20,7 @@ class AIChat extends LitElement {
             max-height: 300px;
             overflow-y: auto;
         }
-        .chat {
+        .chat, .wiskMode {
             flex: 1;
             overflow-y: auto;
             background-color: var(--bg-1);
@@ -85,7 +85,6 @@ class AIChat extends LitElement {
         }
         .input {
             background-color: var(--bg-1);
-            border-top: 1px solid var(--border-1);
         }
         .source {
             padding: var(--padding-w1);
@@ -114,29 +113,35 @@ class AIChat extends LitElement {
         }
         .input-div {
             padding: var(--padding-4);
-            background: var(--bg-2);
+            background: var(--bg-1);
         }
         .in1 {
             padding: var(--padding-4);
             display: flex;
             gap: var(--gap-2);
             flex-direction: column;
-            border: 1px solid var(--border-1);
+            border: 2px solid var(--border-1);
             border-radius: var(--radius);
             background-color: var(--bg-1);
             position: relative;
         }
+        .in1:hover, .in1:focus-within {
+            border: 2px solid var(--fg-blue);
+        }
+
         .in2btn {
-            position: absolute;
-            bottom: var(--padding-3);
-            right: var(--padding-3);
-            padding: var(--padding-3);
+            padding: var(--padding-2);
             background: transparent;
             border: none;
             border-radius: var(--radius);
             cursor: pointer;
             filter: var(--drop-shadow);
+            color: var(--text-1);
             border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--gap-1);
         }
         .in2btn:hover {
             border: 1px solid var(--border-1);
@@ -144,6 +149,8 @@ class AIChat extends LitElement {
         }
         .in2btn img {
             filter: var(--themed-svg);
+            height: 18px;
+            width: 18px;
         }
         .in2 {
             border: 1px solid var(--border-1);
@@ -271,6 +278,10 @@ class AIChat extends LitElement {
         img {
             max-width: 100%;
         }
+        .wisk-mode {
+            border: 1px solid var(--border-1);
+            background: var(--bg-3);
+        }
     `;
 
     static properties = {
@@ -279,7 +290,9 @@ class AIChat extends LitElement {
         expandSuggestions: { type: Boolean },
         selectedElementId: { type: String },
         selectedText: { type: String },
-        loading: { type: Boolean }
+        loading: { type: Boolean },
+        showFileUploadDialog: { type: Boolean },
+        wiskMode: { type: Boolean }
     };
 
     constructor() {
@@ -302,9 +315,13 @@ class AIChat extends LitElement {
             gfm: true,
             headerIds: false
         });
+        this.showFileUploadDialog = false;
+        this.wiskMode = false;
+        this.wiskAIWorking = false;
     }
 
     setSelection(elementId, text) {
+        if (this.wiskMode) return;
         this.selectedElementId = elementId;
         this.selectedText = text;
     }
@@ -320,6 +337,19 @@ class AIChat extends LitElement {
             console.error('Error rendering markdown:', error);
             return content;
         }
+    }
+
+    openFileUploadDialog() {
+        this.showFileUploadDialog = true;
+    }
+
+    handleDialogClosed() {
+        this.showFileUploadDialog = false;
+    }
+
+    handleFilesUploaded(event) {
+        const uploadedFiles = event.detail;
+        console.log('Files uploaded:', uploadedFiles);
     }
 
     toggleSuggestions() {
@@ -427,25 +457,49 @@ class AIChat extends LitElement {
         this.selectedText = "";
     }
 
+    toggleWiskMode() {
+
+        if (this.wiskAIWorking) {
+            window.wisk.utils.showToast("Wisk AI is already working on a task. Please wait for it to finish.", 3000);
+            return;
+        }
+
+        this.wiskMode = !this.wiskMode;
+        if (this.wiskMode) {
+            document.querySelector(".editor").style.pointerEvents = "none";
+            document.querySelector("toolbar-element").hideToolbar();
+            // clear selection text, 
+            this.selectedElementId = "";
+            this.selectedText = "";
+            // clear messages
+            this.messages = [];
+        } else {
+            document.querySelector(".editor").style.pointerEvents = "auto";
+        }
+    }
+
     render() {
         return html`
             <div class="container">
-                <div class="sources">
+                <div class="sources" style="display: ${this.wiskMode? 'none' : 'block'}">
                     <button class="sources-button" @click=${this.toggleSources}>
                         Chat will use: ${this.sources.length} source${this.sources.length > 1? "s" : ""}
                         <div style="flex: 1"></div>
-                        ${this.expandSources? "Hide" : "Show"} sources
+                        ${this.expandSources? "Hide" : "Show"} Settings
                     </button>
                     ${this.expandSources ? html`
                         <div class="sources-expand">
+                            <p>Chat will use the following sources:</p>
                             ${this.sources.map(source => html`
                                 <div class="source">${source.name}</div>
                             `)}
+
+                            <button class="clear-chat" @click=${() => this.messages = []}>Clear Chat</button>
                         </div>
                     ` : html``}
                 </div>
                 
-                <div class="chat">
+                <div class="chat" style="display: ${this.wiskMode? 'none' : 'block'}">
                     ${this.messages.map(message => html`
                         <div class="message ${message.by}">
                             ${message.selectedText ? html`
@@ -482,18 +536,22 @@ class AIChat extends LitElement {
                             <div class="message-content-assistant">Thinking...</div>
                         </div>
                     ` : ''}
-
-                    <button class="clear-chat" @click=${() => this.messages = []}>Clear Chat</button>
                 </div>
-                
+
+                <div class="wiskMode" style="display: ${this.wiskMode? 'block' : 'none'}">
+                    <div style="display: flex; align-items: center; padding: 100px 0; justify-content: center; flex-direction: column">
+                        <img src="/a7/plugins/ai-chat/neo.svg" style="filter: var(--themed-svg)" />
+                        <p style="font-size: 16px; color: var(--text-1); margin: var(--padding-4); text-align: center; max-width: 500px; line-height: 1.5"> 
+                            Your intelligent document companion – researching, writing, and organizing at superhuman speed.
+                        </p>
+                    </div>
+
+                    <img src="/a7/plugins/ai-chat/circle-loading.svg" style="filter: var(--themed-svg); height: 32px" />
+                </div>
+
                 <div class="input">
-                    <button class="sources-button" @click=${this.toggleSuggestions} style="padding-bottom: 0;">
-                        Prompt Inspiration
-                        <div style="flex: 1"></div>
-                        ${this.expandSuggestions? "Hide" : "Show"}
-                    </button>
                     ${this.expandSuggestions ? html`
-                        <div class="sources-expand" style="background: var(--bg-2); padding-top: var(--padding-4); padding-bottom: 0; gap: var(--gap-1)">
+                        <div class="sources-expand" style="background: var(--bg-1); padding-top: var(--padding-4); padding-bottom: 0; gap: var(--gap-1)">
                             ${this.returnSuggestions().map(suggestion => html`
                                 <button class="suggest" @click=${() => this.suggestAction(suggestion)}>${suggestion}</button>
                             `)}
@@ -515,13 +573,23 @@ class AIChat extends LitElement {
                                         this.sendMessage(e); 
                                     } 
                                 }}></textarea>
-                            <button class="in2btn" @click=${this.sendMessage}>
-                                <img src="/a7/plugins/ai-chat/up.svg" style="height: 18px; width: 18px" />
-                            </button>
+                            <div style="display: flex; gap: var(--gap-2); align-items: stretch;">
+                                <button class="in2btn" @click=${this.openFileUploadDialog}> <img src="/a7/plugins/ai-chat/attach.svg"/> </button>
+                                <button class="in2btn" @click=${this.toggleSuggestions}> <img src="/a7/plugins/ai-chat/wand.svg"/></button>
+                                <div style="flex: 1"></div>
+                                <button class="in2btn ${this.wiskMode? 'wisk-mode' : ''}" @click=${this.toggleWiskMode}> <img src="/a7/plugins/ai-chat/circle.svg"/> Wisk Neo AI </button>
+                                <button class="in2btn" @click=${this.sendMessage}> <img src="/a7/plugins/ai-chat/up.svg"/> </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <file-upload-dialog
+                .isOpen=${this.showFileUploadDialog}
+                @dialog-closed=${this.handleDialogClosed}
+                @files-uploaded=${this.handleFilesUploaded}
+            ></file-upload-dialog>
         `;
     }
 }

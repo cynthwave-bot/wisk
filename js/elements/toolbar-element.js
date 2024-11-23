@@ -7,6 +7,7 @@ class ToolbarElement extends LitElement {
             font-family: var(--font);
             margin: 0;
             padding: 0;
+            transition: none;
         }
 
         :host {
@@ -21,7 +22,7 @@ class ToolbarElement extends LitElement {
             filter: var(--drop-shadow);
             padding: var(--padding-2);
             gap: var(--gap-2);
-            z-index: 100;
+            z-index: 120;
             display: none;
             width: max-content;
         }
@@ -913,9 +914,6 @@ class ToolbarElement extends LitElement {
                                     </div>
                                 `,
                             )}
-                        </div>
-                        <div class="dialog-buttons">
-                            <button class="cancel" @click=${this.closeDialog}>Close</button>
                         </div>
                     </div>
                 `;

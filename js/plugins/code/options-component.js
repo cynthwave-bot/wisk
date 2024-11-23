@@ -394,20 +394,26 @@ class OptionsComponent extends LitElement {
             margin-right: 5px;
         }
         .btn-primary {
-            background-color: var(--bg-blue);
-            color: var(--fg-blue);
-            font-weight: 500;
-            padding: var(--padding-w2);
-            cursor: pointer;
-            border: none;
+            background-color: var(--fg-blue);
+            color: var(--bg-blue);
         }
         .btn-danger {
-            background-color: var(--bg-red);
-            color: var(--fg-red);
+            background-color: var(--fg-red);
+            color: var(--bg-red);
+        }
+        .btn-primary, .btn-danger {
             font-weight: 500;
             padding: var(--padding-w2);
             cursor: pointer;
             border: none;
+            border-radius: var(--radius);
+            outline: none;
+        }
+        .btn-primary:hover {
+            filter: drop-shadow(0 0 2px var(--fg-blue)) brightness(1.1);
+        }
+        .btn-danger:hover {
+            filter: drop-shadow(0 0 2px var(--fg-red)) brightness(1.1);
         }
     `;
 
@@ -643,7 +649,7 @@ class OptionsComponent extends LitElement {
 
                     <div class="options-section options-section--animated">
                         <label for="signOut">Sign Out</label>
-                        <button id="signOut" class="options-select btn-danger" @click="${() => window.wisk.auth.logOut()}">Sign Out</button>
+                        <button id="signOut" class="btn-danger" @click="${() => window.wisk.auth.logOut()}">Sign Out</button>
                     </div>
                 </div>
 

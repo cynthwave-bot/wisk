@@ -41,6 +41,7 @@ function initializeLeftSidebarResize() {
             sidebar.style.width = `${newWidth}px`;
             leftSidebarWidth = newWidth;
             localStorage.setItem('leftSidebarWidth', newWidth);
+            window.dispatchEvent(new Event('resize'));
         }
         
         function stopResize() {
