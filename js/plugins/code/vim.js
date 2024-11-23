@@ -159,224 +159,105 @@ class VimEditor {
         this.statusIndicator.textContent = modeText[this.mode] || '';
     }
 
-
-    findWordBoundary(direction, bigWord = false) {
-        const sel = window.getSelection();
-        const text = this.activeElement.textContent;
-        let pos = sel.anchorOffset;
-
-        const wordRegex = bigWord ? /[^\s]/ : /[A-Za-z0-9_]/;
-
-        if (direction === 'forward') {
-            // Skip current word
-            while (pos < text.length && wordRegex.test(text[pos])) pos++;
-            // Skip spaces
-            while (pos < text.length && !wordRegex.test(text[pos])) pos++;
-        } else {
-            // Move back
-            if (pos > 0) pos--;
-            // Skip spaces backwards
-            while (pos > 0 && !wordRegex.test(text[pos])) pos--;
-            // Go to start of word
-            while (pos > 0 && wordRegex.test(text[pos - 1])) pos--;
-        }
-
-        return Math.max(0, Math.min(pos, text.length));
-    }
-
-    // Helper for deletion
-    deleteText(count) {
-        const {node, offset} = this.getCurrentPosition();
-        const range = document.createRange();
-        range.setStart(node, offset);
-        range.setEnd(node, Math.min(offset + count, node.length));
-        range.deleteContents();
-        
-        // Maintain cursor position
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-    }
-
-    getCurrentPosition() {
-        const sel = window.getSelection();
-        const range = sel.getRangeAt(0);
-        
-        // If there's no text node, create one
-        if (!this.activeElement.firstChild || this.activeElement.firstChild.nodeType !== Node.TEXT_NODE) {
-            const textNode = document.createTextNode(this.activeElement.textContent || '');
-            this.activeElement.textContent = '';
-            this.activeElement.appendChild(textNode);
-        }
-        
-        return {
-            node: this.activeElement.firstChild,
-            offset: range.startOffset
-        };
-    }
-
-    deleteToPosition(position) {
-        const {node, offset} = this.getCurrentPosition();
-        const range = document.createRange();
-        range.setStart(node, offset);
-        range.setEnd(node, position);
-        range.deleteContents();
-        
-        // Maintain cursor position
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-    }
-
-    // Helper for changing text
-    changeText(count) {
-        this.deleteText(count);
-        this.mode = 'insert';
-    }
-
     handleKeydown(e) {
         if (!this.activeElement) return;
 
+        const selection = window.getSelection();
+
         if (this.mode === 'normal') {
             switch(e.key) {
-                // Mode changes
+                // Mode changes remain the same
                 case 'i':
                     this.mode = 'insert';
                     return;
                     
                 case 'a':
                     this.mode = 'insert';
-                    window.getSelection().modify('move', 'forward', 'character');
+                    selection.modify('move', 'forward', 'character');
                     e.preventDefault();
                     return;
 
                 case 'A':
                     this.mode = 'insert';
-                    const endRange = document.createRange();
-                    endRange.selectNodeContents(this.activeElement);
-                    endRange.collapse(false);
-                    const endSelection = window.getSelection();
-                    endSelection.removeAllRanges();
-                    endSelection.addRange(endRange);
+                    // Move to end of line
+                    selection.modify('move', 'forward', 'lineboundary');
                     e.preventDefault();
                     return;
 
                 case 'I':
                     this.mode = 'insert';
-                    const startRange = document.createRange();
-                    startRange.selectNodeContents(this.activeElement);
-                    startRange.collapse(true);
-                    const startSelection = window.getSelection();
-                    startSelection.removeAllRanges();
-                    startSelection.addRange(startRange);
+                    // Move to start of line
+                    selection.modify('move', 'backward', 'lineboundary');
                     e.preventDefault();
                     return;
 
-                // Basic movement
+                // Basic movement using Selection API
                 case 'h':
-                    window.getSelection().modify('move', 'backward', 'character');
+                    selection.modify('move', 'backward', 'character');
                     e.preventDefault();
                     return;
 
                 case 'l':
-                    window.getSelection().modify('move', 'forward', 'character');
+                    selection.modify('move', 'forward', 'character');
                     e.preventDefault();
                     return;
 
                 case 'k':
-                    window.getSelection().modify('move', 'backward', 'line');
+                    selection.modify('move', 'backward', 'line');
                     e.preventDefault();
                     return;
 
                 case 'j':
-                    window.getSelection().modify('move', 'forward', 'line');
+                    selection.modify('move', 'forward', 'line');
                     e.preventDefault();
                     return;
 
-                // Word movement
+                // Word movement using Selection API
                 case 'w':
-                    const nextWordPos = this.findWordBoundary('forward', false);
-                    const wRange = document.createRange();
-                    wRange.setStart(this.activeElement.firstChild, nextWordPos);
-                    wRange.collapse(true);
-                    const wSelection = window.getSelection();
-                    wSelection.removeAllRanges();
-                    wSelection.addRange(wRange);
-                    e.preventDefault();
-                    return;
-
-                case 'W':
-                    const nextBigWordPos = this.findWordBoundary('forward', true);
-                    const WRange = document.createRange();
-                    WRange.setStart(this.activeElement.firstChild, nextBigWordPos);
-                    WRange.collapse(true);
-                    const WSelection = window.getSelection();
-                    WSelection.removeAllRanges();
-                    WSelection.addRange(WRange);
+                    selection.modify('move', 'forward', 'word');
                     e.preventDefault();
                     return;
 
                 case 'b':
-                    const prevWordPos = this.findWordBoundary('backward', false);
-                    const bRange = document.createRange();
-                    bRange.setStart(this.activeElement.firstChild, prevWordPos);
-                    bRange.collapse(true);
-                    const bSelection = window.getSelection();
-                    bSelection.removeAllRanges();
-                    bSelection.addRange(bRange);
-                    e.preventDefault();
-                    return;
-
-                case 'B':
-                    const prevBigWordPos = this.findWordBoundary('backward', true);
-                    const BRange = document.createRange();
-                    BRange.setStart(this.activeElement.firstChild, prevBigWordPos);
-                    BRange.collapse(true);
-                    const BSelection = window.getSelection();
-                    BSelection.removeAllRanges();
-                    BSelection.addRange(BRange);
+                    selection.modify('move', 'backward', 'word');
                     e.preventDefault();
                     return;
 
                 case 'e':
-                    window.getSelection().modify('move', 'forward', 'word');
+                    selection.modify('move', 'forward', 'word');
                     e.preventDefault();
                     return;
 
-                // Line movement
+                // Line movement using Selection API
                 case '0':
-                    const startLineRange = document.createRange();
-                    startLineRange.selectNodeContents(this.activeElement);
-                    startLineRange.collapse(true);
-                    const lineSelection = window.getSelection();
-                    lineSelection.removeAllRanges();
-                    lineSelection.addRange(startLineRange);
+                    selection.modify('move', 'backward', 'lineboundary');
                     e.preventDefault();
                     return;
 
                 case '$':
-                    const endLineRange = document.createRange();
-                    endLineRange.selectNodeContents(this.activeElement);
-                    endLineRange.collapse(false);
-                    const lineEndSelection = window.getSelection();
-                    lineEndSelection.removeAllRanges();
-                    lineEndSelection.addRange(endLineRange);
+                    selection.modify('move', 'forward', 'lineboundary');
                     e.preventDefault();
                     return;
 
+                // Deletion operations
                 case 'x':
-                    this.deleteText(1);  // Now uses the fixed deleteText function
+                    document.execCommand('delete', false);
+                    e.preventDefault();
+                    return;
+
+                case 'v':
+                    this.mode = 'visual';
+                    this.visualStart = selection.getRangeAt(0).startOffset;
                     e.preventDefault();
                     return;
 
                 case 'd':
                     if (e.repeat) {
                         // dd - delete line
-                        this.activeElement.textContent = '';
-                        // Create empty text node to maintain editing capability
-                        this.activeElement.appendChild(document.createTextNode(''));
+                        selection.modify('move', 'backward', 'lineboundary');
+                        selection.modify('extend', 'forward', 'lineboundary');
+                        document.execCommand('delete', false);
                     } else {
-                        // Wait for next command
                         this.lastAction = 'd';
                     }
                     e.preventDefault();
@@ -384,19 +265,17 @@ class VimEditor {
 
                 case 'D':
                     // Delete from cursor to end of line
-                    const {node, offset} = this.getCurrentPosition();
-                    const range = document.createRange();
-                    range.setStart(node, offset);
-                    range.setEnd(node, node.length);
-                    range.deleteContents();
+                    selection.modify('extend', 'forward', 'lineboundary');
+                    document.execCommand('delete', false);
                     e.preventDefault();
                     return;
 
                 case 'c':
                     if (e.repeat) {
                         // cc - change line
-                        this.activeElement.textContent = '';
-                        this.activeElement.appendChild(document.createTextNode(''));
+                        selection.modify('move', 'backward', 'lineboundary');
+                        selection.modify('extend', 'forward', 'lineboundary');
+                        document.execCommand('delete', false);
                         this.mode = 'insert';
                     } else {
                         this.lastAction = 'c';
@@ -406,40 +285,23 @@ class VimEditor {
 
                 case 'C':
                     // Change to end of line
-                    const pos = this.getCurrentPosition();
-                    const cRange = document.createRange();
-                    cRange.setStart(pos.node, pos.offset);
-                    cRange.setEnd(pos.node, pos.node.length);
-                    cRange.deleteContents();
-                    this.mode = 'insert';
-                    e.preventDefault();
-                    return;
-
-                case 's':
-                    // Substitute character
-                    this.deleteText(1);
-                    this.mode = 'insert';
-                    e.preventDefault();
-                    return;
-
-                case 'S':
-                    // Substitute line
-                    this.activeElement.textContent = '';
+                    selection.modify('extend', 'forward', 'lineboundary');
+                    document.execCommand('delete', false);
                     this.mode = 'insert';
                     e.preventDefault();
                     return;
 
                 default:
                     if (this.lastAction) {
-                        // Handle compound commands (dw, cw, etc.)
+                        // Handle compound commands
                         if (this.lastAction === 'd' && e.key === 'w') {
                             // Delete word
-                            const wordEnd = this.findWordBoundary('forward', false);
-                            this.deleteToPosition(wordEnd);
+                            selection.modify('extend', 'forward', 'word');
+                            document.execCommand('delete', false);
                         } else if (this.lastAction === 'c' && e.key === 'w') {
                             // Change word
-                            const wordEnd = this.findWordBoundary('forward', false);
-                            this.deleteToPosition(wordEnd);
+                            selection.modify('extend', 'forward', 'word');
+                            document.execCommand('delete', false);
                             this.mode = 'insert';
                         }
                         this.lastAction = null;
@@ -448,9 +310,73 @@ class VimEditor {
                     }
                     break;
             }
+
+        } else if (this.mode === 'visual') {
+            switch(e.key) {
+                case 'Escape':
+                    this.mode = 'normal';
+                    selection.collapseToEnd();
+                    e.preventDefault();
+                    return;
+
+                case 'h':
+                    selection.modify('extend', 'backward', 'character');
+                    e.preventDefault();
+                    return;
+
+                case 'l':
+                    selection.modify('extend', 'forward', 'character');
+                    e.preventDefault();
+                    return;
+
+                case 'k':
+                    selection.modify('extend', 'backward', 'line');
+                    e.preventDefault();
+                    return;
+
+                case 'j':
+                    selection.modify('extend', 'forward', 'line');
+                    e.preventDefault();
+                    return;
+
+                case 'w':
+                    selection.modify('extend', 'forward', 'word');
+                    e.preventDefault();
+                    return;
+
+                case 'b':
+                    selection.modify('extend', 'backward', 'word');
+                    e.preventDefault();
+                    return;
+
+                case 'd':
+                case 'x':
+                    document.execCommand('delete', false);
+                    this.mode = 'normal';
+                    e.preventDefault();
+                    return;
+
+                case 'y':
+                    document.execCommand('copy', false);
+                    this.mode = 'normal';
+                    selection.collapseToStart();
+                    e.preventDefault();
+                    return;
+
+                case '>':
+                    document.execCommand('indent', false);
+                    e.preventDefault();
+                    return;
+
+                case '<':
+                    document.execCommand('outdent', false);
+                    e.preventDefault();
+                    return;
+            }
         } else if (this.mode === 'insert' && e.key === 'Escape') {
             this.mode = 'normal';
             this.lastAction = null;
+            selection.modify('move', 'backward', 'character');
             e.preventDefault();
             return;
         }
