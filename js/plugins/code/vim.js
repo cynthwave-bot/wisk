@@ -3,8 +3,10 @@ class VimEditor {
         this.mode = 'normal';
         this.activeElement = null;
         this.statusIndicator = null;
+        this.observers = new Set();
+        this.lastAction = null;
+        this.visualStart = null;
         
-        // Wait for DOM to be ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.init());
         } else {
@@ -16,16 +18,21 @@ class VimEditor {
         console.log('Initializing VimEditor');
         this.createStatusIndicator();
         this.setupBlockEventListeners();
+        this.setupMutationObserver();
         this.processAllElements();
-        // dont use mutation observer for now, we will use block events
-        // this.setupMutationObserver();
+    }
+
+    setupBlockEventListeners() {
+        ['block-created', 'block-changed', 'block-deleted', 'block-updated'].forEach(eventType => {
+            window.addEventListener(eventType, () => {
+                this.processAllElements();
+            });
+        });
     }
 
     setupMutationObserver() {
-        // Observer for the main document
-        const observer = new MutationObserver((mutations) => {
-            console.log('Document mutation detected');
-            this.checkForNewShadowRoots();
+        const observer = new MutationObserver(() => {
+            this.processAllElements();
         });
 
         observer.observe(document.body, {
@@ -36,67 +43,31 @@ class VimEditor {
         this.observers.add(observer);
     }
 
-    checkForNewShadowRoots() {
-        console.log('Checking for new shadow roots');
-        const shadowHosts = Array.from(document.querySelectorAll('*'))
-            .filter(el => el.shadowRoot);
+    findEditableElements(root) {
+        const elements = [];
+        
+        // Function to process a single root element and its shadow DOM
+        const processRoot = (root) => {
+            // Get direct elements in this root
+            const inputs = root.querySelectorAll('input[type="text"], input[type="password"], input[type="search"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], textarea, [contenteditable="true"]');
+            elements.push(...inputs);
 
-        shadowHosts.forEach(host => {
-            // If we haven't observed this shadow root yet
-            if (!host.dataset.vimObserved) {
-                console.log('Found new shadow root', host);
-                host.dataset.vimObserved = 'true';
-                
-                // Observe the shadow root for changes
-                const shadowObserver = new MutationObserver((mutations) => {
-                    console.log('Shadow root mutation detected');
-                    this.processShadowRoot(host.shadowRoot);
-                });
-
-                shadowObserver.observe(host.shadowRoot, {
-                    childList: true,
-                    subtree: true
-                });
-
-                this.observers.add(shadowObserver);
-                this.processShadowRoot(host.shadowRoot);
-            }
-        });
-    }
-
-    setupBlockEventListeners() {
-        console.log('Setting up block event listeners');
-        ['block-created', 'block-changed', 'block-deleted', 'block-updated'].forEach(eventType => {
-            console.log(' ---- Adding event listener for:', eventType);
-            window.addEventListener(eventType, () => {
-                console.log('Block event received:', eventType);
-                this.processAllElements();
+            // Find and process all shadow roots
+            const shadowHosts = root.querySelectorAll('*');
+            shadowHosts.forEach(host => {
+                if (host.shadowRoot) {
+                    processRoot(host.shadowRoot);
+                }
             });
-        });
-    }
+        };
 
-    handleBlockEvent(event) {
-        console.log('Handling block event:', event.type, event.detail);
-        // Force a check for new elements
-        this.checkForNewShadowRoots();
+        processRoot(root);
+        return elements;
     }
 
     processAllElements() {
-        console.log('Processing all elements');
-        // Find all shadow roots
-        const shadowHosts = Array.from(document.querySelectorAll('*'))
-            .filter(el => el.shadowRoot);
-
-        // Process each shadow root
-        shadowHosts.forEach(host => {
-            this.processShadowRoot(host.shadowRoot);
-        });
-    }
-
-    processShadowRoot(shadowRoot) {
-        console.log('Processing shadow root for editables');
-        const editables = shadowRoot.querySelectorAll('[contenteditable="true"]');
-        editables.forEach(editable => this.attachToEditable(editable));
+        const editableElements = this.findEditableElements(document.body);
+        editableElements.forEach(element => this.attachToEditable(element));
     }
 
     createStatusIndicator() {
@@ -116,22 +87,14 @@ class VimEditor {
         document.body.appendChild(this.statusIndicator);
     }
 
-    initializeEditor() {
-        console.log('Initial check for shadow roots');
-        this.checkForNewShadowRoots();
-    }
-
     attachToEditable(element) {
         if (element.dataset.vimEnabled) {
-            console.log('Element already vim enabled', element);
             return;
         }
         
-        console.log('Attaching vim to editable', element);
         element.dataset.vimEnabled = 'true';
 
         element.addEventListener('focus', () => {
-            console.log('Element focused');
             this.activeElement = element;
             this.mode = 'normal';
             this.updateStatus();
@@ -139,7 +102,6 @@ class VimEditor {
         });
 
         element.addEventListener('blur', () => {
-            console.log('Element blurred');
             this.activeElement = null;
             this.statusIndicator.style.display = 'none';
         });
@@ -148,6 +110,14 @@ class VimEditor {
             this.handleKeydown(e);
             this.updateStatus();
         });
+
+        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+            element.addEventListener('click', () => {
+                if (this.mode === 'normal') {
+                    element.setSelectionRange(element.selectionStart, element.selectionStart);
+                }
+            });
+        }
     }
 
     updateStatus() {
@@ -162,11 +132,110 @@ class VimEditor {
     handleKeydown(e) {
         if (!this.activeElement) return;
 
+        const isContentEditable = this.activeElement.hasAttribute('contenteditable');
+        
+        if (isContentEditable) {
+            this.handleContentEditableKeydown(e);
+        } else {
+            this.handleInputKeydown(e);
+        }
+    }
+
+    handleInputKeydown(e) {
+        const element = this.activeElement;
+
+        if (this.mode === 'normal') {
+            switch(e.key) {
+                case 'i':
+                    this.mode = 'insert';
+                    return;
+                
+                case 'a':
+                    this.mode = 'insert';
+                    const pos = element.selectionStart;
+                    element.setSelectionRange(pos + 1, pos + 1);
+                    e.preventDefault();
+                    return;
+
+                case 'A':
+                    this.mode = 'insert';
+                    element.setSelectionRange(element.value.length, element.value.length);
+                    e.preventDefault();
+                    return;
+
+                case 'I':
+                    this.mode = 'insert';
+                    element.setSelectionRange(0, 0);
+                    e.preventDefault();
+                    return;
+
+                case 'h':
+                    if (element.selectionStart > 0) {
+                        element.setSelectionRange(element.selectionStart - 1, element.selectionStart - 1);
+                    }
+                    e.preventDefault();
+                    return;
+
+                case 'l':
+                    if (element.selectionStart < element.value.length) {
+                        element.setSelectionRange(element.selectionStart + 1, element.selectionStart + 1);
+                    }
+                    e.preventDefault();
+                    return;
+
+                case 'w':
+                    const wordMatch = element.value.slice(element.selectionStart).match(/\W+\w|^$/);
+                    if (wordMatch) {
+                        const newPos = element.selectionStart + wordMatch.index + wordMatch[0].length;
+                        element.setSelectionRange(newPos, newPos);
+                    }
+                    e.preventDefault();
+                    return;
+
+                case 'b':
+                    const beforeCursor = element.value.slice(0, element.selectionStart);
+                    const prevWordMatch = beforeCursor.match(/\w+\W*$/);
+                    if (prevWordMatch) {
+                        const newPos = beforeCursor.lastIndexOf(prevWordMatch[0]);
+                        element.setSelectionRange(newPos, newPos);
+                    }
+                    e.preventDefault();
+                    return;
+
+                case '0':
+                    element.setSelectionRange(0, 0);
+                    e.preventDefault();
+                    return;
+
+                case '$':
+                    element.setSelectionRange(element.value.length, element.value.length);
+                    e.preventDefault();
+                    return;
+
+                case 'x':
+                    const start = element.selectionStart;
+                    element.value = element.value.slice(0, start) + element.value.slice(start + 1);
+                    element.setSelectionRange(start, start);
+                    e.preventDefault();
+                    return;
+            }
+        } else if (this.mode === 'insert' && e.key === 'Escape') {
+            this.mode = 'normal';
+            if (element.selectionStart > 0) {
+                element.setSelectionRange(element.selectionStart - 1, element.selectionStart - 1);
+            }
+            e.preventDefault();
+            return;
+        }
+    }
+
+    handleContentEditableKeydown(e) {
+        if (!this.activeElement) return;
+
         const selection = window.getSelection();
 
         if (this.mode === 'normal') {
             switch(e.key) {
-                // Mode changes remain the same
                 case 'i':
                     this.mode = 'insert';
                     return;
@@ -179,19 +248,16 @@ class VimEditor {
 
                 case 'A':
                     this.mode = 'insert';
-                    // Move to end of line
                     selection.modify('move', 'forward', 'lineboundary');
                     e.preventDefault();
                     return;
 
                 case 'I':
                     this.mode = 'insert';
-                    // Move to start of line
                     selection.modify('move', 'backward', 'lineboundary');
                     e.preventDefault();
                     return;
 
-                // Basic movement using Selection API
                 case 'h':
                     selection.modify('move', 'backward', 'character');
                     e.preventDefault();
@@ -212,7 +278,6 @@ class VimEditor {
                     e.preventDefault();
                     return;
 
-                // Word movement using Selection API
                 case 'w':
                     selection.modify('move', 'forward', 'word');
                     e.preventDefault();
@@ -228,7 +293,6 @@ class VimEditor {
                     e.preventDefault();
                     return;
 
-                // Line movement using Selection API
                 case '0':
                     selection.modify('move', 'backward', 'lineboundary');
                     e.preventDefault();
@@ -239,7 +303,6 @@ class VimEditor {
                     e.preventDefault();
                     return;
 
-                // Deletion operations
                 case 'x':
                     document.execCommand('delete', false);
                     e.preventDefault();
@@ -253,7 +316,6 @@ class VimEditor {
 
                 case 'd':
                     if (e.repeat) {
-                        // dd - delete line
                         selection.modify('move', 'backward', 'lineboundary');
                         selection.modify('extend', 'forward', 'lineboundary');
                         document.execCommand('delete', false);
@@ -264,7 +326,6 @@ class VimEditor {
                     return;
 
                 case 'D':
-                    // Delete from cursor to end of line
                     selection.modify('extend', 'forward', 'lineboundary');
                     document.execCommand('delete', false);
                     e.preventDefault();
@@ -272,7 +333,6 @@ class VimEditor {
 
                 case 'c':
                     if (e.repeat) {
-                        // cc - change line
                         selection.modify('move', 'backward', 'lineboundary');
                         selection.modify('extend', 'forward', 'lineboundary');
                         document.execCommand('delete', false);
@@ -284,7 +344,6 @@ class VimEditor {
                     return;
 
                 case 'C':
-                    // Change to end of line
                     selection.modify('extend', 'forward', 'lineboundary');
                     document.execCommand('delete', false);
                     this.mode = 'insert';
@@ -293,13 +352,10 @@ class VimEditor {
 
                 default:
                     if (this.lastAction) {
-                        // Handle compound commands
                         if (this.lastAction === 'd' && e.key === 'w') {
-                            // Delete word
                             selection.modify('extend', 'forward', 'word');
                             document.execCommand('delete', false);
                         } else if (this.lastAction === 'c' && e.key === 'w') {
-                            // Change word
                             selection.modify('extend', 'forward', 'word');
                             document.execCommand('delete', false);
                             this.mode = 'insert';
@@ -362,16 +418,6 @@ class VimEditor {
                     selection.collapseToStart();
                     e.preventDefault();
                     return;
-
-                case '>':
-                    document.execCommand('indent', false);
-                    e.preventDefault();
-                    return;
-
-                case '<':
-                    document.execCommand('outdent', false);
-                    e.preventDefault();
-                    return;
             }
         } else if (this.mode === 'insert' && e.key === 'Escape') {
             this.mode = 'normal';
@@ -386,7 +432,16 @@ class VimEditor {
         if (this.statusIndicator) {
             this.statusIndicator.remove();
         }
-        // Remove all vim-enabled flags
+
+        this.observers.forEach(observer => {
+            observer.disconnect();
+        });
+        this.observers.clear();
+
+        document.querySelectorAll('[data-vim-enabled]').forEach(element => {
+            delete element.dataset.vimEnabled;
+        });
+
         const shadowHosts = Array.from(document.querySelectorAll('*'))
             .filter(el => el.shadowRoot);
         
