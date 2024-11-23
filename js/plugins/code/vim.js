@@ -238,6 +238,7 @@ class VimEditor {
             switch(e.key) {
                 case 'i':
                     this.mode = 'insert';
+                    e.preventDefault();
                     return;
                     
                 case 'a':
@@ -392,6 +393,21 @@ class VimEditor {
 
                 case 'j':
                     selection.modify('extend', 'forward', 'line');
+                    e.preventDefault();
+                    return;
+
+                case '0':
+                    selection.modify('extend', 'backward', 'lineboundary');
+                    e.preventDefault();
+                    return;
+
+                case '$':
+                    selection.modify('extend', 'forward', 'lineboundary');
+                    e.preventDefault();
+                    return;
+
+                case 'e':
+                    selection.modify('extend', 'forward', 'word');
                     e.preventDefault();
                     return;
 
