@@ -78,6 +78,29 @@ class LeftMenu extends LitElement {
             gap: var(--gap-2);
             flex: 1;
         }
+
+        .od {
+            padding: var(--padding-2);
+            color: var(--text-1);
+            background-color: var(--bg-2);
+            border-radius: var(--radius);
+            outline: none;
+            border: 1px solid var(--bg-3);
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        .email {
+            outline: none;
+            border: none;
+            flex: 1;
+            background-color: transparent;
+            color: var(--text-1);
+        }
+        .od:has(.srch:focus) {
+            border-color: var(--border-2);
+            background-color: var(--bg-1);
+            box-shadow: 0 0 0 2px var(--bg-3);
+        }
         .item {
             display: flex;
             gap: var(--gap-2);
@@ -246,9 +269,9 @@ class LeftMenu extends LitElement {
                         <a href="/" class="new"> <img src="/a7/forget/file-plus.svg" alt="New Page" class="new-img" /> New Page</a>
                     </div>
 
-                    <div class="search-div">
+                    <div class="search-div od">
                         <img src="/a7/forget/search.svg" alt="Search"/>
-                        <input type="text" id="search" name="search" placeholder="Search Documents" @input=${this.filterList} />
+                        <input type="text" id="search" name="search" class="srch" placeholder="Search Documents" @input=${this.filterList} />
                     </div>
                 </div>
                 <ul style="margin-top: var(--padding-4);">

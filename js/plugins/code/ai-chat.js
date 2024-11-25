@@ -546,7 +546,7 @@ class AIChat extends LitElement {
                         </p>
                     </div>
 
-                    <img src="/a7/plugins/ai-chat/circle-loading.svg" style="filter: var(--themed-svg); height: 32px" />
+                    <img src="/a7/plugins/ai-chat/neo-loading.svg" style="filter: var(--themed-svg); height: 32px" />
                 </div>
 
                 <div class="input">
@@ -574,10 +574,10 @@ class AIChat extends LitElement {
                                     } 
                                 }}></textarea>
                             <div style="display: flex; gap: var(--gap-2); align-items: stretch;">
-                                <button class="in2btn" @click=${this.openFileUploadDialog}> <img src="/a7/plugins/ai-chat/attach.svg"/> </button>
+                                <button class="in2btn" @click=${this.openFileUploadDialog} style="display: none"> <img src="/a7/plugins/ai-chat/attach.svg"/> </button>
                                 <button class="in2btn" @click=${this.toggleSuggestions}> <img src="/a7/plugins/ai-chat/wand.svg"/></button>
                                 <div style="flex: 1"></div>
-                                <button class="in2btn ${this.wiskMode? 'wisk-mode' : ''}" @click=${this.toggleWiskMode}> <img src="/a7/plugins/ai-chat/circle.svg"/> Wisk Neo AI </button>
+                                <button class="in2btn ${this.wiskMode? 'wisk-mode' : ''}" @click=${this.toggleWiskMode} style="display: none"> <img src="/a7/plugins/ai-chat/neo-circle.svg"/> Neo AI </button>
                                 <button class="in2btn" @click=${this.sendMessage}> <img src="/a7/plugins/ai-chat/up.svg"/> </button>
                             </div>
                         </div>
