@@ -1,5 +1,4 @@
 import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
-import { marked } from "/a7/cdn/marked.esm-9.1.2.min.js";
 
 class AIChat extends LitElement {
     static styles = css`
@@ -8,6 +7,7 @@ class AIChat extends LitElement {
             font-family: var(--font);
             margin: 0px;
             padding: 0px;
+            scroll-behavior: smooth;
         }
         .container {
             height: 100%;
@@ -20,7 +20,7 @@ class AIChat extends LitElement {
             max-height: 300px;
             overflow-y: auto;
         }
-        .chat, .wiskMode {
+        .chat {
             flex: 1;
             overflow-y: auto;
             background-color: var(--bg-1);
@@ -28,19 +28,6 @@ class AIChat extends LitElement {
             display: flex;
             flex-direction: column;
             gap: var(--gap-3);
-        }
-        .clear-chat {
-            align-self: center;
-            margin-top: var(--padding-3);
-            padding: var(--padding-3);
-            background: transparent;
-            border: none;
-            border-radius: var(--radius);
-            cursor: pointer;
-            color: var(--text-1);
-        }
-        .clear-chat:hover {
-            background: var(--bg-3);
         }
         .message {
             display: flex;
@@ -52,8 +39,6 @@ class AIChat extends LitElement {
         }
         .message.user {
             background: var(--bg-1);
-        }
-        .message.assistant {
         }
         .message-header-user {
             font-size: 12px;
@@ -68,6 +53,7 @@ class AIChat extends LitElement {
             color: var(--text-1);
             white-space: pre-wrap;
             user-select: text;
+            line-height: 1.5;
         }
         .message-header-assistant {
             font-size: 12px;
@@ -82,6 +68,7 @@ class AIChat extends LitElement {
             color: var(--text-1);
             white-space: pre-wrap;
             user-select: text;
+            line-height: 1.5;
         }
         .input {
             background-color: var(--bg-1);
@@ -128,7 +115,6 @@ class AIChat extends LitElement {
         .in1:hover, .in1:focus-within {
             border: 2px solid var(--fg-blue);
         }
-
         .in2btn {
             padding: var(--padding-2);
             background: transparent;
@@ -201,87 +187,30 @@ class AIChat extends LitElement {
             padding-top: 0;
             user-select: text;
         }
+        .neo-header {
+            display: flex;
+            align-items: center;
+            padding-top: 100px;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .neo-description {
+            font-size: 16px;
+            color: var(--text-1);
+            margin: var(--padding-4);
+            text-align: center;
+            max-width: 500px;
+            line-height: 1.5
+        }
+        .loading-indicator {
+            display: flex;
+            justify-content: center;
+            margin-top: var(--padding-4);
+        }
         *::-webkit-scrollbar { width: 15px; }
         *::-webkit-scrollbar-track { background: var(--bg-1); }
         *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
         *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
-
-        .message-content-assistant {
-            font-size: 14px;
-            color: var(--text-1);
-            white-space: normal;
-            user-select: text;
-        }
-
-        .markdown-content {
-            line-height: 1.5;
-        }
-
-        .markdown-content p {
-            margin-bottom: 1em;
-        }
-
-        .markdown-content code {
-            background-color: var(--bg-3);
-            padding: 0.2em 0.4em;
-            border-radius: 3px;
-            font-family: monospace;
-        }
-
-        .markdown-content pre {
-            background-color: var(--bg-3);
-            padding: var(--padding-3);
-            border-radius: var(--radius);
-            overflow-x: auto;
-            margin: 1em 0;
-        }
-
-        .markdown-content pre code {
-            background-color: transparent;
-            padding: 0;
-        }
-
-        .markdown-content ul, .markdown-content ol {
-            margin-left: 1.5em;
-            margin-bottom: 1em;
-        }
-
-        .markdown-content h1, .markdown-content h2, .markdown-content h3,
-        .markdown-content h4, .markdown-content h5, .markdown-content h6 {
-            margin-top: 1em;
-            margin-bottom: 0.5em;
-            font-weight: bold;
-        }
-
-        .markdown-content blockquote {
-            border-left: 3px solid var(--border-1);
-            padding-left: 1em;
-            margin: 1em 0;
-            color: var(--text-2);
-        }
-
-        .markdown-content table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 1em 0;
-        }
-
-        .markdown-content th, .markdown-content td {
-            border: 1px solid var(--border-1);
-            padding: 0.5em;
-            text-align: left;
-        }
-
-        .markdown-content th {
-            background-color: var(--bg-3);
-        }
-        img {
-            max-width: 100%;
-        }
-        .wisk-mode {
-            border: 1px solid var(--border-1);
-            background: var(--bg-3);
-        }
     `;
 
     static properties = {
@@ -292,7 +221,6 @@ class AIChat extends LitElement {
         selectedText: { type: String },
         loading: { type: Boolean },
         showFileUploadDialog: { type: Boolean },
-        wiskMode: { type: Boolean }
     };
 
     constructor() {
@@ -310,33 +238,16 @@ class AIChat extends LitElement {
             },
         ];
         window.wisk.plugins.AIChatSetSelection = this.setSelection.bind(this);
-        marked.setOptions({
-            breaks: true,
-            gfm: true,
-            headerIds: false
-        });
         this.showFileUploadDialog = false;
-        this.wiskMode = false;
-        this.wiskAIWorking = false;
     }
 
     setSelection(elementId, text) {
-        if (this.wiskMode) return;
         this.selectedElementId = elementId;
         this.selectedText = text;
     }
 
     toggleSources() {
         this.expandSources = !this.expandSources;
-    }
-
-    renderMarkdown(content) {
-        try {
-            return marked(content);
-        } catch (error) {
-            console.error('Error rendering markdown:', error);
-            return content;
-        }
     }
 
     openFileUploadDialog() {
@@ -376,6 +287,8 @@ class AIChat extends LitElement {
                 md += textContent.markdown + "\n\n";
             }
         }
+
+        this.scrollChat();
         
         try {
             const auth = await document.getElementById("auth").getUserInfo();
@@ -396,13 +309,12 @@ class AIChat extends LitElement {
             var completion = await response.json();
             completion = completion.content.trim();
             
-            // Add both messages after successful response, including selected text
             this.messages = [
                 ...this.messages, 
                 {
                     content: message,
                     by: 'user',
-                    selectedText: this.selectedText || '' // Store selected text with the message
+                    selectedText: this.selectedText || ''
                 },
                 {
                     content: completion,
@@ -411,7 +323,6 @@ class AIChat extends LitElement {
                 }
             ];
             
-            // Scroll to bottom
             requestAnimationFrame(() => {
                 const chat = this.shadowRoot.querySelector('.chat');
                 chat.scrollTop = chat.scrollHeight;
@@ -457,49 +368,22 @@ class AIChat extends LitElement {
         this.selectedText = "";
     }
 
-    toggleWiskMode() {
-
-        if (this.wiskAIWorking) {
-            window.wisk.utils.showToast("Wisk AI is already working on a task. Please wait for it to finish.", 3000);
-            return;
-        }
-
-        this.wiskMode = !this.wiskMode;
-        if (this.wiskMode) {
-            document.querySelector(".editor").style.pointerEvents = "none";
-            document.querySelector("toolbar-element").hideToolbar();
-            // clear selection text, 
-            this.selectedElementId = "";
-            this.selectedText = "";
-            // clear messages
-            this.messages = [];
-        } else {
-            document.querySelector(".editor").style.pointerEvents = "auto";
-        }
+    scrollChat() {
+        const chat = this.shadowRoot.querySelector('.chat');
+        chat.scrollTop = chat.scrollHeight;
     }
 
     render() {
         return html`
             <div class="container">
-                <div class="sources" style="display: ${this.wiskMode? 'none' : 'block'}; border-top: 1px solid var(--border-1)">
-                    <button class="sources-button" @click=${this.toggleSources}>
-                        Chat will use: ${this.sources.length} source${this.sources.length > 1? "s" : ""}
-                        <div style="flex: 1"></div>
-                        ${this.expandSources? "Hide" : "Show"} Settings
-                    </button>
-                    ${this.expandSources ? html`
-                        <div class="sources-expand">
-                            <p>Chat will use the following sources:</p>
-                            ${this.sources.map(source => html`
-                                <div class="source">${source.name}</div>
-                            `)}
-
-                            <button class="clear-chat" @click=${() => this.messages = []}>Clear Chat</button>
-                        </div>
-                    ` : html``}
-                </div>
-                
-                <div class="chat" style="display: ${this.wiskMode? 'none' : 'block'}">
+                <div class="chat">
+                    <div class="neo-header">
+                        <img src="/a7/plugins/ai-chat/neo.svg" style="filter: var(--themed-svg)" />
+                        <p class="neo-description">
+                            Your intelligent document companion – researching, writing, and organizing at superhuman speed.
+                        </p>
+                    </div>
+                    
                     ${this.messages.map(message => html`
                         <div class="message ${message.by}">
                             ${message.selectedText ? html`
@@ -509,44 +393,23 @@ class AIChat extends LitElement {
                                 ${message.by === 'user' ? html`
                                     <img src="/a7/plugins/ai-chat/user.svg" style="height: 22px; width: 22px; filter: var(--themed-svg)" />
                                 ` : html`
-                                    <img src="/a7/plugins/ai-chat/ai.svg" style="height: 22px; width: 22px; filter: var(--themed-svg)" />
+                                    <img src="/a7/plugins/ai-chat/neo-circle.svg" style="height: 22px; width: 22px; filter: var(--themed-svg)" />
                                 `}
-                                ${message.by === 'user' ? 'You' : 'Assistant'}
+                                ${message.by === 'user' ? 'You' : 'Neo'}
                             </div>
-                            <div class="message-content-${message.by.toLowerCase()}">${message.by === 'assistant' ? 
-                                    html`<div class="markdown-content" .innerHTML=${this.renderMarkdown(message.content)}></div>` : 
-                                    message.content}</div>
+                            <div class="message-content-${message.by.toLowerCase()}">${message.content}</div>
                         </div>
                     `)}
-                    ${(this.messages.length === 0) ? html`
-                        <div class="message assistant">
-                            <div class="message-header-assistant">
-                                <img src="/a7/plugins/ai-chat/ai.svg" style="height: 22px; width: 22px; filter: var(--themed-svg)" />
-                                Assistant
-                            </div>
-                            <div class="message-content-assistant">Hello! How can I help you today?</div>
-                        </div>
-                    ` : ''}
+                    
                     ${this.loading ? html`
                         <div class="message assistant">
                             <div class="message-header-assistant">
-                                <img src="/a7/plugins/ai-chat/ai-animated.svg" style="height: 30px; width: 30px; filter: var(--themed-svg)" />
-                                Assistant
+                                <img src="/a7/plugins/ai-chat/neo-loading.svg" style="height: 30px; filter: var(--themed-svg)" />
+                                Neo
                             </div>
                             <div class="message-content-assistant">Thinking...</div>
                         </div>
                     ` : ''}
-                </div>
-
-                <div class="wiskMode" style="display: ${this.wiskMode? 'block' : 'none'}">
-                    <div style="display: flex; align-items: center; padding: 100px 0; justify-content: center; flex-direction: column">
-                        <img src="/a7/plugins/ai-chat/neo.svg" style="filter: var(--themed-svg)" />
-                        <p style="font-size: 16px; color: var(--text-1); margin: var(--padding-4); text-align: center; max-width: 500px; line-height: 1.5"> 
-                            Your intelligent document companion – researching, writing, and organizing at superhuman speed.
-                        </p>
-                    </div>
-
-                    <img src="/a7/plugins/ai-chat/neo-loading.svg" style="filter: var(--themed-svg); height: 32px" />
                 </div>
 
                 <div class="input">
@@ -567,18 +430,23 @@ class AIChat extends LitElement {
                                 </div>
                                 <p class="px1">${this.selectedText}</p>
                             </div>
-                            <textarea class="input-textarea" style="height: 100px;" placeholder="Type your message here"
+                            <textarea class="input-textarea" style="height: 100px;" placeholder="Ask me anything about your document..."
                                 @keydown=${(e) => { 
                                     if ((e.key === "Enter" && e.shiftKey)  || (e.key === "Enter" && e.ctrlKey)) {
                                         this.sendMessage(e); 
                                     } 
                                 }}></textarea>
                             <div style="display: flex; gap: var(--gap-2); align-items: stretch;">
-                                <button class="in2btn" @click=${this.openFileUploadDialog} style="display: none"> <img src="/a7/plugins/ai-chat/attach.svg"/> </button>
-                                <button class="in2btn" @click=${this.toggleSuggestions}> <img src="/a7/plugins/ai-chat/wand.svg"/></button>
+                                <button class="in2btn" @click=${this.openFileUploadDialog}>
+                                    <img src="/a7/plugins/ai-chat/attach.svg"/>
+                                </button>
+                                <button class="in2btn" @click=${this.toggleSuggestions}>
+                                    <img src="/a7/plugins/ai-chat/wand.svg"/>
+                                </button>
                                 <div style="flex: 1"></div>
-                                <button class="in2btn ${this.wiskMode? 'wisk-mode' : ''}" @click=${this.toggleWiskMode} style="display: none"> <img src="/a7/plugins/ai-chat/neo-circle.svg"/> Neo AI </button>
-                                <button class="in2btn" @click=${this.sendMessage}> <img src="/a7/plugins/ai-chat/up.svg"/> </button>
+                                <button class="in2btn" @click=${this.sendMessage}>
+                                    <img src="/a7/plugins/ai-chat/up.svg"/>
+                                </button>
                             </div>
                         </div>
                     </div>

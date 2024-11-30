@@ -567,8 +567,9 @@ class OptionsComponent extends LitElement {
 
                     <div class="plugin-list">
                         ${filteredPlugins.sort((a, b) => a.title.localeCompare(b.title)).map(plugin => html`
-                            <div class="plugin-item" @click="${() => this.togglePlugin(plugin)}" >
-                                <img src="${SERVER + window.wisk.plugins.pluginData["icon-path"] + plugin.icon}" alt="${plugin.title}" class="plugin-icon" draggable="false"/>
+                            <div class="plugin-item" @click="${() => this.togglePlugin(plugin)}" style="cursor: pointer;">
+                                <img src="${SERVER + window.wisk.plugins.pluginData["icon-path"] + plugin.icon}" alt="${plugin.title}" class="plugin-icon"
+                                    draggable="false"/>
                                 <div class="plugin-info">
                                     <span class="plugin-title">${plugin.title} </span> 
                                     <span class="plugin-description">${plugin.description}</span>
