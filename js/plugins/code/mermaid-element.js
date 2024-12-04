@@ -27,7 +27,6 @@ class MermaidElement extends LitElement {
             margin: 0px;
             padding: 0px;
             user-select: text;
-            transition: background 0.2s, color 0.2s;
         }
         :host {
             display: block;
@@ -113,7 +112,7 @@ class MermaidElement extends LitElement {
     A[Start] --> B{Is it?}
     B -->|Yes| C[OK]
     B -->|No| D[End]`;
-        this.backup = '';
+        this.backup = this._mermaid;
         this.error = '';
         this._showDialog = false;
         this._theme = window.wisk.theme.getThemeData(window.wisk.theme.getTheme());

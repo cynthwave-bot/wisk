@@ -216,6 +216,9 @@ class OptionsComponent extends LitElement {
             outline: none;
             border-radius: var(--radius);
             transition: border-color 0.2s ease, background-color 0.2s ease;
+
+            scrollbar-width: thin;
+            scrollbar-color: var(--text-2) var(--bg-3);
         }
         .options-select:hover {
             border-color: var(--border-2);
@@ -415,6 +418,22 @@ class OptionsComponent extends LitElement {
         .btn-danger:hover {
             filter: drop-shadow(0 0 2px var(--fg-red)) brightness(1.1);
         }
+        .options-select::-webkit-scrollbar {
+            width: 15px;
+        }
+        .options-select::-webkit-scrollbar-track {
+            background: var(--bg-3);
+            border-radius: var(--radius);
+        }
+        .options-select::-webkit-scrollbar-thumb {
+            background-color: var(--text-2);
+            border-radius: 20px;
+            border: 4px solid var(--bg-3);
+        }
+        .options-select:hover {
+            border-color: var(--border-2);
+            background-color: var(--bg-3);
+        }
     `;
 
     static properties = {
@@ -538,16 +557,6 @@ class OptionsComponent extends LitElement {
                         <img src="/a7/iconoir/right.svg" alt="About" class="icon" draggable="false"/>
                     </div>
 
-                    <div class="plugins-toggle options-section" @click="${this.showAboutView}">
-                        <label>About</label>
-                        <img src="/a7/iconoir/right.svg" alt="About" class="icon" draggable="false"/>
-                    </div>
-
-                    <div class="plugins-toggle options-section" @click="${this.showDeveloperView}">
-                        <label>Developer Mode</label>
-                        <img src="/a7/iconoir/right.svg" alt="Developer" class="icon" draggable="false"/>
-                    </div>
-
                     <div style="flex: 1"></div>
                     <p style="color: var(--text-2); padding: 10px 0">
                         btw you can also create your own plugins and themes, check out the 
@@ -557,7 +566,7 @@ class OptionsComponent extends LitElement {
 
                 <!-- Plugins View -->
                 <div class="view ${this.currentView === 'plugins' ? 'active' : ''}">
-                    <div class="plugins-header">
+                    <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
                             <label for="pluginSearch">Plugins</label>
@@ -582,7 +591,7 @@ class OptionsComponent extends LitElement {
                 <!-- Plugin Details View -->
                 <div class="view vgap ${this.currentView === 'plugin-details' ? 'active' : ''}">
                     ${this.selectedPlugin ? html`
-                        <div class="plugins-header">
+                        <div class="plugins-header" style="margin-bottom: 10px">
                             <div class="plugins-header">
                                 <img src="/a7/iconoir/left.svg" alt="Back" @click="${() => this.currentView = 'plugins'}" class="icon" draggable="false"/>
                                 <label>Plugin Details</label>
@@ -625,7 +634,7 @@ class OptionsComponent extends LitElement {
 
                 <!-- Developer View -->
                 <div class="view ${this.currentView === 'developer' ? 'active' : ''}">
-                    <div class="plugins-header">
+                    <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
                             <label>Developer Mode</label>
@@ -641,7 +650,7 @@ class OptionsComponent extends LitElement {
 
                 <!-- Settings View -->
                 <div class="view ${this.currentView === 'settings' ? 'active' : ''}">
-                    <div class="plugins-header">
+                    <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
                             <label>Settings</label>
@@ -652,12 +661,23 @@ class OptionsComponent extends LitElement {
                         <label for="signOut">Sign Out</label>
                         <button id="signOut" class="btn-danger" @click="${() => window.wisk.auth.logOut()}">Sign Out</button>
                     </div>
+
+                    <div class="plugins-toggle options-section" @click="${this.showAboutView}">
+                        <label>About</label>
+                        <img src="/a7/iconoir/right.svg" alt="About" class="icon" draggable="false"/>
+                    </div>
+
+                    <div class="plugins-toggle options-section" @click="${this.showDeveloperView}">
+                        <label>Developer Mode</label>
+                        <img src="/a7/iconoir/right.svg" alt="Developer" class="icon" draggable="false"/>
+                    </div>
+
                 </div>
 
 
                 <!-- About View -->
                 <div class="view ${this.currentView === 'about' ? 'active' : ''}">
-                    <div class="plugins-header">
+                    <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
                             <label>About</label>

@@ -16,7 +16,7 @@ class FileUploadDialog extends LitElement {
         }
         .dialog {
             background-color: var(--bg-1);
-            padding: var(--padding-4);
+            padding: calc(2*var(--padding-4));
             border-radius: var(--radius-large);
             box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
             max-width: 500px;
@@ -58,13 +58,15 @@ class FileUploadDialog extends LitElement {
             display: flex;
             justify-content: flex-end;
             gap: var(--gap-2);
+            padding-top: var(--padding-3);
         }
         button {
-            padding: var(--padding-2) var(--padding-3);
+            padding: var(--padding-w2);
             border: none;
             border-radius: var(--radius);
             cursor: pointer;
             font-size: 14px;
+            font-weight: 500;
         }
         .cancel {
             background-color: var(--bg-3);
@@ -74,6 +76,10 @@ class FileUploadDialog extends LitElement {
             background-color: var(--fg-blue);
             color: var(--bg-blue);
         }
+
+        ::-webkit-scrollbar{width:14px;height:14px}::-webkit-scrollbar-track{background-color:transparent;}
+        ::-webkit-scrollbar-thumb{background: var(--text-2);border-radius: 7px;border: 4px solid transparent; background-clip: padding-box;}
+        ::-webkit-scrollbar-thumb:hover{background-color: var(--text-1);}
     `;
 
     static properties = {

@@ -172,6 +172,7 @@ class ShareComponent extends LitElement {
 
         this.shadowRoot.querySelector(".email").value = "";
         this.users = [...this.users, email];
+        window.wisk.editor.data.config.access = this.users;
         this.requestUpdate();
     }
 
