@@ -408,15 +408,19 @@ class OptionsComponent extends LitElement {
             font-weight: 500;
             padding: var(--padding-w2);
             cursor: pointer;
-            border: none;
+            border: 1px solid transparent;
             border-radius: var(--radius);
             outline: none;
         }
         .btn-primary:hover {
-            filter: drop-shadow(0 0 2px var(--fg-blue)) brightness(1.1);
+            background-color: var(--bg-blue);
+            color: var(--fg-blue);
+            border: 1px solid var(--fg-blue);
         }
         .btn-danger:hover {
-            filter: drop-shadow(0 0 2px var(--fg-red)) brightness(1.1);
+            background-color: var(--bg-red);
+            color: var(--fg-red);
+            border: 1px solid var(--fg-red);
         }
         .options-select::-webkit-scrollbar {
             width: 15px;
@@ -636,7 +640,7 @@ class OptionsComponent extends LitElement {
                 <div class="view ${this.currentView === 'developer' ? 'active' : ''}">
                     <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
-                            <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
+                            <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showSettingsView}" class="icon" draggable="false"/>
                             <label>Developer Mode</label>
                         </div>
                     </div>
@@ -679,7 +683,7 @@ class OptionsComponent extends LitElement {
                 <div class="view ${this.currentView === 'about' ? 'active' : ''}">
                     <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
-                            <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
+                            <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showSettingsView}" class="icon" draggable="false"/>
                             <label>About</label>
                         </div>
                     </div>

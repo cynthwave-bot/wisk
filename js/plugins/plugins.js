@@ -17,6 +17,7 @@ window.wisk.plugins = {
         "table-element",
         "database-element",
         "embed-element",
+        "link-preview-element",
         "canvas-element",
         "latex-element",
         "mermaid-element",

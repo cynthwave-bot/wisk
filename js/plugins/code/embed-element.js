@@ -176,7 +176,7 @@ class EmbedElement extends HTMLElement {
     }
 
     bindEvents() {
-        const eventType = this.isVirtualKeyboard ? "input" : "keydown";
+        const eventType = this.isVirtualKeyboard ? "input" : "keyup";
         this.editable.addEventListener(eventType, this.onValueUpdated.bind(this));
         this.editable.addEventListener("focus", () => {
             if (this.editable.innerText.trim() === "") {

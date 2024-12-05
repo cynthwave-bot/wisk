@@ -431,6 +431,28 @@
             ]
         },
 
+        "link-preview-element": {
+            "name": "link-preview-element",
+            "title": "Link Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "link.svg",
+            "tags": ["link", "url", "hyperlink"],
+            "description": "Link element",
+            "contents": [
+                {
+                    "title": "Link",
+                    "icon": "link.svg",
+                    "category": "component",
+                    "component": "link-preview-element",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
         "table-element": {
             "name": "table-element",
             "title": "Table Element",
