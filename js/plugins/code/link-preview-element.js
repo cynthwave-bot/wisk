@@ -287,7 +287,7 @@ class LinkElement extends HTMLElement {
             }
             .link-preview-meta {
                 font-size: 0.8em;
-                color: var(--text-3);
+                color: var(--text-2);
             }
             .table-controls {
                 display: flex;
