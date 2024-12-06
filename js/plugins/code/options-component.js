@@ -575,6 +575,7 @@ class OptionsComponent extends LitElement {
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
                             <label for="pluginSearch">Plugins</label>
                         </div>
+
                         <input id="pluginSearch" type="text" placeholder="Search plugins" class="plugin-search" @input="${this.handleSearch}" style="flex: 1"/>
                     </div>
 
@@ -662,7 +663,7 @@ class OptionsComponent extends LitElement {
                     </div>
 
                     <div class="options-section options-section--animated">
-                        <label for="signOut">Sign Out</label>
+                        <label>Sign Out</label>
                         <button id="signOut" class="btn-danger" @click="${() => window.wisk.auth.logOut()}">Sign Out</button>
                     </div>
 

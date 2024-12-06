@@ -211,6 +211,17 @@ class AIChat extends LitElement {
         *::-webkit-scrollbar-track { background: var(--bg-1); }
         *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
         *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+
+        .input-textarea[data-empty="true"]::before {
+            content: attr(data-placeholder);
+            color: var(--text-2);
+            pointer-events: none;
+            position: absolute;
+        }
+
+        .input-textarea:focus::before {
+            content: '';
+        }
     `;
 
     static properties = {
@@ -221,6 +232,7 @@ class AIChat extends LitElement {
         selectedText: { type: String },
         loading: { type: Boolean },
         showFileUploadDialog: { type: Boolean },
+        isInputEmpty: { type: Boolean },
     };
 
     constructor() {
@@ -239,6 +251,7 @@ class AIChat extends LitElement {
         ];
         window.wisk.plugins.AIChatSetSelection = this.setSelection.bind(this);
         this.showFileUploadDialog = false;
+        this.isInputEmpty = true;
     }
 
     setSelection(elementId, text) {
@@ -270,11 +283,11 @@ class AIChat extends LitElement {
     async sendMessage(event) {
         event.preventDefault();
         const textarea = this.shadowRoot.querySelector('.input-textarea');
-        const message = textarea.value.trim();
+        const message = textarea.textContent.trim();
         
         if (!message) return;
         
-        textarea.value = '';
+        textarea.textContent = '';
         this.loading = true;
 
         var md = "";
@@ -430,12 +443,15 @@ class AIChat extends LitElement {
                                 </div>
                                 <p class="px1">${this.selectedText}</p>
                             </div>
-                            <textarea class="input-textarea" style="height: 100px;" placeholder="Ask me anything about your document..."
-                                @keydown=${(e) => { 
-                                    if ((e.key === "Enter" && e.shiftKey)  || (e.key === "Enter" && e.ctrlKey)) {
-                                        this.sendMessage(e); 
-                                    } 
-                                }}></textarea>
+
+                            <div class="input-textarea" 
+                                style="max-height: 200px; overflow: auto" 
+                                contenteditable="true"
+                                data-placeholder="Ask me anything about your document..."
+                                data-empty="true"
+                                @input=${this.handleInput}
+                                @keydown=${this.handleKeyDown}></div>
+
                             <div style="display: flex; gap: var(--gap-2); align-items: stretch;">
                                 <button class="in2btn" @click=${this.openFileUploadDialog}>
                                     <img src="/a7/plugins/ai-chat/attach.svg"/>
@@ -460,6 +476,19 @@ class AIChat extends LitElement {
             ></file-upload-dialog>
         `;
     }
+
+    handleInput(e) {
+        const textarea = e.target;
+        this.isInputEmpty = textarea.textContent.trim() === '';
+        textarea.setAttribute('data-empty', this.isInputEmpty);
+    }
+
+    handleKeyDown(e) {
+        if ((e.key === "Enter" && e.shiftKey) || (e.key === "Enter" && e.ctrlKey)) {
+            this.sendMessage(e);
+        }
+    }
+
 }
 
 customElements.define("ai-chat", AIChat);
