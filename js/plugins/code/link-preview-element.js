@@ -3,6 +3,7 @@ class LinkElement extends HTMLElement {
         super();
         this.attachShadow({ mode: "open" });
         this.link = "wisk.cc";
+        this.metadata = null;
         this.render();
         this.isVirtualKeyboard = this.checkIfVirtualKeyboard();
         this.debounceTimer = null;
@@ -22,25 +23,63 @@ class LinkElement extends HTMLElement {
             this.editable.innerText += value.textContent;
         } else {
             this.editable.innerText = value.textContent;
+            if (value.metadata) {
+                this.metadata = value.metadata;
+                this.updatePreviewWithMetadata(this.metadata);
+            } else if (this.editable.innerText) {
+                this.updateLinkPreview();
+            }
         }
         this.link = this.editable.innerText;
-        this.updateLinkPreview();
     }
 
     getValue() {
         return {
-            textContent: this.editable.innerText
+            textContent: this.editable.innerText,
+            metadata: this.metadata
         };
     }
 
-    async updateLinkPreview() {
+    updatePreviewWithMetadata(metadata) {
         const titleElement = this.shadowRoot.querySelector(".link-preview-title");
         const descElement = this.shadowRoot.querySelector(".link-preview-description");
         const imageElement = this.shadowRoot.querySelector(".link-preview-image");
         const metaElement = this.shadowRoot.querySelector(".link-preview-meta");
+
+        titleElement.textContent = metadata.title || "No title available";
         
-        if (!this.link) {
-            this.resetPreview();
+        if (metadata.description) {
+            descElement.textContent = metadata.description;
+            descElement.style.display = 'block';
+        } else {
+            descElement.style.display = 'none';
+        }
+
+        if (metadata.favicon) {
+            imageElement.src = metadata.favicon;
+            imageElement.onerror = () => {
+                imageElement.src = "https://via.placeholder.com/16";
+            };
+        }
+
+        let metaInfo = [];
+        if (metadata.siteName) metaInfo.push(metadata.siteName);
+        if (metadata.author) metaInfo.push(`By ${metadata.author}`);
+        if (metadata.publishDate) {
+            const date = new Date(metadata.publishDate);
+            metaInfo.push(date.toLocaleDateString());
+        }
+        
+        if (metaInfo.length > 0) {
+            metaElement.textContent = metaInfo.join(' • ');
+            metaElement.style.display = 'block';
+        } else {
+            metaElement.style.display = 'none';
+        }
+    }
+
+    async updateLinkPreview() {
+        if (!this.link || this.metadata) {
             return;
         }
 
@@ -70,40 +109,14 @@ class LinkElement extends HTMLElement {
                 throw new Error(metadata.error);
             }
 
-            titleElement.textContent = metadata.title || "No title available";
-            
-            if (metadata.description) {
-                descElement.textContent = metadata.description;
-                descElement.style.display = 'block';
-            } else {
-                descElement.style.display = 'none';
-            }
-
-            if (metadata.favicon) {
-                imageElement.src = metadata.favicon;
-                imageElement.onerror = () => {
-                    imageElement.src = "https://via.placeholder.com/16";
-                };
-            }
-
-            let metaInfo = [];
-            if (metadata.siteName) metaInfo.push(metadata.siteName);
-            if (metadata.author) metaInfo.push(`By ${metadata.author}`);
-            if (metadata.publishDate) {
-                const date = new Date(metadata.publishDate);
-                metaInfo.push(date.toLocaleDateString());
-            }
-            
-            if (metaInfo.length > 0) {
-                metaElement.textContent = metaInfo.join(' • ');
-                metaElement.style.display = 'block';
-            } else {
-                metaElement.style.display = 'none';
-            }
+            this.metadata = metadata;
+            this.updatePreviewWithMetadata(metadata);
+            this.sendUpdates();
 
         } catch (error) {
             console.error('Error fetching metadata:', error);
             this.showErrorState();
+            this.metadata = null;
         }
     }
 
@@ -117,6 +130,7 @@ class LinkElement extends HTMLElement {
         descElement.style.display = 'none';
         imageElement.src = "https://via.placeholder.com/16";
         metaElement.style.display = 'none';
+        this.metadata = null;
     }
 
     showLoadingState() {
@@ -215,13 +229,20 @@ class LinkElement extends HTMLElement {
         if (this.handleSpecialKeys(event)) {
             return;
         }
+        
+        if (this.link !== text) {
+            this.metadata = null;
+        }
+        
         this.link = text;
         this.sendUpdates();
 
-        clearTimeout(this.debounceTimer);
-        this.debounceTimer = setTimeout(() => {
-            this.updateLinkPreview();
-        }, 500);
+        if (!this.metadata && text) {
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(() => {
+                this.updateLinkPreview();
+            }, 500);
+        }
     }
 
     sendUpdates() {
