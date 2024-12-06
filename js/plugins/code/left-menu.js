@@ -11,13 +11,12 @@ class LeftMenu extends LitElement {
             transition: all 0.3s;
             font-size: 14px;
         }
-        :host {
-        }
         ul {
             list-style-type: none;
         }
         li {
             padding: var(--padding-2) 0;
+            position: relative;
         }
         li a {
             color: var(--text-1);
@@ -33,6 +32,10 @@ class LeftMenu extends LitElement {
         }
         .outer {
             padding: var(--padding-4);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: var(--gap-3);
         }
         .new {
             display: flex;
@@ -61,7 +64,7 @@ class LeftMenu extends LitElement {
             font-size: 1rem;
             outline: none;
             border: none;
-            background-color: var(--bg-2);
+            background-color: transparent;
             font-size: 14px;
         }
         .search-div img {
@@ -78,7 +81,6 @@ class LeftMenu extends LitElement {
             gap: var(--gap-2);
             flex: 1;
         }
-
         .od {
             padding: var(--padding-2);
             color: var(--text-1);
@@ -104,39 +106,79 @@ class LeftMenu extends LitElement {
         .item {
             display: flex;
             gap: var(--gap-2);
+            align-items: center;
             padding: var(--padding-1) 0;
         }
-        .delete {
-            border: none;
-            outline: none;
-            background-color: transparent;
+        .more-options {
+            position: relative;
+            padding: 4px;
+            border-radius: 50%;
             cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .item:hover .more-options {
+            opacity: 1;
+        }
+        .more-options:hover {
+            background-color: var(--bg-3);
+        }
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: var(--bg-1);
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius);
+            padding: var(--padding-1);
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-2);
+            padding: var(--padding-2);
+            cursor: pointer;
+            border-radius: var(--radius);
+            color: var(--text-1);
+            text-decoration: none;
+        }
+        .dropdown-item:hover {
+            background-color: var(--bg-2);
         }
         img {
             width: 22px;
-        }
-
-        img {
             filter: var(--themed-svg);
         }
         ::placeholder {
             color: var(--text-2);
         }
+        @media (max-width: 900px) {
+            .more-options {
+                opacity: 1;
+            }
+        }
+
+        *::-webkit-scrollbar { width: 15px; }
+        *::-webkit-scrollbar-track { background: var(--bg-1); }
+        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
     `;
 
     static properties = {
         filteredList: { type: Array },
+        openDropdownId: { type: String },
     };
 
     constructor() {
         super();
         this.list = [];
         this.filteredList = [];
+        this.openDropdownId = null;
     }
 
     opened() {
         if (window.wisk.editor.wiskSite) return;
-
         this.setList();
     }
 
@@ -253,17 +295,27 @@ class LeftMenu extends LitElement {
         window.open(url, "_blank");
     }
 
+    toggleDropdown(id, e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.openDropdownId = this.openDropdownId === id ? null : id;
+    }
+
+    closeDropdown() {
+        this.openDropdownId = null;
+    }
+
     render() {
         if (window.wisk.editor.wiskSite) {
             return html`
             <div class="outer">
                 <button @click=${this.openInEditor} class="new" style="cursor: pointer;"> Open in Editor </button>
             </div>
-            `
+            `;
         }
 
         return html`
-            <div class="outer">
+            <div class="outer" @click=${this.closeDropdown}>
                 <div style="display: flex; gap: 10px">
                     <div>
                         <a href="/" class="new"> <img src="/a7/forget/file-plus.svg" alt="New Page" class="new-img" /> New Page</a>
@@ -274,16 +326,29 @@ class LeftMenu extends LitElement {
                         <input type="text" id="search" name="search" class="srch" placeholder="Search Documents" @input=${this.filterList} />
                     </div>
                 </div>
-                <ul style="margin-top: var(--padding-4);">
+                <ul style="flex: 1; overflow: auto;">
                     ${this.filteredList.map(
                         (item) => html`
                             <li class="item">
                                 <a href="?id=${item.id}">${item.name}</a>
-                                <button @click=${() => this.removeItem(item.id)} class="delete">Delete</button>
+                                <div class="more-options" @click=${(e) => this.toggleDropdown(item.id, e)}>
+                                    <img src="/a7/forget/morex.svg" alt="More options"/>
+                                    ${this.openDropdownId === item.id ? html`
+                                        <div class="dropdown">
+                                            <div class="dropdown-item" @click=${() => this.removeItem(item.id)}>
+                                                <img src="/a7/forget/trash.svg" alt="Delete" style="width: 20px; height: 20px; padding: 2px;"/>
+                                                Delete
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                </div>
                             </li>
                         `
                     )}
                 </ul>
+
+                <div>
+                </div>
             </div>
         `;
     }
