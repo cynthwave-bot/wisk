@@ -52,6 +52,9 @@ class AuthComponent extends LitElement {
             padding: 8px 12px;
             border: 1px solid #e6e6e6;
         }
+        input:focus {
+            border: 1px solid black;
+        }
         button {
             border: none;
             outline: none;
