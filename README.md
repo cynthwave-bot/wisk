@@ -1,4 +1,4 @@
-<img src="https://wisk.cc/a7/forget/report.png" alt="Wisk Editor Interface" style="border: 1px solid #ccc; border-radius: 7px;">
+![Wisk](/a7/screencap.png)
 
 # Wisk
 
