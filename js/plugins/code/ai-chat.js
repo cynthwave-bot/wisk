@@ -193,6 +193,7 @@ class AIChat extends LitElement {
             padding-top: 100px;
             justify-content: center;
             flex-direction: column;
+            margin-bottom: 20px;
         }
         .neo-description {
             font-size: 16px;
@@ -287,11 +288,15 @@ class AIChat extends LitElement {
         
         if (!message) return;
         
+        // Clear the textarea and reset its placeholder state
         textarea.textContent = '';
+        textarea.setAttribute('data-empty', 'true');
+        this.isInputEmpty = true;
+        
         this.loading = true;
 
         var md = "";
-
+        
         for (var i = 0; i < window.wisk.editor.elements.length; i++) {
             var element = window.wisk.editor.elements[i];
             var e = document.getElementById(element.id);
@@ -323,7 +328,7 @@ class AIChat extends LitElement {
             completion = completion.content.trim();
             
             this.messages = [
-                ...this.messages, 
+                ...this.messages,
                 {
                     content: message,
                     by: 'user',
@@ -394,6 +399,8 @@ class AIChat extends LitElement {
                         <img src="/a7/plugins/ai-chat/neo.svg" style="filter: var(--themed-svg)" />
                         <p class="neo-description">
                             Your intelligent document companion – researching, writing, and organizing at superhuman speed.
+                            <br>
+                            <a href="https://wisk.cc/neo" target="_blank" style="color: var(--fg-blue)">Learn more</a>
                         </p>
                     </div>
                     

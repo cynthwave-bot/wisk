@@ -10,6 +10,7 @@ class LeftMenu extends LitElement {
             color: var(--text-1);
             transition: all 0.3s;
             font-size: 14px;
+            user-select: none;
         }
         ul {
             list-style-type: none;
@@ -112,7 +113,7 @@ class LeftMenu extends LitElement {
         .more-options {
             position: relative;
             padding: 4px;
-            border-radius: 50%;
+            border-radius: var(--radius);
             cursor: pointer;
             opacity: 0;
             transition: opacity 0.2s;
@@ -232,6 +233,10 @@ class LeftMenu extends LitElement {
             this.requestUpdate();
         } catch (error) {
             console.error('Error deleting document:', error);
+        }
+
+        if (id == window.wisk.editor.pageId) {
+            window.location.href = "/";
         }
     }
 

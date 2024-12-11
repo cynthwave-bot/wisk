@@ -34,7 +34,7 @@ class BrainrotElement extends LitElement {
             align-items: center;
             gap: 8px;
         }
-        button {
+        button, select {
             padding: var(--padding-w2);
             background-color: var(--text-1);
             color: var(--bg-1);
@@ -58,7 +58,7 @@ class BrainrotElement extends LitElement {
         .container:hover .controls {
             opacity: 1;
         }
-        .control-button {
+        .control-button, select.control-select {
             padding: 4px 8px;
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
@@ -67,7 +67,7 @@ class BrainrotElement extends LitElement {
             cursor: pointer;
             font-size: 12px;
         }
-        .control-button:hover {
+        .control-button:hover, select.control-select:hover {
             background-color: rgba(0, 0, 0, 0.7);
         }
         .drag-handle {
@@ -88,6 +88,7 @@ class BrainrotElement extends LitElement {
 
     static properties = {
         show: { type: Boolean },
+        currentVideo: { type: String },
     };
 
     constructor() {
@@ -99,16 +100,21 @@ class BrainrotElement extends LitElement {
         this.currentX = 0;
         this.currentY = 0;
         this.moveDistance = 0;
-        this.links = [
-            "https://s3.cynthwave.com/brainrot/gta5.mp4",
-            "https://s3.cynthwave.com/brainrot/minecraft.mp4",
-            "https://s3.cynthwave.com/brainrot/subwaysurfers.mp4",
-        ];
+        this.videos = {
+            'GTA 5': "https://s3.cynthwave.com/brainrot/gta5.mp4",
+            'Minecraft': "https://s3.cynthwave.com/brainrot/minecraft.mp4",
+            'Subway Surfers': "https://s3.cynthwave.com/brainrot/subwaysurfers.mp4",
+            'Riders Republic': "https://s3.cynthwave.com/brainrot/ridersrepublic.mp4",
+            'Forza Horizon 5 - Day': "https://s3.cynthwave.com/brainrot/forzahorizon-2.mp4",
+            'Forza Horizon 5 - Night': "https://s3.cynthwave.com/brainrot/forzahorizon-1.mp4",
+            'WRC 7': "https://s3.cynthwave.com/brainrot/wrc-7.mp4",
+        };
+        this.currentVideo = this.videos[Object.keys(this.videos)[Math.floor(Math.random() * Object.keys(this.videos).length)]];
     }
 
     startDragging = (e) => {
         if (!this.show && !e.target.closest('.drag-handle')) return;
-        if (e.target.classList.contains('control-button')) return;
+        if (e.target.classList.contains('control-button') || e.target.classList.contains('control-select')) return;
         
         this.isDragging = true;
         this.moveDistance = 0;
@@ -147,11 +153,9 @@ class BrainrotElement extends LitElement {
         const deltaY = clientY - (this.startY + rect.top);
         this.moveDistance += Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-        // Calculate new position relative to viewport
         let newX = clientX - this.startX;
         let newY = clientY - this.startY;
 
-        // Constrain to viewport boundaries with padding
         const padding = 20;
         const maxX = window.innerWidth - rect.width;
         const maxY = window.innerHeight - rect.height;
@@ -191,6 +195,16 @@ class BrainrotElement extends LitElement {
         }
     }
 
+    handleVideoChange(e) {
+        e.stopPropagation();
+        this.currentVideo = e.target.value;
+        const video = this.shadowRoot.querySelector('video');
+        if (video) {
+            video.load();
+            video.play();
+        }
+    }
+
     render() {
         return html`
             ${this.show 
@@ -199,12 +213,17 @@ class BrainrotElement extends LitElement {
                         @mousedown=${this.startDragging}
                         @touchstart=${this.startDragging}>
                         <video 
-                            src="${this.links[Math.floor(Math.random() * this.links.length)]}" 
+                            src="${this.currentVideo}" 
                             autoplay 
                             loop 
                             muted>
                         </video>
                         <div class="controls">
+                            <select class="control-select" @change=${this.handleVideoChange}>
+                                ${Object.entries(this.videos).map(([name, url]) => html`
+                                    <option value="${url}" ?selected=${url === this.currentVideo}>${name}</option>
+                                `)}
+                            </select>
                             <button class="control-button" @click=${this.toggleMute}>
                                 Unmute
                             </button>
@@ -231,3 +250,5 @@ class BrainrotElement extends LitElement {
 
 customElements.define("brainrot-element", BrainrotElement);
 document.body.appendChild(document.createElement("brainrot-element"));
+
+document.querySelector('brainrot-element').style.zIndex = 99;

@@ -43,8 +43,24 @@ class ExportComponent extends LitElement {
             cursor: pointer;
             outline: none;
             font-weight: 500;
-            filter: var(--drop-shadow);
+            transition: background-color 0.2s ease;
         }
+        button {
+            background-color: var(--fg-blue);
+            color: var(--bg-blue);
+            font-weight: bold;
+            border: 1px solid var(--fg-blue);
+        }
+        button:hover:not(:disabled) {
+            filter: brightness(1.1);
+            background-color: var(--bg-blue);
+            color: var(--fg-blue);
+        }
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
         .placeholder-div {
             display: flex;
             flex-wrap: wrap;

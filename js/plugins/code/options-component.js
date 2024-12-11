@@ -198,7 +198,7 @@ class OptionsComponent extends LitElement {
             padding: var(--padding-3);
         }
         .options-section--column {
-            gap: var(--gap-2);
+            gap: var(--gap-3);
             flex-direction: column;
             align-items: flex-start;
         }
@@ -613,10 +613,12 @@ class OptionsComponent extends LitElement {
                                 </p>
                             </div>
                             <div style="flex: 1"></div>
-                            <button class="toggle-switch btn-primary" @click="${() => this.handlePluginInstall(this.selectedPlugin)}"
-                                ?disabled="${this.isPluginInstalled(this.selectedPlugin.name)}" >
-                                ${this.isPluginInstalled(this.selectedPlugin.name) ? 'Installed' : 'Install'}
-                            </button>
+                            <div style="padding: var(--padding-3); display: flex; align-items: center; justify-content: center;">
+                                <button class="toggle-switch btn-primary" @click="${() => this.handlePluginInstall(this.selectedPlugin)}"
+                                    ?disabled="${this.isPluginInstalled(this.selectedPlugin.name)}">
+                                    ${this.isPluginInstalled(this.selectedPlugin.name) ? 'Installed' : 'Install'}
+                                </button>
+                            </div>
                         </div>
 
                         <div class="options-section options-section--column">

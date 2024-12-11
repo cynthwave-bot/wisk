@@ -49,17 +49,23 @@ class ShareComponent extends LitElement {
             padding: var(--padding-w2);
             background-color: var(--text-1);
             color: var(--bg-1);
-            border: none;
+            border: 1px solid var(--text-1);
             border-radius: var(--radius);
             cursor: pointer;
             outline: none;
             font-weight: 500;
             filter: var(--drop-shadow);
+            transition: background-color 0.2s ease;
         }
         .secondary-button {
             background-color: var(--bg-2);
             color: var(--text-1);
             border: 1px solid var(--border-1);
+        }
+        button:hover:not(:disabled) {
+            filter: brightness(1.1);
+            background-color: var(--bg-1);
+            color: var(--text-1);
         }
         .od {
             padding: var(--padding-2);
