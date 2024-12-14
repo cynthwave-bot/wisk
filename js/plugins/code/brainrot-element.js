@@ -104,6 +104,7 @@ class BrainrotElement extends LitElement {
             'GTA 5': "https://s3.cynthwave.com/brainrot/gta5.mp4",
             'Minecraft': "https://s3.cynthwave.com/brainrot/minecraft.mp4",
             'Subway Surfers': "https://s3.cynthwave.com/brainrot/subwaysurfers.mp4",
+            'Fallguys': "https://s3.cynthwave.com/brainrot/fallguys.mp4",
             'Riders Republic': "https://s3.cynthwave.com/brainrot/ridersrepublic.mp4",
             'Forza Horizon 5 - Day': "https://s3.cynthwave.com/brainrot/forzahorizon-2.mp4",
             'Forza Horizon 5 - Night': "https://s3.cynthwave.com/brainrot/forzahorizon-1.mp4",

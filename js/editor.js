@@ -69,18 +69,6 @@ const createBlockElement = (elementId, blockType) => {
     return block;
 };
 
-// Database operations
-const saveToDatabase = async () => {
-    return;
-
-    await window.wisk.db.setItem(window.wisk.editor.pageId, {
-        name: window.wisk.editor.elements[0].value.textContent,
-        lastUpdated: Math.floor(Date.now() / 1000).toString(),
-        elements: window.wisk.editor.elements,
-        deletedElements: deletedElements,
-    });
-};
-
 // Editor core functions
 window.wisk.editor.generateNewId = () => [...Array(15)]
     .map(() => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random() * 52)]).join("");
@@ -88,7 +76,7 @@ window.wisk.editor.generateNewId = () => [...Array(15)]
 window.wisk.editor.elements = [];
 
 window.wisk.editor.addConfigChange = async function (arr) {
-    await sendJustUpdates(
+    await saveUpdates(
         arr,
         window.wisk.editor.elements.map((e) => e.id),
         [],
@@ -97,7 +85,6 @@ window.wisk.editor.addConfigChange = async function (arr) {
     for (const change of arr) {
         configChanges.push(change);
     }
-    await saveToDatabase();
     configChanges = [];
 };
 
@@ -683,8 +670,7 @@ window.wisk.editor.justUpdates = async function (elementId) {
 
         const elementIds = window.wisk.editor.elements.map((e) => e.id);
 
-        await sendJustUpdates(changed, elementIds, deletedElementsLeft);
-        await saveToDatabase();
+        await saveUpdates(changed, elementIds, deletedElementsLeft);
 
         elementUpdatesLeft = [];
         deletedElementsLeft = [];

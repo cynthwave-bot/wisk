@@ -1,4 +1,7 @@
-// sync with server
+// sync.js
+let socket;
+let firstMsg = true;
+
 async function sync() {
     window.wisk.utils.showLoading("Syncing with server...");
     console.log("PAGE", window.wisk.editor.pageId);
@@ -15,9 +18,6 @@ async function sync() {
 
     console.log("Offline pages:", offlinePages);
 }
-
-let socket;
-let firstMsg = true;
 
 function initializeWebSocket() {
     return new Promise((resolve, reject) => {
@@ -107,7 +107,16 @@ async function live() {
     }
 }
 
-function sendJustUpdates(changes, allElements, newDeletedElements) {
+function saveUpdates(changes, allElements, newDeletedElements) {
+    // save to db -- for now
+    // window.wisk.db.setItem(window.wisk.editor.pageId, {
+    //     name: window.wisk.editor.elements[0].value.textContent,
+    //     lastUpdated: Math.floor(Date.now() / 1000).toString(),
+    //     elements: window.wisk.editor.elements,
+    //     deletedElements: deletedElements,
+    // });
+
+    // send to server
     sendMessage(JSON.stringify({
         changes: changes,
         allElements: allElements,

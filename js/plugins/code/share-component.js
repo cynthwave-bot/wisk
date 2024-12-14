@@ -195,6 +195,7 @@ class ShareComponent extends LitElement {
         this.isPublished = !this.isPublished;
 
         await window.wisk.editor.addConfigChange([{path: "document.config.access.public", values: { public: this.isPublished }}]);
+        window.wisk.editor.data.config.public = this.isPublished;
         
         if (this.isPublished) {
             this.url = await this.liveUrl();

@@ -1,3 +1,4 @@
+// db.js
 window.wisk = window.wisk || {};
 window.wisk.db = (function() {
     const dbName = 'WiskDatabase';

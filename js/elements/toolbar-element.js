@@ -22,7 +22,7 @@ class ToolbarElement extends LitElement {
             filter: var(--drop-shadow);
             padding: var(--padding-2);
             gap: var(--gap-2);
-            z-index: 120;
+            z-index: 99;
             display: none;
             width: max-content;
         }
@@ -277,6 +277,7 @@ class ToolbarElement extends LitElement {
             box-shadow: var(--drop-shadow);
             min-width: 150px;
             z-index: 1002;
+            overflow: hidden;
         }
 
         .submenu button {

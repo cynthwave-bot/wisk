@@ -11,8 +11,8 @@ function toggleMenu() {
 }
 
 function getURLParam(str) {
-
     // if url contains wisk.site then get the id from path url which is everything after the wisk.site/
+    // TODO also this sucks make it better
     if (window.location.href.includes("wisk.site")) {
         var split = window.location.href.split("wisk.site/");
         var id = split[1];
