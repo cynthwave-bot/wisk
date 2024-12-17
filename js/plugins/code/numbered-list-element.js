@@ -1,71 +1,78 @@
-class CheckboxElement extends BaseTextElement {
+class NumberedListElement extends BaseTextElement {
     constructor() {
         super();
         
-        // Initialize checkbox-specific properties
+        // Initialize numbered list properties
         this.indent = 0;
-        this.checked = false;
+        this.number = 1; // Default starting number
         
-        // Re-render to ensure checkbox structure
+        // Re-render to ensure list structure
         this.render();
         
-        // Setup checkbox-specific elements
-        this.checkbox = this.shadowRoot.querySelector("#checkbox");
+        // Setup list-specific elements
+        this.numberElement = this.shadowRoot.querySelector("#number");
         this.updateIndent();
-        this.updateCheckbox();
-        
-        // Initialize placeholder state
-        this.updatePlaceholder();
+        this.updateNumber();
     }
 
     connectedCallback() {
         super.connectedCallback();
-        this.checkbox = this.shadowRoot.querySelector("#checkbox");
+        this.numberElement = this.shadowRoot.querySelector("#number");
         this.updateIndent();
-        this.updateCheckbox();
-        this.updatePlaceholder();
-
-        // Add checkbox-specific event listener
-        this.checkbox.addEventListener("change", this.onCheckboxChange.bind(this));
+        this.updateNumber();
     }
 
-    updatePlaceholder() {
-        if (this.editable) {
-            const isEmpty = !this.editable.innerHTML.trim();
-            this.editable.classList.toggle('empty', isEmpty);
-            this.editable.dataset.placeholder = this.getAttribute("placeholder") || this.placeholder;
+    // Convert number to different styles based on indent level
+    getNumberStyle(num, level) {
+        const styles = [
+            // Level 0: 1, 2, 3...
+            (n) => n,
+            // Level 1: i, ii, iii...
+            (n) => this.toRoman(n).toLowerCase(),
+            // Level 2: a, b, c...
+            (n) => String.fromCharCode(96 + n),
+            // Level 3: 1, 2, 3... (repeat)
+            (n) => n,
+            // Level 4: i, ii, iii... (repeat)
+            (n) => this.toRoman(n).toLowerCase()
+        ];
+
+        return styles[level % styles.length](num);
+    }
+
+    // Convert number to Roman numerals
+    toRoman(num) {
+        const romanNumerals = [
+            { value: 1000, symbol: 'M' },
+            { value: 900, symbol: 'CM' },
+            { value: 500, symbol: 'D' },
+            { value: 400, symbol: 'CD' },
+            { value: 100, symbol: 'C' },
+            { value: 90, symbol: 'XC' },
+            { value: 50, symbol: 'L' },
+            { value: 40, symbol: 'XL' },
+            { value: 10, symbol: 'X' },
+            { value: 9, symbol: 'IX' },
+            { value: 5, symbol: 'V' },
+            { value: 4, symbol: 'IV' },
+            { value: 1, symbol: 'I' }
+        ];
+
+        let result = '';
+        for (let numeral of romanNumerals) {
+            while (num >= numeral.value) {
+                result += numeral.symbol;
+                num -= numeral.value;
+            }
         }
-    }
-
-    updateIndent() {
-        const indentWidth = 20;
-        this.shadowRoot.querySelectorAll('.indent').forEach(el => el.remove());
-        const container = this.shadowRoot.querySelector("#list-outer");
-        for (let i = 0; i < this.indent; i++) {
-            const indentSpan = document.createElement('span');
-            indentSpan.className = 'indent';
-            container.insertBefore(indentSpan, container.firstChild);
-        }
-    }
-
-    updateCheckbox() {
-        if (this.checkbox) {
-            this.checkbox.checked = this.checked;
-        }
-    }
-
-    onCheckboxChange(event) {
-        if (window.wisk.editor.wiskSite) return;
-
-        this.checked = event.target.checked;
-        this.sendUpdates();
+        return result;
     }
 
     getValue() {
         return {
             textContent: this.editable?.innerHTML || "",
             indent: this.indent,
-            checked: this.checked,
+            number: this.number,
             references: this.references || []
         };
     }
@@ -83,12 +90,41 @@ class CheckboxElement extends BaseTextElement {
         } else {
             this.editable.innerHTML = value.textContent;
             this.indent = value.indent || 0;
-            this.checked = value.checked || false;
+            this.number = value.number || 1;
             this.references = value.references || [];
         }
         
         this.updateIndent();
-        this.updateCheckbox();
+        this.updateNumber();
+    }
+
+    updateIndent() {
+        const indentWidth = 24;
+        const numberWidth = 24;
+        if (this.numberElement && this.editable) {
+            this.numberElement.style.left = `${this.indent * indentWidth}px`;
+            this.editable.style.paddingLeft = `${(this.indent * indentWidth) + numberWidth + 8}px`;
+            this.updateNumber(); // Update number style when indent changes
+        }
+    }
+
+    updateNumber() {
+        if (this.numberElement) {
+            const formattedNumber = this.getNumberStyle(this.number, this.indent);
+            this.numberElement.textContent = formattedNumber + '.';
+        }
+    }
+
+    handleBeforeInput(event) {
+        if (event.inputType === 'insertText' && event.data === '/') {
+            event.preventDefault();
+            window.wisk.editor.showSelector(this.id);
+        } else if (event.inputType === 'insertText' && event.data === ' ' && this.getFocus() === 0) {
+            event.preventDefault();
+            this.indent++;
+            this.updateIndent();
+            this.sendUpdates();
+        }
     }
 
     handleEnterKey(event) {
@@ -118,11 +154,11 @@ class CheckboxElement extends BaseTextElement {
         } else {
             window.wisk.editor.createNewBlock(
                 this.id, 
-                "checkbox-element", 
+                "numbered-list-element", 
                 { 
                     textContent: afterContainer.innerHTML,
                     indent: this.indent,
-                    checked: false 
+                    number: this.number + 1
                 }, 
                 { x: 0 }
             );
@@ -164,18 +200,6 @@ class CheckboxElement extends BaseTextElement {
         }
     }
 
-    handleBeforeInput(event) {
-        if (event.inputType === 'insertText' && event.data === '/') {
-            event.preventDefault();
-            window.wisk.editor.showSelector(this.id);
-        } else if (event.inputType === 'insertText' && event.data === ' ' && this.getFocus() === 0) {
-            event.preventDefault();
-            this.indent++;
-            this.updateIndent();
-            this.sendUpdates();
-        }
-    }
-
     render() {
         const style = `
             <style>
@@ -185,34 +209,31 @@ class CheckboxElement extends BaseTextElement {
                 margin: 0;
                 font-family: var(--font);
             }
-            #editable {
-                outline: none;
-                flex: 1;
-                line-height: 1.5;
-                position: relative; /* Added for placeholder positioning */
-                min-height: 24px; /* Added to ensure consistent height */
-            }
-            #list-outer {
-                width: 100%;
+            #container {
+                position: relative;
                 padding: var(--padding-2);
-                border: none;
-                display: flex;
-                flex-direction: row;
-                gap: 8px;
-                align-items: flex-start; /* Changed from center to flex-start */
-                position: relative; /* Added for positioning context */
             }
-            .indent {
-                width: 20px;
+            #number {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-1);
+                font-size: 14px;
+                min-width: 20px;
+                text-align: right;
             }
-            #checkbox {
-                display: inline-block;
-                vertical-align: top; /* Changed from middle to top */
-                height: 16px;
-                width: 16px;
-                accent-color: var(--fg-blue);
-                background-color: var(--bg-1);
-                margin-top: 4px; /* Added to align with text */
+            #editable {
+                line-height: 1.5;
+                outline: none;
+                transition: padding-left 0.1s ease-in-out;
+                min-height: 24px;
+            }
+            #editable.empty:empty:before {
+                content: attr(data-placeholder);
+                color: var(--text-3);
+                pointer-events: none;
+                position: absolute;
+                opacity: 0.6;
             }
             a {
                 color: var(--fg-blue);
@@ -225,31 +246,21 @@ class CheckboxElement extends BaseTextElement {
                 margin: 0 1px;
                 font-family: var(--font-mono);
             }
-            #editable.empty:empty:before {
-                content: attr(data-placeholder);
-                color: var(--text-3);
-                pointer-events: none;
-                position: absolute;
-                opacity: 0.6;
-                top: 0;
-                left: 0;
-            }
             </style>
         `;
         const content = `
-            <div id="list-outer">
-                <input type="checkbox" id="checkbox" name="checkbox" value="checkbox" ${window.wisk.editor.wiskSite ? 'onclick="return false"' : ''} />
-                <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a task...'}"></div>
+            <div id="container">
+                <div id="number">1.</div>
+                <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a list item...'}" ></div>
             </div>
         `;
         this.shadowRoot.innerHTML = style + content;
     }
 
     getTextContent() {
-        const indentation = '  '.repeat(this.indent); // Two spaces per indent level
-        const checkboxMarker = this.checked ? '[x]' : '[ ]';
-        const markdown = indentation + `- ${checkboxMarker} ` + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML);
-
+        const indentation = '  '.repeat(this.indent);
+        const formattedNumber = this.getNumberStyle(this.number, this.indent);
+        const markdown = indentation + `${formattedNumber}. ` + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML);
         return {
             html: this.editable.innerHTML,
             text: this.editable.innerText,
@@ -258,4 +269,4 @@ class CheckboxElement extends BaseTextElement {
     }
 }
 
-customElements.define("checkbox-element", CheckboxElement);
+customElements.define("numbered-list-element", NumberedListElement);

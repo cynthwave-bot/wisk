@@ -83,6 +83,26 @@
             ]
         },
 
+        "manage-citations": {
+            "name": "manage-citations",
+            "title": "Manage Citations",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "citation.svg",
+            "tags": ["citation", "reference", "bibliography", "cite"],
+            "description": "Manage your citations",
+            "contents": [
+                {
+                    "title": "Manage Citations",
+                    "icon": "citation.svg",
+                    "category": "right-sidebar",
+                    "component": "manage-citations",
+                    "nav": true,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
         "left-menu": {
             "name": "left-menu",
             "title": "Left Menu",
@@ -357,6 +377,28 @@
                     "icon": "list.svg",
                     "category": "component",
                     "component": "list-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "numbered-list-element": {
+            "name": "numbered-list-element",
+            "title": "Numbered List Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "numbered.svg",
+            "tags": ["list", "bullet", "ordered", "unordered"],
+            "description": "Numbered List element",
+            "contents": [
+                {
+                    "title": "Numbered List",
+                    "icon": "numbered.svg",
+                    "category": "component",
+                    "component": "numbered-list-element",
                     "nav": false,
                     "textual": true,
                     "loadAsModule": false,

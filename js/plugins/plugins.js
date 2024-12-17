@@ -10,6 +10,7 @@ window.wisk.plugins = {
         "image-element",
         "code-element",
         "list-element",
+        "numbered-list-element",
         "checkbox-element",
         "quote-element",
         "callout-element",
@@ -25,6 +26,7 @@ window.wisk.plugins = {
 
         // other elements
         'ai-chat',
+        'manage-citations',
         'share-manager',
         'export-manager',
         "more",
