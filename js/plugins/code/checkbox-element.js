@@ -1,20 +1,14 @@
 class CheckboxElement extends BaseTextElement {
     constructor() {
         super();
-        
-        // Initialize checkbox-specific properties
         this.indent = 0;
         this.checked = false;
-        
-        // Re-render to ensure checkbox structure
         this.render();
         
-        // Setup checkbox-specific elements
         this.checkbox = this.shadowRoot.querySelector("#checkbox");
         this.updateIndent();
         this.updateCheckbox();
         
-        // Initialize placeholder state
         this.updatePlaceholder();
     }
 
@@ -25,7 +19,6 @@ class CheckboxElement extends BaseTextElement {
         this.updateCheckbox();
         this.updatePlaceholder();
 
-        // Add checkbox-specific event listener
         this.checkbox.addEventListener("change", this.onCheckboxChange.bind(this));
     }
 
@@ -194,7 +187,6 @@ class CheckboxElement extends BaseTextElement {
             }
             #list-outer {
                 width: 100%;
-                padding: var(--padding-2);
                 border: none;
                 display: flex;
                 flex-direction: row;

@@ -391,6 +391,66 @@ class ToolbarElement extends LitElement {
             border: 1px solid var(--border-1);
         }
 
+        .color-menu {
+            display: none;
+            position: absolute;
+            left: 100%;
+            transform: translateX(-50%);
+            top: 100%;
+            background: var(--bg-1);
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius);
+            box-shadow: var(--drop-shadow);
+            padding: var(--padding-3);
+            z-index: 1002;
+            width: 250px;
+            margin-top: calc(var(--padding-2) * -1);
+        }
+
+        .submenu-container:hover .color-menu {
+            display: block;
+        }
+
+        .color-section {
+            margin-bottom: var(--padding-3);
+        }
+
+        .color-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .color-section h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-2);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--gap-1);
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-1);
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .submenu-container:hover .color-submenu {
+            display: block;
+        }
+
     `;
 
     static properties = {
@@ -428,6 +488,21 @@ class ToolbarElement extends LitElement {
             });
         }
         this.previewText = "";
+
+        this.colorOptions = {
+            red: { fg: 'var(--fg-red)', bg: 'var(--bg-red)', name: 'Red' },
+            green: { fg: 'var(--fg-green)', bg: 'var(--bg-green)', name: 'Green' },
+            blue: { fg: 'var(--fg-blue)', bg: 'var(--bg-blue)', name: 'Blue' },
+            yellow: { fg: 'var(--fg-yellow)', bg: 'var(--bg-yellow)', name: 'Yellow' },
+            purple: { fg: 'var(--fg-purple)', bg: 'var(--bg-purple)', name: 'Purple' },
+            cyan: { fg: 'var(--fg-cyan)', bg: 'var(--bg-cyan)', name: 'Cyan' },
+            orange: { fg: 'var(--fg-orange)', bg: 'var(--bg-orange)', name: 'Orange' },
+            white: { fg: 'var(--text-1)', bg: 'var(--bg-1)', name: 'Default' },
+            black: { fg: 'var(--fg-black)', bg: 'var(--bg-black)', name: 'Black' }
+        };
+
+        this.activeTextColor = 'var(--text-1)';
+        this.activeBackgroundColor = 'var(--bg-1)';
     }
 
     updateToolbarPosition() {
@@ -451,6 +526,47 @@ class ToolbarElement extends LitElement {
 
     async handleToolbarAction(action, operation) {
         switch (action) {
+
+            case "subscript":
+            case "superscript":
+                this.dispatchEvent(
+                    new CustomEvent("toolbar-action", {
+                        detail: { action, elementId: this.elementId, selectedText: this.selectedText },
+                        bubbles: true,
+                        composed: true,
+                    })
+                );
+                break;
+            case "text-color":
+                this.activeTextColor = value;
+                this.dispatchEvent(
+                    new CustomEvent("toolbar-action", {
+                        detail: { 
+                            action: 'foreColor', 
+                            elementId: this.elementId, 
+                            selectedText: this.selectedText,
+                            formatValue: value
+                        },
+                        bubbles: true,
+                        composed: true,
+                    })
+                );
+                break;
+            case "background-color":
+                this.activeBackgroundColor = value;
+                this.dispatchEvent(
+                    new CustomEvent("toolbar-action", {
+                        detail: { 
+                            action: 'backColor', 
+                            elementId: this.elementId, 
+                            selectedText: this.selectedText,
+                            formatValue: value
+                        },
+                        bubbles: true,
+                        composed: true,
+                    })
+                );
+                break;
             case "link":
                 this.mode = "dialog";
                 this.dialogName = "link";
@@ -505,6 +621,61 @@ class ToolbarElement extends LitElement {
             e.preventDefault(); // Prevent newline insertion
             this.handleLinkSubmit(e);
         }
+    }
+
+    renderColorMenu() {
+        return html`
+            <div class="color-menu">
+                <div class="color-section">
+                    <h3>Text Color</h3>
+                    <div class="color-grid">
+                        ${Object.entries(this.colorOptions).map(([key, color]) => html`
+                            <div
+                                class="color-option ${color.fg === this.activeTextColor ? 'active' : ''}"
+                                    style="background-color: ${color.fg}"
+                                        @click=${() => this.dispatchEvent(
+                                            new CustomEvent("toolbar-action", {
+                                                detail: { 
+                                                    action: 'foreColor', 
+                                                    elementId: this.elementId, 
+                                                    selectedText: this.selectedText,
+                                                    formatValue: color.fg
+                                                },
+                                                bubbles: true,
+                                                composed: true,
+                                            })
+                                        )}
+                                            title="${color.name}"
+                            ></div>
+                        `)}
+                    </div>
+                </div>
+                <div class="color-section">
+                    <h3>Background Color</h3>
+                    <div class="color-grid">
+                        ${Object.entries(this.colorOptions).map(([key, color]) => html`
+                            <div
+                                class="color-option ${color.bg === this.activeBackgroundColor ? 'active' : ''}"
+                                    style="background-color: ${color.bg}"
+                                        @click=${() => this.dispatchEvent(
+                                            new CustomEvent("toolbar-action", {
+                                                detail: { 
+                                                    action: 'backColor', 
+                                                    elementId: this.elementId, 
+                                                    selectedText: this.selectedText,
+                                                    formatValue: color.bg
+                                                },
+                                                bubbles: true,
+                                                composed: true,
+                                            })
+                                        )}
+                                            title="${color.name}"
+                            ></div>
+                        `)}
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     async handleAIOperation(operation) {
@@ -707,12 +878,16 @@ class ToolbarElement extends LitElement {
 
     render() {
         return html`
-
             ${this.mode === "dialog" || this.mode === "preview" ? html`<div class="backdrop" @click=${this.closeDialog}></div>` : ""}
 
             <div class="toolbar ${this.visible ? "visible" : ""}" style="">
-                <button @click=${() => this.handleToolbarAction("ai-improve")} title="Improve with AI" data-wide><img src="/a7/forget/ai.svg" alt="AI" /> AI Commands</button>
-                <button @click=${() => this.handleToolbarAction("find-source")} title="Find Source" data-wide><img src="/a7/forget/source.svg" alt="Source" /> Find Source</button>
+                <button @click=${() => this.handleToolbarAction("ai-improve")} title="Improve with AI" data-wide>
+                    <img src="/a7/forget/ai.svg" alt="AI" /> AI Commands
+                </button>
+                <button @click=${() => this.handleToolbarAction("find-source")} title="Find Source" data-wide>
+                    <img src="/a7/forget/source.svg" alt="Source" /> Find Source
+                </button>
+                <div class="separator"></div>
                 <button @click=${() => this.handleToolbarAction("bold")} title="Bold">
                     <img src="/a7/forget/bold.svg" alt="Bold" />
                 </button>
@@ -725,6 +900,22 @@ class ToolbarElement extends LitElement {
                 <button @click=${() => this.handleToolbarAction("strikeThrough")} title="Strikethrough">
                     <img src="/a7/forget/strikethrough.svg" alt="Strikethrough" />
                 </button>
+                <div class="separator"></div>
+                <button @click=${() => this.handleToolbarAction("subscript")} title="Subscript">
+                    <img src="/a7/plugins/toolbar/subscript.svg" alt="Subscript" />
+                </button>
+                <button @click=${() => this.handleToolbarAction("superscript")} title="Superscript">
+                    <img src="/a7/plugins/toolbar/superscript.svg" alt="Superscript" />
+                </button>
+                <div class="separator"></div>
+                <div class="submenu-container">
+                    <button class="submenu-trigger" title="Colors" style="width: auto; padding: 0 5px">
+                        <img src="/a7/plugins/toolbar/color.svg" alt="Colors" />
+                        <img src="/a7/plugins/toolbar/down.svg" alt="Colors" />
+                    </button>
+                    ${this.renderColorMenu()}
+                </div>
+                <div class="separator"></div>
                 <button @click=${() => this.handleToolbarAction("link")} title="Add Link">
                     <img src="/a7/forget/link.svg" alt="Link" />
                 </button>
@@ -736,7 +927,6 @@ class ToolbarElement extends LitElement {
                           </div>
                       `
                     : ""}
-
 
                 ${this.mode === "dialog" || this.mode === "preview"
                     ? html`
@@ -751,6 +941,7 @@ class ToolbarElement extends LitElement {
             </div>
         `;
     }
+
     async updateSearch() {
         window.showToast("Searching for sources...", 3000);
         this.loading = true;

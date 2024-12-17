@@ -1,15 +1,10 @@
 class NumberedListElement extends BaseTextElement {
     constructor() {
         super();
-        
-        // Initialize numbered list properties
         this.indent = 0;
-        this.number = 1; // Default starting number
-        
-        // Re-render to ensure list structure
+        this.number = 1;
         this.render();
-        
-        // Setup list-specific elements
+
         this.numberElement = this.shadowRoot.querySelector("#number");
         this.updateIndent();
         this.updateNumber();
@@ -22,7 +17,6 @@ class NumberedListElement extends BaseTextElement {
         this.updateNumber();
     }
 
-    // Convert number to different styles based on indent level
     getNumberStyle(num, level) {
         const styles = [
             // Level 0: 1, 2, 3...
@@ -211,7 +205,6 @@ class NumberedListElement extends BaseTextElement {
             }
             #container {
                 position: relative;
-                padding: var(--padding-2);
             }
             #number {
                 position: absolute;

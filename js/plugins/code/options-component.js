@@ -723,6 +723,7 @@ class OptionsComponent extends LitElement {
                                 All icons in the webapp are from
                                 <ul>
                                     <li> • <a href="https://iconoir.com/" target="_blank" class="link-blue">Iconoir</a>, An open source icons library with 1500+ icons. </li>
+                                    <li> • <a href="https://www.svgrepo.com/collection/zest-interface-icons/" target="_blank" class="link-blue">Zest Interface Icons</a>, A collection of 1000+ free SVG icons. </li>
                                     <li> • <a href="https://heroicons.com/" target="_blank" class="link-blue">Heroicons</a>, Beautiful hand-crafted SVG icons, by the makers of Tailwind CSS. </li>
                                     <li> • <a href="https://github.com/sohzm" target="_blank" class="link-blue">Me</a>, I made some too!</li>
                                 </ul>

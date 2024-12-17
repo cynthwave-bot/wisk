@@ -1,14 +1,9 @@
 class ListElement extends BaseTextElement {
     constructor() {
         super();
-        
-        // Initialize list-specific properties
         this.indent = 0;
-        
-        // Re-render to ensure list structure
         this.render();
         
-        // Setup list-specific elements
         this.dotElement = this.shadowRoot.querySelector("#dot");
         this.updateIndent();
     }
@@ -149,7 +144,6 @@ class ListElement extends BaseTextElement {
             }
             #container {
                 position: relative;
-                padding: var(--padding-2);
             }
             #dot {
                 position: absolute;

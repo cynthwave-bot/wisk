@@ -11,6 +11,7 @@ class BaseTextElement extends HTMLElement {
         this.toolbar = document.getElementById("formatting-toolbar");
         this.toolbar.addEventListener("toolbar-action", (e) => {
             if (e.detail.elementId === this.id) {
+                console.log("Toolbar action received", e.detail);
                 this.handleToolbarAction(e.detail);
             }
         });
@@ -617,32 +618,125 @@ class BaseTextElement extends HTMLElement {
     }
 
     handleToolbarAction(detail) {
-        const {action, selectedText} = detail;
-        switch (action) {
-            case "bold":
-            case "italic":
-            case "underline":
-            case "strikeThrough":
-                this.applyFormat(action);
-                break;
-            case "make-longer":
-            case "make-shorter":
-            case "fix-spelling-grammar":
-            case "improve-writing":
-            case "summarize":
-                // The toolbar will handle the API call and send back results
-                // via the ai-operation-complete event
-                break;
+        if (!this.restoreSelection()) {
+            console.warn('No saved selection for toolbar action');
+            return;
+        }
 
-            case "ai-improve":
-                console.log("AI improve requested for:", selectedText);
-                break;
-            case "find-source":
-                console.log("Find source requested for:", selectedText);
-                break;
-            case "open-ai-chat":
-                console.log("Open AI chat requested for:", selectedText);
-                break;
+        const { action, formatValue } = detail;
+
+        try {
+            // Add debug logging
+            console.log(`Applying format: ${action} with value: ${formatValue}`);
+
+            switch (action) {
+                case "bold":
+                case "italic":
+                case "underline":
+                case "strikeThrough":
+                case "subscript":
+                case "superscript":
+                    document.execCommand(action, false, null);
+                    break;
+                case "foreColor":
+                    document.execCommand('styleWithCSS', false, true);
+                    document.execCommand('foreColor', false, formatValue);
+                    document.execCommand('styleWithCSS', false, false);
+                    break;
+                case "backColor":
+                    // Try direct background-color application using a span
+                    const selection = this.shadowRoot.getSelection();
+                    if (selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        const span = document.createElement('span');
+                        span.style.backgroundColor = formatValue;
+
+                        // Preserve existing content
+                        const content = range.extractContents();
+                        span.appendChild(content);
+                        range.insertNode(span);
+
+                        // Update selection
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    }
+                    break;
+                case "make-longer":
+                case "make-shorter":
+                case "fix-spelling-grammar":
+                case "improve-writing":
+                case "summarize":
+                    // These are handled by the toolbar's AI operations
+                    break;
+            }
+        } catch (error) {
+            console.error('Error applying format:', error, error.stack);
+            this.handleFormatFallback(action, formatValue);
+        }
+
+        // Clear selection and update content
+        this.clearSelection();
+        this.sendUpdates();
+    }
+
+    // Also update the fallback handler for background color
+    handleFormatFallback(action, formatValue) {
+        try {
+            const selection = this.shadowRoot.getSelection();
+            const range = selection.getRangeAt(0);
+
+            if (action === 'backColor') {
+                const span = document.createElement('span');
+                span.style.backgroundColor = formatValue;
+
+                // Get selected content
+                const fragment = range.extractContents();
+                span.appendChild(fragment);
+                range.insertNode(span);
+
+                // Cleanup any nested empty spans
+                const emptySpans = span.querySelectorAll('span:empty');
+                emptySpans.forEach(emptySpan => emptySpan.remove());
+
+                // Update selection
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } else {
+                // Original fallback code for other formats
+                const span = document.createElement('span');
+                switch (action) {
+                    case "foreColor":
+                        span.style.color = formatValue;
+                        break;
+                    case "subscript":
+                        span.style.verticalAlign = 'sub';
+                        span.style.fontSize = '0.8em';
+                        break;
+                    case "superscript":
+                        span.style.verticalAlign = 'super';
+                        span.style.fontSize = '0.8em';
+                        break;
+                }
+                range.surroundContents(span);
+            }
+        } catch (fallbackError) {
+            console.error('Format fallback failed:', fallbackError);
+            // Last resort fallback
+            try {
+                const selection = this.shadowRoot.getSelection();
+                if (selection.toString()) {
+                    const text = selection.toString();
+                    const span = document.createElement('span');
+                    if (action === 'backColor') {
+                        span.style.backgroundColor = formatValue;
+                    }
+                    span.textContent = text;
+                    range.deleteContents();
+                    range.insertNode(span);
+                }
+            } catch (e) {
+                console.error('Ultimate fallback failed:', e);
+            }
         }
     }
 
