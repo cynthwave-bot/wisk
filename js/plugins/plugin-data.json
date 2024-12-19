@@ -534,6 +534,7 @@
                     "nav": false,
                     "textual": false,
                     "loadAsModule": true,
+                    "experimental": true,
                     "width": "max"
                 }
             ]
@@ -855,6 +856,28 @@
                     "nav": true,
                     "textual": false,
                     "loadAsModule": true
+                }
+            ]
+        },
+
+        "cursor-customizer": {
+            "name": "cursor-customizer",
+            "title": "Customize Cursor",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "cursor.svg",
+            "tags": ["cursor", "customize", "change", "pointer"],
+            "description": "Customize your cursor",
+            "contents": [
+                {
+                    "title": "Customize Cursor",
+                    "icon": "cursor-2.svg",
+                    "category": "mini-dialog",
+                    "component": "cursor-customizer",
+                    "nav": true,
+                    "textual": false,
+                    "loadAsModule": true,
+                    "experimental": true
                 }
             ]
         },

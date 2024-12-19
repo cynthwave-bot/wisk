@@ -405,7 +405,7 @@ class OptionsComponent extends LitElement {
             color: var(--bg-red);
         }
         .btn-primary, .btn-danger {
-            font-weight: 500;
+            font-weight: 600;
             padding: var(--padding-w2);
             cursor: pointer;
             border: 1px solid transparent;
@@ -437,6 +437,9 @@ class OptionsComponent extends LitElement {
         .options-select:hover {
             border-color: var(--border-2);
             background-color: var(--bg-3);
+        }
+        *::marker {
+            color: var(--bg-1);
         }
     `;
 
@@ -691,46 +694,48 @@ class OptionsComponent extends LitElement {
                         </div>
                     </div>
 
-                    <div class="options-section options-section--column">
-                        <h1 style="color: var(--text-1); display: flex; width: 100%; align-items: center; justify-content: center; gap: 12px;">
-                            <img src="/a7/wisk-logo.svg" alt="Wisk" class="resp-img" style="width: 38px; filter: var(--themed-svg)" draggable="false"/> Wisk
-                        </h1>
-                        <h3 style="color: var(--text-1); width: 100%; text-align: center;">Your Workspace, Built Your Way.</h3>
-                        <p style="color: var(--text-2); text-align: center; width: 100%">
-                            Notes, reports, tasks, and collaboration — offline and customizable. (yes we have AI too!)
-                        </p>
-                    </div>
-
-                    <hr style="border: 1px solid var(--border-1); margin: 20px 10px"/>
-
-                    <div class="options-section options-section--column">
-                        <h3 style="color: var(--text-2)">License</h3>
-                        <div style="display: flex; flex-direction: column; gap: var(--gap-1)">
-                            <p style="color: var(--text-2)">
-                                Licensed under the Functional Source License (FSL), Version 1.1, with Apache License Version 2.0 as the Future License.
-                                See the <a href="https://app.wisk.cc/LICENSE.md" target="_blank" class="link-blue">LICENSE.md</a> for more details.
-
+                    <div style="flex: 1; overflow-y: auto">
+                        <div class="options-section options-section--column">
+                            <h1 style="color: var(--text-1); display: flex; width: 100%; align-items: center; justify-content: center; gap: 12px;">
+                                <img src="/a7/wisk-logo.svg" alt="Wisk" class="resp-img" style="width: 38px; filter: var(--themed-svg)" draggable="false"/> Wisk
+                            </h1>
+                            <h3 style="color: var(--text-1); width: 100%; text-align: center;">Your Workspace, Built Your Way.</h3>
+                            <p style="color: var(--text-2); text-align: center; width: 100%">
+                                Notes, reports, tasks, and collaboration — offline and customizable. (yes we have AI too!)
                             </p>
                         </div>
-                    </div>
 
-                    <hr style="border: 1px solid var(--border-1); margin: 20px 10px"/>
+                        <hr style="border: 1px solid var(--border-1); margin: 20px 10px"/>
 
-                    <div class="options-section options-section--column">
-                        <h3 style="color: var(--text-2)">Credits</h3>
-                        <div style="display: flex; flex-direction: column; gap: var(--gap-1)">
-                            <p style="color: var(--text-2)">
-                                All icons in the webapp are from
-                                <ul>
-                                    <li> • <a href="https://iconoir.com/" target="_blank" class="link-blue">Iconoir</a>, An open source icons library with 1500+ icons. </li>
-                                    <li> • <a href="https://www.svgrepo.com/collection/zest-interface-icons/" target="_blank" class="link-blue">Zest Interface Icons</a>, A collection of 1000+ free SVG icons. </li>
-                                    <li> • <a href="https://heroicons.com/" target="_blank" class="link-blue">Heroicons</a>, Beautiful hand-crafted SVG icons, by the makers of Tailwind CSS. </li>
-                                    <li> • <a href="https://github.com/sohzm" target="_blank" class="link-blue">Me</a>, I made some too!</li>
-                                </ul>
-                            </p>
-                            <p style="color: var(--text-2)">
-                                Fonts are provided by <a href="https://fonts.google.com/" target="_blank" class="link-blue">Google Fonts</a>.
-                            </p>
+                        <div class="options-section options-section--column">
+                            <h3 style="color: var(--text-2)">License</h3>
+                            <div style="display: flex; flex-direction: column; gap: var(--gap-1)">
+                                <p style="color: var(--text-2)">
+                                    Licensed under the Functional Source License (FSL), Version 1.1, with Apache License Version 2.0 as the Future License.
+                                    See the <a href="https://app.wisk.cc/LICENSE.md" target="_blank" class="link-blue">LICENSE.md</a> for more details.
+
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr style="border: 1px solid var(--border-1); margin: 20px 10px"/>
+
+                        <div class="options-section options-section--column">
+                            <h3 style="color: var(--text-2)">Credits</h3>
+                            <div style="display: flex; flex-direction: column; gap: var(--gap-1)">
+                                <p style="color: var(--text-2)">
+                                    All icons in the webapp are from
+                                    <ul>
+                                        <li> • <a href="https://iconoir.com/" target="_blank" class="link-blue">Iconoir</a>, An open source icons library with 1500+ icons. </li>
+                                        <li> • <a href="https://www.svgrepo.com/collection/zest-interface-icons/" target="_blank" class="link-blue">Zest Interface Icons</a>, A collection of 1000+ free SVG icons. </li>
+                                        <li> • <a href="https://heroicons.com/" target="_blank" class="link-blue">Heroicons</a>, Beautiful hand-crafted SVG icons, by the makers of Tailwind CSS. </li>
+                                        <li> • <a href="https://github.com/sohzm" target="_blank" class="link-blue">Me</a>, I made some too!</li>
+                                    </ul>
+                                </p>
+                                <p style="color: var(--text-2)">
+                                    Fonts are provided by <a href="https://fonts.google.com/" target="_blank" class="link-blue">Google Fonts</a>.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -544,6 +544,10 @@ class BaseTextElement extends HTMLElement {
             }
             h1 {
             }
+            .suggestion {
+                opacity: 0.6;
+                font-style: italic;
+            }
             </style>
         `;
         const content = `<div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>`

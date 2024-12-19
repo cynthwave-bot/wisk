@@ -132,6 +132,7 @@ function addToNavBar(content, inx) {
     const nav = document.querySelector(".nav-plugins");
     const button = document.createElement("button");
     button.classList.add("nav-button");
+    button.title = content.title;
 
     // Create icon
     const icon = document.createElement("img");
