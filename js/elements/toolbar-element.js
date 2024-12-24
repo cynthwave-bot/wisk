@@ -43,7 +43,11 @@ class ToolbarElement extends LitElement {
             justify-content: center;
             color: var(--text-1);
             transition: background 0.2s ease-in-out;
-            gap: var(--gap-2);
+            gap: var(--gap-1);
+            opacity: 1;
+        }
+        .toolbar div button { 
+            opacity: 0.8;
         }
 
         .toolbar button[data-wide] {
@@ -60,6 +64,7 @@ class ToolbarElement extends LitElement {
             background: var(--border-1);
             height: auto;
             width: 1px;
+            opacity: 0.5;
         }
 
         img {
@@ -223,7 +228,6 @@ class ToolbarElement extends LitElement {
 
         .command-section h3 {
             font-size: 11px;
-            text-transform: uppercase;
             color: var(--text-2);
             margin-bottom: 4px;
             font-weight: 500;
@@ -430,7 +434,7 @@ class ToolbarElement extends LitElement {
         .color-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: var(--gap-1);
+            gap: var(--gap-2);
         }
 
         .color-option {
@@ -464,6 +468,8 @@ class ToolbarElement extends LitElement {
         sources: { type: Array },
         loading: { type: Boolean },
         previewText: { type: String },
+        citations: { type: Array },
+        showCitationsDialog: { type: Boolean }
     };
 
     constructor() {
@@ -503,6 +509,32 @@ class ToolbarElement extends LitElement {
 
         this.activeTextColor = 'var(--text-1)';
         this.activeBackgroundColor = 'var(--bg-1)';
+
+        this.citations = [];
+        this.showCitationsDialog = false;
+    }
+
+    async fetchCitations() {
+        const citationsManager = document.querySelector('manage-citations');
+        if (citationsManager) {
+            this.citations = citationsManager.references;
+            this.requestUpdate();
+        }
+    }
+
+    handleInsertCitation(citation) {
+        this.dispatchEvent(
+            new CustomEvent("insert-citation", {
+                detail: { 
+                    elementId: this.elementId, 
+                    citation: citation,
+                    selectedText: this.selectedText
+                },
+                bubbles: true,
+                composed: true,
+            })
+        );
+        this.closeDialog();
     }
 
     updateToolbarPosition() {
@@ -552,6 +584,13 @@ class ToolbarElement extends LitElement {
                     })
                 );
                 break;
+
+            case "show-citations":
+                this.mode = "dialog";
+                this.dialogName = "citations";
+                this.fetchCitations();
+                break;
+
             case "background-color":
                 this.activeBackgroundColor = value;
                 this.dispatchEvent(
@@ -685,24 +724,23 @@ class ToolbarElement extends LitElement {
 
         try {
             const auth = await document.getElementById("auth").getUserInfo();
-            const response = await fetch("https://cloud.wisk.cc/v1/ai/tools", {
+            const response = await fetch("https://cloud.wisk.cc/v2/ai/ops", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: "Bearer " + auth.token,
                 },
                 body: JSON.stringify({
-                    ops: operation,
-                    selectedText: this.selectedText,
-                    document: this.elementText,
+                    operation: operation,
+                    content: this.selectedText,
                 }),
             });
 
             if (response.ok) {
-                const data = await response.json();
+                const data = await response.text();
 
                 // Instead of dispatching event, show preview
-                this.previewText = data.content;
+                this.previewText = data;
                 this.mode = "preview";
                 this.dialogName = "preview";
             } else {
@@ -738,59 +776,6 @@ class ToolbarElement extends LitElement {
         this.closeDialog();
     }
 
-    async handleCreateReference(source) {
-        window.wisk.utils.showLoading("Adding source...");
-
-        var user = await document.getElementById("auth").getUserInfo();
-        var response = await fetch("https://cloud.wisk.cc/v1/source", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + user.token,
-            },
-            body: JSON.stringify({ ops: "get-url", url: source.url }),
-        });
-
-        window.wisk.utils.hideLoading();
-
-        var data = {};
-        if (response.ok) {
-            data = await response.json();
-            data = data[0];
-            console.log(data);
-        } else {
-            window.showToast("Failed to load sources", 3000);
-            return;
-        }
-
-        // Save selection before opening dialog
-        this.dispatchEvent(
-            new CustomEvent("save-selection", {
-                detail: { elementId: this.elementId },
-                bubbles: true,
-                composed: true,
-            }),
-        );
-
-        // Dispatch create-reference event with source details
-        this.dispatchEvent(
-            new CustomEvent("create-reference", {
-                detail: {
-                    elementId: this.elementId,
-                    title: source.title,
-                    authors: data.authors || [],
-                    date: data.publish_date || "",
-                    publisher: data.meta_site_name || "",
-                    url: source.url,
-                },
-                bubbles: true,
-                composed: true,
-            }),
-        );
-
-        // Close the dialog after creating reference
-        this.closeDialog();
-    }
 
     async fetchSources() {
         this.mode = "loading";
@@ -876,68 +861,148 @@ class ToolbarElement extends LitElement {
         this.dialogName = "";
     }
 
+    async handleCreateReference(source) {
+        event?.preventDefault();
+        event?.stopPropagation();
+
+        window.wisk.utils.showLoading("Adding source...");
+
+        try {
+            const user = await document.getElementById("auth").getUserInfo();
+            const response = await fetch("https://cloud.wisk.cc/v1/source", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + user.token,
+                },
+                body: JSON.stringify({ ops: "get-url", url: source.url }),
+            });
+
+            if (!response.ok) {
+                window.showToast("Failed to load sources", 3000);
+                window.wisk.utils.hideLoading();
+                return;
+            }
+
+            const data = (await response.json())[0];
+
+            // Format the publish date properly
+            const publishDate = data.publish_date ? new Date(data.publish_date).toISOString().split('T')[0] : "";
+
+            // Create citation object with formatted date
+            const citation = {
+                id: "cite-" + Math.random().toString(36).substr(2, 9) + "-" + Date.now().toString(),
+                title: source.title,
+                authors: data.authors || [],
+                publish_date: publishDate,
+                journal_conference: data.meta_site_name || "",
+                url: source.url,
+                publisher_name: data.meta_site_name || "",
+                doi: data.doi || "",
+                volume: data.volume || "",
+                issue: data.issue || "",
+                pages: data.pages || "",
+                publisher_location: data.publisher_location || "",
+                language: data.language || "",
+                summary: data.summary || "",
+                content: data.text || ""
+            };
+
+            // Save selection before adding citation
+            this.dispatchEvent(
+                new CustomEvent("save-selection", {
+                    detail: { elementId: this.elementId },
+                    bubbles: true,
+                    composed: true,
+                })
+            );
+
+            const citationsManager = document.querySelector('manage-citations');
+            if (!citationsManager) {
+                window.showToast("Citations manager not found", 3000);
+                window.wisk.utils.hideLoading();
+                return;
+            }
+
+            citationsManager.addReference(citation);
+            const inlineCitation = citationsManager.formatInlineCitation(citation);
+
+            this.dispatchEvent(
+                new CustomEvent("create-reference", {
+                    detail: {
+                        elementId: this.elementId,
+                        citation: citation,
+                        inlineCitation: inlineCitation
+                    },
+                    bubbles: true,
+                    composed: true,
+                })
+            );
+
+            this.closeDialog();
+        } catch (error) {
+            console.error('Error creating reference:', error);
+            window.showToast("Failed to create reference", 3000);
+        } finally {
+            window.wisk.utils.hideLoading();
+        }
+    }
+
+
     render() {
         return html`
             ${this.mode === "dialog" || this.mode === "preview" ? html`<div class="backdrop" @click=${this.closeDialog}></div>` : ""}
 
             <div class="toolbar ${this.visible ? "visible" : ""}" style="">
                 <button @click=${() => this.handleToolbarAction("ai-improve")} title="Improve with AI" data-wide>
-                    <img src="/a7/forget/ai.svg" alt="AI" /> AI Commands
+                    <img src="/a7/forget/ai.svg" alt="AI" /> Neo AI
                 </button>
+                <div class="separator"></div>
                 <button @click=${() => this.handleToolbarAction("find-source")} title="Find Source" data-wide>
                     <img src="/a7/forget/source.svg" alt="Source" /> Find Source
                 </button>
-                <div class="separator"></div>
-                <button @click=${() => this.handleToolbarAction("bold")} title="Bold">
-                    <img src="/a7/forget/bold.svg" alt="Bold" />
-                </button>
-                <button @click=${() => this.handleToolbarAction("italic")} title="Italic">
-                    <img src="/a7/forget/italics.svg" alt="Italic" />
-                </button>
-                <button @click=${() => this.handleToolbarAction("underline")} title="Underline">
-                    <img src="/a7/forget/underline.svg" alt="Underline" />
-                </button>
-                <button @click=${() => this.handleToolbarAction("strikeThrough")} title="Strikethrough">
-                    <img src="/a7/forget/strikethrough.svg" alt="Strikethrough" />
+                <button @click=${() => this.handleToolbarAction("show-citations")} title="Add Existing Citation" data-wide>
+                    <img src="/a7/forget/plus.svg" alt="Citation" /> Add Citation
                 </button>
                 <div class="separator"></div>
-                <button @click=${() => this.handleToolbarAction("subscript")} title="Subscript">
-                    <img src="/a7/plugins/toolbar/subscript.svg" alt="Subscript" />
-                </button>
-                <button @click=${() => this.handleToolbarAction("superscript")} title="Superscript">
-                    <img src="/a7/plugins/toolbar/superscript.svg" alt="Superscript" />
-                </button>
-                <div class="separator"></div>
-                <div class="submenu-container">
-                    <button class="submenu-trigger" title="Colors" style="width: auto; padding: 0 5px">
-                        <img src="/a7/plugins/toolbar/color.svg" alt="Colors" />
-                        <img src="/a7/plugins/toolbar/down.svg" alt="Colors" />
+                <div style="display: flex">
+                    <button @click=${() => this.handleToolbarAction("bold")} title="Bold">
+                        <img src="/a7/forget/bold.svg" alt="Bold" />
                     </button>
-                    ${this.renderColorMenu()}
+                    <button @click=${() => this.handleToolbarAction("italic")} title="Italic">
+                        <img src="/a7/forget/italics.svg" alt="Italic" />
+                    </button>
+                    <button @click=${() => this.handleToolbarAction("underline")} title="Underline">
+                        <img src="/a7/forget/underline.svg" alt="Underline" />
+                    </button>
+                    <button @click=${() => this.handleToolbarAction("subscript")} title="Subscript">
+                        <img src="/a7/plugins/toolbar/subscript.svg" alt="Subscript" />
+                    </button>
+                    <button @click=${() => this.handleToolbarAction("superscript")} title="Superscript">
+                        <img src="/a7/plugins/toolbar/superscript.svg" alt="Superscript" />
+                    </button>
+                    <button @click=${() => this.handleToolbarAction("strikeThrough")} title="Strikethrough">
+                        <img src="/a7/forget/strikethrough.svg" alt="Strikethrough" />
+                    </button>
+                    <button @click=${() => this.handleToolbarAction("link")} title="Add Link">
+                        <img src="/a7/forget/link.svg" alt="Link" />
+                    </button>
+                    <div class="submenu-container">
+                        <button class="submenu-trigger" title="Colors" style="width: auto; padding: 0 5px">
+                            <img src="/a7/plugins/toolbar/color.svg" alt="Colors" />
+                            <img src="/a7/plugins/toolbar/down.svg" alt="Colors" />
+                        </button>
+                        ${this.renderColorMenu()}
+                    </div>
                 </div>
-                <div class="separator"></div>
-                <button @click=${() => this.handleToolbarAction("link")} title="Add Link">
-                    <img src="/a7/forget/link.svg" alt="Link" />
-                </button>
 
-                ${this.mode === "loading"
-                    ? html`
-                          <div class="loading-overlay">
-                              <div class="loading-indicator"></div>
-                          </div>
-                      `
-                    : ""}
+                ${this.mode === "loading" ? html` <div class="loading-overlay"> <div class="loading-indicator"></div> </div> ` : ""}
 
-                ${this.mode === "dialog" || this.mode === "preview"
-                    ? html`
-                          <div class="dialog-container">
-                              <div style="overflow: auto; width: 100%;">
-                                  ${this.renderDialog()}
-                                  <div></div>
-                              </div>
-                          </div>
-                      `
-                    : ""}
+                ${
+                    this.mode === "dialog" || this.mode === "preview" ? 
+                        html` <div class="dialog-container"> <div style="overflow: auto; width: 100%;"> ${this.renderDialog()} <div></div> </div> </div>
+                        ` : ""
+                }
             </div>
         `;
     }
@@ -991,6 +1056,41 @@ class ToolbarElement extends LitElement {
                     </div>
                 `;
 
+            case "citations":
+                return html`
+                    <div class="dialog">
+                        <div class="dialog-header">
+                            <h3 style="margin-bottom: var(--gap-3)">Select Citation</h3>
+                        </div>
+                        <div style="overflow: auto; max-height: 400px;">
+                            ${this.citations.length === 0 
+                                ? html`<p style="line-height: 1.5; font-size: 14px">No citations available. Add citations using the Citations Manager. Or add new using 
+                                        <span style="background: var(--bg-3); padding: 2px 4px; border-radius: 4px; color: var(--text-1); display: inline-flex
+; align-items: center;">
+                                            <img src="/a7/forget/source.svg" alt="Source" style="height: 14px; margin-right: 4px;" /> Find Source</span> option.</p>`
+                                : this.citations.map(citation => html`
+                                    <div class="source-item">
+                                        <div style="display: flex; justify-content: space-between; align-items: start; width: 100%;">
+                                            <div style="flex: 1;">
+                                                <h3 style="font-size: 14px; margin-bottom: var(--gap-1);">${citation.title}</h3>
+                                                <p style="font-size: 12px; color: var(--text-2);">
+                                                    ${citation.authors.join(', ')}
+                                                    ${citation.publish_date ? ` • ${new Date(citation.publish_date).getFullYear()}` : ''}
+                                                </p>
+                                            </div>
+                                            <button 
+                                                @click=${() => this.handleInsertCitation(citation)}
+                                                class="button"
+                                                style="white-space: nowrap; margin-left: var(--gap-2);">
+                                                Insert
+                                            </button>
+                                        </div>
+                                    </div>
+                                `)}
+                        </div>
+                    </div>
+                `;
+
             case "link":
                 return html`
                     <div class="dialog">
@@ -1015,6 +1115,7 @@ class ToolbarElement extends LitElement {
                         <div class="ai-commands">
                             <div class="command-section">
                                 <h3>Suggested</h3>
+                                <button @click=${() => this.handleToolbarAction("ai-operation", "autocomplete-this-paragraph")}><img src="/a7/plugins/toolbar/autocomplete.svg" alt="wand" style="height: 16px;" /> AI Autocomplete</button>
                                 <button @click=${() => this.handleToolbarAction("ai-operation", "improve-writing")}><img src="/a7/plugins/toolbar/wand.svg" alt="wand" style="height: 16px;" /> Improve writing</button>
                                 <button @click=${() => this.handleToolbarAction("ai-operation", "fix-spelling-grammar")}><img src="/a7/plugins/toolbar/check.svg" alt="check" style="height: 16px;" /> Fix spelling & grammar</button>
                                 <div class="submenu-container">

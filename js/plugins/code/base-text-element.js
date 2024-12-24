@@ -97,82 +97,95 @@ class BaseTextElement extends HTMLElement {
         }
     }
 
-    handleCreateReference(detail) {
-        // First restore the saved selection
-        if (!this.restoreSelection()) {
-            console.warn('No saved selection to create reference from');
-            return;
-        }
-
-        const selection = this.shadowRoot.getSelection();
-        const range = selection.getRangeAt(0);
-
-        // Ensure the selection is within our editable div
-        if (!this.editable.contains(range.commonAncestorContainer)) {
-            console.warn('Selection is outside the editable area');
-            return;
-        }
-
-        try {
-            // Get or create reference number
-            const referenceData = {
-                title: detail.title,
-                authors: detail.authors,
-                date: detail.date,
-                publisher: detail.publisher,
-                url: detail.url
-            };
-            
-            let referenceNumber;
-            // Check if reference already exists
-            const existingRefIndex = window.wisk.plugins.references.findIndex(ref => 
-                ref.url === detail.url && 
-                ref.title === detail.title
-            );
-
-            if (existingRefIndex !== -1) {
-                referenceNumber = existingRefIndex + 1;
-            } else {
-                // Add new reference
-                window.wisk.plugins.references.push(referenceData);
-                referenceNumber = window.wisk.plugins.references.length;
-            }
-
-            referenceData.number = referenceNumber;
-
-            // Create the reference link element
-            const refSpan = document.createElement('span');
-            refSpan.contentEditable = 'false';
-            refSpan.className = 'reference-number';
-            refSpan.textContent = `[${referenceNumber}]`;
-            
-            // Extract the selected content
-            const fragment = range.extractContents();
-            
-            // Create a wrapper span to hold both the text and reference
-            const wrapper = document.createElement('span');
-            wrapper.appendChild(fragment);
-            wrapper.appendChild(refSpan);
-            
-            // Insert the wrapper
-            range.insertNode(wrapper);
-            
-            // Clean up selection
-            range.collapse(false);
-            selection.removeAllRanges();
-            selection.addRange(range);
-            
-            // Clear the saved selection
-            this.clearSelection();
-            
-            // Update the content
-            this.references.push(referenceData);
-            this.sendUpdates();
-        } catch (error) {
-            console.error('Error creating reference:', error);
-            this.handleReferenceFallback(detail, selection);
-        }
+// In BaseTextElement class
+handleCreateReference(detail) {
+    if (!this.restoreSelection()) {
+        console.warn('No saved selection for citation');
+        return;
     }
+
+    const selection = this.shadowRoot.getSelection();
+    if (!selection.rangeCount) return;
+
+    const range = selection.getRangeAt(0);
+    
+    try {
+        // Create a space node to separate text and citation
+        const spaceNode = document.createTextNode(' ');
+        
+        // Create citation span
+        //
+        const citationsManager = document.querySelector('manage-citations');
+        const citationSpan = document.createElement('span');
+        citationSpan.contentEditable = 'false';
+        citationSpan.className = 'reference-number';
+        citationSpan.dataset.referenceId = detail.citation.id;
+        citationSpan.textContent = detail.inlineCitation;
+        citationSpan.onclick = () => {
+            citationsManager.highlight(detail.citation.id);
+        }
+        
+        // Instead of deleting content, just collapse range to end
+        range.collapse(false);
+        
+        // Insert space and citation after the selected text
+        range.insertNode(citationSpan);
+        range.insertNode(spaceNode);
+        
+        // Move cursor after citation
+        range.setStartAfter(citationSpan);
+        range.setEndAfter(citationSpan);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+        // Update content
+        this.sendUpdates();
+    } catch (error) {
+        console.error('Error creating citation:', error);
+        this.handleReferenceFallback(detail, selection);
+    }
+}
+
+handleInsertCitation(citation) {
+    const citationsManager = document.querySelector('manage-citations');
+    const inlineCitation = citationsManager.formatInlineCitation(citation);
+    
+    this.dispatchEvent(
+        new CustomEvent("insert-citation", {
+            detail: { 
+                elementId: this.elementId, 
+                citation: citation,
+                selectedText: this.selectedText,
+                inlineCitation: inlineCitation
+            },
+            bubbles: true,
+            composed: true,
+        })
+    );
+    this.closeDialog();
+}
+
+
+formatInlineCitation(citation) {
+    if (!citation.authors || !citation.authors.length) {
+        return '[Unknown]';
+    }
+
+    const year = citation.publish_date ? new Date(citation.publish_date).getFullYear() : 'n.d.';
+    
+    if (citation.authors.length === 1) {
+        const lastName = citation.authors[0].split(' ').pop();
+        return `[${lastName}, ${year}]`;
+    } else if (citation.authors.length === 2) {
+        const lastName1 = citation.authors[0].split(' ').pop();
+        const lastName2 = citation.authors[1].split(' ').pop();
+        return `[${lastName1} & ${lastName2}, ${year}]`;
+    } else {
+        const firstAuthorLastName = citation.authors[0].split(' ').pop();
+        return `[${firstAuthorLastName} et al., ${year}]`;
+    }
+}
+
 
     handleReferenceFallback(detail, selection) {
         try {
@@ -180,8 +193,8 @@ class BaseTextElement extends HTMLElement {
             const text = selection.toString();
             document.execCommand('insertText', false, text);
             
-            let referenceNumber;
             const referenceData = {
+                id: detail.citation.id,
                 title: detail.title,
                 authors: detail.authors,
                 date: detail.date,
@@ -189,25 +202,17 @@ class BaseTextElement extends HTMLElement {
                 url: detail.url
             };
             
-            const existingRefIndex = window.wisk.plugins.references.findIndex(ref => 
-                ref.url === detail.url && 
-                ref.title === detail.title
-            );
-
-            if (existingRefIndex !== -1) {
-                referenceNumber = existingRefIndex + 1;
-            } else {
-                window.wisk.plugins.references.push(referenceData);
-                referenceNumber = window.wisk.plugins.references.length;
-            }
-
-            referenceData.number = referenceNumber;
-            
             const range = selection.getRangeAt(0);
             const refSpan = document.createElement('span');
             refSpan.contentEditable = 'false';
             refSpan.className = 'reference-number';
-            refSpan.textContent = `[${referenceNumber}]`;
+            refSpan.dataset.referenceId = detail.citation.id;
+            refSpan.textContent = detail.inlineCitation;
+
+            const citationsManager = document.querySelector('manage-citations');
+            refSpan.onclick = () => {
+                citationsManager.highlight(detail.citation.id);
+            }
             
             range.insertNode(refSpan);
 

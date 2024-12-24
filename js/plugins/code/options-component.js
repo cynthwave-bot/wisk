@@ -531,7 +531,8 @@ class OptionsComponent extends LitElement {
             plugin.title.toLowerCase().includes(this.searchTerm) || 
             plugin.description.toLowerCase().includes(this.searchTerm) ||
             plugin.tags.some(tag => tag.toLowerCase().includes(this.searchTerm)) ||
-            plugin.author.toLowerCase().includes(this.searchTerm)
+            plugin.author.toLowerCase().includes(this.searchTerm) ||
+            plugin.contents.some(content => content.experimental && 'experimental'.includes(this.searchTerm))
         );
 
         const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -696,7 +697,7 @@ class OptionsComponent extends LitElement {
 
                     <div style="flex: 1; overflow-y: auto">
                         <div class="options-section options-section--column">
-                            <h1 style="color: var(--text-1); display: flex; width: 100%; align-items: center; justify-content: center; gap: 12px;">
+                            <h1 style="color: var(--text-1); display: flex; width: 100%; align-items: center; justify-content: center; gap: 12px; font-weight: 500">
                                 <img src="/a7/wisk-logo.svg" alt="Wisk" class="resp-img" style="width: 38px; filter: var(--themed-svg)" draggable="false"/> Wisk
                             </h1>
                             <h3 style="color: var(--text-1); width: 100%; text-align: center;">Your Workspace, Built Your Way.</h3>

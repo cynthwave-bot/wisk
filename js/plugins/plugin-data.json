@@ -656,7 +656,7 @@
             "author": "Wisk Team",
             "contact": "https://wisk.cc",
             "icon": "py-interpreter.svg",
-            "tags": ["python", "interpreter", "console", "shell", "code", "runner"],
+            "tags": ["python", "interpreter", "console", "shell", "code", "runner", "execute", "run"],
             "description": "Python interpreter on the browser, no server required. You can use the `from js import window, document` to call editor apis and checkout the https://wisk.cc/docs to see how you can interact with the editor apis. This element auto runs on page load.",
             "contents": [
                 {

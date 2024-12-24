@@ -423,11 +423,6 @@ async function initializeElements() {
 
     window.dispatchEvent(new CustomEvent("block-created", { detail: { id: firstElement.id } }));
 
-    window.wisk.plugins.references = [];
-    if (Array.isArray(firstElement?.value?.references)) {
-        window.wisk.plugins.references = firstElement.value.references;
-    }
-
     setTimeout(() => {
         document.getElementById(firstElement.id).setValue("", firstElement.value);
 
@@ -445,10 +440,6 @@ async function initializeElements() {
 async function initializeRemainingElements() {
     for (let i = 1; i < window.wisk.editor.elements.length; i++) {
         const element = window.wisk.editor.elements[i];
-
-        if (Array.isArray(element.value?.references)) {
-            window.wisk.plugins.references = [...window.wisk.plugins.references, ...element.value.references];
-        }
 
         const container = createBlockContainer(element.id, element.component);
         const block = createBlockElement(element.id, element.component);

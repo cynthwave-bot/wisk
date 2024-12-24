@@ -144,7 +144,6 @@ class PyInterpreter extends LitElement {
         #run {
             padding: var(--padding-w2);
             background: transparent;
-            ${window.wisk.editor.wiskSite ? "display: none;" : ""}
         }
         #run:hover {
             background: var(--bg-1);
@@ -445,7 +444,7 @@ class PyInterpreter extends LitElement {
                     .value=${this.code}
                     spellcheck="false"
                 ></textarea>
-                <button id="run" @click=${this.evaluatePython} ?disabled=${this.isInitializing}>
+                <button id="run" @click=${this.evaluatePython} ?disabled=${this.isInitializing} style="${window.wisk.editor.wiskSite? 'display: none;' : ''}">
                     ${this.isInitializing ? "Initializing..." : "Run"}
                 </button>
             </div>

@@ -323,7 +323,7 @@ class LeftMenu extends LitElement {
             <div class="outer" @click=${this.closeDropdown}>
                 <div style="display: flex; gap: 10px">
                     <div>
-                        <a href="/" class="new"> <img src="/a7/forget/file-plus.svg" alt="New Page" class="new-img" /> New Page</a>
+                        <a href="/" class="new"> <img src="/a7/forget/plus1.svg" alt="New Page" class="new-img" /> New Page</a>
                     </div>
 
                     <div class="search-div od">

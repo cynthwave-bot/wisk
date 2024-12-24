@@ -7,6 +7,7 @@ class ManageCitations extends LitElement {
             font-family: var(--font);
             margin: 0px;
             padding: 0px;
+            transition: all 0.2s;
         }
         .container {
             height: 100%;
@@ -209,6 +210,41 @@ class ManageCitations extends LitElement {
         return entry;
     }
 
+    highlight(id) {
+        const el = this.shadowRoot.getElementById("c-" + id);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.style.backgroundColor = 'var(--bg-3)';
+            setTimeout(() => el.style.backgroundColor = '', 2000);
+        }
+    }
+
+    addReference(ref) {
+        this.references = [...this.references, ref];
+        this.highlight(ref.id);
+    }
+
+formatInlineCitation(citation) {
+    if (!citation.authors || !citation.authors.length) {
+        return '(Unknown, n.d.)';
+    }
+
+    const year = citation.publish_date ? new Date(citation.publish_date).getFullYear() : 'n.d.';
+    
+    if (citation.authors.length === 1) {
+        return `(${citation.authors[0]}, ${year})`;
+    } else if (citation.authors.length === 2) {
+        const lastName1 = citation.authors[0].split(' ').pop();
+        const lastName2 = citation.authors[1].split(' ').pop();
+        return `(${lastName1} & ${lastName2}, ${year})`;
+    } else {
+        const firstAuthorLastName = citation.authors[0].split(' ').pop();
+        return `(${firstAuthorLastName} et al., ${year})`;
+    }
+}
+
+
+
     handleBibtexImport(event) {
         event.preventDefault();
         const bibtexText = event.target.bibtex.value;
@@ -264,20 +300,24 @@ class ManageCitations extends LitElement {
         };
     }
 
-    formatDate(dateString) {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-                       'July', 'August', 'September', 'October', 'November', 'December'];
-        const shortMonths = months.map(m => m.substring(0, 3));
-        
-        return {
-            year: date.getFullYear(),
-            month: months[date.getMonth()],
-            shortMonth: shortMonths[date.getMonth()],
-            day: date.getDate()
-        };
-    }
+formatDate(dateString) {
+    if (!dateString) return '';
+
+    // Handle both ISO date string and date-only formats
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+        'July', 'August', 'September', 'October', 'November', 'December'];
+    const shortMonths = months.map(m => m.substring(0, 3));
+
+    return {
+        year: date.getFullYear(),
+        month: months[date.getMonth()],
+        shortMonth: shortMonths[date.getMonth()],
+        day: date.getDate()
+    };
+}
 
     formatAuthors(authors, format) {
         if (!authors || authors.length === 0) return '';
@@ -419,15 +459,18 @@ class ManageCitations extends LitElement {
         this.requestUpdate();
     }
 
-    addReference(event) {
-        event.preventDefault();
-        const form = event.target;
+addReference(event) {
+    event.preventDefault();
+    const form = event.target;
+    // Ensure the publish_date is in YYYY-MM-DD format
+    const publishDate = form.publish_date.value ? 
+        new Date(form.publish_date.value).toISOString().split('T')[0] : "";
         const newReference = {
             title: form.title.value,
             authors: form.authors.value.split(',').map(author => author.trim()),
             url: form.url.value,
             doi: form.doi.value,
-            publish_date: form.publish_date.value,
+            publish_date: publishDate,  // Using formatted date
             journal_conference: form.journal_conference.value,
             volume: form.volume.value,
             issue: form.issue.value,
@@ -452,14 +495,17 @@ class ManageCitations extends LitElement {
     }
 
     updateReference(event) {
-        event.preventDefault();
-        const form = event.target;
+    event.preventDefault();
+    const form = event.target;
+    // Ensure the publish_date is in YYYY-MM-DD format
+    const publishDate = form.publish_date.value ? 
+        new Date(form.publish_date.value).toISOString().split('T')[0] : "";
         const updatedReference = {
             title: form.title.value,
             authors: form.authors.value.split(',').map(author => author.trim()),
             url: form.url.value,
             doi: form.doi.value,
-            publish_date: form.publish_date.value,
+        publish_date: publishDate,  // Using formatted date
             journal_conference: form.journal_conference.value,
             volume: form.volume.value,
             issue: form.issue.value,
@@ -568,7 +614,7 @@ class ManageCitations extends LitElement {
 
                         ${this.references.map(ref => html`
                             <div class="reference" style="flex: ${this.editingId === ref.id ? '1' : 'none'};
-                                min-height: ${this.editingId === ref.id ? '200px' : 'auto'}; ">
+                                min-height: ${this.editingId === ref.id ? '200px' : 'auto'}" id=${"c-" + ref.id}>
                                 ${this.editingId === ref.id ? 
                                     this.renderForm(ref) :
                                     html`
