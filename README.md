@@ -27,14 +27,6 @@ Wisk is an open-source document editor focusing on extensibility and performance
 - 📚 Citation management
 - 🤖 AI-powered assistance
 
-## Technical Stack
-
-- Pure JavaScript, zero dependencies (~25k LOC)
-- Web Components (lit-element)
-- IndexedDB for offline storage
-- Service Workers for PWA functionality
-- No build tooling required
-
 ## Quick Start
 
 ```bash

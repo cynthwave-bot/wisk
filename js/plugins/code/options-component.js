@@ -441,6 +441,69 @@ class OptionsComponent extends LitElement {
         *::marker {
             color: var(--bg-1);
         }
+
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .theme-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            background-color: var(--bg-2);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .theme-card:hover {
+            background-color: var(--bg-3);
+        }
+
+        .theme-card.selected {
+            border: 2px solid var(--fg-blue);
+        }
+
+        .theme-preview {
+            width: 100%;
+            height: 100px;
+            background-color: var(--bg-1);
+            border-radius: var(--radius);
+            margin-bottom: 7px;
+            font-family: var(--font);
+            color: var(--text-1);
+            font-size: 14px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+        }
+
+        .theme-name {
+            font-weight: bold;
+            color: var(--text-1);
+            height: 27px;
+        }
+
+        .apply-button {
+            margin-top: 20px;
+            padding: 8px 16px;
+            background-color: var(--fg-blue);
+            color: var(--bg-blue);
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .apply-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
     `;
 
     static properties = {
@@ -469,6 +532,10 @@ class OptionsComponent extends LitElement {
 
     showSettingsView() {
         this.currentView = 'settings';
+    }
+
+    showThemesView() {
+        this.currentView = 'themes';
     }
 
     loadPlugins() {
@@ -513,9 +580,11 @@ class OptionsComponent extends LitElement {
         this.requestUpdate();
     }
 
-    async changeTheme(e) {
-        window.wisk.theme.setTheme(e.target.value);
-        await window.wisk.editor.addConfigChange([{path: "document.config.theme", values: { theme: e.target.value }}]);
+    async changeTheme(theme) {
+        this.selectedTheme = theme;
+        window.wisk.theme.setTheme(theme);
+        await window.wisk.editor.addConfigChange([{path: "document.config.theme", values: { theme: theme }}]);
+        this.requestUpdate();
     }
 
     setTheme(theme) {
@@ -546,13 +615,9 @@ class OptionsComponent extends LitElement {
                 <!-- Main View -->
                 <div class="view ${this.currentView === 'main' ? 'active' : ''}">
 
-                    <div class="options-section options-section--animated">
-                        <label for="themeDropdown">Theme</label>
-                        <select id="themeDropdown" class="options-select" @change="${(e) => this.changeTheme(e)}">
-                            ${window.wisk.theme.getThemes().map(theme => html`
-                                <option value="${theme.name}" ?selected="${theme.name === window.wisk.theme.getTheme()}"> ${theme.name} </option>
-                            `)}
-                        </select>
+                    <div class="plugins-toggle options-section" @click="${this.showThemesView}">
+                        <label>Themes</label>
+                        <img src="/a7/iconoir/right.svg" alt="Themes" class="icon" draggable="false"/>
                     </div>
 
                     <div class="plugins-toggle options-section" @click="${this.showPluginsManager}">
@@ -683,6 +748,41 @@ class OptionsComponent extends LitElement {
                         <img src="/a7/iconoir/right.svg" alt="Developer" class="icon" draggable="false"/>
                     </div>
 
+                </div>
+
+                <!-- Themes View -->
+                <div class="view ${this.currentView === 'themes' ? 'active' : ''}">
+                    <div class="plugins-header" style="margin-bottom: 10px">
+                        <div class="plugins-header">
+                            <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
+                            <label>Themes</label>
+                        </div>
+                    </div>
+
+                    <div class="themes-grid">
+                        ${window.wisk.theme.getThemes().map(theme => html`
+                            <div class="theme-card ${window.wisk.theme.getTheme() == theme.name ? 'selected' : ''}" @click="${() => this.changeTheme(theme.name)}">
+                                <div class="theme-preview" style="background-color: ${theme['--bg-1']};">
+                                    <div style="
+                                        border-top: 1px solid ${theme['--border-1']}; border-left: 1px solid ${theme['--border-1']};
+                                        border-top-left-radius: ${theme['--radius']}; padding: ${theme['--padding-w1']};
+                                        width: 70%; display: block; margin-left: auto; height: 70%;
+                                        filter: ${theme['--drop-shadow']};
+                                        background-color: ${theme['--bg-2']}; 
+                                    ">
+                                        <h1 style="
+                                            font-family: ${theme['--font']}; color: ${theme['--text-1']};
+
+                                            ">Aa</h1>
+                                        <span style="
+                                            font-family: ${theme['--font']}; color: ${theme['--text-2']};
+                                            ">Aa</span>
+                                    </div>
+                                </div>
+                                <span class="theme-name">${theme.name}</span>
+                            </div>
+                        `)}
+                    </div>
                 </div>
 
 

@@ -29,7 +29,7 @@ class LeftMenu extends LitElement {
         }
         li a:hover {
             background-color: var(--bg-3);
-            color: var(--text-2);
+            color: var(--text-1);
         }
         .outer {
             padding: var(--padding-4);

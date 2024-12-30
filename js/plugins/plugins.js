@@ -16,7 +16,6 @@ window.wisk.plugins = {
         "callout-element",
         "divider-element",
         "table-element",
-        "database-element",
         "embed-element",
         "link-preview-element",
         "canvas-element",

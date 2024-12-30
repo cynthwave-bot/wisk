@@ -428,11 +428,11 @@ class PyInterpreter extends LitElement {
                         if (window.wisk?.editor?.justUpdates) {
                             window.wisk.editor.justUpdates(this.id);
                         }
-                    }}>Clear History</button>
+                    }} style="${window.wisk.editor.wiskSite? 'display: none;' : ''}">Clear History</button>
                     <button class="btn" @click=${() => {
                         this.showDialog = true;
                         this.requestUpdate();
-                    }}>Import Package</button>
+                    }} style="${window.wisk.editor.wiskSite? 'display: none;' : ''}">Import Package</button>
                 </div>
             </div>
             <div class="uwu" style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}">
