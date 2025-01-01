@@ -283,9 +283,9 @@ nav {
 .gs-button {
     padding: var(--padding-w2);
     border-radius: 100px;
-    background-color: var(--bg-2);
+    background-color: var(--accent-bg);
     border: none;
-    color: var(--text-1);
+    color: var(--accent-text);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -297,11 +297,11 @@ nav {
 
 .gs-button img {
     width: 20px;
-    filter: var(--themed-svg);
+    filter: var(--accent-svg);
 }
 
 .gs-button:hover {
-    background-color: var(--bg-3);
+    background-color: var(--bg-2);
 }
 
 #tip {

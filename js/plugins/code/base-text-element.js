@@ -7,7 +7,7 @@ class BaseTextElement extends HTMLElement {
         this.isVirtualKeyboard = this.checkIfVirtualKeyboard();
         this.savedRange = null;
         this.savedSelection = null;
-        this.placeholder = this.getAttribute("placeholder") || "edit me";
+        this.placeholder = this.getAttribute("placeholder") || "Write something or press '/' for commands";
         this.toolbar = document.getElementById("formatting-toolbar");
         this.toolbar.addEventListener("toolbar-action", (e) => {
             if (e.detail.elementId === this.id) {
@@ -473,11 +473,81 @@ formatInlineCitation(citation) {
             }
         });
 
+        this.editable.addEventListener("keydown", (e) => {
+            this.handleMarkdown(e);
+        });
+
         // Clean up the observer when the element is disconnected
         this.disconnectedCallback = () => {
             observer.disconnect();
             this.shadowRoot.removeEventListener("selectionchange", handleSelectionChange);
         };
+    }
+
+    handleMarkdown(event) {
+        console.log("Markdown handling", this.editable.innerText, event.key);
+        if (this.editable.innerText == "``" && event.key == "`") {
+            console.log("Changing to code element");
+            wisk.editor.changeBlockType(this.id, {textContent: ""}, "code-element");
+            return;
+        } 
+
+        if (event.key != " ") return
+
+        var newType = "uwu";
+        switch (this.editable.innerText.trim()) {
+            case "#":
+                newType = "heading1-element";
+                break;
+            case "##":
+                newType = "heading2-element";
+                break;
+            case "###":
+                newType = "heading3-element";
+                break;
+            case "####":
+                newType = "heading4-element";
+                break;
+            case "#####":
+                newType = "heading5-element";
+                break;
+            case "-":
+                newType = "list-element";
+                break;
+            case "+":
+                newType = "list-element";
+                break;
+            case "*":
+                newType = "list-element";
+                break;
+            case "1.":
+                newType = "numbered-list-element";
+                break;
+            case "1)":
+                newType = "numbered-list-element";
+                break;
+            case ">":
+                newType = "quote-element";
+                break;
+            case "```":
+                newType = "code-element";
+                break;
+            case "---" || "***" || "___":
+                newType = "divider-element";
+                break;
+            case "- [ ]" || "- [x]":
+                newType = "checkbox-element";
+                break;
+        }
+
+        if (newType != "uwu") {
+            var val = {textContent: ""};
+            if (this.editable.innerText.trim() === "- [x]") {
+                val.checked = true;
+            }
+            
+            wisk.editor.changeBlockType(this.id, val, newType);
+        }
     }
 
     getValue() {
@@ -560,7 +630,7 @@ formatInlineCitation(citation) {
     }
 
     handleBeforeInput(event) {
-        if (event.inputType === "insertText" && event.data === "/") {
+        if (event.inputType === "insertText" && event.data === "/" && this.editable.innerText.trim() === "") {
             event.preventDefault();
             window.wisk.editor.showSelector(this.id);
         }

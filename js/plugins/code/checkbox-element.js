@@ -158,7 +158,7 @@ class CheckboxElement extends BaseTextElement {
     }
 
     handleBeforeInput(event) {
-        if (event.inputType === 'insertText' && event.data === '/') {
+        if (event.inputType === 'insertText' && event.data === '/' && this.editable.innerText.trim() === "") {
             event.preventDefault();
             window.wisk.editor.showSelector(this.id);
         } else if (event.inputType === 'insertText' && event.data === ' ' && this.getFocus() === 0) {

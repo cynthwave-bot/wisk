@@ -99,7 +99,7 @@ class CalloutElement extends BaseTextElement {
                 display: flex;
                 align-items: flex-start;
                 gap: var(--padding-4);
-                background-color: var(--bg-3);
+                background-color: var(--accent-bg);
                 border-radius: var(--radius);
                 padding: var(--padding-4);
                 align-items: center;
@@ -149,7 +149,7 @@ class CalloutElement extends BaseTextElement {
                 line-height: 1.5;
                 border: none;
                 border-radius: var(--radius);
-                background-color: var(--bg-3);
+                background-color: transparent;
                 outline: none;
                 line-height: 1.5;
                 padding: 0;

@@ -1,4 +1,9 @@
 class Heading1Element extends BaseTextElement {
+    constructor() {
+        super();
+        this.placeholder = this.getAttribute("placeholder") || "edit me";
+    }
+
     render() {
         const style = `
             <style>
@@ -12,7 +17,7 @@ class Heading1Element extends BaseTextElement {
                 outline: none;
                 position: relative;
                 line-height: 1.5;
-                font-size: 2.5em;
+                font-size: 3em;
             }
             #editable.empty:before {
                 content: attr(data-placeholder);

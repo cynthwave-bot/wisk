@@ -1,4 +1,9 @@
 class Heading3Element extends BaseTextElement {
+    constructor() {
+        super();
+        this.placeholder = this.getAttribute("placeholder") || "edit me";
+    }
+
     render() {
         const style = `
             <style>
