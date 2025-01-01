@@ -405,7 +405,7 @@ async function initEditor(doc) {
 
 async function initializeElements() {
     if (window.wisk.editor.elements.length > 1) {
-        document.getElementById("tip").style.display = "none";
+        document.getElementById("getting-started").style.display = "none";
     }
 
     const firstElement = window.wisk.editor.elements[0];
@@ -630,7 +630,7 @@ window.wisk.editor.justUpdates = async function (elementId) {
                 element.lastEdited = Math.floor(Date.now() / 1000);
                 element.component = domElement.tagName.toLowerCase();
                 document.getElementById("nav").classList.add("nav-disappear");
-                document.getElementById("tip").style.display = "none";
+                document.getElementById("getting-started").style.display = "none";
 
                 if (!elementUpdatesLeft.includes(elementId)) {
                     elementUpdatesLeft.push(elementId);

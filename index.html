@@ -94,8 +94,21 @@
                 <div class="editor">
                     <div class="editor-main" id="editor">
                     </div>
-                    <div id="last-space" style="padding: 100px max(calc((100% - 950px) / 2), var(--padding-4)); flex: 1; display: flex; align-items: flex-end">
-                        <p id="tip" style="color: var(--text-2); pointer-events: none;"></p>
+                    <div id="last-space">
+                        <div id="getting-started">
+                            <div style="display: flex; gap: var(--gap-3); flex-wrap: wrap; align-items: center;">
+                                Get started with 
+                                <div style="display: flex; gap: var(--gap-2); flex-wrap: wrap">
+                                    <button class="gs-button"> <img src="/a7/forget/gs-draft-anything.svg" alt=""> Draft anything </button>
+                                    <button class="gs-button"> <img src="/a7/forget/gs-draft-outline.svg" alt=""> Draft an outline </button>
+                                    <button class="gs-button"> <img src="/a7/forget/gs-brainstorm.svg" alt=""> Brainstorm Ideas </button>
+                                    <button class="gs-button"> <img src="/a7/forget/gs-cover.svg" alt=""> Topics to cover </button>
+                                    <button class="gs-button"> <img src="/a7/forget/gs-import.svg" alt=""> Import from file </button>
+                                    <button class="gs-button"> <img src="/a7/forget/gs-help.svg" alt=""> Help </button>
+                                </div>
+                            </div>
+                            <p id="tip"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -150,6 +163,7 @@
         <script src="/js/left-sidebar.js"></script>
 
         <script type="module" src="/js/elements/loading.js"></script>
+        <script type="module" src="/js/plugins/code/first-element.js"></script>
         <script type="module" src="/js/elements/file-upload-dialog.js"></script>
         <script type="module" src="/js/elements/auth-component.js"></script>
         <script type="module" src="/js/elements/toolbar-element.js"></script>

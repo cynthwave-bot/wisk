@@ -127,7 +127,7 @@ nav {
 .rndr {
     position: relative;
     width: 100%;
-    padding: 0 max(calc((100% - 950px) / 2), var(--padding-4));
+    padding: 0 max(calc((100% - 850px) / 2), var(--padding-4));
     overflow-x: auto;
     overflow-y: hidden;
 }
@@ -261,4 +261,52 @@ nav {
     display: flex;
     flex-direction: column;
   }
+}
+
+#last-space {
+    padding: 100px max(calc((100% - 850px) / 2), var(--padding-4)); 
+    flex: 1; 
+    display: flex; 
+    align-items: flex-start; 
+    flex-direction: column; 
+    justify-content: flex-end; 
+    gap: var(--gap-3);
+}
+
+#getting-started {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-3);
+}
+
+.gs-button {
+    padding: var(--padding-w2);
+    border-radius: 100px;
+    background-color: var(--bg-2);
+    border: none;
+    color: var(--text-1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-2);
+    outline: none;
+    font-size: 15px;
+}
+
+.gs-button img {
+    width: 20px;
+    filter: var(--themed-svg);
+}
+
+.gs-button:hover {
+    background-color: var(--bg-3);
+}
+
+#tip {
+    color: var(--text-2); 
+    pointer-events: none;
+    font-size: 0.9rem;
+    margin-top: 20px;
 }

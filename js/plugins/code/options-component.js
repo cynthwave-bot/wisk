@@ -7,6 +7,7 @@ class OptionsComponent extends LitElement {
             font-family: var(--font);
             margin: 0;
             padding: 0;
+            user-select: none;
         }
         :host {
             display: block;
@@ -379,7 +380,7 @@ class OptionsComponent extends LitElement {
             border: 4px solid var(--bg-1); 
         }
         .vgap {
-            gap: var(--gap-3);
+            gap: var(--gap-2);
         }
         .link-blue {
             color: var(--fg-blue);
@@ -690,21 +691,73 @@ class OptionsComponent extends LitElement {
                             </div>
                         </div>
 
-                        <div class="options-section options-section--column">
-                            <div>
-                                <span class="tags">${ this.selectedPlugin.contents.map(content => content.category).join(', ') }</span>
-                                ${this.selectedPlugin.contents.some(content => content.nav) ? html`<span class="tags">navigation</span>` : ''}
-                                ${this.selectedPlugin.contents.some(content => content.experimental) ? html`<span class="tags">experimental</span>` : ''}
-                            </div>
-                            <p>
-                                ${parts.map((part, index) => {
-                                    if (part.match(urlRegex)) {
-                                        return html`<a href="${part}" class="link-blue" target="_blank">${part.replace(/(^\w+:|^)\/\//, '')}</a>`;
-                                    }
-                                    return part;
-                                })}
-                            </p>
-                        </div>
+<div class="options-section options-section--column">
+
+    ${this.selectedPlugin.contents.some(content => 
+        content.category.includes('mini-dialog') || 
+        content.category.includes('full-dialog') || 
+        content.category.includes('right-sidebar') || 
+        content.category.includes('left-sidebar') || 
+        content.category.includes('component') || 
+        content.category.includes('auto') || 
+        content.category.includes('context-box') || 
+        content.nav || 
+        content.experimental
+    ) ? html`
+        <div style="margin-top: var(--gap-2); width: 100%; border: 1px solid var(--border-1); border-radius: var(--radius); padding: 8px 4px
+ margin-top: var(--gap-2); width: 100%; border: 1px solid var(--border-1); border-radius: var(--radius);
+     padding: 8px 4px; display: flex; flex-direction: column; gap: var(--gap-2); padding: var(--padding-3)">
+
+
+    <div>
+        <span class="tags">${ this.selectedPlugin.contents.map(content => content.category).join(', ') }</span>
+        ${this.selectedPlugin.contents.some(content => content.nav) ? html`<span class="tags">navigation</span>` : ''}
+        ${this.selectedPlugin.contents.some(content => content.experimental) ? html`<span class="tags"
+            style="background-color: var(--bg-red); color: var(--fg-red);">experimental</span>` : ''}
+    </div>
+
+            <ul style="color: var(--text-2); display: flex; flex-direction: column; gap: var(--gap-1)">
+                ${this.selectedPlugin.contents.some(content => content.category.includes('mini-dialog')) ? html`
+                    <p style="font-size: 14px;">• opens as a small dialog box</p>
+                ` : ''}
+                ${this.selectedPlugin.contents.some(content => content.category.includes('full-dialog')) ? html`
+                    <p style="font-size: 14px;">• opens as a full-screen dialog box (Not implemented yet)</p>
+                ` : ''}
+                ${this.selectedPlugin.contents.some(content => content.category.includes('right-sidebar')) ? html`
+                    <p style="font-size: 14px;">• appears in the right sidebar</p>
+                ` : ''}
+                ${this.selectedPlugin.contents.some(content => content.category.includes('left-sidebar')) ? html`
+                    <p style="font-size: 14px;">• appears in the left sidebar</p>
+                ` : ''}
+                ${this.selectedPlugin.contents.some(content => content.category.includes('component')) ? html`
+                    <p style="font-size: 14px;">• adds a new block to the editor</p>
+                ` : ''}
+                ${this.selectedPlugin.contents.some(content => content.category.includes('auto')) ? html`
+                    <p style="font-size: 14px;">• runs automatically without user intervention/has custom ui</p>
+                ` : ''}
+                ${this.selectedPlugin.contents.some(content => content.category.includes('context-box')) ? html`
+                    <p style="font-size: 14px;">• appears as a context menu or box (Not implemented yet)</p>
+                ` : ''}
+                ${this.selectedPlugin.contents.some(content => content.experimental) ? html`
+                    <p style="font-size: 14px;">• is experimental and may cause issues</p>
+                ` : ''}
+                ${this.selectedPlugin.contents.some(content => content.nav) ? html`
+                    <p style="font-size: 14px;">• will be shown in the navigation bar</p>
+                ` : ''}
+            </ul>
+        </div>
+    ` : ''}
+
+    <p>
+        ${parts.map((part, index) => {
+            if (part.match(urlRegex)) {
+                return html`<a href="${part}" class="link-blue" target="_blank">${part.replace(/(^\w+:|^)\/\//, '')}</a>`;
+            }
+            return part;
+        })}
+    </p>
+</div>
+
                     ` : ''}
                 </div>
 
