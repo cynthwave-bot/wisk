@@ -5,17 +5,6 @@ var elementUpdatesLeft = [];
 var deletedElementsLeft = [];
 var configChanges = [];
 
-var tips = [
-    "You can use the command palette by pressing Ctrl+e or Cmd+e",
-    "You can create and install plugins to extend the functionality of your editor",
-    "You can create and use custom themes to personalize your editor",
-    "When AI Chat gets too long, clear the chat by clicking the Clear Chat button, that'll improve the results",
-];
-
-if (!window.wisk.editor.wiskSite) {
-    document.getElementById("tip").innerText = "Tip: " + tips[Math.floor(Math.random() * tips.length)];
-}
-
 // Utility functions
 const createHoverImageContainer = (elementId) => {
     const imageContainer = document.createElement("div");
@@ -603,6 +592,10 @@ function whenTrashClicked(elementId) {
 }
 
 function handleEditorClick(event) {
+    if (event.target.closest('#getting-started')) {
+        return;
+    }
+
     const lastElement = window.wisk.editor.elements[window.wisk.editor.elements.length - 1];
 
     if (lastElement.component === "text-element") {
