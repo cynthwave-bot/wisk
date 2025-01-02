@@ -38,7 +38,7 @@ class GettingStarted extends LitElement {
             background-color: var(--bg-2);
         }
         #tip {
-            color: var(--text-2); 
+            color: var(--text-2);
             pointer-events: none;
             font-size: 0.9rem;
             margin-top: 20px;
@@ -57,18 +57,30 @@ class GettingStarted extends LitElement {
         }
         .dialog-content {
             background: var(--bg-1);
-            padding: var(--padding-4);
+            padding: calc(var(--padding-4) * 2);
             border-radius: var(--radius-large);
             border: 1px solid var(--border-1);
             filter: var(--drop-shadow) var(--drop-shadow);
-            max-width: 1200px;
+            max-width: 1400px;
             max-height: 700px;
-            height: 80%;
-            width: 80%;
-            overflow-y: auto;
+            height: 90%;
+            width: 90%;
             position: relative;
             z-index: 1000;
+            transform: translateZ(0); /* fix for some weird rendering issue that i dont wanna debug */
         }
+        .thin-dialog-content {
+            max-width: 1000px;
+        }
+        .quick-link {
+            padding: var(--padding-w1);
+            background: var(--accent-bg);
+            color: var(--accent-text);
+            border-radius: var(--radius);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
         .dialog-close {
             position: absolute;
             top: var(--padding-3);
@@ -93,10 +105,286 @@ class GettingStarted extends LitElement {
             margin-bottom: var(--gap-3);
             color: var(--text-1);
         }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-1);
+            margin-bottom: var(--gap-3);
+        }
+
+        .input-label {
+            color: var(--text-1);
+            font-weight: 500;
+        }
+
+        .input-description {
+            color: var(--text-2);
+            margin-top: var(--gap-1);
+        }
+
+        .text-input {
+            width: 100%;
+            padding: var(--padding-2);
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius);
+            background: var(--bg-2);
+            color: var(--text-1);
+        }
+
+        .text-input:focus {
+        }
+
+        .textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .generate-button {
+            background: var(--accent-bg);
+            color: var(--accent-text);
+            padding: var(--padding-w3);
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--gap-2);
+        }
+
+        .generate-button:hover {
+            background: var(--bg-3);
+        }
+
+        .warning-text {
+            color: var(--text-2);
+            font-size: 0.8rem;
+            margin-top: var(--gap-3);
+            font-style: italic;
+        }
+
+        .main-group {
+            overflow-y: auto;
+            height: inherit;
+        }
+
+        .brainstorm-container {
+            display: flex;
+            gap: var(--gap-3);
+            height: inherit;
+            overflow: auto;
+        }
+
+        @media (max-width: 768px) {
+            .brainstorm-container {
+                flex-direction: column-reverse;
+            }
+        }
+
+        .chat-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0; /* Prevent flex item from overflowing */
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--padding-3);
+            border-radius: var(--radius);
+            margin-bottom: var(--gap-3);
+            overflow: auto;
+        }
+
+        .message {
+            margin-bottom: var(--gap-3);
+            padding: var(--padding-3);
+            border-radius: var(--radius);
+        }
+
+        .message.user {
+            margin-left: 20%;
+        }
+
+        .message.assistant {
+            background: var(--bg-blue);
+            margin-right: 20%;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: var(--gap-2);
+        }
+
+        .chat-input textarea {
+            flex: 1;
+            min-height: 50px;
+            resize: none;
+            padding: var(--padding-2);
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius);
+            background: var(--bg-2);
+            color: var(--text-1);
+        }
+
+        .bs-input {
+            flex: 1 1 0%;
+            min-height: 40px;
+            resize: none;
+            padding: var(--padding-w2);
+            border: 1px solid var(--border-1);
+            border-radius: 100px;
+            background: var(--bg-2);
+            color: var(--text-1);
+        }
+
+        .visualization-section {
+            flex: 1;
+            min-width: 0;
+            border-radius: var(--radius);
+            padding: var(--padding-3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .send-button {
+            padding: var(--padding-2) var(--padding-4);
+            background: var(--accent-bg);
+            color: var(--accent-text);
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--gap-2);
+        }
+
+        .send-button:hover {
+            background: var(--bg-3);
+        }
+
+        .mermaid-wrapper {
+            flex: 1;
+            overflow: auto;
+        }
+        .warning-text {
+            color: var(--text-2);
+            font-size: 0.8rem;
+            margin-top: var(--gap-3);
+            font-style: italic;
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border-1);
+            border-radius: var(--radius);
+            padding: var(--padding-w4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: var(--bg-2);
+            min-height: 250px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--accent-bg);
+            background: var(--bg-3);
+        }
+
+        .drop-text {
+            color: var(--text-1);
+            font-size: 1.1rem;
+            margin-bottom: var(--gap-2);
+        }
+
+        .supported-formats {
+            color: var(--text-2);
+            font-size: 0.9rem;
+            margin-bottom: var(--gap-3);
+        }
+
+        .browse-button {
+            padding: var(--padding-2) var(--padding-4);
+            background: var(--bg-3);
+            color: var(--text-1);
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .browse-button:hover {
+            background: var(--bg-4);
+        }
+
+        .selected-file {
+            margin-top: var(--gap-3);
+            padding: var(--padding-3);
+            background: var(--bg-2);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--gap-2);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-2);
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-icon {
+            width: 24px;
+            height: 24px;
+            filter: var(--themed-svg);
+        }
+
+        .file-name {
+            color: var(--text-1);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .remove-file {
+            background: none;
+            border: none;
+            padding: var(--padding-1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+        }
+
+        .remove-file:hover {
+            background: var(--bg-3);
+        }
+
+        .file-size {
+            color: var(--text-2);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        *::-webkit-scrollbar { width: 15px; }
+        *::-webkit-scrollbar-track { background: var(--bg-1); }
+        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
+        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
     `;
 
     static properties = {
-        activeDialog: { type: String }
+        activeDialog: { type: String },
+        selectedFile: { type: Object },
     };
 
     constructor() {
@@ -124,22 +412,187 @@ class GettingStarted extends LitElement {
         this.requestUpdate();
     }
 
+    formatFileSize(bytes) {
+        if (bytes === 0) return "0 Bytes";
+        const k = 1024;
+        const sizes = ["Bytes", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    }
+
+    handleDragOver(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const dropZone = e.currentTarget;
+        dropZone.classList.add("drag-over");
+    }
+
+    handleDragLeave(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const dropZone = e.currentTarget;
+        dropZone.classList.remove("drag-over");
+    }
+
+    handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const dropZone = e.currentTarget;
+        dropZone.classList.remove("drag-over");
+
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            this.processFile(file);
+        }
+    }
+
+    handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (file) {
+            this.processFile(file);
+        }
+        e.target.value = "";
+    }
+
+    removeFile() {
+        this.selectedFile = null;
+        this.requestUpdate();
+    }
+
+    triggerFileInput() {
+        this.shadowRoot.getElementById("fileInput").click();
+    }
+
+    processFile(file) {
+        const validExtensions = [".pdf", ".docx", ".md", ".markdown"];
+        const ext = "." + file.name.split(".").pop().toLowerCase();
+
+        if (validExtensions.includes(ext)) {
+            this.selectedFile = file;
+            this.requestUpdate();
+        } else {
+            wisk.utils.showToast("Invalid file format", 5000);
+        }
+    }
+
     renderDraftAnythingDialog() {
         return html`
-            <div class="dialog-content">
-                <button class="dialog-close" @click=${this.closeDialog}>&times;</button>
+            <div class="dialog-content thin-dialog-content">
+                <button class="dialog-close" @click=${this.closeDialog}>
+                    <img src="/a7/forget/x.svg" alt="Close" style="filter: var(--themed-svg)" />
+                </button>
                 <h2 class="dialog-title">Draft Anything</h2>
-                <!-- Content will go here -->
+
+                <div class="main-group">
+                    <div class="input-group">
+                        <label class="input-label">What are you writing?</label>
+                        <textarea
+                            class="text-input textarea"
+                            placeholder="For example, 'A blog post about gardening.' or 'A product description for a new app.'"
+                        ></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Who is the intended audience?</label>
+                        <textarea
+                            class="text-input textarea"
+                            placeholder="For example, 'People interested in gardening.' or 'Tech-savvy users.'"
+                        ></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">What is your goal?</label>
+                        <textarea
+                            class="text-input textarea"
+                            placeholder="For example, 'To inform readers about the benefits of organic gardening.' or 'To persuade users to download the app.'"
+                        ></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Category</label>
+                        <select class="text-input">
+                            <option value="" disabled selected>Select a category...</option>
+                            <option value="blog">Blog Post</option>
+                            <option value="article">Article</option>
+                            <option value="essay">Essay</option>
+                            <option value="report">Report</option>
+                            <option value="creative">Creative Writing</option>
+                            <option value="technical">Technical Document</option>
+                            <option value="marketing">Marketing Content</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--gap-1)">
+                        <button class="generate-button">
+                            <img src="/a7/forget/gs-ai.svg" alt="Generate" style="width: 22px; filter: var(--accent-svg)" />
+                            Generate
+                        </button>
+
+                        <p class="warning-text">AI makes mistakes—proofread carefully!</p>
+                    </div>
+                </div>
             </div>
         `;
     }
 
     renderOutlineDialog() {
         return html`
-            <div class="dialog-content">
-                <button class="dialog-close" @click=${this.closeDialog}>&times;</button>
+            <div class="dialog-content thin-dialog-content">
+                <button class="dialog-close" @click=${this.closeDialog}>
+                    <img src="/a7/forget/x.svg" alt="Close" style="filter: var(--themed-svg)" />
+                </button>
                 <h2 class="dialog-title">Draft an Outline</h2>
-                <!-- Content will go here -->
+
+                <div class="main-group">
+                    <div class="input-group">
+                        <label class="input-label">What are you writing?</label>
+                        <textarea
+                            class="text-input textarea"
+                            placeholder="For example, 'A blog post about gardening.' or 'A product description for a new app.'"
+                        ></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Who is the intended audience?</label>
+                        <textarea
+                            class="text-input textarea"
+                            placeholder="For example, 'People interested in gardening.' or 'Tech-savvy users.'"
+                        ></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">What is your goal?</label>
+                        <textarea
+                            class="text-input textarea"
+                            placeholder="For example, 'To inform readers about the benefits of organic gardening.' or 'To persuade users to download the app.'"
+                        ></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Category</label>
+                        <select class="text-input">
+                            <option value="" disabled selected>Select a category...</option>
+                            <option value="blog">Blog Post</option>
+                            <option value="article">Article</option>
+                            <option value="essay">Essay</option>
+                            <option value="report">Report</option>
+                            <option value="creative">Creative Writing</option>
+                            <option value="technical">Technical Document</option>
+                            <option value="marketing">Marketing Content</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--gap-1)">
+                        <button class="generate-button">
+                            <img src="/a7/forget/gs-ai.svg" alt="Generate" style="width: 22px; filter: var(--accent-svg)" />
+                            Generate
+                        </button>
+
+                        <p class="warning-text">AI makes mistakes—proofread carefully!</p>
+                    </div>
+                </div>
             </div>
         `;
     }
@@ -147,29 +600,116 @@ class GettingStarted extends LitElement {
     renderBrainstormDialog() {
         return html`
             <div class="dialog-content">
-                <button class="dialog-close" @click=${this.closeDialog}>&times;</button>
+                <button class="dialog-close" @click=${this.closeDialog}>
+                    <img src="/a7/forget/x.svg" alt="Close" style="filter: var(--themed-svg)" />
+                </button>
                 <h2 class="dialog-title">Brainstorm Ideas</h2>
-                <!-- Content will go here -->
+
+                <div class="brainstorm-container">
+                    <div class="chat-section">
+                        <div class="chat-messages">
+                            <div class="message assistant">Let's brainstorm some ideas! What topic would you like to explore?</div>
+                            <div class="message user">I want to write about sustainable urban gardening.</div>
+                            <div class="message assistant">
+                                Great choice! I've created an initial mind map. Feel free to ask me to expand any branch or add new topics.
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" class="bs-input" placeholder="Type your message here..." />
+                        </div>
+                    </div>
+
+                    <div class="visualization-section">
+                        <div class="mermaid-wrapper">
+                            <mermaid-element read-only id="bs-mermaid"></mermaid-element>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
     }
 
     renderTopicsDialog() {
         return html`
-            <div class="dialog-content">
-                <button class="dialog-close" @click=${this.closeDialog}>&times;</button>
+            <div class="dialog-content thin-dialog-content">
+                <button class="dialog-close" @click=${this.closeDialog}>
+                    <img src="/a7/forget/x.svg" alt="Close" style="filter: var(--themed-svg)" />
+                </button>
                 <h2 class="dialog-title">Topics to Cover</h2>
-                <!-- Content will go here -->
+
+                <div class="main-group">
+                    <div class="input-group">
+                        <label class="input-label">What topics would you like to cover? (separate with commas)</label>
+                        <textarea
+                            class="text-input textarea"
+                            placeholder="For example, 'Benefits of organic gardening.' or 'How to start a community garden.'"
+                        ></textarea>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--gap-1)">
+                        <button class="generate-button">
+                            <img src="/a7/forget/gs-save.svg" alt="Generate" style="width: 22px; filter: var(--accent-svg)" />
+                            Save
+                        </button>
+
+                        <p class="warning-text">This will give AI a better understanding of your content</p>
+                    </div>
+                </div>
             </div>
         `;
     }
-
     renderImportDialog() {
         return html`
-            <div class="dialog-content">
-                <button class="dialog-close" @click=${this.closeDialog}>&times;</button>
+            <div class="dialog-content thin-dialog-content">
+                <button class="dialog-close" @click=${this.closeDialog}>
+                    <img src="/a7/forget/x.svg" alt="Close" style="filter: var(--themed-svg)" />
+                </button>
                 <h2 class="dialog-title">Import from File</h2>
-                <!-- Content will go here -->
+
+                <div class="main-group">
+                    ${this.selectedFile
+                        ? html`
+                              <div class="selected-file">
+                                  <div class="file-info">
+                                      <img src="/a7/forget/gs-import.svg" alt="File" class="file-icon" />
+                                      <span class="file-name">${this.selectedFile.name}</span>
+                                      <span class="file-size">${this.formatFileSize(this.selectedFile.size)}</span>
+                                  </div>
+                                  <button class="remove-file" @click=${this.removeFile}>
+                                      <img src="/a7/forget/x.svg" alt="Remove" style="width: 16px; height: 16px; filter: var(--themed-svg)" />
+                                  </button>
+                              </div>
+                          `
+                        : html`
+                              <div class="drop-zone" @dragover=${this.handleDragOver} @drop=${this.handleDrop} @dragleave=${this.handleDragLeave}>
+                                  <img
+                                      src="/a7/forget/gs-import.svg"
+                                      alt="Upload"
+                                      style="width: 48px; height: 48px; filter: var(--themed-svg); margin-bottom: var(--gap-3)"
+                                  />
+                                  <p class="drop-text">Drag and drop your file here</p>
+                                  <p class="supported-formats">Supported formats: PDF, DOCX, Markdown</p>
+                                  <input
+                                      type="file"
+                                      id="fileInput"
+                                      accept=".pdf,.docx,.md,.markdown"
+                                      style="display: none;"
+                                      @change=${this.handleFileSelect}
+                                  />
+                                  <button class="browse-button" @click=${this.triggerFileInput}>Browse Files</button>
+                              </div>
+                          `}
+
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--gap-1); margin-top: var(--gap-3)"
+                    >
+                        <button class="generate-button" ?disabled=${!this.selectedFile}>
+                            <img src="/a7/forget/gs-import.svg" alt="Import" style="width: 22px; filter: var(--accent-svg)" />
+                            Import
+                        </button>
+                        <p class="warning-text">Note: Format conversion may not be perfect</p>
+                    </div>
+                </div>
             </div>
         `;
     }
@@ -177,9 +717,34 @@ class GettingStarted extends LitElement {
     renderHelpDialog() {
         return html`
             <div class="dialog-content">
-                <button class="dialog-close" @click=${this.closeDialog}>&times;</button>
+                <button class="dialog-close" @click=${this.closeDialog}>
+                    <img src="/a7/forget/x.svg" alt="Close" style="filter: var(--themed-svg)" />
+                </button>
                 <h2 class="dialog-title">Help</h2>
-                <!-- Content will go here -->
+                <div class="main-group">
+                    <div style="display: flex; align-items: center; gap: var(--gap-3); font-size: 15px;">
+                        <label class="input-label">Quick Links</label>
+                        <div style="display: flex; gap: var(--gap-2); flex-wrap: wrap">
+                            <a href="#" class="quick-link">Getting Started</a>
+                            <a href="#" class="quick-link">FAQ</a>
+                            <a href="#" class="quick-link">Discord</a>
+                            <a href="#" class="quick-link">Documentation</a>
+                            <a href="#" class="quick-link">Contact Support</a>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: var(--gap-2); margin-top: var(--gap-3)">
+                        <h3>Tutorials</h3>
+                        <div style="display: flex; gap: var(--gap-2); overflow-x: auto; width: -webkit-fill-available;">
+                            <iframe width="360" height="200" style="border-radius: var(--radius); border: 1px solid var(--border-1)" src="https://www.youtube-nocookie.com/embed/H2qJRnV8ZGA?si=RisOjaFoNIM7Me0H" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe width="360" height="200" style="border-radius: var(--radius); border: 1px solid var(--border-1)" src="https://www.youtube-nocookie.com/embed/BiZ1CLT3nEM?si=ibM4mAO6_QFvSkos" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe width="360" height="200" style="border-radius: var(--radius); border: 1px solid var(--border-1)" src="https://www.youtube-nocookie.com/embed/rC2VQ-oyDG0?si=JIbXq-iepjYc75HJ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                </div>
+
+
             </div>
         `;
     }
@@ -188,37 +753,34 @@ class GettingStarted extends LitElement {
         return html`
             <div id="getting-started">
                 <div style="display: flex; gap: var(--gap-3); flex-wrap: wrap; align-items: center;">
-                    Get started with 
+                    Get started with
                     <div style="display: flex; gap: var(--gap-2); flex-wrap: wrap">
-                        <button class="gs-button" @click=${() => this.showDialog('draft')}> 
-                            <img src="/a7/forget/gs-draft-anything.svg" alt=""/> Draft anything 
+                        <button class="gs-button" @click=${() => this.showDialog("draft")}>
+                            <img src="/a7/forget/gs-draft-anything.svg" alt="" /> Draft anything
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog('outline')}> 
-                            <img src="/a7/forget/gs-draft-outline.svg" alt=""/> Draft an outline 
+                        <button class="gs-button" @click=${() => this.showDialog("outline")}>
+                            <img src="/a7/forget/gs-draft-outline.svg" alt="" /> Draft an outline
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog('brainstorm')}> 
-                            <img src="/a7/forget/gs-brainstorm.svg" alt=""/> Brainstorm Ideas 
+                        <button class="gs-button" @click=${() => this.showDialog("brainstorm")}>
+                            <img src="/a7/forget/gs-brainstorm.svg" alt="" /> Brainstorm Ideas
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog('topics')}> 
-                            <img src="/a7/forget/gs-cover.svg" alt=""/> Topics to cover 
+                        <button class="gs-button" @click=${() => this.showDialog("topics")}>
+                            <img src="/a7/forget/gs-cover.svg" alt="" /> Topics to cover
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog('import')}> 
-                            <img src="/a7/forget/gs-import.svg" alt=""/> Import from file 
+                        <button class="gs-button" @click=${() => this.showDialog("import")}>
+                            <img src="/a7/forget/gs-import.svg" alt="" /> Import from file
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog('help')}> 
-                            <img src="/a7/forget/gs-help.svg" alt=""/> Help 
-                        </button>
+                        <button class="gs-button" @click=${() => this.showDialog("help")}><img src="/a7/forget/gs-help.svg" alt="" /> Help</button>
                     </div>
                 </div>
                 <p id="tip"></p>
 
-                <div class="dialog-overlay" style="display: ${this.activeDialog ? 'flex' : 'none'}">
-                    ${this.activeDialog === 'draft' ? this.renderDraftAnythingDialog() : ''}
-                    ${this.activeDialog === 'outline' ? this.renderOutlineDialog() : ''}
-                    ${this.activeDialog === 'brainstorm' ? this.renderBrainstormDialog() : ''}
-                    ${this.activeDialog === 'topics' ? this.renderTopicsDialog() : ''}
-                    ${this.activeDialog === 'import' ? this.renderImportDialog() : ''}
-                    ${this.activeDialog === 'help' ? this.renderHelpDialog() : ''}
+                <div class="dialog-overlay" style="display: ${this.activeDialog ? "flex" : "none"}">
+                    ${this.activeDialog === "draft" ? this.renderDraftAnythingDialog() : ""}
+                    ${this.activeDialog === "outline" ? this.renderOutlineDialog() : ""}
+                    ${this.activeDialog === "brainstorm" ? this.renderBrainstormDialog() : ""}
+                    ${this.activeDialog === "topics" ? this.renderTopicsDialog() : ""}
+                    ${this.activeDialog === "import" ? this.renderImportDialog() : ""} ${this.activeDialog === "help" ? this.renderHelpDialog() : ""}
                 </div>
             </div>
         `;

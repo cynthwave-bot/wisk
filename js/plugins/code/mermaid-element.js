@@ -103,7 +103,8 @@ class MermaidElement extends LitElement {
         _mermaid: { type: String, state: true },
         error: { type: String },
         _showDialog: { type: Boolean, state: true },
-        _theme: { type: Object, state: true }
+        _theme: { type: Object, state: true },
+        readOnly: { type: Boolean, reflect: true, attribute: 'read-only' }
     };
 
     constructor() {
@@ -116,6 +117,7 @@ class MermaidElement extends LitElement {
         this.error = '';
         this._showDialog = false;
         this._theme = window.wisk.theme.getThemeData(window.wisk.theme.getTheme());
+        this.readOnly = false;
     }
 
     connectedCallback() {
@@ -130,6 +132,14 @@ class MermaidElement extends LitElement {
     disconnectedCallback() {
         super.disconnectedCallback();
         window.removeEventListener('themechange', this.handleThemeChange);
+    }
+
+    setReadOnlyMermaidData(mermaidCode) {
+        if (this.readOnly) {
+            this._mermaid = mermaidCode;
+            this.requestUpdate();
+            this.renderMermaid();
+        }
     }
 
     getMermaidConfig() {
@@ -391,7 +401,9 @@ class MermaidElement extends LitElement {
             <div class="mermaid-container">
                 <div class="mermaid-display"></div>
                 ${this.error ? html`<div class="error">${this.error}</div>` : ''}
-                <button class="edit-button" style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}}" @click=${this.handleEdit}>Edit</button>
+                ${!this.readOnly && !window.wisk.editor.wiskSite ? html`
+                    <button class="edit-button" @click=${this.handleEdit}>Edit</button>
+                ` : ''}
             </div>
 
             ${this._showDialog ? html`
