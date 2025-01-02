@@ -532,10 +532,19 @@ formatInlineCitation(citation) {
             case "```":
                 newType = "code-element";
                 break;
-            case "---" || "***" || "___":
+            case "---":
                 newType = "divider-element";
                 break;
-            case "- [ ]" || "- [x]":
+            case "***":
+                newType = "divider-element";
+                break;
+            case "___":
+                newType = "divider-element";
+                break;
+            case "- [ ]":
+                newType = "checkbox-element";
+                break;
+            case "- [x]":
                 newType = "checkbox-element";
                 break;
         }

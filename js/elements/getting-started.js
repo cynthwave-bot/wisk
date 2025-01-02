@@ -41,7 +41,6 @@ class GettingStarted extends LitElement {
             color: var(--text-2);
             pointer-events: none;
             font-size: 0.9rem;
-            margin-top: 20px;
         }
         .dialog-overlay {
             position: fixed;
@@ -68,6 +67,18 @@ class GettingStarted extends LitElement {
             position: relative;
             z-index: 1000;
             transform: translateZ(0); /* fix for some weird rendering issue that i dont wanna debug */
+        }
+        @media (max-width: 768px) {
+            .dialog-content {
+                padding: var(--padding-4);
+                height: 90%;
+                width: 100%;
+                border-radius: 0;
+                border-top-left-radius: var(--radius-large);
+                border-top-right-radius: var(--radius-large);
+                top: 5%;
+                filter: var(--drop-shadow) var(--drop-shadow) var(--drop-shadow) var(--drop-shadow);
+            }
         }
         .thin-dialog-content {
             max-width: 1000px;
@@ -142,7 +153,7 @@ class GettingStarted extends LitElement {
         .generate-button {
             background: var(--accent-bg);
             color: var(--accent-text);
-            padding: var(--padding-w3);
+            padding: var(--padding-w2);
             font-weight: 600;
             border: none;
             border-radius: var(--radius);
@@ -159,7 +170,6 @@ class GettingStarted extends LitElement {
         .warning-text {
             color: var(--text-2);
             font-size: 0.8rem;
-            margin-top: var(--gap-3);
             font-style: italic;
         }
 
@@ -267,12 +277,6 @@ class GettingStarted extends LitElement {
         .mermaid-wrapper {
             flex: 1;
             overflow: auto;
-        }
-        .warning-text {
-            color: var(--text-2);
-            font-size: 0.8rem;
-            margin-top: var(--gap-3);
-            font-style: italic;
         }
 
         .drop-zone {
@@ -399,7 +403,7 @@ class GettingStarted extends LitElement {
     }
 
     updated() {
-        this.shadowRoot.getElementById("tip").innerText = "Tip: " + this.tips[Math.floor(Math.random() * this.tips.length)];
+        this.shadowRoot.getElementById("tip").innerText = this.tips[Math.floor(Math.random() * this.tips.length)];
     }
 
     showDialog(type) {
@@ -529,7 +533,7 @@ class GettingStarted extends LitElement {
                             Generate
                         </button>
 
-                        <p class="warning-text">AI makes mistakes—proofread carefully!</p>
+                        <p class="warning-text">AI can make mistakes—please review carefully for accuracy!</p>
                     </div>
                 </div>
             </div>
@@ -587,10 +591,10 @@ class GettingStarted extends LitElement {
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--gap-1)">
                         <button class="generate-button">
                             <img src="/a7/forget/gs-ai.svg" alt="Generate" style="width: 22px; filter: var(--accent-svg)" />
-                            Generate
+                            Generate Outline
                         </button>
 
-                        <p class="warning-text">AI makes mistakes—proofread carefully!</p>
+                        <p class="warning-text">AI can make mistakes—please review carefully for accuracy!</p>
                     </div>
                 </div>
             </div>
@@ -722,14 +726,15 @@ class GettingStarted extends LitElement {
                 </button>
                 <h2 class="dialog-title">Help</h2>
                 <div class="main-group">
-                    <div style="display: flex; align-items: center; gap: var(--gap-3); font-size: 15px;">
+                    <div style="display: flex; align-items: center; gap: var(--gap-3); font-size: 15px; flex-wrap: wrap">
                         <label class="input-label">Quick Links</label>
                         <div style="display: flex; gap: var(--gap-2); flex-wrap: wrap">
-                            <a href="#" class="quick-link">Getting Started</a>
-                            <a href="#" class="quick-link">FAQ</a>
-                            <a href="#" class="quick-link">Discord</a>
-                            <a href="#" class="quick-link">Documentation</a>
-                            <a href="#" class="quick-link">Contact Support</a>
+                            <a target="_blank" href="https://wisk.cc/getting-started" class="quick-link">Getting Started</a>
+                            <a target="_blank" href="https://wisk.cc/faq" class="quick-link">FAQ</a>
+                            <a target="_blank" href="https://wisk.cc/blog" class="quick-link">Blog</a>
+                            <a target="_blank" href="https://discord.gg/YyqXEey4JS" class="quick-link">Discord</a>
+                            <a target="_blank" href="https://wisk.cc/docs" class="quick-link">Documentation</a>
+                            <a target="_blank" href="https://wisk.cc/support" class="quick-link">Contact Support</a>
                         </div>
                     </div>
 
@@ -761,10 +766,10 @@ class GettingStarted extends LitElement {
                         <button class="gs-button" @click=${() => this.showDialog("outline")}>
                             <img src="/a7/forget/gs-draft-outline.svg" alt="" /> Draft an outline
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog("brainstorm")}>
+                        <button class="gs-button" @click=${() => this.showDialog("brainstorm")} style="display: none">
                             <img src="/a7/forget/gs-brainstorm.svg" alt="" /> Brainstorm Ideas
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog("topics")}>
+                        <button class="gs-button" @click=${() => this.showDialog("topics")} style="display: none">
                             <img src="/a7/forget/gs-cover.svg" alt="" /> Topics to cover
                         </button>
                         <button class="gs-button" @click=${() => this.showDialog("import")}>
@@ -773,7 +778,9 @@ class GettingStarted extends LitElement {
                         <button class="gs-button" @click=${() => this.showDialog("help")}><img src="/a7/forget/gs-help.svg" alt="" /> Help</button>
                     </div>
                 </div>
-                <p id="tip"></p>
+                <p style="display: flex; margin-top: 20px; align-items: center; gap: var(--gap-1);"> 
+                    <img src="/a7/forget/gs-info.svg" alt="Tip" style="height: 16px; filter: var(--accent-svg)" title="Tip"/> <span id="tip"></span>
+                </p>
 
                 <div class="dialog-overlay" style="display: ${this.activeDialog ? "flex" : "none"}">
                     ${this.activeDialog === "draft" ? this.renderDraftAnythingDialog() : ""}
