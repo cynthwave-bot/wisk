@@ -283,33 +283,33 @@ class GeneralChat extends LitElement {
     async handleSignalingMessage(message) {
         try {
             console.log('Received message:', message);
-            
+
             switch (message.type) {
                 case 'peer-exists':
                     // Create offer for existing peer we just learned about
                     console.log('Found existing peer:', message.peerId);
                     await this.createOfferForPeer(message.peerId);
                     break;
-                    
+
                 case 'peer-joined':
                     // New peer joined - wait for their offer
                     console.log('New peer joined:', message.peerId);
                     break;
-                    
+
                 case 'offer':
                     console.log('Received offer from:', message.peerId);
                     await this.handleOffer(message);
                     break;
-                    
+
                 case 'answer':
                     console.log('Received answer from:', message.peerId);
                     await this.handleAnswer(message);
                     break;
-                    
+
                 case 'ice-candidate':
                     await this.handleIceCandidate(message);
                     break;
-                    
+
                 case 'peer-left':
                     this.handlePeerLeft(message.peerId);
                     break;
@@ -326,11 +326,14 @@ class GeneralChat extends LitElement {
         try {
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
-            
+
             this.sendSignalingMessage({
                 type: 'offer',
                 peerId: peerId,
-                data: offer
+                data: {
+                    type: offer.type,
+                    sdp: offer.sdp
+                }
             });
         } catch (e) {
             console.error('Error creating offer:', e);
@@ -339,7 +342,7 @@ class GeneralChat extends LitElement {
 
     createPeerConnection(peerId) {
         console.log('Setting up peer connection for:', peerId);
-        
+
         if (this.peerConnections[peerId]) {
             return this.peerConnections[peerId];
         }
@@ -361,7 +364,7 @@ class GeneralChat extends LitElement {
         pc.ontrack = (event) => {
             console.log('Received remote track from:', peerId);
             const stream = event.streams[0];
-            
+
             // Update participants list with the new stream
             const exists = this.participants.some(p => p.id === peerId);
             if (!exists) {
@@ -389,17 +392,26 @@ class GeneralChat extends LitElement {
     }
 
     async handleOffer(message) {
+        console.log('Handling offer:', message);
         const pc = this.createPeerConnection(message.peerId);
-        
+
         try {
-            await pc.setRemoteDescription(new RTCSessionDescription(message.data));
+            const desc = {
+                type: 'offer',
+                sdp: message.data.sdp
+            };
+            console.log('Setting remote description:', desc);
+            await pc.setRemoteDescription(new RTCSessionDescription(desc));
             const answer = await pc.createAnswer();
             await pc.setLocalDescription(answer);
-            
+
             this.sendSignalingMessage({
                 type: 'answer',
                 peerId: message.peerId,
-                data: answer
+                data: {
+                    type: answer.type,
+                    sdp: answer.sdp
+                }
             });
         } catch (e) {
             console.error('Error handling offer:', e);
@@ -407,10 +419,16 @@ class GeneralChat extends LitElement {
     }
 
     async handleAnswer(message) {
+        console.log('Handling answer:', message);
         const pc = this.peerConnections[message.peerId];
         if (pc) {
             try {
-                await pc.setRemoteDescription(new RTCSessionDescription(message.data));
+                const desc = {
+                    type: 'answer',
+                    sdp: message.data.sdp
+                };
+                console.log('Setting remote description:', desc);
+                await pc.setRemoteDescription(new RTCSessionDescription(desc));
             } catch (e) {
                 console.error('Error handling answer:', e);
             }
