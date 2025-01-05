@@ -237,29 +237,34 @@ class GeneralChat extends LitElement {
         }
     }
 
-    connectSocketIO(roomId) {
-        this.socket = io('wss://cloud.wisk.cc', { 
-            path: '/v2/plugins/call', // Specify the correct path
-            query: { roomId: roomId } 
-        });
+connectSocketIO(roomId) {
+    const serverURL = 'https://cloud.wisk.cc';  // or process.env.SERVER_URL in production
+    
+    this.socket = io(serverURL, {
+        path: '/v2/plugins/call',
+        query: { roomId },
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+        transports: ['polling', 'websocket'],
+        withCredentials: true,
+        extraHeaders: {
+            "Access-Control-Allow-Origin": "*"
+        }
+    });
 
-        this.socket.on('connect', () => {
-            console.log('Socket.IO Connected');
-            this.socket.emit('join-room', roomId);
-        });
+    this.socket.on('connect_error', (error) => {
+        console.error('Socket.IO connection error:', error);
+        this.showNotification('Connection error. Retrying...');
+    });
 
-        this.socket.on('signal', (msg) => {
-            this.handleSignalMessage(msg);
-        });
+    this.socket.on('connect', () => {
+        console.log('Socket.IO Connected');
+        this.socket.emit('join-room', roomId);
+    });
 
-        this.socket.on('new-peer', (msg) => {
-            this.handleNewPeer(msg.PeerId);
-        });
-
-        this.socket.on('peer-disconnected', (msg) => {
-            this.handlePeerDisconnected(msg.PeerId);
-        });
-    }
+    this.setupSignalingHandlers();
+}
 
     handleSignalMessage(msg) {
         switch (msg.Type) {
