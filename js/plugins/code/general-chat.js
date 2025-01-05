@@ -241,7 +241,7 @@ class GeneralChat extends LitElement {
 
     connectWebSocket(roomId) {
         // Create WebSocket connection with room ID
-        this.wsConnection = new WebSocket(`ws://localhost:40000/v2/plugins/call?roomId=${roomId}`);
+        this.wsConnection = new WebSocket(`wss://cloud.wisk.cc/v2/plugins/call?roomId=${roomId}`);
         this.setupSignalingHandlers();
     }
 
