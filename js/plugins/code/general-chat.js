@@ -394,17 +394,23 @@ class GeneralChat extends LitElement {
     }
 
     async handleOffer(message) {
-        console.log('Handling offer:', message);
-        if (!message.data) {
-            console.error('Offer data is missing');
-            return;
-        }
+        console.log('Handling offer with full message:', JSON.stringify(message, null, 2));
         
         const pc = this.createPeerConnection(message.peerId);
         
         try {
-            console.log('Setting remote description with:', message.data);
-            await pc.setRemoteDescription(new RTCSessionDescription(message.data));
+            const offerData = {
+                type: 'offer',
+                sdp: message.data?.sdp
+            };
+            
+            if (!offerData.sdp) {
+                console.error('SDP data is missing from offer:', message);
+                return;
+            }
+            
+            console.log('Setting remote description with:', offerData);
+            await pc.setRemoteDescription(new RTCSessionDescription(offerData));
             
             const answer = await pc.createAnswer();
             await pc.setLocalDescription(answer);
@@ -421,7 +427,7 @@ class GeneralChat extends LitElement {
             console.error('Error handling offer:', e);
         }
     }
-
+            
     async handleAnswer(message) {
         console.log('Handling answer:', message);
         const pc = this.peerConnections[message.peerId];
@@ -460,7 +466,6 @@ class GeneralChat extends LitElement {
         this.participants = this.participants.filter(p => p.id !== peerId);
         this.requestUpdate();
     }
-
 
     sendSignalingMessage(message) {
         if (this.wsConnection && this.wsConnection.readyState === WebSocket.OPEN) {
