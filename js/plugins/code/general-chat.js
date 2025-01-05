@@ -241,7 +241,9 @@ class GeneralChat extends LitElement {
 
     connectWebSocket(roomId) {
         // Create WebSocket connection with room ID
-        this.wsConnection = new WebSocket(`wss://cloud.wisk.cc/v2/plugins/call?roomId=${roomId}`);
+        // if localhost, use ws://localhost:40000 otherwise use wss://cloud.wisk.cc
+        const url = (window.location.hostname === 'localhost')? 'ws://localhost:40000' : 'wss://cloud.wisk.cc';
+        this.wsConnection = new WebSocket(`${url}/v2/plugins/call?roomId=${roomId}`);
         this.setupSignalingHandlers();
     }
 
@@ -282,10 +284,11 @@ class GeneralChat extends LitElement {
         try {
             console.log('Received message:', message);
             
-            switch (message.Type) { // Changed from message.type to message.Type
+            switch (message.Type) {
                 case 'new-peer':
-                    // When a new peer joins, we initiate the connection
-                    await this.handlePeerJoined(message.PeerId); // Changed from message.peerId to message.PeerId
+                    console.log('New peer notification received:', message.PeerId);
+                    // When we receive a new-peer notification, initiate the connection
+                    await this.handlePeerJoined(message.PeerId);
                     break;
                 case 'peer-left':
                     this.handlePeerLeft(message.PeerId);
@@ -308,14 +311,22 @@ class GeneralChat extends LitElement {
     }
 
     createPeerConnection(peerId) {
+        console.log('Creating peer connection for:', peerId);
+        if (this.peerConnections[peerId]) {
+            console.log('Peer connection already exists for:', peerId);
+            return this.peerConnections[peerId];
+        }
+
         const pc = new RTCPeerConnection({
             iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
         });
 
         // Add all local tracks to the connection
-        this.localStream.getTracks().forEach(track => {
-            pc.addTrack(track, this.localStream);
-        });
+        if (this.localStream) {
+            this.localStream.getTracks().forEach(track => {
+                pc.addTrack(track, this.localStream);
+            });
+        }
 
         // Handle ICE candidates
         pc.onicecandidate = (event) => {
@@ -350,14 +361,17 @@ class GeneralChat extends LitElement {
     }
 
     async handlePeerJoined(peerId) {
+        console.log('New peer joined:', peerId);
         const pc = this.createPeerConnection(peerId);
         
         try {
+            // Create and send offer to the new peer
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
             
             this.sendSignalingMessage({
                 type: 'offer',
+                peerId: peerId,
                 data: offer
             });
         } catch (e) {
