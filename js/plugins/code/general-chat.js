@@ -250,11 +250,9 @@ class GeneralChat extends LitElement {
 
         this.wsConnection.onopen = () => {
             console.log('WebSocket Connected');
-            // Send join room message
-            this.sendSignalingMessage({
-                type: 'join',
-                data: { roomId: wisk.editor.pageId }
-            });
+            // The roomId is already sent in the WebSocket URL query parameter
+            // No need to send additional join message
+            console.log('Connected to room:', wisk.editor.pageId);
         };
 
         this.wsConnection.onmessage = async (event) => {
@@ -284,28 +282,25 @@ class GeneralChat extends LitElement {
         try {
             console.log('Received message:', message);
             
-            switch (message.type) {
-                case 'user-joined':
-                    await this.handlePeerJoined(message.peerId);
+            switch (message.Type) { // Changed from message.type to message.Type
+                case 'new-peer':
+                    // When a new peer joins, we initiate the connection
+                    await this.handlePeerJoined(message.PeerId); // Changed from message.peerId to message.PeerId
                     break;
-                case 'user-left':
-                    this.handlePeerLeft(message.peerId);
+                case 'peer-left':
+                    this.handlePeerLeft(message.PeerId);
                     break;
                 case 'offer':
-                    await this.handleOffer(message.data);
+                    await this.handleOffer(message);
                     break;
                 case 'answer':
-                    await this.handleAnswer(message.data);
+                    await this.handleAnswer(message);
                     break;
                 case 'ice-candidate':
-                    await this.handleIceCandidate(message.data);
-                    break;
-                case 'room-full':
-                    console.log('Room is full');
-                    this.endCall();
+                    await this.handleIceCandidate(message);
                     break;
                 default:
-                    console.log('Unknown message type:', message.type);
+                    console.log('Unknown message type:', message.Type);
             }
         } catch (e) {
             console.error('Error handling signaling message:', e);
@@ -370,12 +365,15 @@ class GeneralChat extends LitElement {
         }
     }
 
-    async handleOffer(offer) {
-        if (!this.peerConnections[offer.peerId]) {
-            this.createPeerConnection(offer.peerId);
+    async handleOffer(message) {
+        const peerId = message.PeerId;
+        const offer = message.Offer;
+        
+        if (!this.peerConnections[peerId]) {
+            this.createPeerConnection(peerId);
         }
         
-        const pc = this.peerConnections[offer.peerId];
+        const pc = this.peerConnections[peerId];
         
         try {
             await pc.setRemoteDescription(new RTCSessionDescription(offer));
@@ -384,6 +382,7 @@ class GeneralChat extends LitElement {
             
             this.sendSignalingMessage({
                 type: 'answer',
+                peerId: peerId,
                 data: answer
             });
         } catch (e) {
@@ -391,8 +390,11 @@ class GeneralChat extends LitElement {
         }
     }
 
-    async handleAnswer(answer) {
-        const pc = this.peerConnections[answer.peerId];
+    async handleAnswer(message) {
+        const peerId = message.PeerId;
+        const answer = message.Answer;
+        
+        const pc = this.peerConnections[peerId];
         if (pc) {
             try {
                 await pc.setRemoteDescription(new RTCSessionDescription(answer));
@@ -402,8 +404,11 @@ class GeneralChat extends LitElement {
         }
     }
 
-    async handleIceCandidate(candidate) {
-        const pc = this.peerConnections[candidate.peerId];
+    async handleIceCandidate(message) {
+        const peerId = message.PeerId;
+        const candidate = message.Candidate;
+        
+        const pc = this.peerConnections[peerId];
         if (pc) {
             try {
                 await pc.addIceCandidate(new RTCIceCandidate(candidate));
@@ -425,7 +430,16 @@ class GeneralChat extends LitElement {
 
     sendSignalingMessage(message) {
         if (this.wsConnection && this.wsConnection.readyState === WebSocket.OPEN) {
-            this.wsConnection.send(JSON.stringify(message));
+            // Convert to backend expected format
+            const signalMessage = {
+                Type: message.type,
+                PeerId: message.peerId || '',
+                Offer: message.type === 'offer' ? message.data : null,
+                Answer: message.type === 'answer' ? message.data : null,
+                Candidate: message.type === 'ice-candidate' ? message.data : null
+            };
+            console.log('Sending message:', signalMessage);
+            this.wsConnection.send(JSON.stringify(signalMessage));
         }
     }
 
@@ -501,7 +515,6 @@ class GeneralChat extends LitElement {
         
         textarea.value = '';
     }
-
 
     render() {
         return html`
