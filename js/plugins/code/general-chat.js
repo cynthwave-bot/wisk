@@ -187,7 +187,7 @@ class GeneralChat extends LitElement {
         isJoined: { type: Boolean },
         localStream: { type: Object },
         peerConnections: { type: Object },
-        wsConnection: { type: Object },
+        socket: { type: Object },
         isCameraOn: { type: Boolean },
         isMicOn: { type: Boolean }
     };
@@ -205,7 +205,7 @@ class GeneralChat extends LitElement {
         this.isJoined = false;
         this.localStream = null;
         this.peerConnections = {};
-        this.wsConnection = null;
+        this.socket = null;
         this.isCameraOn = true;
         this.isMicOn = true;
     }
@@ -222,7 +222,7 @@ class GeneralChat extends LitElement {
             
             this.participants = [{ id: 'local', name: 'Me (You)', stream: this.localStream }];
             this.isJoined = true;
-            this.connectWebSocket(roomId); // Pass roomId to WebSocket connection
+            this.connectSocketIO(roomId); // Use Socket.IO instead of WebSocket
             
             // Update UI
             this.requestUpdate();
@@ -237,50 +237,55 @@ class GeneralChat extends LitElement {
         }
     }
 
-    connectWebSocket(roomId) {
-        this.wsConnection = new WebSocket(`wss://cloud.wisk.cc/v2/plugins/call?roomId=${roomId}`);
+    connectSocketIO(roomId) {
+        this.socket = io('wss://cloud.wisk.cc/v2/plugins/call', { query: { roomId: roomId } });
         
-        this.wsConnection.onopen = () => {
-            console.log('WebSocket Connected');
-        };
+        this.socket.on('connect', () => {
+            console.log('Socket.IO Connected');
+            this.socket.emit('join-room', roomId);
+        });
         
-        this.wsConnection.onmessage = async (event) => {
-            const message = JSON.parse(event.data);
-            
-            switch (message.type) {
-                case 'new-peer':
-                    this.handleNewPeer(message.peerId);
-                    break;
-                case 'offer':
-                    await this.handleOffer(message.peerId, message.offer);
-                    break;
-                case 'answer':
-                    await this.handleAnswer(message.peerId, message.answer);
-                    break;
-                case 'ice-candidate':
-                    await this.handleIceCandidate(message.peerId, message.candidate);
-                    break;
-                case 'peer-disconnected':
-                    this.handlePeerDisconnected(message.peerId);
-                    break;
-            }
-        };
+        this.socket.on('signal', (msg) => {
+            this.handleSignalMessage(msg);
+        });
+        
+        this.socket.on('new-peer', (msg) => {
+            this.handleNewPeer(msg.PeerId);
+        });
+        
+        this.socket.on('peer-disconnected', (msg) => {
+            this.handlePeerDisconnected(msg.PeerId);
+        });
+    }
+
+    handleSignalMessage(msg) {
+        switch (msg.Type) {
+            case 'offer':
+                this.handleOffer(msg.PeerId, msg.Offer);
+                break;
+            case 'answer':
+                this.handleAnswer(msg.PeerId, msg.Answer);
+                break;
+            case 'ice-candidate':
+                this.handleIceCandidate(msg.PeerId, msg.Candidate);
+                break;
+            default:
+                console.log('Unknown signal message type:', msg.Type);
+        }
     }
 
     async handleNewPeer(peerId) {
         const pc = this.createPeerConnection(peerId);
 
         try {
-            // Create an offer and set it as the local description
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
 
-            // Send the offer to the remote peer
-            this.wsConnection.send(JSON.stringify({
+            this.socket.emit('signal', {
                 type: 'offer',
                 peerId: peerId,
                 offer: offer
-            }));
+            });
         } catch (e) {
             console.error('Error creating offer:', e);
         }
@@ -293,12 +298,10 @@ class GeneralChat extends LitElement {
 
         this.peerConnections[peerId] = pc;
 
-        // Add local tracks to the connection
         this.localStream.getTracks().forEach(track => {
             pc.addTrack(track, this.localStream);
         });
 
-        // Handle incoming streams
         pc.ontrack = (event) => {
             const stream = event.streams[0];
             if (!this.participants.find(p => p.id === peerId)) {
@@ -310,14 +313,13 @@ class GeneralChat extends LitElement {
             }
         };
 
-        // Handle ICE candidates
         pc.onicecandidate = (event) => {
             if (event.candidate) {
-                this.wsConnection.send(JSON.stringify({
+                this.socket.emit('signal', {
                     type: 'ice-candidate',
                     peerId: peerId,
                     candidate: event.candidate
-                }));
+                });
             }
         };
 
@@ -328,19 +330,15 @@ class GeneralChat extends LitElement {
         const pc = this.createPeerConnection(peerId);
 
         try {
-            // Set the remote description (offer) first
             await pc.setRemoteDescription(new RTCSessionDescription(offer));
-
-            // Create an answer and set it as the local description
             const answer = await pc.createAnswer();
             await pc.setLocalDescription(answer);
 
-            // Send the answer to the remote peer
-            this.wsConnection.send(JSON.stringify({
+            this.socket.emit('signal', {
                 type: 'answer',
                 peerId: peerId,
                 answer: answer
-            }));
+            });
         } catch (e) {
             console.error('Error handling offer:', e);
         }
@@ -349,13 +347,11 @@ class GeneralChat extends LitElement {
     async handleAnswer(peerId, answer) {
         try {
             const pc = this.peerConnections[peerId];
-
-            // Set the remote description (answer)
             await pc.setRemoteDescription(new RTCSessionDescription(answer));
         } catch (e) {
             console.error('Error handling answer:', e);
         }
-}
+    }
 
     async handleIceCandidate(peerId, candidate) {
         try {
@@ -396,23 +392,19 @@ class GeneralChat extends LitElement {
     }
 
     endCall() {
-        // Close all peer connections
         Object.values(this.peerConnections).forEach(pc => pc.close());
         this.peerConnections = {};
         
-        // Stop all tracks in local stream
         if (this.localStream) {
             this.localStream.getTracks().forEach(track => track.stop());
             this.localStream = null;
         }
         
-        // Close WebSocket connection
-        if (this.wsConnection) {
-            this.wsConnection.close();
-            this.wsConnection = null;
+        if (this.socket) {
+            this.socket.disconnect();
+            this.socket = null;
         }
         
-        // Reset state
         this.isJoined = false;
         this.participants = [];
         this.isCameraOn = true;
@@ -453,7 +445,7 @@ class GeneralChat extends LitElement {
                     </div>
                     <div class="tab ${this.activeTab === 'video' ? 'active' : ''}"
                          @click=${() => this.switchTab('video')}>
-                        Video Chat
+                        Video Call
                     </div>
                 </div>
 

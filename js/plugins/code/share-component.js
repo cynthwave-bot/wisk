@@ -83,6 +83,8 @@ class ShareComponent extends LitElement {
             flex: 1;
             background-color: transparent;
             color: var(--text-1);
+            font-size: 16px;
+            font-weight: 500;
         }
         .od:has(.email:focus) {
             border-color: var(--border-2);
