@@ -24,7 +24,7 @@ window.wisk.plugins = {
         "chart-element",
 
         // other elements
-        'ai-chat',
+        'general-chat',
         'manage-citations',
         'share-manager',
         'export-manager',

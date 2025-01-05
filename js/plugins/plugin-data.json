@@ -63,20 +63,20 @@
             ]
         },
 
-        "ai-chat": {
-            "name": "ai-chat",
-            "title": "AI Chat",
+        "general-chat": {
+            "name": "general-chat",
+            "title": "general Chat",
             "author": "Wisk Team",
             "contact": "https://wisk.cc",
-            "icon": "ai-chat.svg",
-            "tags": ["AI", "chat", "bot", "gpt", "chatgpt"],
-            "description": "AI assistant chat",
+            "icon": "general-chat.svg",
+            "tags": ["general", "chat", "bot", "gpt", "chatgpt"],
+            "description": "General chat",
             "contents": [
                 {
-                    "title": "AI Chat",
-                    "icon": "ai-chat.svg",
+                    "title": "General Chat",
+                    "icon": "general-chat.svg",
                     "category": "right-sidebar",
-                    "component": "ai-chat",
+                    "component": "general-chat",
                     "nav": true,
                     "loadAsModule": true
                 }
