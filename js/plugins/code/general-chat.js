@@ -212,7 +212,6 @@ class GeneralChat extends LitElement {
 
     async joinCall() {
         const roomId = wisk.editor.pageId;
-
         if (!roomId) return;
 
         try {
@@ -270,11 +269,13 @@ class GeneralChat extends LitElement {
 
     async handleNewPeer(peerId) {
         const pc = this.createPeerConnection(peerId);
-        
+
         try {
+            // Create an offer and set it as the local description
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
-            
+
+            // Send the offer to the remote peer
             this.wsConnection.send(JSON.stringify({
                 type: 'offer',
                 peerId: peerId,
@@ -325,12 +326,16 @@ class GeneralChat extends LitElement {
 
     async handleOffer(peerId, offer) {
         const pc = this.createPeerConnection(peerId);
-        
+
         try {
+            // Set the remote description (offer) first
             await pc.setRemoteDescription(new RTCSessionDescription(offer));
+
+            // Create an answer and set it as the local description
             const answer = await pc.createAnswer();
             await pc.setLocalDescription(answer);
-            
+
+            // Send the answer to the remote peer
             this.wsConnection.send(JSON.stringify({
                 type: 'answer',
                 peerId: peerId,
@@ -344,11 +349,13 @@ class GeneralChat extends LitElement {
     async handleAnswer(peerId, answer) {
         try {
             const pc = this.peerConnections[peerId];
+
+            // Set the remote description (answer)
             await pc.setRemoteDescription(new RTCSessionDescription(answer));
         } catch (e) {
             console.error('Error handling answer:', e);
         }
-    }
+}
 
     async handleIceCandidate(peerId, candidate) {
         try {
