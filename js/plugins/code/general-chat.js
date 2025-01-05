@@ -238,21 +238,24 @@ class GeneralChat extends LitElement {
     }
 
     connectSocketIO(roomId) {
-        this.socket = io('wss://cloud.wisk.cc/v2/plugins/call', { query: { roomId: roomId } });
-        
+        this.socket = io('wss://cloud.wisk.cc', { 
+            path: '/v2/plugins/call', // Specify the correct path
+            query: { roomId: roomId } 
+        });
+
         this.socket.on('connect', () => {
             console.log('Socket.IO Connected');
             this.socket.emit('join-room', roomId);
         });
-        
+
         this.socket.on('signal', (msg) => {
             this.handleSignalMessage(msg);
         });
-        
+
         this.socket.on('new-peer', (msg) => {
             this.handleNewPeer(msg.PeerId);
         });
-        
+
         this.socket.on('peer-disconnected', (msg) => {
             this.handlePeerDisconnected(msg.PeerId);
         });
