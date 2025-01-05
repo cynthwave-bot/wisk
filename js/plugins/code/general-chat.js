@@ -284,88 +284,46 @@ class GeneralChat extends LitElement {
         try {
             console.log('Received message:', message);
             
-            switch (message.Type) {
-                case 'new-peer':
-                    console.log('New peer notification received:', message.PeerId);
-                    // When we receive a new-peer notification, initiate the connection
-                    await this.handlePeerJoined(message.PeerId);
+            switch (message.type) {
+                case 'peer-exists':
+                    // Create offer for existing peer we just learned about
+                    console.log('Found existing peer:', message.peerId);
+                    await this.createOfferForPeer(message.peerId);
                     break;
-                case 'peer-left':
-                    this.handlePeerLeft(message.PeerId);
+                    
+                case 'peer-joined':
+                    // New peer joined - wait for their offer
+                    console.log('New peer joined:', message.peerId);
                     break;
+                    
                 case 'offer':
+                    console.log('Received offer from:', message.peerId);
                     await this.handleOffer(message);
                     break;
+                    
                 case 'answer':
+                    console.log('Received answer from:', message.peerId);
                     await this.handleAnswer(message);
                     break;
+                    
                 case 'ice-candidate':
                     await this.handleIceCandidate(message);
                     break;
-                default:
-                    console.log('Unknown message type:', message.Type);
+                    
+                case 'peer-left':
+                    this.handlePeerLeft(message.peerId);
+                    break;
             }
         } catch (e) {
-            console.error('Error handling signaling message:', e);
+            console.error('Error handling signal message:', e);
         }
     }
 
-    createPeerConnection(peerId) {
-        console.log('Creating peer connection for:', peerId);
-        if (this.peerConnections[peerId]) {
-            console.log('Peer connection already exists for:', peerId);
-            return this.peerConnections[peerId];
-        }
-
-        const pc = new RTCPeerConnection({
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-        });
-
-        // Add all local tracks to the connection
-        if (this.localStream) {
-            this.localStream.getTracks().forEach(track => {
-                pc.addTrack(track, this.localStream);
-            });
-        }
-
-        // Handle ICE candidates
-        pc.onicecandidate = (event) => {
-            if (event.candidate) {
-                this.sendSignalingMessage({
-                    type: 'ice-candidate',
-                    data: event.candidate
-                });
-            }
-        };
-
-        // Handle incoming streams
-        pc.ontrack = (event) => {
-            const stream = event.streams[0];
-            const existingParticipant = this.participants.find(p => p.id === peerId);
-            
-            if (!existingParticipant) {
-                this.participants = [
-                    ...this.participants,
-                    {
-                        id: peerId,
-                        name: `Participant ${peerId}`,
-                        stream: stream
-                    }
-                ];
-                this.requestUpdate();
-            }
-        };
-
-        this.peerConnections[peerId] = pc;
-        return pc;
-    }
-
-    async handlePeerJoined(peerId) {
-        console.log('New peer joined:', peerId);
+    async createOfferForPeer(peerId) {
+        console.log('Creating offer for peer:', peerId);
         const pc = this.createPeerConnection(peerId);
-        
+
         try {
-            // Create and send offer to the new peer
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
             
@@ -379,24 +337,68 @@ class GeneralChat extends LitElement {
         }
     }
 
-    async handleOffer(message) {
-        const peerId = message.PeerId;
-        const offer = message.Offer;
+    createPeerConnection(peerId) {
+        console.log('Setting up peer connection for:', peerId);
         
-        if (!this.peerConnections[peerId]) {
-            this.createPeerConnection(peerId);
+        if (this.peerConnections[peerId]) {
+            return this.peerConnections[peerId];
         }
-        
-        const pc = this.peerConnections[peerId];
+
+        const pc = new RTCPeerConnection({
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        });
+
+        pc.onicecandidate = (event) => {
+            if (event.candidate) {
+                this.sendSignalingMessage({
+                    type: 'ice-candidate',
+                    peerId: peerId,
+                    data: event.candidate
+                });
+            }
+        };
+
+        pc.ontrack = (event) => {
+            console.log('Received remote track from:', peerId);
+            const stream = event.streams[0];
+            
+            // Update participants list with the new stream
+            const exists = this.participants.some(p => p.id === peerId);
+            if (!exists) {
+                this.participants = [
+                    ...this.participants,
+                    {
+                        id: peerId,
+                        name: `Peer ${peerId}`,
+                        stream: stream
+                    }
+                ];
+                this.requestUpdate();
+            }
+        };
+
+        // Add local tracks
+        if (this.localStream) {
+            this.localStream.getTracks().forEach(track => {
+                pc.addTrack(track, this.localStream);
+            });
+        }
+
+        this.peerConnections[peerId] = pc;
+        return pc;
+    }
+
+    async handleOffer(message) {
+        const pc = this.createPeerConnection(message.peerId);
         
         try {
-            await pc.setRemoteDescription(new RTCSessionDescription(offer));
+            await pc.setRemoteDescription(new RTCSessionDescription(message.data));
             const answer = await pc.createAnswer();
             await pc.setLocalDescription(answer);
             
             this.sendSignalingMessage({
                 type: 'answer',
-                peerId: peerId,
+                peerId: message.peerId,
                 data: answer
             });
         } catch (e) {
@@ -405,13 +407,10 @@ class GeneralChat extends LitElement {
     }
 
     async handleAnswer(message) {
-        const peerId = message.PeerId;
-        const answer = message.Answer;
-        
-        const pc = this.peerConnections[peerId];
+        const pc = this.peerConnections[message.peerId];
         if (pc) {
             try {
-                await pc.setRemoteDescription(new RTCSessionDescription(answer));
+                await pc.setRemoteDescription(new RTCSessionDescription(message.data));
             } catch (e) {
                 console.error('Error handling answer:', e);
             }
@@ -419,13 +418,10 @@ class GeneralChat extends LitElement {
     }
 
     async handleIceCandidate(message) {
-        const peerId = message.PeerId;
-        const candidate = message.Candidate;
-        
-        const pc = this.peerConnections[peerId];
+        const pc = this.peerConnections[message.peerId];
         if (pc) {
             try {
-                await pc.addIceCandidate(new RTCIceCandidate(candidate));
+                await pc.addIceCandidate(new RTCIceCandidate(message.data));
             } catch (e) {
                 console.error('Error handling ICE candidate:', e);
             }
@@ -433,6 +429,7 @@ class GeneralChat extends LitElement {
     }
 
     handlePeerLeft(peerId) {
+        console.log('Peer left:', peerId);
         if (this.peerConnections[peerId]) {
             this.peerConnections[peerId].close();
             delete this.peerConnections[peerId];
@@ -441,6 +438,7 @@ class GeneralChat extends LitElement {
         this.participants = this.participants.filter(p => p.id !== peerId);
         this.requestUpdate();
     }
+
 
     sendSignalingMessage(message) {
         if (this.wsConnection && this.wsConnection.readyState === WebSocket.OPEN) {
