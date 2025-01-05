@@ -326,17 +326,25 @@ class GeneralChat extends LitElement {
         try {
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
-            console.log('Created offer:', offer);
             
-            // Send offer with complete SDP data
-            this.sendSignalingMessage({
+            // Log the complete offer data
+            console.log('Created offer:', {
+                type: offer.type,
+                sdp: offer.sdp
+            });
+            
+            // Send the complete message structure
+            const message = {
                 type: 'offer',
                 peerId: peerId,
                 data: {
                     type: offer.type,
                     sdp: offer.sdp
                 }
-            });
+            };
+            
+            console.log('Sending complete message:', JSON.stringify(message, null, 2));
+            this.sendSignalingMessage(message);
         } catch (e) {
             console.error('Error creating offer:', e);
         }
@@ -427,7 +435,7 @@ class GeneralChat extends LitElement {
             console.error('Error handling offer:', e);
         }
     }
-            
+
     async handleAnswer(message) {
         console.log('Handling answer:', message);
         const pc = this.peerConnections[message.peerId];
