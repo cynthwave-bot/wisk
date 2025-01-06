@@ -410,7 +410,7 @@ class GeneralChat extends LitElement {
             if (!existingParticipant) {
                 this.participants = [...this.participants, {
                     id: userId,
-                    name: `User ${userId.slice(0, 4)}`,
+                    name: userId.split('@')[0],
                     stream: event.streams[0]
                 }];
                 this.requestUpdate();
