@@ -349,33 +349,30 @@ class GeneralChat extends LitElement {
             }
         };
 
-        // Modified ontrack handler
         peerConnection.ontrack = (event) => {
-            const stream = event.streams[0];
+            const stream = new MediaStream([event.track]);
             const existingParticipant = this.participants.find(p => p.id === userId);
 
             if (!existingParticipant) {
-                console.log('New participant stream received:', stream);
-                this.participants = [
-                    ...this.participants,
-                    {
-                        id: userId,
-                        name: `User ${userId.slice(0, 4)}`,
-                        stream: stream
-                    }
-                ];
-
-                // Force update to ensure video elements are created
+                this.participants = [...this.participants, {
+                    id: userId,
+                    name: `User ${userId.slice(0, 4)}`,
+                    stream: stream
+                }];
                 this.requestUpdate();
 
-                // After update, ensure video elements are properly connected
                 this.updateComplete.then(() => {
                     const videoElement = this.shadowRoot.querySelector(`#${userId}-video`);
-                    if (videoElement && stream) {
+                    if (videoElement) {
                         videoElement.srcObject = stream;
                         videoElement.play().catch(e => console.error('Error playing video:', e));
                     }
                 });
+            } else {
+                const videoElement = this.shadowRoot.querySelector(`#${userId}-video`);
+                if (videoElement && videoElement.srcObject instanceof MediaStream) {
+                    videoElement.srcObject.addTrack(event.track);
+                }
             }
         };
 
@@ -412,17 +409,29 @@ class GeneralChat extends LitElement {
         };
 
         peerConnection.ontrack = (event) => {
+            const stream = new MediaStream([event.track]);
             const existingParticipant = this.participants.find(p => p.id === userId);
+
             if (!existingParticipant) {
-                this.participants = [
-                    ...this.participants,
-                    {
-                        id: userId,
-                        name: `User ${userId.slice(0, 4)}`,
-                        stream: event.streams[0]
-                    }
-                ];
+                this.participants = [...this.participants, {
+                    id: userId,
+                    name: `User ${userId.slice(0, 4)}`,
+                    stream: stream
+                }];
                 this.requestUpdate();
+
+                this.updateComplete.then(() => {
+                    const videoElement = this.shadowRoot.querySelector(`#${userId}-video`);
+                    if (videoElement) {
+                        videoElement.srcObject = stream;
+                        videoElement.play().catch(e => console.error('Error playing video:', e));
+                    }
+                });
+            } else {
+                const videoElement = this.shadowRoot.querySelector(`#${userId}-video`);
+                if (videoElement && videoElement.srcObject instanceof MediaStream) {
+                    videoElement.srcObject.addTrack(event.track);
+                }
             }
         };
 
