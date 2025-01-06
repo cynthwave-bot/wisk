@@ -350,29 +350,15 @@ class GeneralChat extends LitElement {
         };
 
         peerConnection.ontrack = (event) => {
-            const stream = new MediaStream([event.track]);
             const existingParticipant = this.participants.find(p => p.id === userId);
 
             if (!existingParticipant) {
                 this.participants = [...this.participants, {
                     id: userId,
                     name: `User ${userId.slice(0, 4)}`,
-                    stream: stream
+                    stream: event.streams[0]
                 }];
                 this.requestUpdate();
-
-                this.updateComplete.then(() => {
-                    const videoElement = this.shadowRoot.querySelector(`#${userId}-video`);
-                    if (videoElement) {
-                        videoElement.srcObject = stream;
-                        videoElement.play().catch(e => console.error('Error playing video:', e));
-                    }
-                });
-            } else {
-                const videoElement = this.shadowRoot.querySelector(`#${userId}-video`);
-                if (videoElement && videoElement.srcObject instanceof MediaStream) {
-                    videoElement.srcObject.addTrack(event.track);
-                }
             }
         };
 
@@ -409,29 +395,15 @@ class GeneralChat extends LitElement {
         };
 
         peerConnection.ontrack = (event) => {
-            const stream = new MediaStream([event.track]);
             const existingParticipant = this.participants.find(p => p.id === userId);
 
             if (!existingParticipant) {
                 this.participants = [...this.participants, {
                     id: userId,
                     name: `User ${userId.slice(0, 4)}`,
-                    stream: stream
+                    stream: event.streams[0]
                 }];
                 this.requestUpdate();
-
-                this.updateComplete.then(() => {
-                    const videoElement = this.shadowRoot.querySelector(`#${userId}-video`);
-                    if (videoElement) {
-                        videoElement.srcObject = stream;
-                        videoElement.play().catch(e => console.error('Error playing video:', e));
-                    }
-                });
-            } else {
-                const videoElement = this.shadowRoot.querySelector(`#${userId}-video`);
-                if (videoElement && videoElement.srcObject instanceof MediaStream) {
-                    videoElement.srcObject.addTrack(event.track);
-                }
             }
         };
 
