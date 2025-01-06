@@ -1,212 +1,5 @@
 import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
 
-class WebRTCRoom {
-    constructor(component) {
-        this.component = component;
-        this.localStream = null;
-        this.peers = new Map();
-        this.ws = null;
-        this.userId = Math.random().toString(36).substr(2, 9);
-    }
-
-    async setupLocalStream() {
-        this.localStream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: true
-        });
-        
-        this.component.participants = [
-            ...this.component.participants,
-            {
-                id: 'local',
-                name: 'You',
-                stream: this.localStream
-            }
-        ];
-    }
-
-    connectSignalingServer() {
-        this.ws = new WebSocket('wss://cloud.wisk.cc/v2/plugins/call');
-
-        this.ws.onopen = () => {
-            this.ws.send(JSON.stringify({
-                type: 'join',
-                userId: this.userId
-            }));
-        };
-
-        this.ws.onmessage = async (event) => {
-            const message = JSON.parse(event.data);
-            await this.handleSignalingMessage(message);
-        };
-    }
-
-    async handleSignalingMessage(message) {
-        switch (message.type) {
-            case 'user-joined':
-                await this.handleUserJoined(message.userId);
-                break;
-            case 'user-left':
-                this.handleUserLeft(message.userId);
-                break;
-            case 'offer':
-                await this.handleOffer(message.userId, message.offer);
-                break;
-            case 'answer':
-                await this.handleAnswer(message.userId, message.answer);
-                break;
-            case 'ice-candidate':
-                await this.handleIceCandidate(message.userId, message.candidate);
-                break;
-        }
-    }
-
-    async handleUserJoined(userId) {
-        if (userId === this.userId) return;
-        
-        const configuration = {
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' }
-            ]
-        };
-        
-        const peerConnection = new RTCPeerConnection(configuration);
-        this.peers.set(userId, peerConnection);
-
-        this.localStream.getTracks().forEach(track => {
-            peerConnection.addTrack(track, this.localStream);
-        });
-
-        peerConnection.onicecandidate = (event) => {
-            if (event.candidate) {
-                this.ws.send(JSON.stringify({
-                    type: 'ice-candidate',
-                    userId: this.userId,
-                    targetUserId: userId,
-                    candidate: event.candidate
-                }));
-            }
-        };
-
-        peerConnection.ontrack = (event) => {
-            const exists = this.component.participants.some(p => p.id === userId);
-            if (!exists) {
-                this.component.participants = [
-                    ...this.component.participants,
-                    {
-                        id: userId,
-                        name: `User ${userId.substr(0, 4)}`,
-                        stream: event.streams[0]
-                    }
-                ];
-            }
-        };
-
-        if (this.userId > userId) {
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-            
-            this.ws.send(JSON.stringify({
-                type: 'offer',
-                userId: this.userId,
-                targetUserId: userId,
-                offer
-            }));
-        }
-    }
-
-    async handleOffer(userId, offer) {
-        const peerConnection = new RTCPeerConnection({
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-        });
-        this.peers.set(userId, peerConnection);
-
-        this.localStream.getTracks().forEach(track => {
-            peerConnection.addTrack(track, this.localStream);
-        });
-
-        peerConnection.onicecandidate = (event) => {
-            if (event.candidate) {
-                this.ws.send(JSON.stringify({
-                    type: 'ice-candidate',
-                    userId: this.userId,
-                    targetUserId: userId,
-                    candidate: event.candidate
-                }));
-            }
-        };
-
-        peerConnection.ontrack = (event) => {
-            const exists = this.component.participants.some(p => p.id === userId);
-            if (!exists) {
-                this.component.participants = [
-                    ...this.component.participants,
-                    {
-                        id: userId,
-                        name: `User ${userId.substr(0, 4)}`,
-                        stream: event.streams[0]
-                    }
-                ];
-            }
-        };
-
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-        const answer = await peerConnection.createAnswer();
-        await peerConnection.setLocalDescription(answer);
-
-        this.ws.send(JSON.stringify({
-            type: 'answer',
-            userId: this.userId,
-            targetUserId: userId,
-            answer
-        }));
-    }
-
-    async handleAnswer(userId, answer) {
-        const peerConnection = this.peers.get(userId);
-        if (peerConnection) {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-        }
-    }
-
-    async handleIceCandidate(userId, candidate) {
-        const peerConnection = this.peers.get(userId);
-        if (peerConnection) {
-            await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-        }
-    }
-
-    handleUserLeft(userId) {
-        const peerConnection = this.peers.get(userId);
-        if (peerConnection) {
-            peerConnection.close();
-            this.peers.delete(userId);
-        }
-
-        this.component.participants = this.component.participants.filter(p => p.id !== userId);
-    }
-
-    async disconnect() {
-        if (this.localStream) {
-            this.localStream.getTracks().forEach(track => track.stop());
-        }
-
-        this.peers.forEach(peerConnection => peerConnection.close());
-        this.peers.clear();
-
-        if (this.ws) {
-            this.ws.send(JSON.stringify({
-                type: 'leave',
-                userId: this.userId
-            }));
-            this.ws.close();
-        }
-
-        this.component.participants = [];
-        this.component.isJoined = false;
-    }
-}
-
 class GeneralChat extends LitElement {
     static styles = css`
         * {
@@ -392,6 +185,9 @@ class GeneralChat extends LitElement {
         messages: { type: Array },
         participants: { type: Array },
         isJoined: { type: Boolean },
+        localStream: { type: Object },
+        peerConnections: { type: Object },
+        wsConnection: { type: Object },
         isCameraOn: { type: Boolean },
         isMicOn: { type: Boolean }
     };
@@ -399,30 +195,22 @@ class GeneralChat extends LitElement {
     constructor() {
         super();
         this.activeTab = 'text';
-        this.messages = [
-            { id: 1, text: "Hey everyone!", sender: "Alice", sent: false },
-            { id: 2, text: "Hi Alice!", sender: "Bob", sent: false },
-            { id: 3, text: "How's it going?", sender: "Me", sent: true }
-        ];
+        this.messages = [];
         this.participants = [];
         this.isJoined = false;
         this.isCameraOn = true;
         this.isMicOn = true;
-        this.webrtcRoom = new WebRTCRoom(this);
-    }
+        this.peerConnections = new Map();
+        this.localStream = null;
+        this.ws = null;
+        this.userId = Math.random().toString(36).substr(2, 9);
 
-    async joinCall() {
-        try {
-            await this.webrtcRoom.setupLocalStream();
-            this.webrtcRoom.connectSignalingServer();
-            this.isJoined = true;
-        } catch (error) {
-            console.error('Error joining call:', error);
-        }
-    }
-
-    async endCall() {
-        await this.webrtcRoom.disconnect();
+        // Configuration for WebRTC
+        this.rtcConfig = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' }
+            ]
+        };
     }
 
     toggleCamera() {
@@ -469,6 +257,217 @@ class GeneralChat extends LitElement {
         ];
         
         textarea.value = '';
+    }
+
+    async joinCall() {
+        try {
+            // Get user media
+            this.localStream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+            });
+
+            // Add local video
+            this.participants = [
+                ...this.participants,
+                {
+                    id: 'local',
+                    name: 'You',
+                    stream: this.localStream
+                }
+            ];
+
+            // Connect to signaling server
+            this.connectSignalingServer();
+            this.isJoined = true;
+            this.requestUpdate();
+
+        } catch (err) {
+            console.error('Error joining call:', err);
+            alert('Error joining call: ' + err.message);
+        }
+    }
+
+    connectSignalingServer() {
+        this.ws = new WebSocket('wss://cloud.wisk.cc/v2/plugins/call');
+        const roomId = wisk.editor.pageId;
+
+        this.ws.onopen = () => {
+            // Join room
+            this.ws.send(JSON.stringify({
+                type: 'join',
+                roomId: roomId,
+                userId: this.userId
+            }));
+        };
+
+        this.ws.onmessage = async (event) => {
+            const message = JSON.parse(event.data);
+            await this.handleSignalingMessage(message);
+        };
+    }
+
+    async handleSignalingMessage(message) {
+        switch (message.type) {
+            case 'user-joined':
+                await this.handleUserJoined(message.userId);
+                break;
+            case 'user-left':
+                this.handleUserLeft(message.userId);
+                break;
+            case 'offer':
+                await this.handleOffer(message.userId, message.offer);
+                break;
+            case 'answer':
+                await this.handleAnswer(message.userId, message.answer);
+                break;
+            case 'ice-candidate':
+                await this.handleIceCandidate(message.userId, message.candidate);
+                break;
+        }
+    }
+
+    async handleUserJoined(userId) {
+        if (userId === this.userId) return;
+        
+        const peerConnection = new RTCPeerConnection(this.rtcConfig);
+        this.peerConnections.set(userId, peerConnection);
+
+        this.localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, this.localStream);
+        });
+
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                this.ws.send(JSON.stringify({
+                    type: 'ice-candidate',
+                    userId: this.userId,
+                    targetUserId: userId,
+                    candidate: event.candidate
+                }));
+            }
+        };
+
+        peerConnection.ontrack = (event) => {
+            const existingParticipant = this.participants.find(p => p.id === userId);
+            if (!existingParticipant) {
+                this.participants = [
+                    ...this.participants,
+                    {
+                        id: userId,
+                        name: `User ${userId.slice(0, 4)}`,
+                        stream: event.streams[0]
+                    }
+                ];
+                this.requestUpdate();
+            }
+        };
+
+        if (this.userId > userId) {
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            
+            this.ws.send(JSON.stringify({
+                type: 'offer',
+                userId: this.userId,
+                targetUserId: userId,
+                offer
+            }));
+        }
+    }
+
+    async handleOffer(userId, offer) {
+        const peerConnection = new RTCPeerConnection(this.rtcConfig);
+        this.peerConnections.set(userId, peerConnection);
+
+        this.localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, this.localStream);
+        });
+
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                this.ws.send(JSON.stringify({
+                    type: 'ice-candidate',
+                    userId: this.userId,
+                    targetUserId: userId,
+                    candidate: event.candidate
+                }));
+            }
+        };
+
+        peerConnection.ontrack = (event) => {
+            const existingParticipant = this.participants.find(p => p.id === userId);
+            if (!existingParticipant) {
+                this.participants = [
+                    ...this.participants,
+                    {
+                        id: userId,
+                        name: `User ${userId.slice(0, 4)}`,
+                        stream: event.streams[0]
+                    }
+                ];
+                this.requestUpdate();
+            }
+        };
+
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+
+        this.ws.send(JSON.stringify({
+            type: 'answer',
+            userId: this.userId,
+            targetUserId: userId,
+            answer
+        }));
+    }
+
+    async handleAnswer(userId, answer) {
+        const peerConnection = this.peerConnections.get(userId);
+        if (peerConnection) {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+        }
+    }
+
+    async handleIceCandidate(userId, candidate) {
+        const peerConnection = this.peerConnections.get(userId);
+        if (peerConnection) {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        }
+    }
+
+    handleUserLeft(userId) {
+        const peerConnection = this.peerConnections.get(userId);
+        if (peerConnection) {
+            peerConnection.close();
+            this.peerConnections.delete(userId);
+        }
+
+        this.participants = this.participants.filter(p => p.id !== userId);
+        this.requestUpdate();
+    }
+
+    endCall() {
+        if (this.ws) {
+            this.ws.send(JSON.stringify({
+                type: 'leave',
+                roomId: wisk.editor.pageId,
+                userId: this.userId
+            }));
+            this.ws.close();
+        }
+
+        if (this.localStream) {
+            this.localStream.getTracks().forEach(track => track.stop());
+        }
+
+        this.peerConnections.forEach(pc => pc.close());
+        this.peerConnections.clear();
+        this.participants = [];
+        this.isJoined = false;
+        this.localStream = null;
+        this.ws = null;
+        this.requestUpdate();
     }
 
     render() {
