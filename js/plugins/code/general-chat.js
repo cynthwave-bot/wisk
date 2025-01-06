@@ -1,5 +1,212 @@
 import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
 
+class WebRTCRoom {
+    constructor(component) {
+        this.component = component;
+        this.localStream = null;
+        this.peers = new Map();
+        this.ws = null;
+        this.userId = Math.random().toString(36).substr(2, 9);
+    }
+
+    async setupLocalStream() {
+        this.localStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true
+        });
+        
+        this.component.participants = [
+            ...this.component.participants,
+            {
+                id: 'local',
+                name: 'You',
+                stream: this.localStream
+            }
+        ];
+    }
+
+    connectSignalingServer() {
+        this.ws = new WebSocket('wss://cloud.wisk.cc/v2/plugins/call');
+
+        this.ws.onopen = () => {
+            this.ws.send(JSON.stringify({
+                type: 'join',
+                userId: this.userId
+            }));
+        };
+
+        this.ws.onmessage = async (event) => {
+            const message = JSON.parse(event.data);
+            await this.handleSignalingMessage(message);
+        };
+    }
+
+    async handleSignalingMessage(message) {
+        switch (message.type) {
+            case 'user-joined':
+                await this.handleUserJoined(message.userId);
+                break;
+            case 'user-left':
+                this.handleUserLeft(message.userId);
+                break;
+            case 'offer':
+                await this.handleOffer(message.userId, message.offer);
+                break;
+            case 'answer':
+                await this.handleAnswer(message.userId, message.answer);
+                break;
+            case 'ice-candidate':
+                await this.handleIceCandidate(message.userId, message.candidate);
+                break;
+        }
+    }
+
+    async handleUserJoined(userId) {
+        if (userId === this.userId) return;
+        
+        const configuration = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' }
+            ]
+        };
+        
+        const peerConnection = new RTCPeerConnection(configuration);
+        this.peers.set(userId, peerConnection);
+
+        this.localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, this.localStream);
+        });
+
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                this.ws.send(JSON.stringify({
+                    type: 'ice-candidate',
+                    userId: this.userId,
+                    targetUserId: userId,
+                    candidate: event.candidate
+                }));
+            }
+        };
+
+        peerConnection.ontrack = (event) => {
+            const exists = this.component.participants.some(p => p.id === userId);
+            if (!exists) {
+                this.component.participants = [
+                    ...this.component.participants,
+                    {
+                        id: userId,
+                        name: `User ${userId.substr(0, 4)}`,
+                        stream: event.streams[0]
+                    }
+                ];
+            }
+        };
+
+        if (this.userId > userId) {
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            
+            this.ws.send(JSON.stringify({
+                type: 'offer',
+                userId: this.userId,
+                targetUserId: userId,
+                offer
+            }));
+        }
+    }
+
+    async handleOffer(userId, offer) {
+        const peerConnection = new RTCPeerConnection({
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        });
+        this.peers.set(userId, peerConnection);
+
+        this.localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, this.localStream);
+        });
+
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                this.ws.send(JSON.stringify({
+                    type: 'ice-candidate',
+                    userId: this.userId,
+                    targetUserId: userId,
+                    candidate: event.candidate
+                }));
+            }
+        };
+
+        peerConnection.ontrack = (event) => {
+            const exists = this.component.participants.some(p => p.id === userId);
+            if (!exists) {
+                this.component.participants = [
+                    ...this.component.participants,
+                    {
+                        id: userId,
+                        name: `User ${userId.substr(0, 4)}`,
+                        stream: event.streams[0]
+                    }
+                ];
+            }
+        };
+
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+
+        this.ws.send(JSON.stringify({
+            type: 'answer',
+            userId: this.userId,
+            targetUserId: userId,
+            answer
+        }));
+    }
+
+    async handleAnswer(userId, answer) {
+        const peerConnection = this.peers.get(userId);
+        if (peerConnection) {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+        }
+    }
+
+    async handleIceCandidate(userId, candidate) {
+        const peerConnection = this.peers.get(userId);
+        if (peerConnection) {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        }
+    }
+
+    handleUserLeft(userId) {
+        const peerConnection = this.peers.get(userId);
+        if (peerConnection) {
+            peerConnection.close();
+            this.peers.delete(userId);
+        }
+
+        this.component.participants = this.component.participants.filter(p => p.id !== userId);
+    }
+
+    async disconnect() {
+        if (this.localStream) {
+            this.localStream.getTracks().forEach(track => track.stop());
+        }
+
+        this.peers.forEach(peerConnection => peerConnection.close());
+        this.peers.clear();
+
+        if (this.ws) {
+            this.ws.send(JSON.stringify({
+                type: 'leave',
+                userId: this.userId
+            }));
+            this.ws.close();
+        }
+
+        this.component.participants = [];
+        this.component.isJoined = false;
+    }
+}
+
 class GeneralChat extends LitElement {
     static styles = css`
         * {
@@ -185,9 +392,6 @@ class GeneralChat extends LitElement {
         messages: { type: Array },
         participants: { type: Array },
         isJoined: { type: Boolean },
-        localStream: { type: Object },
-        peerConnections: { type: Object },
-        wsConnection: { type: Object },
         isCameraOn: { type: Boolean },
         isMicOn: { type: Boolean }
     };
@@ -198,296 +402,27 @@ class GeneralChat extends LitElement {
         this.messages = [
             { id: 1, text: "Hey everyone!", sender: "Alice", sent: false },
             { id: 2, text: "Hi Alice!", sender: "Bob", sent: false },
-            { id: 3, text: "How's it going?", sender: "Me", sent: true },
-            { id: 4, text: "Great! Just working on some code.", sender: "Charlie", sent: false }
+            { id: 3, text: "How's it going?", sender: "Me", sent: true }
         ];
         this.participants = [];
         this.isJoined = false;
-        this.localStream = null;
-        this.peerConnections = {};
-        this.wsConnection = null;
         this.isCameraOn = true;
         this.isMicOn = true;
+        this.webrtcRoom = new WebRTCRoom(this);
     }
 
     async joinCall() {
-        const roomId = wisk.editor.pageId;
-        if (!roomId) return;
-
         try {
-            this.localStream = await navigator.mediaDevices.getUserMedia({ 
-                video: true, 
-                audio: true 
-            });
-            
-            this.participants = [{ id: 'local', name: 'Me (You)', stream: this.localStream }];
+            await this.webrtcRoom.setupLocalStream();
+            this.webrtcRoom.connectSignalingServer();
             this.isJoined = true;
-            
-            // Connect WebSocket
-            this.connectWebSocket(roomId);
-            
-            // Update UI
-            this.requestUpdate();
-            
-            // Set up local video
-            const localVideo = this.shadowRoot.querySelector('#local-video');
-            if (localVideo) {
-                localVideo.srcObject = this.localStream;
-            }
-        } catch (e) {
-            console.error('Error accessing media devices:', e);
+        } catch (error) {
+            console.error('Error joining call:', error);
         }
     }
 
-    connectWebSocket(roomId) {
-        // Create WebSocket connection with room ID
-        // if localhost, use ws://localhost:40000 otherwise use wss://cloud.wisk.cc
-        const url = (window.location.hostname === 'localhost')? 'ws://localhost:40000' : 'wss://cloud.wisk.cc';
-        this.wsConnection = new WebSocket(`${url}/v2/plugins/call?roomId=${roomId}`);
-        this.setupSignalingHandlers();
-    }
-
-    setupSignalingHandlers() {
-        if (!this.wsConnection) return;
-
-        this.wsConnection.onopen = () => {
-            console.log('WebSocket Connected');
-            // The roomId is already sent in the WebSocket URL query parameter
-            // No need to send additional join message
-            console.log('Connected to room:', wisk.editor.pageId);
-        };
-
-        this.wsConnection.onmessage = async (event) => {
-            try {
-                const message = JSON.parse(event.data);
-                await this.handleSignalingMessage(message);
-            } catch (error) {
-                console.error('Error handling message:', error);
-            }
-        };
-
-        this.wsConnection.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-
-        this.wsConnection.onclose = () => {
-            console.log('WebSocket disconnected');
-            // Cleanup peer connections
-            Object.values(this.peerConnections).forEach(pc => pc.close());
-            this.peerConnections = {};
-            this.participants = this.participants.filter(p => p.id === 'local');
-            this.requestUpdate();
-        };
-    }
-
-    async handleSignalingMessage(message) {
-        try {
-            console.log('Received message:', message);
-            
-            switch (message.type) {
-                case 'peer-exists':
-                    // Create offer for existing peer we just learned about
-                    console.log('Found existing peer:', message.peerId);
-                    await this.createOfferForPeer(message.peerId);
-                    break;
-                    
-                case 'peer-joined':
-                    // New peer joined - wait for their offer
-                    console.log('New peer joined:', message.peerId);
-                    break;
-                    
-                case 'offer':
-                    console.log('Received offer from:', message.peerId);
-                    await this.handleOffer(message);
-                    break;
-                    
-                case 'answer':
-                    console.log('Received answer from:', message.peerId);
-                    await this.handleAnswer(message);
-                    break;
-                    
-                case 'ice-candidate':
-                    await this.handleIceCandidate(message);
-                    break;
-                    
-                case 'peer-left':
-                    this.handlePeerLeft(message.peerId);
-                    break;
-            }
-        } catch (e) {
-            console.error('Error handling signal message:', e);
-        }
-    }
-
-    async createOfferForPeer(peerId) {
-        console.log('Creating offer for peer:', peerId);
-        const pc = this.createPeerConnection(peerId);
-
-        try {
-            const offer = await pc.createOffer();
-            await pc.setLocalDescription(offer);
-            
-            // Log the complete offer data
-            console.log('Created offer:', {
-                type: offer.type,
-                sdp: offer.sdp
-            });
-            
-            // Send the complete message structure
-            const message = {
-                type: 'offer',
-                peerId: peerId,
-                data: {
-                    type: offer.type,
-                    sdp: offer.sdp
-                }
-            };
-            
-            console.log('Sending complete message:', JSON.stringify(message, null, 2));
-            this.sendSignalingMessage(message);
-        } catch (e) {
-            console.error('Error creating offer:', e);
-        }
-    }
-
-    createPeerConnection(peerId) {
-        console.log('Setting up peer connection for:', peerId);
-        
-        if (this.peerConnections[peerId]) {
-            return this.peerConnections[peerId];
-        }
-
-        const pc = new RTCPeerConnection({
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-        });
-
-        pc.onicecandidate = (event) => {
-            if (event.candidate) {
-                this.sendSignalingMessage({
-                    type: 'ice-candidate',
-                    peerId: peerId,
-                    data: event.candidate
-                });
-            }
-        };
-
-        pc.ontrack = (event) => {
-            console.log('Received remote track from:', peerId);
-            const stream = event.streams[0];
-            
-            // Update participants list with the new stream
-            const exists = this.participants.some(p => p.id === peerId);
-            if (!exists) {
-                this.participants = [
-                    ...this.participants,
-                    {
-                        id: peerId,
-                        name: `Peer ${peerId}`,
-                        stream: stream
-                    }
-                ];
-                this.requestUpdate();
-            }
-        };
-
-        // Add local tracks
-        if (this.localStream) {
-            this.localStream.getTracks().forEach(track => {
-                pc.addTrack(track, this.localStream);
-            });
-        }
-
-        this.peerConnections[peerId] = pc;
-        return pc;
-    }
-
-    async handleOffer(message) {
-        console.log('Handling offer with full message:', JSON.stringify(message, null, 2));
-        
-        const pc = this.createPeerConnection(message.peerId);
-        
-        try {
-            const offerData = {
-                type: 'offer',
-                sdp: message.data?.sdp
-            };
-            
-            if (!offerData.sdp) {
-                console.error('SDP data is missing from offer:', message);
-                return;
-            }
-            
-            console.log('Setting remote description with:', offerData);
-            await pc.setRemoteDescription(new RTCSessionDescription(offerData));
-            
-            const answer = await pc.createAnswer();
-            await pc.setLocalDescription(answer);
-            
-            this.sendSignalingMessage({
-                type: 'answer',
-                peerId: message.peerId,
-                data: {
-                    type: answer.type,
-                    sdp: answer.sdp
-                }
-            });
-        } catch (e) {
-            console.error('Error handling offer:', e);
-        }
-    }
-
-    async handleAnswer(message) {
-        console.log('Handling answer:', message);
-        const pc = this.peerConnections[message.peerId];
-        if (pc) {
-            try {
-                const desc = {
-                    type: 'answer',
-                    sdp: message.data.sdp
-                };
-                console.log('Setting remote description:', desc);
-                await pc.setRemoteDescription(new RTCSessionDescription(desc));
-            } catch (e) {
-                console.error('Error handling answer:', e);
-            }
-        }
-    }
-
-    async handleIceCandidate(message) {
-        const pc = this.peerConnections[message.peerId];
-        if (pc) {
-            try {
-                await pc.addIceCandidate(new RTCIceCandidate(message.data));
-            } catch (e) {
-                console.error('Error handling ICE candidate:', e);
-            }
-        }
-    }
-
-    handlePeerLeft(peerId) {
-        console.log('Peer left:', peerId);
-        if (this.peerConnections[peerId]) {
-            this.peerConnections[peerId].close();
-            delete this.peerConnections[peerId];
-        }
-        
-        this.participants = this.participants.filter(p => p.id !== peerId);
-        this.requestUpdate();
-    }
-
-    sendSignalingMessage(message) {
-        if (this.wsConnection && this.wsConnection.readyState === WebSocket.OPEN) {
-            // Convert to backend expected format
-            const signalMessage = {
-                Type: message.type,
-                PeerId: message.peerId || '',
-                Offer: message.type === 'offer' ? message.data : null,
-                Answer: message.type === 'answer' ? message.data : null,
-                Candidate: message.type === 'ice-candidate' ? message.data : null
-            };
-            console.log('Sending message:', signalMessage);
-            this.wsConnection.send(JSON.stringify(signalMessage));
-        }
+    async endCall() {
+        await this.webrtcRoom.disconnect();
     }
 
     toggleCamera() {
@@ -512,33 +447,6 @@ class GeneralChat extends LitElement {
         }
     }
 
-    endCall() {
-        // Close all peer connections
-        Object.values(this.peerConnections).forEach(pc => pc.close());
-        this.peerConnections = {};
-        
-        // Stop all local media tracks
-        if (this.localStream) {
-            this.localStream.getTracks().forEach(track => track.stop());
-            this.localStream = null;
-        }
-        
-        // Close WebSocket connection
-        if (this.wsConnection) {
-            this.wsConnection.close();
-            this.wsConnection = null;
-        }
-        
-        // Reset state
-        this.isJoined = false;
-        this.participants = [];
-        this.isCameraOn = true;
-        this.isMicOn = true;
-        
-        this.requestUpdate();
-    }
-
-    // Your existing methods for switching tabs and sending messages remain the same
     switchTab(tab) {
         this.activeTab = tab;
     }
