@@ -203,7 +203,8 @@ class GeneralChat extends LitElement {
         this.peerConnections = new Map();
         this.localStream = null;
         this.ws = null;
-        this.userId = Math.random().toString(36).substr(2, 9);
+        this.u = "";
+        this.userId = "";
 
         // Configuration for WebRTC
         this.rtcConfig = {
@@ -211,6 +212,15 @@ class GeneralChat extends LitElement {
                 { urls: 'stun:stun.l.google.com:19302' }
             ]
         };
+    }
+
+    async setUser() {
+        this.u = await document.getElementById('auth').getUserInfo();
+        this.userId = this.u.email;
+    }
+
+    opened() {
+        this.setUser();
     }
 
     toggleCamera() {
