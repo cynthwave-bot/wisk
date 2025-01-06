@@ -259,34 +259,47 @@ class GeneralChat extends LitElement {
         textarea.value = '';
     }
 
-    async joinCall() {
-        try {
-            // Get user media
-            this.localStream = await navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: true
-            });
+async joinCall() {
+    try {
+        // Get user media with explicit constraints
+        this.localStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: 'user'
+            },
+            audio: true
+        });
 
-            // Add local video
-            this.participants = [
-                ...this.participants,
-                {
-                    id: 'local',
-                    name: 'You',
-                    stream: this.localStream
-                }
-            ];
+        // Add local video and ensure it's playing
+        this.participants = [
+            {
+                id: 'local',
+                name: 'You',
+                stream: this.localStream
+            }
+        ];
 
-            // Connect to signaling server
-            this.connectSignalingServer();
-            this.isJoined = true;
-            this.requestUpdate();
-
-        } catch (err) {
-            console.error('Error joining call:', err);
-            alert('Error joining call: ' + err.message);
+        // Force update and ensure video element is created
+        await this.requestUpdate();
+        
+        // After update, ensure local video is properly connected
+        await this.updateComplete;
+        const localVideo = this.shadowRoot.querySelector('#local-video');
+        if (localVideo) {
+            localVideo.srcObject = this.localStream;
+            await localVideo.play().catch(e => console.error('Error playing local video:', e));
         }
+
+        // Connect to signaling server
+        this.connectSignalingServer();
+        this.isJoined = true;
+
+    } catch (err) {
+        console.error('Error joining call:', err);
+        alert('Error joining call: ' + err.message);
     }
+}
 
     connectSignalingServer() {
         this.ws = new WebSocket('wss://cloud.wisk.cc/v2/plugins/call');
@@ -303,6 +316,7 @@ class GeneralChat extends LitElement {
 
         this.ws.onmessage = async (event) => {
             const message = JSON.parse(event.data);
+            console.log('Received message:', message);
             await this.handleSignalingMessage(message);
         };
     }
@@ -329,10 +343,11 @@ class GeneralChat extends LitElement {
 
     async handleUserJoined(userId) {
         if (userId === this.userId) return;
-        
+
         const peerConnection = new RTCPeerConnection(this.rtcConfig);
         this.peerConnections.set(userId, peerConnection);
 
+        // Add all local tracks to the peer connection
         this.localStream.getTracks().forEach(track => {
             peerConnection.addTrack(track, this.localStream);
         });
@@ -348,25 +363,40 @@ class GeneralChat extends LitElement {
             }
         };
 
+        // Modified ontrack handler
         peerConnection.ontrack = (event) => {
+            const stream = event.streams[0];
             const existingParticipant = this.participants.find(p => p.id === userId);
+
             if (!existingParticipant) {
+                console.log('New participant stream received:', stream);
                 this.participants = [
                     ...this.participants,
                     {
                         id: userId,
                         name: `User ${userId.slice(0, 4)}`,
-                        stream: event.streams[0]
+                        stream: stream
                     }
                 ];
+
+                // Force update to ensure video elements are created
                 this.requestUpdate();
+
+                // After update, ensure video elements are properly connected
+                this.updateComplete.then(() => {
+                    const videoElement = this.shadowRoot.querySelector(`#${userId}-video`);
+                    if (videoElement && stream) {
+                        videoElement.srcObject = stream;
+                        videoElement.play().catch(e => console.error('Error playing video:', e));
+                    }
+                });
             }
         };
 
         if (this.userId > userId) {
             const offer = await peerConnection.createOffer();
             await peerConnection.setLocalDescription(offer);
-            
+
             this.ws.send(JSON.stringify({
                 type: 'offer',
                 userId: this.userId,
@@ -523,7 +553,13 @@ class GeneralChat extends LitElement {
                                             ?muted=${participant.id === 'local'}
                                             autoplay
                                             playsinline
-                                            .srcObject=${participant.stream}
+                                            @loadedmetadata=${() => {
+                                                const video = this.shadowRoot.querySelector(`#${participant.id}-video`);
+                                                if (video && participant.stream) {
+                                                    video.srcObject = participant.stream;
+                                                    video.play().catch(e => console.error('Error playing video:', e));
+                                                }
+                                            }}
                                         ></video>
                                         <span class="participant-name">${participant.name}</span>
                                     </div>
