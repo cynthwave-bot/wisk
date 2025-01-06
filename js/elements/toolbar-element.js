@@ -842,9 +842,6 @@ class ToolbarElement extends LitElement {
             return;
         }
 
-
-        document.querySelector("ai-chat").setSelection(elementId, selectedText);
-
         this.selectedText = selectedText;
         this.elementId = elementId;
         this.elementText = elementText;
@@ -1035,10 +1032,6 @@ class ToolbarElement extends LitElement {
         this.loading = false;
         this.requestUpdate();
         console.log(this.sources);
-    }
-
-    openAIChat() {
-        window.wisk.editor.toggleRightSidebar("ai-chat", "AI Chat");
     }
 
     renderDialog() {
