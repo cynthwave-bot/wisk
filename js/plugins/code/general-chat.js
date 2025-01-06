@@ -259,47 +259,34 @@ class GeneralChat extends LitElement {
         textarea.value = '';
     }
 
-async joinCall() {
-    try {
-        // Get user media with explicit constraints
-        this.localStream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-                facingMode: 'user'
-            },
-            audio: true
-        });
+    async joinCall() {
+        try {
+            // Get user media
+            this.localStream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+            });
 
-        // Add local video and ensure it's playing
-        this.participants = [
-            {
-                id: 'local',
-                name: 'You',
-                stream: this.localStream
-            }
-        ];
+            // Add local video
+            this.participants = [
+                ...this.participants,
+                {
+                    id: 'local',
+                    name: 'You',
+                    stream: this.localStream
+                }
+            ];
 
-        // Force update and ensure video element is created
-        await this.requestUpdate();
-        
-        // After update, ensure local video is properly connected
-        await this.updateComplete;
-        const localVideo = this.shadowRoot.querySelector('#local-video');
-        if (localVideo) {
-            localVideo.srcObject = this.localStream;
-            await localVideo.play().catch(e => console.error('Error playing local video:', e));
+            // Connect to signaling server
+            this.connectSignalingServer();
+            this.isJoined = true;
+            this.requestUpdate();
+
+        } catch (err) {
+            console.error('Error joining call:', err);
+            alert('Error joining call: ' + err.message);
         }
-
-        // Connect to signaling server
-        this.connectSignalingServer();
-        this.isJoined = true;
-
-    } catch (err) {
-        console.error('Error joining call:', err);
-        alert('Error joining call: ' + err.message);
     }
-}
 
     connectSignalingServer() {
         this.ws = new WebSocket('wss://cloud.wisk.cc/v2/plugins/call');
@@ -316,7 +303,6 @@ async joinCall() {
 
         this.ws.onmessage = async (event) => {
             const message = JSON.parse(event.data);
-            console.log('Received message:', message);
             await this.handleSignalingMessage(message);
         };
     }
@@ -553,13 +539,7 @@ async joinCall() {
                                             ?muted=${participant.id === 'local'}
                                             autoplay
                                             playsinline
-                                            @loadedmetadata=${() => {
-                                                const video = this.shadowRoot.querySelector(`#${participant.id}-video`);
-                                                if (video && participant.stream) {
-                                                    video.srcObject = participant.stream;
-                                                    video.play().catch(e => console.error('Error playing video:', e));
-                                                }
-                                            }}
+                                            .srcObject=${participant.stream}
                                         ></video>
                                         <span class="participant-name">${participant.name}</span>
                                     </div>
