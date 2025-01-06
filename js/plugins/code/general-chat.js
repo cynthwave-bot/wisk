@@ -48,7 +48,7 @@ class GeneralChat extends LitElement {
         .video-participants {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: var(--gap-3);
+            gap: 0;
             position: relative;
             overflow: auto;
             flex: 1;
@@ -57,7 +57,7 @@ class GeneralChat extends LitElement {
         .video-participant {
             aspect-ratio: 1/1;
             background-color: var(--bg-3);
-            border-radius: var(--radius);
+            border-radius: 0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -71,12 +71,12 @@ class GeneralChat extends LitElement {
         }
         .participant-name {
             position: absolute;
-            bottom: var(--padding-2);
-            left: var(--padding-2);
-            color: var(--text-1);
+            bottom: var(--padding-3);
+            left: var(--padding-3);
+            color: var(--accent-text);
+            background-color: var(--accent-bg);
             font-size: 14px;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: var(--padding-1) var(--padding-2);
+            padding: var(--padding-w1);
             border-radius: var(--radius);
         }
         .message {
@@ -365,7 +365,7 @@ class GeneralChat extends LitElement {
             if (!existingParticipant) {
                 this.participants = [...this.participants, {
                     id: userId,
-                    name: `User ${userId.slice(0, 4)}`,
+                    name: userId.split('@')[0],
                     stream: event.streams[0]
                 }];
                 this.requestUpdate();
