@@ -19,6 +19,13 @@ class GeneralChat extends LitElement {
             background-color: var(--bg-1);
             border-bottom: 1px solid var(--border-1);
         }
+        .add-ppl {
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius-large);
+        }
         .tab {
             padding: var(--padding-3) var(--padding-4);
             cursor: pointer;
@@ -107,18 +114,20 @@ class GeneralChat extends LitElement {
         .input-container {
             padding: var(--padding-4);
             background-color: var(--bg-1);
-            border-top: 1px solid var(--border-1);
         }
         .input-wrapper {
             display: flex;
-            gap: var(--gap-2);
-            align-items: center;
+            align-items: stretch;
+            width: 100%;
         }
         .input-textarea {
             flex: 1;
             padding: var(--padding-3);
             border-radius: var(--radius);
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
             border: 1px solid var(--border-1);
+            border-right: none;
             background-color: var(--bg-3);
             color: var(--text-1);
             font-size: 14px;
@@ -128,14 +137,17 @@ class GeneralChat extends LitElement {
         }
         .send-button {
             padding: var(--padding-3);
-            background-color: var(--fg-blue);
-            border: none;
+            background-color: var(--bg-3);
+            border: 1px solid var(--border-1);
             border-radius: var(--radius);
+            border-top-left-radius: 0;
             cursor: pointer;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-bottom-left-radius: 0;
+            border-left: none;
         }
         .video-controls {
             display: flex;
@@ -201,6 +213,7 @@ class GeneralChat extends LitElement {
             padding: var(--padding-4);
             font-size: 0.9em;
             color: var(--text-2);
+            max-width: 400px;
         }
 
         .filter-select {
@@ -335,7 +348,7 @@ class GeneralChat extends LitElement {
     applyBrightness() {
         const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         const data = imageData.data;
-        const brightness = 1.2;
+        const brightness = 1.3;
         for (let i = 0; i < data.length; i += 4) {
             data[i] = Math.min(255, data[i] * brightness);
             data[i + 1] = Math.min(255, data[i + 1] * brightness);
@@ -350,7 +363,7 @@ class GeneralChat extends LitElement {
             this.canvas.width / 2, this.canvas.height / 2, this.canvas.height
         );
         gradient.addColorStop(0, 'rgba(0,0,0,0)');
-        gradient.addColorStop(1, 'rgba(0,0,0,0.5)');
+        gradient.addColorStop(1, 'rgba(0,0,0,0.6)');
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
@@ -1067,6 +1080,7 @@ class GeneralChat extends LitElement {
 
                 ${this.activeTab === 'text' ? html`
                     <div class="chat-container">
+                        ${this.messages.length === 0 ? html` <p style="margin: auto; text-align: center">No messages yet<br/>Add friends and start talking</p> ` : html`` }
                         ${this.messages.map(message => html`
                             <div class="message ${message.sent ? 'sent' : ''}">
                                 <div class="message-bubble">
@@ -1082,7 +1096,7 @@ class GeneralChat extends LitElement {
                                 placeholder="Type a message..."
                                 @keydown=${(e) => e.key === 'Enter' && !e.shiftKey && this.sendMessage(e)}></textarea>
                             <button class="send-button" @click=${this.sendMessage}>
-                                Send
+                                <img src="/a7/plugins/general-chat/up.svg" style="filter: var(--themed-svg); width: 24px;" />
                             </button>
                         </div>
                     </div>
