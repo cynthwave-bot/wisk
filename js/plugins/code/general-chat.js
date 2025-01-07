@@ -180,13 +180,27 @@ class GeneralChat extends LitElement {
         }
         .join-button {
             padding: var(--padding-3) var(--padding-4);
-            background-color: var(--fg-blue);
-            border: none;
+            background-color: var(--accent-text);
+            color: var(--accent-bg);
+            border: 2px solid var(--accent-text);
             border-radius: var(--radius);
             cursor: pointer;
-            color: var(--bg-blue);
             font-size: 16px;
             font-weight: 500;
+        }
+
+        .join-button:hover {
+            color: var(--accent-text);
+            background-color: var(--accent-bg);
+        }
+
+        .info {
+            margin: var(--padding-4);
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius-large);
+            padding: var(--padding-4);
+            font-size: 0.9em;
+            color: var(--text-2);
         }
 
         .filter-select {
@@ -1079,6 +1093,21 @@ class GeneralChat extends LitElement {
                                 <button class="join-button" @click=${this.joinCall}>
                                     Join Video Call
                                 </button>
+
+                                <div class="info">
+                                    <div style="margin-bottom: var(--padding-4);">
+                                        <p><strong>How it works</strong></p>
+                                        <p>Click the button above to join the video call.</p>
+                                        <p>Make sure to allow camera and microphone access.</p>
+                                    </div>
+
+                                    <div>
+                                        <p><strong>Share this page</strong></p>
+                                        <p>Anyone you add as editors to this page can join the call. You can do that from the "Share" in navigation bar.</p>
+                                    </div>
+                                </div>
+
+                                </div>
                             </div>
                         ` : html`
                             <div class="video-participants">
