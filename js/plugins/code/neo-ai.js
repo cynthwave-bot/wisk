@@ -27,7 +27,10 @@ class NeoAI extends LitElement {
             border: 1px solid var(--border-1);
             flex-direction: column;
             overflow: hidden;
+            z-index: 1000;
+            transition: all 0.3s;
         }
+
         .logo {
             background-color: var(--accent-bg);
             color: var(--accent-fg);
@@ -48,6 +51,10 @@ class NeoAI extends LitElement {
             cursor: pointer;
 
             display: none;
+            transition: transform 0.3s;
+        }
+        .logo:hover {
+            transform: rotate(90deg);
         }
 
         .active {
@@ -150,10 +157,11 @@ class NeoAI extends LitElement {
             border: 2px solid var(--accent-text);
             background-color: var(--accent-bg);
         }
+
         .i-input:has(.i-inp:focus) .i-btn, .c-input:has(.c-inp:focus) .c-btn {
             filter: var(--accent-svg);
         }
-        .close {
+        .close, .expand {
             padding: var(--padding-2);
             border: none;
             outline: none;
@@ -164,10 +172,10 @@ class NeoAI extends LitElement {
             align-items: center;
             opacity: 0.5;
         }
-        .close img {
+        .close img, .expand img {
             filter: var(--themed-svg);
         }
-        .close:hover {
+        .close:hover, .expand:hover {
             opacity: 1;
         }
         .message-container {
@@ -239,10 +247,34 @@ class NeoAI extends LitElement {
         *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
 
         ::-webkit-input-placeholder { color: var(--text-2); }
+
+        @media (max-width: 500px) {
+            .message-container {
+                padding: 0;
+            }
+            .i-container, .c-container {
+                bottom: var(--padding-4);
+                right: var(--padding-4);
+                max-width: calc(100% - var(--padding-4) * 2);
+                max-height: calc(100% - var(--padding-4) * 2);
+            }
+        }
+
+        .expanded-container {
+            max-width: 100%;
+            max-height: 100%;
+            bottom: 0;
+            right: 0;
+            border-radius: 0;
+            border: none;
+            padding: 0 calc((100% - 1000px) / 2);
+        }
+
     `;
 
     static properties = {
         view: { type: String },
+        expanded: { type: Boolean },
         selectedElementId: { type: String },
         selectedText: { type: String },
     };
@@ -252,6 +284,7 @@ class NeoAI extends LitElement {
 
     constructor() {
         super();
+        this.expanded = false;
 
         this.selectedElementId = "";
         this.selectedText = "";
@@ -262,13 +295,13 @@ class NeoAI extends LitElement {
             {  "category": "Talk", "image": "summarize", "text": "Summarize", "text-2": "this page", "arg": "summarize" },
             {  "category": "Talk", "image": "ask", "text": "Ask about", "text-2": "this page", "arg": "ask-about" },
             {  "category": "Talk", "image": "translate", "text": "Translate page", "text-2": "", "arg": "translate" },
-            {  "category": "More", "image": "more", "text": "What can Neo AI do?", "text-2": "", "arg": "more" },
+            {  "category": "More", "image": "more", "text": "What can Neo do?", "text-2": "", "arg": "more" },
             {  "category": "More", "image": "help", "text": "Help", "text-2": "", "arg": "help" },
             {  "category": "More", "image": "support", "text": "Get support", "text-2": "", "arg": "support" },
         ];
         this.messages = {
             chat: [
-                { from: "bot", text: "Hello! I am Neo AI. How can I help you today?", type: "text" },
+                { from: "bot", text: "Hello! I am Neo. How can I help you today?", type: "text" },
                 { from: "user", text: "Summarize this page", type: "text" },
                 { from: "bot", text: "Reading the page...", type: "info" },
                 { from: "bot", text: "Sure! Here is the summary of this page...", type: "text" },
@@ -295,12 +328,11 @@ class NeoAI extends LitElement {
     }
 
     async addUserMessage(message) {
-        if (!message.trim()) return; // Don't add empty messages
+        if (!message.trim()) return;
         
         this.messages.chat.push({ from: "user", text: message, type: "text" });
         this.shadowRoot.querySelector(".c-inp").value = "";
         
-        // Request update and then scroll
         await this.requestUpdate()
 
         const container = this.shadowRoot.querySelector(".c-content");
@@ -308,6 +340,10 @@ class NeoAI extends LitElement {
         if (container && messageContainer) {
             container.scrollTop = messageContainer.scrollHeight;
         }
+    }
+
+    expandClicked() {
+        this.expanded = !this.expanded;
     }
 
     render() {
@@ -324,15 +360,16 @@ class NeoAI extends LitElement {
                 </div>
             </div>
 
-            <div class="i-container ${this.view === 'i-container' ? 'active' : ''}">
+            <div class="i-container ${this.view === 'i-container' ? 'active' : ''} ${this.expanded ? 'expanded-container' : ''}">
                 <div class="i-header">
+                    <button class="expand" @click=${() => this.expandClicked()}> <img src="${this.path}${this.expanded ? 'collapse' : 'expand'}.svg" draggable="false" /> </button>
                     <button class="close" @click=${() => this.setView("logo")}> <img src="${this.path}close.svg" draggable="false" /> </button>
                 </div>
                 <div class="i-content">
                     <div style="display: flex; flex-direction: column; gap: var(--gap-2); padding: var(--padding-4);">
                         <div style="width: 52px; border-radius: 100px; height: 52px; background-color: var(--text-1);"></div>
                         <p class="text">
-                            Hello! I am Neo AI. How can I help you today?
+                            Hello! I am Neo. How can I help you today?
                         </p>
                     </div>
 
@@ -363,9 +400,10 @@ class NeoAI extends LitElement {
                 </div>
             </div>
 
-            <div class="c-container ${this.view === 'c-container' ? 'active' : ''}">
+            <div class="c-container ${this.view === 'c-container' ? 'active' : ''} ${this.expanded ? 'expanded-container' : ''}">
                 <div class="c-header">
                     <p class="c-hx"><span style="color: var(--text-1); height: 24px; width: 24px; display: inline-block; background-color: var(--text-1); border-radius: 100px; margin-right: var(--gap-2);"></span> Neo</p>
+                    <button class="expand" @click=${() => this.expandClicked()}> <img src="${this.path}${this.expanded ? 'collapse' : 'expand'}.svg" draggable="false" /> </button>
                     <button class="close" @click=${() => this.setView("logo")}> <img src="${this.path}close.svg" draggable="false" /> </button>
                 </div>
                 <div class="c-content">
