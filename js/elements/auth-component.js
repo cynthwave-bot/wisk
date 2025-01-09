@@ -116,6 +116,7 @@ class AuthComponent extends LitElement {
         mode: { type: String },
         visible: { type: Boolean },
         user: { type: Object },
+        allowClose: { type: Boolean, attribute: 'allowclose' },
     };
 
     constructor() {
@@ -327,9 +328,10 @@ class AuthComponent extends LitElement {
     }
 
     handleOverlayClick(e) {
-        // disppatch event to window
-        this.hide();
-        window.dispatchEvent(new CustomEvent("auth-component-close"));
+        console.log(`overlay click`, this.allowClose);
+        if (this.allowClose === true) {
+            this.hide();
+        }
     }
 
     handleDialogClick(e) {

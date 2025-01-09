@@ -88,12 +88,6 @@ window.onSignOut = function() {
     document.querySelector('auth-component').show();
 }
 
-// when auth-component-close event is fired show the toast and auth-component
-window.addEventListener('auth-component-close', function() {
-    window.showToast('You need to sign in', 5000);
-    document.querySelector('auth-component').show();
-});
-
 if (window.location.href.includes(".wisk.site/")) {
     live();
     document.querySelector('menu-1').style.display = 'none';

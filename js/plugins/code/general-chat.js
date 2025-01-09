@@ -106,14 +106,16 @@ class GeneralChat extends LitElement {
             max-width: 70%;
             font-size: 14px;
             color: var(--text-1);
+            white-space: break-spaces;
         }
         .message.sent .message-bubble {
-            background-color: var(--fg-blue);
-            color: white;
+            background-color: var(--bg-blue);
+            color: var(--fg-blue);
         }
         .input-container {
             padding: var(--padding-4);
             background-color: var(--bg-1);
+            display: flex;
         }
         .input-wrapper {
             display: flex;
@@ -133,7 +135,9 @@ class GeneralChat extends LitElement {
             font-size: 14px;
             resize: none;
             outline: none;
-            min-height: 40px;
+            display: flex;
+            max-height: 200px;
+            overflow: auto;
         }
         .send-button {
             padding: var(--padding-3);
@@ -272,6 +276,12 @@ class GeneralChat extends LitElement {
             align-items: center;
             justify-content: center;
         }
+
+[contenteditable=true]:empty:before{
+  content: attr(placeholder);
+  pointer-events: none;
+  display: block; /* For Firefox */
+}
     `;
 
     static properties = {
@@ -576,9 +586,6 @@ class GeneralChat extends LitElement {
                     case 'noise':
                         this.applyNoise();
                         break;
-                    case 'scanlines':
-                        this.applyScanlines();
-                        break;
                     case 'underwater':
                         this.applyUnderwater();
                         break;
@@ -689,24 +696,6 @@ class GeneralChat extends LitElement {
             data[i] = Math.min(255, Math.max(0, data[i]));
             data[i + 1] = Math.min(255, Math.max(0, data[i + 1]));
             data[i + 2] = Math.min(255, Math.max(0, data[i + 2]));
-        }
-        this.ctx.putImageData(imageData, 0, 0);
-    }
-
-    applyScanlines() {
-        const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        const data = imageData.data;
-        
-        for (let y = 0; y < this.canvas.height; y++) {
-            const isEvenLine = y % 2 === 0;
-            for (let x = 0; x < this.canvas.width; x++) {
-                const i = (y * this.canvas.width + x) * 4;
-                if (isEvenLine) {
-                    data[i] = data[i] * 0.8;
-                    data[i + 1] = data[i + 1] * 0.8;
-                    data[i + 2] = data[i + 2] * 0.8;
-                }
-            }
         }
         this.ctx.putImageData(imageData, 0, 0);
     }
@@ -824,7 +813,7 @@ class GeneralChat extends LitElement {
     sendMessage(event) {
         event.preventDefault();
         const textarea = this.shadowRoot.querySelector('.input-textarea');
-        const message = textarea.value.trim();
+        const message = textarea.innerText.trim();
         
         if (!message) return;
         
@@ -838,7 +827,7 @@ class GeneralChat extends LitElement {
             }
         ];
         
-        textarea.value = '';
+        textarea.innerText = '';
     }
 
     connectSignalingServer() {
@@ -1083,18 +1072,27 @@ class GeneralChat extends LitElement {
                         ${this.messages.length === 0 ? html` <p style="margin: auto; text-align: center">No messages yet<br/>Add friends and start talking</p> ` : html`` }
                         ${this.messages.map(message => html`
                             <div class="message ${message.sent ? 'sent' : ''}">
-                                <div class="message-bubble">
-                                    ${!message.sent ? html`<strong>${message.sender}:</strong> ` : ''}
-                                    ${message.text}
-                                </div>
+                                <div class="message-bubble">${!message.sent ? html`<strong>${message.sender}:</strong> ` : ''}${message.text}</div>
                             </div>
                         `)}
                     </div>
                     <div class="input-container">
                         <div class="input-wrapper">
-                            <textarea class="input-textarea" 
-                                placeholder="Type a message..."
-                                @keydown=${(e) => e.key === 'Enter' && !e.shiftKey && this.sendMessage(e)}></textarea>
+                            <div class="input-textarea" placeholder="Type a message..." 
+                                @keyup=${(e) => {
+                                    if (e.target.innerHTML.trim() === '<br>') {
+                                        e.target.innerHTML = '';
+                                    }
+                                }}
+                                @keydown=${(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        this.sendMessage(e);
+                                    }
+                                    if (e.target.innerHTML.trim() === '<br>') {
+                                        e.target.innerHTML = '';
+                                    }
+
+                                }} contenteditable="true"></div>
                             <button class="send-button" @click=${this.sendMessage}>
                                 <img src="/a7/plugins/general-chat/up.svg" style="filter: var(--themed-svg); width: 24px;" />
                             </button>

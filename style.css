@@ -193,6 +193,7 @@ nav {
     position: relative;
     flex-grow: 1;
     overflow: hidden;
+    transform: translateZ(0); /* haha thanks patrick https://stackoverflow.com/a/38796408 - this will keep the fixed children in place */
 }
 
 .editor {
@@ -200,6 +201,7 @@ nav {
     display: flex;
     height: 100svh;
     flex-direction: column;
+    position: relative;
 }
 
 .full-width-wrapper {

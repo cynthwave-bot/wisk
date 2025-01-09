@@ -83,6 +83,26 @@
             ]
         },
 
+        "neo-ai": {
+            "name": "neo-ai",
+            "title": "Neo AI",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "neo-ai.svg",
+            "tags": ["neo", "ai", "bot", "gpt", "chatgpt"],
+            "description": "An AI bot for your needs",
+            "contents": [
+                {
+                    "title": "Neo AI",
+                    "icon": "neo-ai.svg",
+                    "category": "auto",
+                    "component": "neo-ai",
+                    "nav": false,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
         "manage-citations": {
             "name": "manage-citations",
             "title": "Manage Citations",
