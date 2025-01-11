@@ -16,7 +16,6 @@ class CiteElement extends LitElement {
             position: relative;
         }
         :host(:hover) {
-            text-decoration: underline;
         }
         .hover-dialog {
             position: absolute;

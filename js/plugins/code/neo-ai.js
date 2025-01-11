@@ -295,6 +295,8 @@ class NeoAI extends LitElement {
             z-index: 999;
             color: white;
             align-items: center;
+            animation: borderFlicker 62s infinite;
+            transition: all 0.3s;
         }
 
         .logo-bubble::after {
@@ -307,6 +309,15 @@ class NeoAI extends LitElement {
             border-left: 12px solid transparent;
             border-right: 12px solid transparent;
             border-top: 12px solid var(--border-1);
+        }
+
+        @keyframes borderFlicker {
+            0%, 96.77% {
+                border-color: var(--border-1);
+            }
+            97%, 100% {
+                border-color: var(--fg-red);
+            }
         }
 
         .logo-bubble-header {

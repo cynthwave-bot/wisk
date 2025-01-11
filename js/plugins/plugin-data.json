@@ -925,6 +925,27 @@
             ]
         },
 
+        "powerlevel": {
+            "name": "powerlevel",
+            "title": "Powerlevel",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "powerlevel.svg",
+            "tags": ["powerlevel", "power", "level", "game"],
+            "description": "Powerlevel is a combo system that adds a game-like experience to the editor",
+            "contents": [
+                {
+                    "title": "Powerlevel",
+                    "icon": "powerlevel.svg",
+                    "category": "auto",
+                    "component": "powerlevel-element",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
         "brainrot": {
             "name": "brainrot",
             "title": "Brainrot",
@@ -940,6 +961,27 @@
                     "category": "auto",
                     "component": "brainrot-element",
                     "nav": false,
+                    "textual": false,
+                    "loadAsModule": true
+                }
+            ]
+        },
+
+        "keystroke-sound": {
+            "name": "keystroke-sound",
+            "title": "Keystroke Sound",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "keystroke-sound.svg",
+            "tags": ["keystroke", "sound", "audio", "keyboard"],
+            "description": "Keystroke sound is a plugin that adds a sound to your keystrokes",
+            "contents": [
+                {
+                    "title": "Keystroke Sound",
+                    "icon": "keystroke-sound-2.svg",
+                    "category": "mini-dialog",
+                    "component": "keystroke-sound",
+                    "nav": true,
                     "textual": false,
                     "loadAsModule": true
                 }
