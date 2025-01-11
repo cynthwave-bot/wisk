@@ -97,126 +97,64 @@ class BaseTextElement extends HTMLElement {
         }
     }
 
-// In BaseTextElement class
-handleCreateReference(detail) {
-    if (!this.restoreSelection()) {
-        console.warn('No saved selection for citation');
-        return;
-    }
-
-    const selection = this.shadowRoot.getSelection();
-    if (!selection.rangeCount) return;
-
-    const range = selection.getRangeAt(0);
-    
-    try {
-        // Create a space node to separate text and citation
-        const spaceNode = document.createTextNode(' ');
-        
-        // Create citation span
-        //
-        const citationsManager = document.querySelector('manage-citations');
-        const citationSpan = document.createElement('span');
-        citationSpan.contentEditable = 'false';
-        citationSpan.className = 'reference-number';
-        citationSpan.dataset.referenceId = detail.citation.id;
-        citationSpan.textContent = detail.inlineCitation;
-        citationSpan.onclick = () => {
-            citationsManager.highlight(detail.citation.id);
+    handleCreateReference(detail) {
+        if (!this.restoreSelection()) {
+            console.warn('No saved selection for citation');
+            return;
         }
-        
-        // Instead of deleting content, just collapse range to end
-        range.collapse(false);
-        
-        // Insert space and citation after the selected text
-        range.insertNode(citationSpan);
-        range.insertNode(spaceNode);
-        
-        // Move cursor after citation
-        range.setStartAfter(citationSpan);
-        range.setEndAfter(citationSpan);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        
-        // Update content
-        this.sendUpdates();
-    } catch (error) {
-        console.error('Error creating citation:', error);
-        this.handleReferenceFallback(detail, selection);
-    }
-}
 
-handleInsertCitation(citation) {
-    const citationsManager = document.querySelector('manage-citations');
-    const inlineCitation = citationsManager.formatInlineCitation(citation);
-    
-    this.dispatchEvent(
-        new CustomEvent("insert-citation", {
-            detail: { 
-                elementId: this.elementId, 
-                citation: citation,
-                selectedText: this.selectedText,
-                inlineCitation: inlineCitation
-            },
-            bubbles: true,
-            composed: true,
-        })
-    );
-    this.closeDialog();
-}
+        const selection = this.shadowRoot.getSelection();
+        if (!selection.rangeCount) return;
 
+        const range = selection.getRangeAt(0);
 
-formatInlineCitation(citation) {
-    if (!citation.authors || !citation.authors.length) {
-        return '[Unknown]';
+        try {
+            // Create a space node to separate text and citation
+            const spaceNode = document.createTextNode(' ');
+
+            // Create citation element with attributes
+            const citeElement = document.createElement('cite-element');
+            citeElement.contentEditable = 'false';
+            citeElement.setAttribute('reference-id', detail.citation.id);
+            citeElement.setAttribute('citation', detail.inlineCitation);
+
+            // Instead of deleting content, just collapse range to end
+            range.collapse(false);
+
+            // Insert space and citation after the selected text
+            range.insertNode(citeElement);
+            range.insertNode(spaceNode);
+
+            // Move cursor after citation
+            range.setStartAfter(citeElement);
+            range.setEndAfter(citeElement);
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            // Update content
+            this.sendUpdates();
+        } catch (error) {
+            console.error('Error creating citation:', error);
+            this.handleReferenceFallback(detail, selection);
+        }
     }
 
-    const year = citation.publish_date ? new Date(citation.publish_date).getFullYear() : 'n.d.';
-    
-    if (citation.authors.length === 1) {
-        const lastName = citation.authors[0].split(' ').pop();
-        return `[${lastName}, ${year}]`;
-    } else if (citation.authors.length === 2) {
-        const lastName1 = citation.authors[0].split(' ').pop();
-        const lastName2 = citation.authors[1].split(' ').pop();
-        return `[${lastName1} & ${lastName2}, ${year}]`;
-    } else {
-        const firstAuthorLastName = citation.authors[0].split(' ').pop();
-        return `[${firstAuthorLastName} et al., ${year}]`;
-    }
-}
-
-
+    // Update the fallback handler as well
     handleReferenceFallback(detail, selection) {
         try {
             // Fallback method using execCommand
             const text = selection.toString();
             document.execCommand('insertText', false, text);
-            
-            const referenceData = {
-                id: detail.citation.id,
-                title: detail.title,
-                authors: detail.authors,
-                date: detail.date,
-                publisher: detail.publisher,
-                url: detail.url
-            };
-            
+
             const range = selection.getRangeAt(0);
-            const refSpan = document.createElement('span');
-            refSpan.contentEditable = 'false';
-            refSpan.className = 'reference-number';
-            refSpan.dataset.referenceId = detail.citation.id;
-            refSpan.textContent = detail.inlineCitation;
+            const citeElement = document.createElement('cite-element');
+            citeElement.contentEditable = 'false';
+            citeElement.setAttribute('reference-id', detail.citation.id);
+            citeElement.setAttribute('citation', detail.inlineCitation);
 
-            const citationsManager = document.querySelector('manage-citations');
-            refSpan.onclick = () => {
-                citationsManager.highlight(detail.citation.id);
-            }
-            
-            range.insertNode(refSpan);
+            range.insertNode(citeElement);
 
-            this.references.push(referenceData);
+            this.references.push(detail.citation);
             this.sendUpdates();
         } catch (fallbackError) {
             console.error('Reference fallback failed:', fallbackError);

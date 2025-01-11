@@ -209,17 +209,10 @@ class ToolbarElement extends LitElement {
             font-size: 12px;
         }
 
-        *::-webkit-scrollbar {
-            width: 15px;
-        }
-        *::-webkit-scrollbar-track {
-            background: var(--bg-1);
-        }
-        *::-webkit-scrollbar-thumb {
-            background-color: var(--bg-3);
-            border-radius: 20px;
-            border: 4px solid var(--bg-1);
-        }
+        *::-webkit-scrollbar { width: 15px; }
+        *::-webkit-scrollbar-track { background: var(--bg-1); }
+        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
+        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
 
         .command-section {
             display: flex;
@@ -921,7 +914,7 @@ class ToolbarElement extends LitElement {
                 return;
             }
 
-            citationsManager.addReference(citation);
+            citationsManager.addReferenceExt(citation);
             const inlineCitation = citationsManager.formatInlineCitation(citation);
 
             this.dispatchEvent(

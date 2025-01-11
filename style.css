@@ -129,8 +129,6 @@ nav {
     position: relative;
     width: 100%;
     padding: 0 max(calc((100% - 850px) / 2), var(--padding-4));
-    overflow-x: auto;
-    overflow-y: hidden;
 }
 
 .hover-images {
@@ -161,6 +159,10 @@ nav {
         justify-content: space-between;
         border: 1px solid var(--border-1);
         border-radius: var(--radius);
+
+        position: absolute;
+        background: var(--bg-1);
+        top: 100%;
     }
 }
 

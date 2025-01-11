@@ -1,3 +1,4 @@
+// TODO change naming such that plugin group and plugin name are separate
 window.wisk.plugins = {
     defaultPlugins: [
         // editor elements
@@ -116,6 +117,10 @@ window.wisk.plugins.getPluginDetail = function (pluginName) {
     }
 }
 
+window.wisk.plugins.getPluginGroupDetail = function (pluginName) {
+    return window.wisk.plugins.pluginData.list[pluginName];
+}
+
 async function loadComponent(componentName) {
     for (let key in window.wisk.plugins.pluginData.list) {
         for (let i = 0; i < window.wisk.plugins.pluginData.list[key].contents.length; i++) {
@@ -148,6 +153,11 @@ function addToNavBar(content, inx) {
 
     // Create the component container and add it to the appropriate parent
     const componentElement = document.createElement(content.component);
+
+    if (content.identifier) {
+        componentElement.id = content.identifier;
+    }
+
     componentElement.style.display = 'none';
     componentElement.dataset.pluginComponent = 'true';
     

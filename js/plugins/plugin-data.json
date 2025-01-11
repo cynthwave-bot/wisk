@@ -118,7 +118,8 @@
                     "category": "right-sidebar",
                     "component": "manage-citations",
                     "nav": true,
-                    "loadAsModule": true
+                    "loadAsModule": true,
+                    "identifier": "pl_manage_citations"
                 }
             ]
         },

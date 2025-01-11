@@ -31,6 +31,15 @@ class NeoAI extends LitElement {
             transition: all 0.3s;
         }
 
+        @starting-style {
+            .i-container {
+                opacity: 0;
+                padding: 0;
+                bottom: 0;
+            }
+        }
+
+
         .logo {
             background-color: var(--accent-bg);
             color: var(--accent-fg);
@@ -52,9 +61,10 @@ class NeoAI extends LitElement {
 
             display: none;
             transition: transform 0.3s;
+            border: 1px solid var(--border-1);
         }
         .logo:hover {
-            transform: rotate(90deg);
+            transform: rotate(90deg) scale(1.1);
         }
 
         .active {
@@ -270,6 +280,78 @@ class NeoAI extends LitElement {
             padding: 0 calc((100% - 1000px) / 2);
         }
 
+        .logo-bubble {
+            display: flex;
+            flex-direction: row-reverse;
+            position: fixed;
+            bottom: calc(var(--padding-4)* 2 + 69px); /* nice */
+            right: calc(var(--padding-4)* 2);
+            background-color: var(--border-1);
+            padding: var(--padding-3);
+            border-radius: var(--radius-large);
+            border: 3px solid var(--border-1);
+            filter: var(--drop-shadow);
+            animation: 0.3s ease-in-out 0s 1 normal none running fadeIn;
+            z-index: 999;
+            color: white;
+            align-items: center;
+        }
+
+        .logo-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            right: 13px;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 12px solid var(--border-1);
+        }
+
+        .logo-bubble-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-bubble-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            opacity: 0.5;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-bubble-close:hover {
+            opacity: 1;
+        }
+
+        .logo-bubble-close img {
+            width: 18px;
+            height: 18px;
+            filter: var(--themed-svg);
+        }
+
+        .logo-bubble-content {
+            color: var(--text-1);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
     `;
 
     static properties = {
@@ -277,6 +359,7 @@ class NeoAI extends LitElement {
         expanded: { type: Boolean },
         selectedElementId: { type: String },
         selectedText: { type: String },
+        showLogoBubble: { type: Boolean },
     };
 
 
@@ -307,6 +390,7 @@ class NeoAI extends LitElement {
                 { from: "bot", text: "Sure! Here is the summary of this page...", type: "text" },
             ],
         }
+        this.showLogoBubble = true;
     }
 
     setSelection(elementId, text) {
@@ -325,6 +409,10 @@ class NeoAI extends LitElement {
     sendClicked() {
         console.log("Send clicked", this.shadowRoot.querySelector(".i-inp").value);
         this.setView("c-container");
+    }
+
+    closeLogoBubble() {
+        this.showLogoBubble = false;
     }
 
     async addUserMessage(message) {
@@ -347,7 +435,25 @@ class NeoAI extends LitElement {
     }
 
     render() {
+        if (wisk.editor.wiskSite) {
+            return html``;
+        }
+
         return html`
+            ${this.showLogoBubble && this.view === 'logo' ? html`
+                <div class="logo-bubble">
+                    <div class="logo-bubble-header">
+                        <button class="logo-bubble-close" @click=${() => this.closeLogoBubble()}>
+                            <img src="${this.path}close.svg" draggable="false" />
+                        </button>
+                    </div>
+                    <div class="logo-bubble-content" @click=${() => this.setView("i-container")}>
+                        Hello! I'm Neo. How can I help you?
+                    </div>
+                </div>
+            ` : ''}
+
+
             <button class="logo ${this.view === 'logo' ? 'active' : ''}" @click=${() => this.setView("i-container")}>
                 <img src="/a7/plugins/neo-ai/ai.svg" style="filter: var(--themed-svg);" draggable="false" />
             </button>

@@ -77,6 +77,20 @@ window.wisk.editor.addConfigChange = async function (arr) {
     configChanges = [];
 };
 
+window.wisk.editor.savePluginData = async function (identifier, data) {
+    var arr = [{path: "document.plugin." + identifier, values: { data: data }}];
+    await saveUpdates(
+        arr,
+        window.wisk.editor.elements.map((e) => e.id),
+        [],
+    );
+
+    for (const change of arr) {
+        configChanges.push(change);
+    }
+    configChanges = [];
+};
+
 window.wisk.editor.createBlockBase = function (elementId, blockType, value, remoteId, isRemote = false) {
     if (elementId === "") {
         elementId = window.wisk.editor.elements.length > 1 ? window.wisk.editor.elements[window.wisk.editor.elements.length - 1].id : window.wisk.editor.elements[0].id;
@@ -155,6 +169,11 @@ window.wisk.editor.handleChanges = async function (updateObject) {
         }
         if (change.path.startsWith("document.config.theme")) {
             window.wisk.theme.setTheme(change.values.theme);
+        }
+        if (change.path.startsWith("document.plugin")) {
+            if (change.values.data) {
+                document.getElementById(change.path.replace("document.plugin.", "")).loadData(change.values.data);
+            }
         }
     }
 
@@ -376,6 +395,17 @@ async function initEditor(doc) {
         .filter((plugin) => !window.wisk.plugins.loadedPlugins.includes(plugin))
         .map((plugin) => window.wisk.plugins.loadPlugin(plugin)),
     );
+
+    // once plugins are loaded we load the data of plugins using their identifiers
+    // loop through all loadedPlugins and loop through their contents and load their dat.
+    for (const plugin of window.wisk.plugins.loadedPlugins) {
+        var tempPlugin = window.wisk.plugins.getPluginGroupDetail(plugin);
+        for (const content of tempPlugin.contents) {
+            if (content.identifier && doc.data.pluginData[content.identifier]) {
+                document.getElementById(content.identifier).loadData(doc.data.pluginData[content.identifier]);
+            }
+        }
+    }
 
     window.wisk.theme.setTheme(doc.data.config.theme);
 

@@ -40,24 +40,28 @@ class LeftMenu extends LitElement {
         }
         .new {
             display: flex;
-            padding: var(--padding-2) var(--padding-3);
+            padding: var(--padding-w1);
             text-align: center;
             text-decoration: none;
             border-radius: var(--radius);
-            background-color: var(--bg-1);
-            color: var(--text-1);
-            border: 1px solid var(--border-1);
+            background-color: var(--accent-bg);
+            color: var(--accent-text);
             gap: var(--gap-2);
             align-items: center;
             justify-content: center;
             white-space: nowrap;
         }
         .new:hover {
-            background-color: var(--bg-2);
+            background-color: var(--bg-3);
+            color: var(--text-1);
         }
         .new-img {
             width: 22px;
             height: 22px;
+            filter: var(--accent-svg);
+        }
+        .new:hover .new-img {
+            filter: var(--themed-svg);
         }
         #search {
             width: 100%;
@@ -73,7 +77,7 @@ class LeftMenu extends LitElement {
             height: 20px;
         }
         .search-div {
-            padding: var(--padding-2) var(--padding-3);
+            padding: var(--padding-w1);
             border-radius: var(--radius);
             border: 1px solid var(--border-1);
             background-color: var(--bg-2);
@@ -83,7 +87,7 @@ class LeftMenu extends LitElement {
             flex: 1;
         }
         .od {
-            padding: var(--padding-2);
+            padding: var(--padding-w1);
             color: var(--text-1);
             background-color: var(--bg-2);
             border-radius: var(--radius);
@@ -164,6 +168,8 @@ class LeftMenu extends LitElement {
         *::-webkit-scrollbar { width: 15px; }
         *::-webkit-scrollbar-track { background: var(--bg-1); }
         *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
+        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+
     `;
 
     static properties = {
@@ -321,8 +327,8 @@ class LeftMenu extends LitElement {
 
         return html`
             <div class="outer" @click=${this.closeDropdown}>
-                <div style="display: flex; gap: 10px">
-                    <div>
+                <div style="display: flex; gap: 10px; align-items: stretch;">
+                    <div class="new-o">
                         <a href="/" class="new"> <img src="/a7/forget/plus1.svg" alt="New Page" class="new-img" /> New Page</a>
                     </div>
 

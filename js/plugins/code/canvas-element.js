@@ -903,28 +903,34 @@ onTouchEnd(e) {
                 #thickness-slider:active::-moz-range-thumb {
                     transform: scale(0.9);
                 }
+                .none {
+                    display: none;
+                }
             </style>
         `;
+
+        var x = wisk.editor.wiskSite;
+
         const content = `
             <div id="toolbar">
                 <button class="tbn" data-action="home"><img data-action="home" src="/a7/plugins/canvas-element/home.svg" alt="Home"/></button>
                 <button class="tbn" data-action="pan"><img data-action="pan" src="/a7/plugins/canvas-element/pan.svg" alt="Pan"/></button>
                 <button class="tbn" data-action="select"><img data-action="select" src="/a7/plugins/canvas-element/select.svg" alt="Select"/></button>
-                <button class="tbn" data-action="draw"><img data-action="draw" src="/a7/plugins/canvas-element/draw.svg" alt="Draw"/></button>
-                <button class="tbn" data-action="line"><img data-action="line" src="/a7/plugins/canvas-element/line.svg" alt="Line"/></button>
-                <button class="tbn" data-action="arrow"><img data-action="arrow" src="/a7/plugins/canvas-element/arrow.svg" alt="Arrow"/></button>
-                <button class="tbn" data-action="rectangle"><img data-action="rectangle" src="/a7/plugins/canvas-element/rectangle.svg" alt="Rectangle"/></button>
-                <button class="tbn" data-action="circle"><img data-action="circle" src="/a7/plugins/canvas-element/circle.svg" alt="Circle"/></button>
-                <button class="tbn" data-action="text"><img data-action="text" src="/a7/plugins/canvas-element/text.svg" alt="Text"/></button>
-                <button class="tbn" data-action="image"><img data-action="image" src="/a7/plugins/canvas-element/image.svg" alt="Add Image"/></button>
-                <button class="tbn" data-action="delete"><img data-action="delete" src="/a7/plugins/canvas-element/trash.svg" alt="Delete"/></button>
-                <input type="file" id="image-input" accept="image/*">
+                <button class="tbn ${x? 'none': ''}" data-action="draw"><img data-action="draw" src="/a7/plugins/canvas-element/draw.svg" alt="Draw"/></button>
+                <button class="tbn ${x? 'none': ''}" data-action="line"><img data-action="line" src="/a7/plugins/canvas-element/line.svg" alt="Line"/></button>
+                <button class="tbn ${x? 'none': ''}" data-action="arrow"><img data-action="arrow" src="/a7/plugins/canvas-element/arrow.svg" alt="Arrow"/></button>
+                <button class="tbn ${x? 'none': ''}" data-action="rectangle"><img data-action="rectangle" src="/a7/plugins/canvas-element/rectangle.svg" alt="Rectangle"/></button>
+                <button class="tbn ${x? 'none': ''}" data-action="circle"><img data-action="circle" src="/a7/plugins/canvas-element/circle.svg" alt="Circle"/></button>
+                <button class="tbn ${x? 'none': ''}" data-action="text"><img data-action="text" src="/a7/plugins/canvas-element/text.svg" alt="Text"/></button>
+                <button class="tbn ${x? 'none': ''}" data-action="image"><img data-action="image" src="/a7/plugins/canvas-element/image.svg" alt="Add Image"/></button>
+                <button class="tbn ${x? 'none': ''}" data-action="delete"><img data-action="delete" src="/a7/plugins/canvas-element/trash.svg" alt="Delete"/></button>
+                <input type="file" id="image-input" accept="image/*" class="${x? 'none': ''}" />
 
                 <div style="flex: 1"></div>
-                <div id="color-picker-wrapper">
+                <div id="color-picker-wrapper" class="${x? 'none': ''}">
                     <input type="color" id="color-picker" value="#000000">
                 </div>
-                <div id="thickness-slider-wrapper">
+                <div id="thickness-slider-wrapper" class="${x? 'none': ''}">
                     <input type="range" id="thickness-slider" min="1" max="20" value="2">
                 </div>
             </div>
