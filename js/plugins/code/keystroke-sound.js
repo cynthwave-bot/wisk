@@ -50,8 +50,8 @@ class KeystrokeSound extends LitElement {
     createTypewriterSound() {
         const time = this.audioContext.currentTime;
 
-        // Create deeper reverb for wooden body
-        const reverbLength = 0.3;
+        // Create deeper reverb for wooden body with enhanced bass
+        const reverbLength = 0.4; // Slightly longer reverb for bass
         const reverbBuffer = this.audioContext.createBuffer(
             2,
             this.audioContext.sampleRate * reverbLength,
@@ -62,55 +62,55 @@ class KeystrokeSound extends LitElement {
             const channelData = reverbBuffer.getChannelData(channel);
             for (let i = 0; i < reverbBuffer.length; i++) {
                 const progress = i / reverbBuffer.length;
-                // Deeper, wooden case reflections
+                // Enhanced wooden case resonance with more bass
                 channelData[i] = (Math.random() * 2 - 1) * 
-                    Math.exp(-8 * progress) * 
+                    Math.exp(-6 * progress) * // Slower decay for more bass
                     (1 - progress) * 
-                    (1 + Math.sin(progress * 200));  // Add wooden resonance
+                    (1 + Math.sin(progress * 100) + // Lower frequency resonance
+                        Math.sin(progress * 50) * 0.5); // Additional sub-bass resonance
             }
         }
 
         const convolver = this.audioContext.createConvolver();
         convolver.buffer = reverbBuffer;
 
-        // 1. Key sliding down sound (plastic/metal friction)
+        // 1. Key sliding down sound (unchanged)
         const slideBuffer = this.audioContext.createBuffer(1, this.audioContext.sampleRate * 0.03, this.audioContext.sampleRate);
         const slideData = slideBuffer.getChannelData(0);
         for (let i = 0; i < slideBuffer.length; i++) {
             const progress = i / slideBuffer.length;
-            // Combine friction noise with slight plasticky squeak
             slideData[i] = (
-                (Math.random() * 2 - 1) * 0.3 * (1 - progress) + // Friction
-                Math.sin(progress * 1000) * 0.1 * (1 - progress) // Slight squeak
+                (Math.random() * 2 - 1) * 0.3 * (1 - progress) +
+                Math.sin(progress * 1000) * 0.1 * (1 - progress)
             );
         }
 
-        // 2. Type bar mechanism sound (metal spring/lever)
+        // 2. Type bar mechanism sound with added weight
         const mechanismBuffer = this.audioContext.createBuffer(1, this.audioContext.sampleRate * 0.04, this.audioContext.sampleRate);
         const mechanismData = mechanismBuffer.getChannelData(0);
         for (let i = 0; i < mechanismBuffer.length; i++) {
             const progress = i / mechanismBuffer.length;
-            // Metal spring tension release sound
             mechanismData[i] = (
                 Math.sin(i * 0.5) * 0.3 * (1 - progress) + // Spring vibration
-                (Math.random() * 2 - 1) * 0.4 * Math.exp(-10 * progress) // Metal movement
+                Math.sin(i * 0.2) * 0.2 * (1 - progress) + // Added low frequency component
+                (Math.random() * 2 - 1) * 0.4 * Math.exp(-10 * progress)
             );
         }
 
-        // 3. Impact sound (type bar hitting)
-        const impactBuffer = this.audioContext.createBuffer(1, this.audioContext.sampleRate * 0.1, this.audioContext.sampleRate);
+        // 3. Impact sound with enhanced bass response
+        const impactBuffer = this.audioContext.createBuffer(1, this.audioContext.sampleRate * 0.15, this.audioContext.sampleRate);
         const impactData = impactBuffer.getChannelData(0);
         for (let i = 0; i < impactBuffer.length; i++) {
             const progress = i / impactBuffer.length;
-            // Complex impact combining metal, wood and platen materials
             impactData[i] = (
                 (Math.random() * 2 - 1) * 0.7 * Math.exp(-30 * progress) + // Sharp impact
-                Math.sin(i * 0.1) * 0.4 * Math.exp(-8 * progress) + // Low wooden resonance
+                Math.sin(i * 0.1) * 0.5 * Math.exp(-6 * progress) + // Enhanced low wooden resonance
+                Math.sin(i * 0.05) * 0.3 * Math.exp(-4 * progress) + // New sub-bass thump
                 Math.sin(i * 0.3) * 0.2 * Math.exp(-15 * progress) // Metal ring
             );
         }
 
-        // Create and connect sources for each component
+        // Create and connect sources
         const slideSource = this.audioContext.createBufferSource();
         const mechanismSource = this.audioContext.createBufferSource();
         const impactSource = this.audioContext.createBufferSource();
@@ -120,9 +120,9 @@ class KeystrokeSound extends LitElement {
         mechanismSource.buffer = mechanismBuffer;
         impactSource.buffer = impactBuffer;
         returnSource.buffer = impactBuffer;
-        returnSource.playbackRate.value = 0.6; // Deeper return sound
+        returnSource.playbackRate.value = 0.5; // Even deeper return sound
 
-        // Filters for each component
+        // Enhanced filters for better bass response
         const slideFilter = this.audioContext.createBiquadFilter();
         slideFilter.type = 'bandpass';
         slideFilter.frequency.value = 2000;
@@ -130,50 +130,58 @@ class KeystrokeSound extends LitElement {
 
         const mechanismFilter = this.audioContext.createBiquadFilter();
         mechanismFilter.type = 'peaking';
-        mechanismFilter.frequency.value = 800;
-        mechanismFilter.Q.value = 3;
-        mechanismFilter.gain.value = 3;
+        mechanismFilter.frequency.value = 600; // Lower frequency peak
+        mechanismFilter.Q.value = 2;
+        mechanismFilter.gain.value = 4;
+
+        // New bass enhancement filter
+        const bassFilter = this.audioContext.createBiquadFilter();
+        bassFilter.type = 'lowshelf';
+        bassFilter.frequency.value = 200;
+        bassFilter.gain.value = 6;
 
         const impactFilter = this.audioContext.createBiquadFilter();
         impactFilter.type = 'lowshelf';
-        impactFilter.frequency.value = 400;
-        impactFilter.gain.value = 6;
+        impactFilter.frequency.value = 300; // Lower frequency boost
+        impactFilter.gain.value = 8;
 
-        // Gains for each component
+        // Gains with adjusted values
         const slideGain = this.audioContext.createGain();
         slideGain.gain.setValueAtTime(0.15, time);
 
         const mechanismGain = this.audioContext.createGain();
-        mechanismGain.gain.setValueAtTime(0.3, time + 0.02);
+        mechanismGain.gain.setValueAtTime(0.35, time + 0.02);
 
         const impactGain = this.audioContext.createGain();
-        impactGain.gain.setValueAtTime(0.7, time + 0.05);
+        impactGain.gain.setValueAtTime(0.8, time + 0.05);
 
         const returnGain = this.audioContext.createGain();
-        returnGain.gain.setValueAtTime(0.5, time + 0.12);
+        returnGain.gain.setValueAtTime(0.6, time + 0.12);
 
-        // Dry/Wet mix
+        // Adjusted Dry/Wet mix for more presence
         const dryGain = this.audioContext.createGain();
-        dryGain.gain.value = 0.6;
+        dryGain.gain.value = 0.7;
 
         const wetGain = this.audioContext.createGain();
-        wetGain.gain.value = 0.4;
+        wetGain.gain.value = 0.5;
 
-        // Connect everything
+        // Connect everything including the new bass filter
         [slideSource, mechanismSource, impactSource, returnSource].forEach(source => {
+            source.connect(bassFilter);
             source.connect(dryGain);
             source.connect(convolver);
         });
 
+        bassFilter.connect(this.audioContext.destination);
         convolver.connect(wetGain);
         dryGain.connect(this.audioContext.destination);
         wetGain.connect(this.audioContext.destination);
 
         // Start all sounds in sequence
-        slideSource.start(time);  // Key press slide
-        mechanismSource.start(time + 0.02);  // Mechanism movement
-        impactSource.start(time + 0.05);  // Type bar impact
-        returnSource.start(time + 0.12);  // Return movement
+        slideSource.start(time);
+        mechanismSource.start(time + 0.02);
+        impactSource.start(time + 0.05);
+        returnSource.start(time + 0.12);
     }
 
     createMeowSound() {
