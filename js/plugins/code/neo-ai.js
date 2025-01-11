@@ -286,7 +286,7 @@ class NeoAI extends LitElement {
             position: fixed;
             bottom: calc(var(--padding-4)* 2 + 69px); /* nice */
             right: calc(var(--padding-4)* 2);
-            background-color: var(--border-1);
+            background-color: var(--bg-3);
             padding: var(--padding-3);
             border-radius: var(--radius-large);
             border: 3px solid var(--border-1);
