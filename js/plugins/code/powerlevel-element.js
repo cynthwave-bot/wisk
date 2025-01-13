@@ -2,6 +2,19 @@ import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
 
 class PowerLevelElement extends LitElement {
     static styles = css`
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0) rotate(0); }
+            10% { transform: translate(-2px, -2px) rotate(-0.5deg); }
+            20% { transform: translate(2px, 2px) rotate(0.5deg); }
+            30% { transform: translate(-2px, 1px) rotate(-0.25deg); }
+            40% { transform: translate(2px, -1px) rotate(0.25deg); }
+            50% { transform: translate(-1px, 2px) rotate(-0.5deg); }
+            60% { transform: translate(1px, -2px) rotate(0.5deg); }
+            70% { transform: translate(-2px, -1px) rotate(-0.25deg); }
+            80% { transform: translate(2px, 1px) rotate(0.25deg); }
+            90% { transform: translate(-1px, -2px) rotate(-0.5deg); }
+        }
+
         * {
             box-sizing: border-box;
             font-family: var(--font-mono);
@@ -60,6 +73,7 @@ class PowerLevelElement extends LitElement {
         this.MIN_SCALE = 1;
         this.MAX_SCALE = 3.5;
         this.SCALE_FACTOR = 0.045;
+        this.SHAKE_THRESHOLD = 30; // Power level threshold for shake effect
         
         this.powerLevel = 0;
         this.comboCount = 0;
@@ -78,6 +92,19 @@ class PowerLevelElement extends LitElement {
         };
     }
 
+    shakeDocument() {
+        const intensity = Math.min(1, this.powerLevel / 100);
+        const duration = 200 + Math.random() * 300;
+        
+        document.body.style.animation = 'none';
+        document.body.offsetHeight; // Trigger reflow
+        document.body.style.animation = `shake ${duration}ms ease-in-out`;
+        
+        setTimeout(() => {
+            document.body.style.animation = 'none';
+        }, duration);
+    }
+
     setupListeners() {
         window.addEventListener('keydown', (e) => {
             if (e.key.length === 1 || e.key === 'Enter' || e.key === 'Backspace' || e.key === 'Space') {
@@ -85,6 +112,11 @@ class PowerLevelElement extends LitElement {
                 this.powerLevel = Math.min(100, this.powerLevel + this.POWER_INCREASE_PER_KEY);
                 const scaleRange = this.MAX_SCALE - this.MIN_SCALE;
                 this.scale = this.MIN_SCALE + ((this.powerLevel / 100) * scaleRange);
+
+                // Add shake effect when power level is above threshold
+                if (this.powerLevel > this.SHAKE_THRESHOLD) {
+                    this.shakeDocument();
+                }
             }
             
             if (!this.pressedKeys.has(e.code)) {
@@ -139,6 +171,24 @@ class PowerLevelElement extends LitElement {
 }
 
 customElements.define("power-level-element", PowerLevelElement);
+
+// Add styles to document head
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes shake {
+        0%, 100% { transform: translate(0, 0) rotate(0); }
+        10% { transform: translate(-2px, -2px) rotate(-0.5deg); }
+        20% { transform: translate(2px, 2px) rotate(0.5deg); }
+        30% { transform: translate(-2px, 1px) rotate(-0.25deg); }
+        40% { transform: translate(2px, -1px) rotate(0.25deg); }
+        50% { transform: translate(-1px, 2px) rotate(-0.5deg); }
+        60% { transform: translate(1px, -2px) rotate(0.5deg); }
+        70% { transform: translate(-2px, -1px) rotate(-0.25deg); }
+        80% { transform: translate(2px, 1px) rotate(0.25deg); }
+        90% { transform: translate(-1px, -2px) rotate(-0.5deg); }
+    }
+`;
+document.head.appendChild(style);
 
 document.querySelector(".editor").appendChild(document.createElement("power-level-element"));
 document.querySelector("power-level-element").style = "z-index: 1000;";

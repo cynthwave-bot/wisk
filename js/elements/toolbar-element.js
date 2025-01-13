@@ -19,12 +19,13 @@ class ToolbarElement extends LitElement {
             background: var(--bg-1);
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
-            filter: var(--drop-shadow);
+            filter: drop-shadow(1px 1px 5px var(--accent-bg)) drop-shadow(1px 1px 5px var(--accent-bg));
             padding: var(--padding-2);
             gap: var(--gap-2);
             z-index: 99;
             display: none;
             width: max-content;
+            transform: translateZ(0); /* Prevents jittering */
         }
 
         .toolbar.visible {
@@ -41,13 +42,12 @@ class ToolbarElement extends LitElement {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-1);
+            color: var(--accent-text);
             transition: background 0.2s ease-in-out;
             gap: var(--gap-1);
             opacity: 1;
         }
         .toolbar div button { 
-            opacity: 0.8;
         }
 
         .toolbar button[data-wide] {
@@ -56,7 +56,7 @@ class ToolbarElement extends LitElement {
         }
 
         .toolbar button:hover {
-            background: var(--bg-3);
+            background: var(--accent-bg);
             opacity: 1;
         }
 
@@ -68,8 +68,8 @@ class ToolbarElement extends LitElement {
         }
 
         img {
-            filter: var(--themed-svg);
-            height: 18px;
+            filter: var(--accent-svg);
+            height: 19px;
         }
 
         .dialog-container {
@@ -949,10 +949,10 @@ class ToolbarElement extends LitElement {
                 </button>
                 <div class="separator"></div>
                 <button @click=${() => this.handleToolbarAction("find-source")} title="Find Source" data-wide>
-                    <img src="/a7/forget/source.svg" alt="Source" /> Find Source
+                    <img src="/a7/forget/auto-cite.svg" alt="Source" /> AI Cite
                 </button>
-                <button @click=${() => this.handleToolbarAction("show-citations")} title="Add Existing Citation" data-wide>
-                    <img src="/a7/forget/plus.svg" alt="Citation" /> Add Citation
+                <button @click=${() => this.handleToolbarAction("find-source")} title="Find Source" data-wide>
+                    <img src="/a7/forget/source.svg" alt="Source" /> Find Source
                 </button>
                 <div class="separator"></div>
                 <div style="display: flex">
@@ -965,17 +965,17 @@ class ToolbarElement extends LitElement {
                     <button @click=${() => this.handleToolbarAction("underline")} title="Underline">
                         <img src="/a7/forget/underline.svg" alt="Underline" />
                     </button>
-                    <button @click=${() => this.handleToolbarAction("subscript")} title="Subscript">
-                        <img src="/a7/plugins/toolbar/subscript.svg" alt="Subscript" />
-                    </button>
-                    <button @click=${() => this.handleToolbarAction("superscript")} title="Superscript">
-                        <img src="/a7/plugins/toolbar/superscript.svg" alt="Superscript" />
-                    </button>
                     <button @click=${() => this.handleToolbarAction("strikeThrough")} title="Strikethrough">
                         <img src="/a7/forget/strikethrough.svg" alt="Strikethrough" />
                     </button>
                     <button @click=${() => this.handleToolbarAction("link")} title="Add Link">
                         <img src="/a7/forget/link.svg" alt="Link" />
+                    </button>
+                    <button @click=${() => this.handleToolbarAction("subscript")} title="Subscript">
+                        <img src="/a7/plugins/toolbar/subscript.svg" alt="Subscript" />
+                    </button>
+                    <button @click=${() => this.handleToolbarAction("superscript")} title="Superscript">
+                        <img src="/a7/plugins/toolbar/superscript.svg" alt="Superscript" />
                     </button>
                     <div class="submenu-container">
                         <button class="submenu-trigger" title="Colors" style="width: auto; padding: 0 5px">
@@ -1174,11 +1174,16 @@ class ToolbarElement extends LitElement {
             case "sources":
                 return html`
                     <div class="dialog">
-                        <div style="display: flex; gap: 8px; margin-bottom: 8px">
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-direction: column">
                             <div class="od" style="margin-bottom: 0; flex: 1; padding: var(--padding-1) var(--padding-2)">
                                 <input type="text" placeholder="Search sources" id="source-search" value=${this.selectedText} class="ai-input" />
                                 <button style="border: none; font-size: 12px; padding: var(--padding-3); background: transparent" @click=${this.updateSearch}><img src="/a7/plugins/toolbar/search.svg" alt="Search" style="height: 16px; filter: var(--themed-svg)" /></button>
                             </div>
+
+                            <button @click=${() => this.handleToolbarAction("show-citations")} 
+                                title="Add Existing Citation" data-wide style="border: none; color: var(--accent-text);">
+                                <img src="/a7/forget/list.svg" alt="Citation" style="filter: var(--accent-svg)"/> Show current citations
+                            </button>
                         </div>
                         <div style="overflow: auto; padding: var(--padding-3) 0">
                             ${this.sources.map(
@@ -1188,7 +1193,7 @@ class ToolbarElement extends LitElement {
                                         <p style="user-select: text">${source.content}</p>
                                         <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; align-items: center;">
                                             <a class="url" href=${source.url} target="_blank">${source.url.length > 40 ? source.url.slice(0, 40) + "..." : source.url}</a>
-                                            <button @click=${() => this.handleCreateReference(source)} style="border: 1px solid var(--border-1); color: var(--fg-blue)">Add Source</button>
+                                            <button @click=${() => this.handleCreateReference(source)} style="border: 1px solid var(--border-1); color: var(--accent-text)">Add Source</button>
                                         </div>
                                     </div>
                                 `,
