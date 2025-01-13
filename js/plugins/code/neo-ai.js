@@ -313,10 +313,10 @@ class NeoAI extends LitElement {
 
         @keyframes borderFlicker {
             0%, 96.77% {
-                border-color: var(--border-1);
+                filter: invert(0);
             }
             97%, 100% {
-                border-color: var(--fg-red);
+                filter: invert(1);
             }
         }
 

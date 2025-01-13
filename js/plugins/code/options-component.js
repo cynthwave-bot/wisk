@@ -734,7 +734,7 @@ class OptionsComponent extends LitElement {
                     <p style="font-size: 14px;">• appears as a context menu or box (Not implemented yet)</p>
                 ` : ''}
                 ${this.selectedPlugin.contents.some(content => content.experimental) ? html`
-                    <p style="font-size: 14px;">• is experimental and may cause issues</p>
+                    <p style="font-size: 14px;">• is experimental and may cause issues and is not recommended to use</p>
                 ` : ''}
                 ${this.selectedPlugin.contents.some(content => content.nav) ? html`
                     <p style="font-size: 14px;">• will be shown in the navigation bar</p>

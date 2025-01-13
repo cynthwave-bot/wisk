@@ -737,8 +737,8 @@ class GettingStarted extends LitElement {
                             <a target="_blank" href="https://wisk.cc/faq" class="quick-link">FAQ</a>
                             <a target="_blank" href="https://wisk.cc/blog" class="quick-link">Blog</a>
                             <a target="_blank" href="https://discord.gg/YyqXEey4JS" class="quick-link">Discord</a>
-                            <a target="_blank" href="https://wisk.cc/docs" class="quick-link">Documentation</a>
-                            <a target="_blank" href="https://wisk.cc/support" class="quick-link">Contact Support</a>
+                            <a target="_blank" href="https://github.com/cynthwave/wisk/blob/master/docs/docs.md" class="quick-link">Documentation</a>
+                            <a target="_blank" href="https://wisk.cc/contact" class="quick-link">Contact Support</a>
                         </div>
                     </div>
 

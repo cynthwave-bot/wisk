@@ -27,6 +27,7 @@ class MermaidElement extends LitElement {
             margin: 0px;
             padding: 0px;
             user-select: text;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         :host {
             display: block;
@@ -36,61 +37,116 @@ class MermaidElement extends LitElement {
             border: none;
             padding: var(--padding-4);
             font-size: 16px;
+            border-radius: var(--radius);
         }
         .mermaid-container:hover {
             background: var(--bg-2);
-            border-radius: var(--radius);
         }
         .error {
             color: var(--fg-red);
+            margin-top: var(--padding-2);
+            font-size: 14px;
         }
         .edit-button {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: var(--padding-3);
+            right: var(--padding-3);
             opacity: 0;
-            transition: opacity 0.2s;
-            background: var(--text-1);
-            color: var(--bg-1);
-            border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
+            transition: opacity 0.15s ease;
+            background: var(--bg-2);
+            color: var(--text-1);
+            border: 1px solid var(--bg-3);
+            padding: var(--padding-w1);
+            border-radius: var(--radius);
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--gap-2);
         }
         :host(:hover) .edit-button {
             opacity: 1;
         }
         .dialog {
-            background: var(--bg-3);
-            padding: var(--padding-3);
-            border-radius: var(--radius);
+            background: var(--bg-1);
+            padding: var(--padding-4);
+            border-radius: var(--radius-large);
+            border: 1px solid var(--bg-3);
+            margin-top: var(--padding-3);
+            filter: var(--drop-shadow);
+            padding-bottom: calc(var(--padding-4) - var(--padding-3));
         }
-        .dialog textarea {
+        textarea {
             width: 100%;
             min-height: 150px;
             padding: var(--padding-3);
             color: var(--text-1);
-            background: var(--bg-1);
+            background: var(--bg-2);
             border-radius: var(--radius);
             font-family: var(--font-mono);
-            font-size: 16px;
+            font-size: 14px;
             resize: vertical;
-            border: none;
+            border: 1px solid var(--bg-3);
+            transition: border-color 0.15s ease;
             outline: none;
+        }
+        textarea:focus {
+            border-color: var(--bg-3);
         }
         .dialog-buttons {
             display: flex;
             gap: 8px;
             justify-content: flex-end;
-            margin-top: 8px;
+            margin-top: var(--padding-3);
         }
-        button {
-            background: var(--bg-2);
+        .ai-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--padding-3);
+        }
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--accent-text);
+            border-radius: 50%;
+            border-top-color: var(--accent-bg);
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .button {
+            background: transparent;
             color: var(--text-1);
             border: none;
-            padding: var(--padding-w1);
+            padding: var(--padding-2);
             border-radius: var(--radius);
             cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+        .primary-button {
+            background: transparent;
+            color: var(--accent-text);
+            border: none;
+            font-weight: 600;
+        }
+        .primary-button:hover {
+            background: var(--accent-bg);
+            border: none;
+        }
+        .inner-buttons {
+            padding: var(--padding-3);
+        }
+        .inner-buttons:hover {
+            background-color: var(--bg-2);
+        }
+        .inner-buttons img {
+            width: 22px;
+            height: 22px;
+            filter: var(--themed-svg);
         }
         .mermaid-display {
             display: flex;
@@ -104,7 +160,12 @@ class MermaidElement extends LitElement {
         error: { type: String },
         _showDialog: { type: Boolean, state: true },
         _theme: { type: Object, state: true },
-        readOnly: { type: Boolean, reflect: true, attribute: 'read-only' }
+        readOnly: { type: Boolean, reflect: true, attribute: 'read-only' },
+        _showAiInput: { type: Boolean, state: true },
+        _showCodeEditor: { type: Boolean, state: true },
+        _isLoading: { type: Boolean, state: true },
+        _aiSuggestion: { type: String },
+        _showAiSuggestion: { type: Boolean, state: true }
     };
 
     constructor() {
@@ -118,6 +179,114 @@ class MermaidElement extends LitElement {
         this._showDialog = false;
         this._theme = window.wisk.theme.getThemeData(window.wisk.theme.getTheme());
         this.readOnly = false;
+        this._showAiInput = false;
+        this._showCodeEditor = false;
+        this._isLoading = false;
+        this._aiSuggestion = '';
+        this._showAiSuggestion = false;
+    }
+
+    // ... [Keep existing theme and Mermaid configuration methods] ...
+    
+    async handleEdit() {
+        this._showAiInput = true;
+        this._showCodeEditor = false;
+        await this.requestUpdate();
+        const textarea = this.shadowRoot.querySelector('.ai-input');
+        if (textarea) {
+            textarea.focus();
+        }
+    }
+
+    async handleAiUpdate() {
+        try {
+            var user = await document.querySelector("auth-component").getUserInfo();
+            var token = user.token;
+            
+            this._isLoading = true;
+            this.requestUpdate();
+
+            const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
+            
+            var response = await fetch("https://cloud.wisk.cc/v2/plugins/mermaid", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    command: aiPrompt,
+                    mermaid: this._mermaid
+                }),
+            });
+
+            this._isLoading = false;
+            
+            if (response.status !== 200) {
+                window.showToast("Error updating diagram", 5000);
+                return;
+            }
+
+            var mermaidContent = await response.text();
+            
+            let inCodeBlock = false;
+            const lines = mermaidContent.split('\n');
+            const contentLines = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.includes('```')) {
+                    inCodeBlock = !inCodeBlock;
+                    continue;
+                }
+                if (inCodeBlock) {
+                    contentLines.push(line);
+                }
+            }
+
+            mermaidContent = contentLines.join('\n');
+            mermaidContent = mermaidContent.replace(/```/g, '');
+            
+            this._aiSuggestion = mermaidContent;
+            this._showAiSuggestion = true;
+
+            console.log('AI Suggestion:', mermaidContent);
+
+            this.renderMermaid();
+        } catch (error) {
+            console.error('Error:', error);
+            window.showToast("Error updating diagram", 5000);
+            this._isLoading = false;
+            this.requestUpdate();
+        }
+    }
+
+    handleShowCodeEditor() {
+        this._showCodeEditor = true;
+        this._showAiInput = false;
+    }
+
+    handleAcceptAiChanges() {
+        this._mermaid = this._aiSuggestion;
+        this.backup = this._aiSuggestion;
+        this._showAiSuggestion = false;
+        this._showAiInput = false;
+        this.sendUpdates();
+        this.requestUpdate();
+        this.renderMermaid();
+    }
+
+    handleRejectAiChanges() {
+        this._showAiSuggestion = false;
+        this._aiSuggestion = '';
+        this.renderMermaid();
+    }
+
+    handleCancel() {
+        this._showAiInput = false;
+        this._showCodeEditor = false;
+        this._showAiSuggestion = false;
+        this._aiSuggestion = '';
     }
 
     connectedCallback() {
@@ -145,7 +314,6 @@ class MermaidElement extends LitElement {
     getMermaidConfig() {
         if (!this._theme) return {};
         
-        // TODO - Add more theme color variables
         return {
             theme: 'base',
             themeVariables: {
@@ -285,14 +453,12 @@ class MermaidElement extends LitElement {
                 quadrantPointTextFill: this._theme['--text-1'],
 
                 // Mindmap fixes
-                // TODO mindmap colors needs some fixing
                 mindmapNodeBackgroundColor: this._theme['--bg-2'],
                 mindmapNodeBorderColor: this._theme['--border-1'],
                 mindmapNodeTextColor: this._theme['--bg-1'],
                 mindmapLinkColor: this._theme['--bg-2'],
                 mindmapTitleBackgroundColor: this._theme['--bg-3'],
                 mindmapTitleTextColor: this._theme['--bg-1'],
-
             }
         };
     }
@@ -313,14 +479,16 @@ class MermaidElement extends LitElement {
             
             // Generate unique ID for this render
             const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+            console.log('Rendering Mermaid:', id);
             
             // Use mermaid's render method to get SVG
-            const { svg } = await window.mermaid.render(id, this._mermaid);
+            const { svg } = await window.mermaid.render(id, this._showAiSuggestion ? this._aiSuggestion : this._mermaid);
             
             // Insert the SVG into our container
             container.innerHTML = svg;
             
             this.error = '';
+            console.log('Mermaid Rendered:', id);
         } catch (e) {
             console.error('Mermaid Error:', e);
             this.error = `Mermaid Error: ${e.message}`;
@@ -362,21 +530,16 @@ class MermaidElement extends LitElement {
         }, 0);
     }
 
-    handleEdit() {
-        this._showDialog = true;
-    }
-
     handleSave() {
-        const textarea = this.shadowRoot.querySelector('textarea');
-        this._mermaid = textarea.value;
+        const textarea = this.shadowRoot.querySelector('.code-editor');
+        if (textarea) {
+            this._mermaid = textarea.value;
+        }
         this._showDialog = false;
+        this._showCodeEditor = false;
         this.sendUpdates();
         this.requestUpdate();
         this.renderMermaid();
-    }
-
-    handleCancel() {
-        this._showDialog = false;
     }
 
     handleReset() {
@@ -390,29 +553,77 @@ class MermaidElement extends LitElement {
     }
 
     updateMermaid() {
-        if (!this.shadowRoot.querySelector('textarea')) return;
-        this._mermaid = this.shadowRoot.querySelector('textarea').value;
-        this.renderMermaid();
-        this.requestUpdate();
+        const codeEditor = this.shadowRoot.querySelector('.code-editor');
+        if (codeEditor) {
+            this._mermaid = codeEditor.value;
+            this.renderMermaid();
+            this.requestUpdate();
+        }
     }
 
     render() {
         return html`
             <div class="mermaid-container">
-                <div class="mermaid-display"></div>
+                <div class="mermaid-display">
+                    ${this._showAiSuggestion ? 
+                        html`<div class="preview"></div>` :
+                        ''}
+                </div>
                 ${this.error ? html`<div class="error">${this.error}</div>` : ''}
                 ${!this.readOnly && !window.wisk.editor.wiskSite ? html`
-                    <button class="edit-button" @click=${this.handleEdit}>Edit</button>
+                    <button class="button edit-button" @click=${this.handleEdit}>
+                        <img src="/a7/plugins/latex-element/pencil.svg" alt="Edit" style="filter: var(--themed-svg);" />
+                    </button>
                 ` : ''}
             </div>
 
-            ${this._showDialog ? html`
+            ${this._showAiInput ? html`
                 <div class="dialog">
-                    <textarea .value=${this._mermaid} @input=${this.updateMermaid}></textarea>
+                    <div class="ai-input-container">
+                        <textarea 
+                            class="ai-input" 
+                            placeholder="Ask AI for any changes ..." 
+                            ?disabled=${this._isLoading || this._showAiSuggestion}
+                        ></textarea>
+                        <div class="dialog-buttons">
+                            ${this._isLoading ? 
+                                html`<div class="loading-spinner"></div>` :
+                                this._showAiSuggestion ? html`
+                                    <button @click=${this.handleRejectAiChanges} class="button inner-buttons">
+                                        <img src="/a7/plugins/latex-element/discard.svg" alt="Discard" />
+                                        Discard
+                                    </button>
+                                    <button class="primary-button button inner-buttons" @click=${this.handleAcceptAiChanges}>
+                                        <img src="/a7/plugins/latex-element/accept.svg" alt="Accept" style="filter: var(--accent-svg);" />
+                                        Accept
+                                    </button>
+                                ` : html`
+                                    <button class="button" @click=${this.handleCancel}>Cancel</button>
+                                    <div style="flex: 1"></div>
+                                    <button class="button inner-buttons" @click=${this.handleShowCodeEditor}>
+                                        <img src="/a7/plugins/latex-element/code.svg" alt="Code" />
+                                    </button>
+                                    <button class="button primary-button inner-buttons" @click=${this.handleAiUpdate}>
+                                        <img src="/a7/plugins/latex-element/up.svg" alt="AI"/>
+                                    </button>
+                                `
+                            }
+                        </div>
+                    </div>
+                </div>
+            ` : ''}
+
+            ${this._showCodeEditor ? html`
+                <div class="dialog">
+                    <textarea 
+                        class="code-editor" 
+                        .value=${this._mermaid} 
+                        @input=${this.updateMermaid}
+                    ></textarea>
                     <div class="dialog-buttons">
-                        <button @click=${this.handleReset}>Reset</button>
-                        <button @click=${this.handleCancel}>Cancel</button>
-                        <button @click=${this.handleSave}>Save</button>
+                        <button class="button inner-buttons" @click=${this.handleReset}>Reset</button>
+                        <button class="button inner-buttons" @click=${this.handleCancel}>Cancel</button>
+                        <button class="button inner-buttons primary-button" @click=${this.handleSave}>Save</button>
                     </div>
                 </div>
             ` : ''}

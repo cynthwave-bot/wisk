@@ -26,10 +26,10 @@ window.wisk.plugins = {
 
         // other elements
         'neo-ai',
-        'general-chat',
         'manage-citations',
         'share-manager',
         'export-manager',
+        'general-chat',
         "more",
         "left-menu",
     ],
