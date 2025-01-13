@@ -77,7 +77,6 @@ class MermaidElement extends LitElement {
         }
         textarea {
             width: 100%;
-            min-height: 150px;
             padding: var(--padding-3);
             color: var(--text-1);
             background: var(--bg-2);
@@ -163,9 +162,7 @@ class MermaidElement extends LitElement {
         readOnly: { type: Boolean, reflect: true, attribute: 'read-only' },
         _showAiInput: { type: Boolean, state: true },
         _showCodeEditor: { type: Boolean, state: true },
-        _isLoading: { type: Boolean, state: true },
-        _aiSuggestion: { type: String },
-        _showAiSuggestion: { type: Boolean, state: true }
+        _isLoading: { type: Boolean, state: true }
     };
 
     constructor() {
@@ -182,11 +179,7 @@ class MermaidElement extends LitElement {
         this._showAiInput = false;
         this._showCodeEditor = false;
         this._isLoading = false;
-        this._aiSuggestion = '';
-        this._showAiSuggestion = false;
     }
-
-    // ... [Keep existing theme and Mermaid configuration methods] ...
     
     async handleEdit() {
         this._showAiInput = true;
@@ -219,43 +212,38 @@ class MermaidElement extends LitElement {
                     mermaid: this._mermaid
                 }),
             });
-
-            this._isLoading = false;
             
             if (response.status !== 200) {
-                window.showToast("Error updating diagram", 5000);
-                return;
+                throw new Error("Error updating diagram");
             }
 
-            var mermaidContent = await response.text();
-            
-            let inCodeBlock = false;
-            const lines = mermaidContent.split('\n');
-            const contentLines = [];
+            const responseText = await response.text();
+            if (!responseText.trim()) {
+                throw new Error('Empty response received');
+            }
 
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i];
-                if (line.includes('```')) {
-                    inCodeBlock = !inCodeBlock;
-                    continue;
-                }
-                if (inCodeBlock) {
-                    contentLines.push(line);
+            // Extract Mermaid content
+            let mermaidContent = responseText;
+            if (responseText.includes('```')) {
+                const matches = responseText.match(/```(?:mermaid)?\n([\s\S]*?)```/);
+                if (matches && matches[1]) {
+                    mermaidContent = matches[1].trim();
                 }
             }
 
-            mermaidContent = contentLines.join('\n');
-            mermaidContent = mermaidContent.replace(/```/g, '');
+            // Update the mermaid content directly
+            this._mermaid = mermaidContent;
+            this.backup = mermaidContent;
+            this._showAiInput = false;
+            this._isLoading = false;
             
-            this._aiSuggestion = mermaidContent;
-            this._showAiSuggestion = true;
+            this.sendUpdates();
+            this.requestUpdate();
+            await this.renderMermaid();
 
-            console.log('AI Suggestion:', mermaidContent);
-
-            this.renderMermaid();
         } catch (error) {
             console.error('Error:', error);
-            window.showToast("Error updating diagram", 5000);
+            window.showToast(error.message || "Error updating diagram", 5000);
             this._isLoading = false;
             this.requestUpdate();
         }
@@ -266,27 +254,10 @@ class MermaidElement extends LitElement {
         this._showAiInput = false;
     }
 
-    handleAcceptAiChanges() {
-        this._mermaid = this._aiSuggestion;
-        this.backup = this._aiSuggestion;
-        this._showAiSuggestion = false;
-        this._showAiInput = false;
-        this.sendUpdates();
-        this.requestUpdate();
-        this.renderMermaid();
-    }
-
-    handleRejectAiChanges() {
-        this._showAiSuggestion = false;
-        this._aiSuggestion = '';
-        this.renderMermaid();
-    }
-
     handleCancel() {
         this._showAiInput = false;
         this._showCodeEditor = false;
-        this._showAiSuggestion = false;
-        this._aiSuggestion = '';
+        this.requestUpdate();
     }
 
     connectedCallback() {
@@ -317,66 +288,41 @@ class MermaidElement extends LitElement {
         return {
             theme: 'base',
             themeVariables: {
-                // Primary elements
                 primaryColor: this._theme['--fg-blue'],
                 primaryTextColor: this._theme['--text-1'],
                 primaryBorderColor: this._theme['--border-1'],
-
-                // Lines and secondary elements
                 lineColor: this._theme['--text-2'],
                 secondaryColor: this._theme['--fg-green'],
                 tertiaryColor: this._theme['--fg-red'],
-
-                // Additional state colors
                 successColor: this._theme['--fg-green'],
                 successTextColor: this._theme['--text-1'],
                 successBorderColor: this._theme['--border-1'],
-
                 errorColor: this._theme['--fg-red'],
                 errorTextColor: this._theme['--text-1'],
                 errorBorderColor: this._theme['--border-1'],
-
                 warningColor: this._theme['--fg-yellow'],
                 warningTextColor: this._theme['--text-1'],
                 warningBorderColor: this._theme['--border-1'],
-
-                // Node colors
                 purple: this._theme['--fg-purple'],
                 orange: this._theme['--fg-orange'],
                 cyan: this._theme['--fg-cyan'],
-
-                // Background variations
                 primaryBkg: this._theme['--bg-blue'],
                 secondaryBkg: this._theme['--bg-green'],
                 tertiaryBkg: this._theme['--bg-red'],
-
-                // Special backgrounds
                 highlightBackground: this._theme['--bg-yellow'],
                 activeBackground: this._theme['--bg-blue'],
-
-                // Font settings
                 fontFamily: this._theme['--font'].replace(/'/g, ''),
                 fontSize: '16px',
-
-                // Main backgrounds
                 background: this._theme['--bg-2'],
                 mainBkg: this._theme['--bg-2'],
-
-                // Borders and clusters
                 nodeBorder: this._theme['--border-1'],
                 clusterBkg: this._theme['--bg-3'],
                 clusterBorder: this._theme['--border-1'],
-
-                // Text elements
                 titleColor: this._theme['--text-1'],
                 edgeLabelBackground: this._theme['--bg-3'],
                 textColor: this._theme['--text-1'],
-
-                // Node types
                 classText: this._theme['--text-1'],
                 relationColor: this._theme['--fg-purple'],
-
-                // Git graph colors
                 git0: this._theme['--fg-green'],
                 git1: this._theme['--fg-blue'],
                 git2: this._theme['--fg-red'],
@@ -385,7 +331,6 @@ class MermaidElement extends LitElement {
                 git5: this._theme['--fg-cyan'],
                 git6: this._theme['--fg-yellow'],
                 git7: this._theme['--fg-black'],
-
                 gitInv0: this._theme['--text-1'],
                 gitInv1: this._theme['--text-1'],
                 gitInv2: this._theme['--text-1'],
@@ -394,27 +339,18 @@ class MermaidElement extends LitElement {
                 gitInv5: this._theme['--text-1'],
                 gitInv6: this._theme['--text-1'],
                 gitInv7: this._theme['--text-1'],
-
-                // Sequence diagram
                 actorBorder: this._theme['--fg-blue'],
                 actorBkg: this._theme['--bg-blue'],
                 actorTextColor: this._theme['--text-1'],
                 actorLineColor: this._theme['--fg-grey'],
-
                 noteBkgColor: this._theme['--bg-yellow'],
                 noteBorderColor: this._theme['--fg-yellow'],
                 noteTextColor: this._theme['--text-1'],
-
                 activationBorderColor: this._theme['--fg-red'],
                 activationBkgColor: this._theme['--bg-red'],
-
                 sequenceNumberColor: this._theme['--text-2'],
-
-                // State diagram
                 labelColor: this._theme['--text-1'],
                 altBackground: this._theme['--bg-3'],
-
-                // Journey diagram
                 fillType0: this._theme['--bg-green'],
                 fillType1: this._theme['--bg-blue'],
                 fillType2: this._theme['--bg-red'],
@@ -423,13 +359,9 @@ class MermaidElement extends LitElement {
                 fillType5: this._theme['--bg-cyan'],
                 fillType6: this._theme['--bg-orange'],
                 fillType7: this._theme['--bg-black'],
-
-                // Mindmap specific
                 nodeBackgroundColor: this._theme['--bg-2'],
                 nodeBorderColor: this._theme['--border-1'],
                 mindmapBackground: this._theme['--bg-1'],
-
-                // Section colors for mindmap
                 section0: this._theme['--bg-blue'],
                 section1: this._theme['--bg-green'],
                 section2: this._theme['--bg-red'],
@@ -438,21 +370,16 @@ class MermaidElement extends LitElement {
                 section5: this._theme['--bg-cyan'],
                 section6: this._theme['--bg-orange'],
                 section7: this._theme['--bg-black'],
-
-                // Quadrant colors
                 quadrant1Fill: this._theme['--bg-green'],
                 quadrant2Fill: this._theme['--bg-red'],
                 quadrant3Fill: this._theme['--bg-yellow'],
                 quadrant4Fill: this._theme['--bg-blue'],
                 quadrantPointFill: this._theme['--bg-3'],
-
                 quadrant1TextFill: this._theme['--text-1'],
                 quadrant2TextFill: this._theme['--text-1'],
                 quadrant3TextFill: this._theme['--text-1'],
                 quadrant4TextFill: this._theme['--text-1'],
                 quadrantPointTextFill: this._theme['--text-1'],
-
-                // Mindmap fixes
                 mindmapNodeBackgroundColor: this._theme['--bg-2'],
                 mindmapNodeBorderColor: this._theme['--border-1'],
                 mindmapNodeTextColor: this._theme['--bg-1'],
@@ -477,18 +404,13 @@ class MermaidElement extends LitElement {
                 suppressErrorRendering: true
             });
             
-            // Generate unique ID for this render
             const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-            console.log('Rendering Mermaid:', id);
             
-            // Use mermaid's render method to get SVG
-            const { svg } = await window.mermaid.render(id, this._showAiSuggestion ? this._aiSuggestion : this._mermaid);
+            const { svg } = await window.mermaid.render(id, this._mermaid);
             
-            // Insert the SVG into our container
             container.innerHTML = svg;
             
             this.error = '';
-            console.log('Mermaid Rendered:', id);
         } catch (e) {
             console.error('Mermaid Error:', e);
             this.error = `Mermaid Error: ${e.message}`;
@@ -564,11 +486,7 @@ class MermaidElement extends LitElement {
     render() {
         return html`
             <div class="mermaid-container">
-                <div class="mermaid-display">
-                    ${this._showAiSuggestion ? 
-                        html`<div class="preview"></div>` :
-                        ''}
-                </div>
+                <div class="mermaid-display"></div>
                 ${this.error ? html`<div class="error">${this.error}</div>` : ''}
                 ${!this.readOnly && !window.wisk.editor.wiskSite ? html`
                     <button class="button edit-button" @click=${this.handleEdit}>
@@ -583,28 +501,19 @@ class MermaidElement extends LitElement {
                         <textarea 
                             class="ai-input" 
                             placeholder="Ask AI for any changes ..." 
-                            ?disabled=${this._isLoading || this._showAiSuggestion}
+                            ?disabled=${this._isLoading}
                         ></textarea>
                         <div class="dialog-buttons">
                             ${this._isLoading ? 
                                 html`<div class="loading-spinner"></div>` :
-                                this._showAiSuggestion ? html`
-                                    <button @click=${this.handleRejectAiChanges} class="button inner-buttons">
-                                        <img src="/a7/plugins/latex-element/discard.svg" alt="Discard" />
-                                        Discard
-                                    </button>
-                                    <button class="primary-button button inner-buttons" @click=${this.handleAcceptAiChanges}>
-                                        <img src="/a7/plugins/latex-element/accept.svg" alt="Accept" style="filter: var(--accent-svg);" />
-                                        Accept
-                                    </button>
-                                ` : html`
+                                html`
                                     <button class="button" @click=${this.handleCancel}>Cancel</button>
                                     <div style="flex: 1"></div>
                                     <button class="button inner-buttons" @click=${this.handleShowCodeEditor}>
                                         <img src="/a7/plugins/latex-element/code.svg" alt="Code" />
                                     </button>
                                     <button class="button primary-button inner-buttons" @click=${this.handleAiUpdate}>
-                                        <img src="/a7/plugins/latex-element/up.svg" alt="AI"/>
+                                        <img src="/a7/plugins/latex-element/up.svg" alt="AI" style="filter: var(--accent-svg);" />
                                     </button>
                                 `
                             }
