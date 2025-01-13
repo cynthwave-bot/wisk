@@ -24,8 +24,8 @@ class MermaidElement extends LitElement {
     static styles = css`
         * {
             box-sizing: border-box;
-            margin: 0px;
-            padding: 0px;
+            margin: 0;
+            padding: 0;
             user-select: text;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -34,10 +34,10 @@ class MermaidElement extends LitElement {
             position: relative;
         }
         .mermaid-container {
-            border: none;
+            border-radius: var(--radius);
             padding: var(--padding-4);
             font-size: 16px;
-            border-radius: var(--radius);
+            background: var(--bg-1);
         }
         .mermaid-container:hover {
             background: var(--bg-2);
@@ -81,7 +81,6 @@ class MermaidElement extends LitElement {
             color: var(--text-1);
             background: var(--bg-2);
             border-radius: var(--radius);
-            font-family: var(--font-mono);
             font-size: 14px;
             resize: vertical;
             border: 1px solid var(--bg-3);
@@ -95,7 +94,19 @@ class MermaidElement extends LitElement {
             display: flex;
             gap: 8px;
             justify-content: flex-end;
-            margin-top: var(--padding-3);
+        }
+        .button {
+            background: transparent;
+            color: var(--text-1);
+            border: none;
+            padding: var(--padding-2);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
         }
         .ai-input-container {
             display: flex;
@@ -112,19 +123,6 @@ class MermaidElement extends LitElement {
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-        .button {
-            background: transparent;
-            color: var(--text-1);
-            border: none;
-            padding: var(--padding-2);
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.15s ease;
         }
         .primary-button {
             background: transparent;
@@ -159,7 +157,6 @@ class MermaidElement extends LitElement {
         error: { type: String },
         _showDialog: { type: Boolean, state: true },
         _theme: { type: Object, state: true },
-        readOnly: { type: Boolean, reflect: true, attribute: 'read-only' },
         _showAiInput: { type: Boolean, state: true },
         _showCodeEditor: { type: Boolean, state: true },
         _isLoading: { type: Boolean, state: true },
@@ -170,20 +167,18 @@ class MermaidElement extends LitElement {
     constructor() {
         super();
         this._mermaid = `graph TD
-    A[Start] --> B{Is it?}
+    A[Start] --> B{Decision}
     B -->|Yes| C[OK]
     B -->|No| D[End]`;
         this.backup = this._mermaid;
         this.error = '';
         this._showDialog = false;
         this._theme = window.wisk.theme.getThemeData(window.wisk.theme.getTheme());
-        this.readOnly = false;
         this._showAiInput = false;
         this._showCodeEditor = false;
         this._isLoading = false;
         this._aiSuggestion = '';
         this._showAiSuggestion = false;
-        this.temp1 = true; // dont ask cuz i dont know
     }
 
     async handleEdit() {
@@ -193,116 +188,6 @@ class MermaidElement extends LitElement {
         const textarea = this.shadowRoot.querySelector('.ai-input');
         if (textarea) {
             textarea.focus();
-        }
-    }
-
-    async handleAiUpdate() {
-        try {
-            var user = await document.querySelector("auth-component").getUserInfo();
-            var token = user.token;
-            
-            this._isLoading = true;
-            this.requestUpdate();
-
-            const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
-            
-            var response = await fetch("https://cloud.wisk.cc/v2/plugins/mermaid", {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    command: aiPrompt,
-                    mermaid: this._mermaid
-                }),
-            });
-
-            this._isLoading = false;
-            
-            if (response.status !== 200) {
-                window.showToast("Error updating diagram", 5000);
-                return;
-            }
-
-            var mermaidContent = await response.text();
-            
-            let inCodeBlock = false;
-            const lines = mermaidContent.split('\n');
-            const contentLines = [];
-
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i];
-                if (line.includes('```')) {
-                    inCodeBlock = !inCodeBlock;
-                    continue;
-                }
-                if (inCodeBlock) {
-                    contentLines.push(line);
-                }
-            }
-
-            mermaidContent = contentLines.join('\n');
-            mermaidContent = mermaidContent.replace(/```/g, '');
-            
-            await this.updateComplete;
-            this._aiSuggestion = mermaidContent;
-            this._showAiSuggestion = true;
-        } catch (error) {
-            console.error('Error:', error);
-            window.showToast("Error updating diagram", 5000);
-            this._isLoading = false;
-            this.requestUpdate();
-        }
-    }
-
-    handleShowCodeEditor() {
-        this._showCodeEditor = true;
-        this._showAiInput = false;
-    }
-
-    handleAcceptAiChanges() {
-        this._mermaid = this._aiSuggestion;
-        this.backup = this._aiSuggestion;
-        this._showAiSuggestion = false;
-        this._showAiInput = false;
-        this.sendUpdates();
-        this.requestUpdate();
-        this.renderMermaid();
-    }
-
-    handleRejectAiChanges() {
-        this._showAiSuggestion = false;
-        this._aiSuggestion = '';
-        this.renderMermaid();
-    }
-
-    handleCancel() {
-        this._showAiInput = false;
-        this._showCodeEditor = false;
-        this._showAiSuggestion = false;
-        this._aiSuggestion = '';
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-        window.addEventListener('themechange', (event) => {
-            this._theme = event.detail.theme;
-            this.requestUpdate();
-            this.renderMermaid();
-        });
-    }
-
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        window.removeEventListener('themechange', this.handleThemeChange);
-    }
-
-    setReadOnlyMermaidData(mermaidCode) {
-        if (this.readOnly) {
-            this._mermaid = mermaidCode;
-            this.requestUpdate();
-            this.renderMermaid();
         }
     }
 
@@ -458,6 +343,95 @@ class MermaidElement extends LitElement {
         };
     }
 
+    async handleAiUpdate() {
+        try {
+            var user = await document.querySelector("auth-component").getUserInfo();
+            var token = user.token;
+            
+            this._isLoading = true;
+            this.requestUpdate();
+
+            const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
+            
+            var response = await fetch("https://cloud.wisk.cc/v2/plugins/mermaid", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    command: aiPrompt,
+                    mermaid: this._mermaid
+                }),
+            });
+
+            this._isLoading = false;
+            
+            if (response.status !== 200) {
+                window.showToast("Error updating diagram", 5000);
+                return;
+            }
+
+            var mermaidContent = await response.text();
+            
+            let inCodeBlock = false;
+            const lines = mermaidContent.split('\n');
+            const contentLines = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.includes('```')) {
+                    inCodeBlock = !inCodeBlock;
+                    continue;
+                }
+                if (inCodeBlock) {
+                    contentLines.push(line);
+                }
+            }
+
+            mermaidContent = contentLines.join('\n');
+            mermaidContent = mermaidContent.replace(/```/g, '');
+            
+            this._aiSuggestion = mermaidContent;
+            this._showAiSuggestion = true;
+            this.requestUpdate();
+            this.renderMermaid();
+        } catch (error) {
+            console.error('Error:', error);
+            window.showToast("Error updating diagram", 5000);
+            this._isLoading = false;
+            this.requestUpdate();
+        }
+    }
+
+    handleShowCodeEditor() {
+        this._showCodeEditor = true;
+        this._showAiInput = false;
+    }
+
+    handleAcceptAiChanges() {
+        this._mermaid = this._aiSuggestion;
+        this.backup = this._aiSuggestion;
+        this._showAiSuggestion = false;
+        this._showAiInput = false;
+        this.sendUpdates();
+        this.requestUpdate();
+        this.renderMermaid();
+    }
+
+    handleRejectAiChanges() {
+        this._showAiSuggestion = false;
+        this._aiSuggestion = '';
+        this.renderMermaid();
+    }
+
+    handleCancel() {
+        this._showAiInput = false;
+        this._showCodeEditor = false;
+        this._showAiSuggestion = false;
+        this._aiSuggestion = '';
+    }
+
     async renderMermaid() {
         const container = this.shadowRoot.querySelector('.mermaid-display');
         if (!container) return;
@@ -472,18 +446,11 @@ class MermaidElement extends LitElement {
                 suppressErrorRendering: true
             });
             
-            // Generate unique ID for this render
             const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-            console.log('Rendering Mermaid:', id);
-            
-            // Use mermaid's render method to get SVG
             const { svg } = await window.mermaid.render(id, this._showAiSuggestion ? this._aiSuggestion : this._mermaid);
             
-            // Insert the SVG into our container
             container.innerHTML = svg;
-            
             this.error = '';
-            console.log('Mermaid Rendered:', id);
         } catch (e) {
             console.error('Mermaid Error:', e);
             this.error = `Mermaid Error: ${e.message}`;
@@ -493,13 +460,11 @@ class MermaidElement extends LitElement {
 
     setValue(identifier, value) {
         if (!value || typeof value !== 'object') return;
-
+        
         if (value.mermaid !== undefined) {
             this._mermaid = value.mermaid;
             this.backup = value.mermaid;
         }
-
-        this._theme = window.wisk.theme.getThemeData(window.wisk.theme.getTheme());
 
         this.requestUpdate();
         this.updateMermaid();
@@ -507,7 +472,7 @@ class MermaidElement extends LitElement {
 
     getValue() {
         return {
-            mermaid: this._mermaid,
+            mermaid: this._mermaid
         };
     }
 
@@ -559,23 +524,17 @@ class MermaidElement extends LitElement {
     render() {
         return html`
             <div class="mermaid-container">
-                <div class="mermaid-display">
-                    ${this._showAiSuggestion ? 
-                        html`<div class="preview"></div>` :
-                        ''}
-                </div>
+                <div class="mermaid-display"></div>
                 ${this.error ? html`<div class="error">${this.error}</div>` : ''}
-                ${!this.readOnly && !window.wisk.editor.wiskSite ? html`
-                    <button class="button edit-button" @click=${this.handleEdit}>
-                        <img src="/a7/plugins/latex-element/pencil.svg" alt="Edit" style="filter: var(--themed-svg);" />
-                    </button>
-                ` : ''}
+                <button class="button edit-button" style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}" @click=${this.handleEdit}>
+                    <img src="/a7/plugins/latex-element/pencil.svg" alt="Edit" style="filter: var(--themed-svg);" />
+                </button>
             </div>
 
             ${this._showAiInput ? html`
                 <div class="dialog">
                     <div class="ai-input-container">
-                        <textarea class="ai-input" placeholder="Ask AI for any changes ..." ?disabled=${this._isLoading || this._showAiSuggestion} ></textarea>
+                        <textarea class="ai-input" placeholder="Ask AI for any changes ..." ?disabled=${this._isLoading || this._showAiSuggestion}></textarea>
                         <div class="dialog-buttons">
                             ${this._isLoading ? 
                                 html`<div class="loading-spinner"></div>` :
