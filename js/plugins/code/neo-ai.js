@@ -289,7 +289,7 @@ class NeoAI extends LitElement {
             background-color: var(--bg-3);
             padding: var(--padding-3);
             border-radius: var(--radius-large);
-            border: 3px solid var(--border-1);
+            border: 3px solid var(--bg-3);
             filter: var(--drop-shadow);
             animation: 0.3s ease-in-out 0s 1 normal none running fadeIn;
             z-index: 999;
@@ -308,7 +308,7 @@ class NeoAI extends LitElement {
             height: 0;
             border-left: 12px solid transparent;
             border-right: 12px solid transparent;
-            border-top: 12px solid var(--border-1);
+            border-top: 12px solid var(--bg-3);
         }
 
         @keyframes borderFlicker {

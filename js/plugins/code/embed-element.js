@@ -17,11 +17,29 @@ class EmbedElement extends HTMLElement {
         this.bindEvents();
     }
 
+    extractSrcFromIframe(iframeCode) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(iframeCode, 'text/html');
+        const iframe = doc.querySelector('iframe');
+        if (iframe && iframe.src) {
+            return iframe.src.replace(/^https?:\/\//, '');
+        }
+        return null;
+    }
+
     setValue(path, value) {
+        let content = value.textContent;
+        if (content.includes('<iframe')) {
+            const extractedSrc = this.extractSrcFromIframe(content);
+            if (extractedSrc) {
+                content = extractedSrc;
+            }
+        }
+        
         if (path === "value.append") {
-            this.editable.innerText += value.textContent;
+            this.editable.innerText += content;
         } else {
-            this.editable.innerText = value.textContent;
+            this.editable.innerText = content;
         }
         this.link = this.editable.innerText;
         this.updateIframeSource();
@@ -38,15 +56,28 @@ class EmbedElement extends HTMLElement {
     }
 
     onValueUpdated(event) {
-        const text = this.editable.innerText;
-        if (this.handleSpecialKeys(event)) {
+        let text = this.editable.innerText;
+        if (text.includes('<iframe')) {
+            const extractedSrc = this.extractSrcFromIframe(text);
+            if (extractedSrc) {
+                text = extractedSrc;
+                this.editable.innerText = text;
+            }
+        }
+        
+        if (this.handleSpecialKeys(event) || event.key.includes("Arrow")) {
             return;
         }
+
         this.link = text;
         this.sendUpdates();
         setTimeout(() => {
             this.updateIframeSource();
         }, 0);
+    }
+
+    focus(identifier) {
+        this.editable.focus();
     }
 
     handleSpecialKeys(event) {
@@ -56,6 +87,8 @@ class EmbedElement extends HTMLElement {
             Tab: () => this.handleTab(event),
             ArrowLeft: () => this.handleArrowKey(event, "next-up", 0),
             ArrowRight: () => this.handleArrowKey(event, "next-down", this.editable.innerText.length),
+            ArrowUp: () => this.handleVerticalArrow(event, "next-up"),
+            ArrowDown: () => this.handleVerticalArrow(event, "next-down"),
         };
 
         const handler = keyHandlers[event.key];
@@ -83,6 +116,26 @@ class EmbedElement extends HTMLElement {
     handleTab(event) {
         event.preventDefault();
         return true;
+    }
+
+    handleVerticalArrow(event, direction) {
+        if (direction === "next-up") {
+            var prevElement = window.wisk.editor.prevElement(this.id);
+            if (prevElement != null) {
+                const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
+                if (prevComponentDetail.textual) {
+                    window.wisk.editor.focusBlock(prevElement.id, { x: prevElement.value.textContent.length });
+                }
+            }
+        } else if (direction === "next-down") {
+            var nextElement = window.wisk.editor.nextElement(this.id);
+            if (nextElement != null) {
+                const nextComponentDetail = window.wisk.plugins.getPluginDetail(nextElement.component);
+                if (nextComponentDetail.textual) {
+                    window.wisk.editor.focusBlock(nextElement.id, { x: 0 });
+                }
+            }
+        }
     }
 
     handleArrowKey(event, direction, targetOffset) {
@@ -131,43 +184,91 @@ class EmbedElement extends HTMLElement {
                 margin: 0;
                 font-family: var(--font);
             }
-            .link {
-                outline: none;
-                padding: 0;
-                border: none;
-                font-family: var(--font-mono);
-            }
-            #editable {
-                width: 100%;
-            }
             .outer {
                 border: 1px solid var(--border-1);
-                border-radius: var(--radius);
+                border-radius: var(--radius-large);
                 overflow: hidden;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            }
+            .browser-toolbar {
+                padding: 8px 12px;
+                border-bottom: 1px solid var(--border-1);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                position: relative;
+            }
+            .window-controls {
+                display: flex;
+                gap: 6px;
+                margin-right: 8px;
+                position: absolute;
+            }
+            .window-button {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+            }
+            .close-button {
+                background-color: var(--fg-red);
+            }
+            .minimize-button {
+                background-color: var(--fg-yellow);
+            }
+            .maximize-button {
+                background-color: var(--fg-green);
+            }
+            .address-bar {
+                background-color: var(--bg-1);
+                border: 1px solid var(--bg-3);
+                border-radius: var(--radius);
+                padding: 4px 8px;
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                height: 28px;
+                max-width: 369px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                margin: 0 auto;
+            }
+            .link {
+                outline: none;
+                border: none;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+                font-size: 13px;
+                color: var(--text-1);
+            }
+            #editable {
+                flex-grow: 1;
             }
             iframe {
                 width: 100%;
                 height: 500px;
                 outline: none;
                 display: block;
+                background-color: white;
             }
-            p {
-                display: inline-block;
-            }
-            .table-controls {
-                padding: var(--padding-w2);
-                display: flex;
-                align-items: center;
-                background-color: var(--bg-2);
-                border-bottom: 1px solid var(--border-1);
+            .https-text {
+                color: var(--text-2);
+                font-size: 13px;
             }
             </style>
         `;
         const content = `
             <div class="outer">
-                <div class="table-controls">
-                    <div class="link">https://</div>
-                    <div class="link" id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false">${this.link}</div>
+                <div class="browser-toolbar">
+                    <div class="window-controls">
+                        <div class="window-button close-button"></div>
+                        <div class="window-button minimize-button"></div>
+                        <div class="window-button maximize-button"></div>
+                    </div>
+                    <div class="address-bar">
+                        <span class="https-text">https://</span>
+                        <div class="link" id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false">${this.link}</div>
+                    </div>
                 </div>
                 <iframe src="https://${this.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>

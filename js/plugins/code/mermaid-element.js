@@ -120,6 +120,12 @@ class MermaidElement extends LitElement {
             border-radius: 50%;
             border-top-color: var(--accent-bg);
             animation: spin 0.8s linear infinite;
+            margin: calc(var(--padding-3) - 2px);
+        }
+        .button img {
+            width: 18px;
+            height: 18px;
+            opacity: 0.8;
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
@@ -189,6 +195,16 @@ class MermaidElement extends LitElement {
         if (textarea) {
             textarea.focus();
         }
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        // add event listener to wisk-theme-changed
+        window.addEventListener('wisk-theme-changed', (e) => {
+            this._theme = e.detail.theme;
+            this.requestUpdate();
+            this.renderMermaid();
+        });
     }
 
     getMermaidConfig() {
@@ -345,12 +361,12 @@ class MermaidElement extends LitElement {
 
     async handleAiUpdate() {
         try {
-            var user = await document.querySelector("auth-component").getUserInfo();
-            var token = user.token;
-            
             this._isLoading = true;
             this.requestUpdate();
 
+            var user = await document.querySelector("auth-component").getUserInfo();
+            var token = user.token;
+            
             const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
             
             var response = await fetch("https://cloud.wisk.cc/v2/plugins/mermaid", {

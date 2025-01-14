@@ -339,12 +339,12 @@ class ThreeViewerElement extends LitElement {
         super.connectedCallback();
         await threeReady;
         this.initThreeJS();
-        window.addEventListener('themechange', this._handleThemeChange.bind(this));
+        window.addEventListener('wisk-theme-changed', this._handleThemeChange.bind(this));
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        window.removeEventListener('themechange', this._handleThemeChange.bind(this));
+        window.removeEventListener('wisk-theme-changed', this._handleThemeChange.bind(this));
         if (this.renderer) {
             this.renderer.dispose();
         }

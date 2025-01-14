@@ -2,17 +2,17 @@ import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
 
 class PowerLevelElement extends LitElement {
     static styles = css`
-        @keyframes shake {
+        @keyframes pl_powerlevel_shake {
             0%, 100% { transform: translate(0, 0) rotate(0); }
-            10% { transform: translate(-2px, -2px) rotate(-0.5deg); }
-            20% { transform: translate(2px, 2px) rotate(0.5deg); }
-            30% { transform: translate(-2px, 1px) rotate(-0.25deg); }
-            40% { transform: translate(2px, -1px) rotate(0.25deg); }
-            50% { transform: translate(-1px, 2px) rotate(-0.5deg); }
-            60% { transform: translate(1px, -2px) rotate(0.5deg); }
-            70% { transform: translate(-2px, -1px) rotate(-0.25deg); }
-            80% { transform: translate(2px, 1px) rotate(0.25deg); }
-            90% { transform: translate(-1px, -2px) rotate(-0.5deg); }
+            10% { transform: translate(calc(var(--shake-intensity) * -2px), calc(var(--shake-intensity) * -2px)) rotate(calc(var(--shake-intensity) * -0.5deg)); }
+            20% { transform: translate(calc(var(--shake-intensity) * 2px), calc(var(--shake-intensity) * 2px)) rotate(calc(var(--shake-intensity) * 0.5deg)); }
+            30% { transform: translate(calc(var(--shake-intensity) * -2px), calc(var(--shake-intensity) * 1px)) rotate(calc(var(--shake-intensity) * -0.25deg)); }
+            40% { transform: translate(calc(var(--shake-intensity) * 2px), calc(var(--shake-intensity) * -1px)) rotate(calc(var(--shake-intensity) * 0.25deg)); }
+            50% { transform: translate(calc(var(--shake-intensity) * -1px), calc(var(--shake-intensity) * 2px)) rotate(calc(var(--shake-intensity) * -0.5deg)); }
+            60% { transform: translate(calc(var(--shake-intensity) * 1px), calc(var(--shake-intensity) * -2px)) rotate(calc(var(--shake-intensity) * 0.5deg)); }
+            70% { transform: translate(calc(var(--shake-intensity) * -2px), calc(var(--shake-intensity) * -1px)) rotate(calc(var(--shake-intensity) * -0.25deg)); }
+            80% { transform: translate(calc(var(--shake-intensity) * 2px), calc(var(--shake-intensity) * 1px)) rotate(calc(var(--shake-intensity) * 0.25deg)); }
+            90% { transform: translate(calc(var(--shake-intensity) * -1px), calc(var(--shake-intensity) * -2px)) rotate(calc(var(--shake-intensity) * -0.5deg)); }
         }
 
         * {
@@ -73,7 +73,8 @@ class PowerLevelElement extends LitElement {
         this.MIN_SCALE = 1;
         this.MAX_SCALE = 3.5;
         this.SCALE_FACTOR = 0.045;
-        this.SHAKE_THRESHOLD = 30; // Power level threshold for shake effect
+        this.SHAKE_THRESHOLD = 30;
+        this.MAX_SHAKE_INTENSITY = 3; // Maximum multiplier for shake effect
         
         this.powerLevel = 0;
         this.comboCount = 0;
@@ -93,12 +94,19 @@ class PowerLevelElement extends LitElement {
     }
 
     shakeDocument() {
-        const intensity = Math.min(1, this.powerLevel / 100);
+        // Calculate shake intensity based on combo count
+        const baseIntensity = Math.min(1, this.powerLevel / 100);
+        const comboMultiplier = Math.min(this.MAX_SHAKE_INTENSITY, 1 + (this.comboCount * 0.5));
+        const intensity = baseIntensity * comboMultiplier;
+        
         const duration = 200 + Math.random() * 300;
+        
+        // Set the shake intensity as a CSS variable
+        document.documentElement.style.setProperty('--shake-intensity', intensity);
         
         document.body.style.animation = 'none';
         document.body.offsetHeight; // Trigger reflow
-        document.body.style.animation = `shake ${duration}ms ease-in-out`;
+        document.body.style.animation = `pl_powerlevel_shake ${duration}ms ease-in-out`;
         
         setTimeout(() => {
             document.body.style.animation = 'none';
@@ -113,7 +121,6 @@ class PowerLevelElement extends LitElement {
                 const scaleRange = this.MAX_SCALE - this.MIN_SCALE;
                 this.scale = this.MIN_SCALE + ((this.powerLevel / 100) * scaleRange);
 
-                // Add shake effect when power level is above threshold
                 if (this.powerLevel > this.SHAKE_THRESHOLD) {
                     this.shakeDocument();
                 }
@@ -175,17 +182,17 @@ customElements.define("power-level-element", PowerLevelElement);
 // Add styles to document head
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes shake {
+    @keyframes pl_powerlevel_shake {
         0%, 100% { transform: translate(0, 0) rotate(0); }
-        10% { transform: translate(-2px, -2px) rotate(-0.5deg); }
-        20% { transform: translate(2px, 2px) rotate(0.5deg); }
-        30% { transform: translate(-2px, 1px) rotate(-0.25deg); }
-        40% { transform: translate(2px, -1px) rotate(0.25deg); }
-        50% { transform: translate(-1px, 2px) rotate(-0.5deg); }
-        60% { transform: translate(1px, -2px) rotate(0.5deg); }
-        70% { transform: translate(-2px, -1px) rotate(-0.25deg); }
-        80% { transform: translate(2px, 1px) rotate(0.25deg); }
-        90% { transform: translate(-1px, -2px) rotate(-0.5deg); }
+        10% { transform: translate(calc(var(--shake-intensity) * -2px), calc(var(--shake-intensity) * -2px)) rotate(calc(var(--shake-intensity) * -0.5deg)); }
+        20% { transform: translate(calc(var(--shake-intensity) * 2px), calc(var(--shake-intensity) * 2px)) rotate(calc(var(--shake-intensity) * 0.5deg)); }
+        30% { transform: translate(calc(var(--shake-intensity) * -2px), calc(var(--shake-intensity) * 1px)) rotate(calc(var(--shake-intensity) * -0.25deg)); }
+        40% { transform: translate(calc(var(--shake-intensity) * 2px), calc(var(--shake-intensity) * -1px)) rotate(calc(var(--shake-intensity) * 0.25deg)); }
+        50% { transform: translate(calc(var(--shake-intensity) * -1px), calc(var(--shake-intensity) * 2px)) rotate(calc(var(--shake-intensity) * -0.5deg)); }
+        60% { transform: translate(calc(var(--shake-intensity) * 1px), calc(var(--shake-intensity) * -2px)) rotate(calc(var(--shake-intensity) * 0.5deg)); }
+        70% { transform: translate(calc(var(--shake-intensity) * -2px), calc(var(--shake-intensity) * -1px)) rotate(calc(var(--shake-intensity) * -0.25deg)); }
+        80% { transform: translate(calc(var(--shake-intensity) * 2px), calc(var(--shake-intensity) * 1px)) rotate(calc(var(--shake-intensity) * 0.25deg)); }
+        90% { transform: translate(calc(var(--shake-intensity) * -1px), calc(var(--shake-intensity) * -2px)) rotate(calc(var(--shake-intensity) * -0.5deg)); }
     }
 `;
 document.head.appendChild(style);

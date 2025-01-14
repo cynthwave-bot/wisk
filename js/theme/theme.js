@@ -32,7 +32,7 @@ window.wisk.theme.setTheme = async function (themeName) {
     document.head.appendChild(favicon);
 
     // make a event to notify the theme change
-    const event = new CustomEvent('themechange', { detail: { theme: theme } });
+    const event = new CustomEvent('wisk-theme-changed', { detail: { theme: theme } });
     window.dispatchEvent(event);
 }
 

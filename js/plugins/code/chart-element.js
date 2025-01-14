@@ -117,6 +117,12 @@ class ChartElement extends LitElement {
             border-radius: 50%;
             border-top-color: var(--accent-bg);
             animation: spin 0.8s linear infinite;
+            margin: calc(var(--padding-3) - 2px);
+        }
+        .button img {
+            width: 18px;
+            height: 18px;
+            opacity: 0.8;
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
@@ -214,14 +220,14 @@ class ChartElement extends LitElement {
 
     async handleAiUpdate() {
         try {
-            var user = await document.querySelector("auth-component").getUserInfo();
-            var token = user.token;
-            
             this._isLoading = true;
             this.requestUpdate();
 
+            var user = await document.querySelector("auth-component").getUserInfo();
+            var token = user.token;
+
             const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
-            
+
             var response = await fetch("https://cloud.wisk.cc/v2/plugins/chartjs", {
                 method: "POST",
                 headers: {
@@ -236,14 +242,14 @@ class ChartElement extends LitElement {
             });
 
             this._isLoading = false;
-            
+
             if (response.status !== 200) {
                 window.showToast("Error updating chart", 5000);
                 return;
             }
 
             var chartContent = await response.text();
-            
+
             let inCodeBlock = false;
             const lines = chartContent.split('\n');
             const contentLines = [];

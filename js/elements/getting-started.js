@@ -7,6 +7,9 @@ class GettingStarted extends LitElement {
             font-family: var(--font);
             margin: 0px;
             padding: 0px;
+            user-select: none;
+            outline: none;
+            transition: all 0.3s ease;
         }
         :host {
         }
@@ -79,6 +82,12 @@ class GettingStarted extends LitElement {
                 top: 5%;
                 filter: var(--drop-shadow) var(--drop-shadow) var(--drop-shadow) var(--drop-shadow);
             }
+            @starting-style {
+                .dialog-content {
+                    top: 30%;
+                    opacity: 0;
+                }
+            }
         }
         .thin-dialog-content {
             max-width: 1000px;
@@ -121,6 +130,12 @@ class GettingStarted extends LitElement {
             flex-direction: column;
             gap: var(--gap-1);
             margin-bottom: var(--gap-3);
+        }
+
+        @starting-style {
+            .dialog-content {
+                opacity: 0;
+            }
         }
 
         .input-label {
@@ -518,26 +533,32 @@ class GettingStarted extends LitElement {
 
                     <div class="input-group">
                         <label class="input-label">Category</label>
-                        <select class="text-input">
-                            <option value="" disabled selected>Select a category...</option>
-                            <option value="blog">Blog Post</option>
-                            <option value="article">Article</option>
-                            <option value="essay">Essay</option>
-                            <option value="report">Report</option>
-                            <option value="creative">Creative Writing</option>
-                            <option value="technical">Technical Document</option>
-                            <option value="marketing">Marketing Content</option>
-                            <option value="other">Other</option>
-                        </select>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <select class="text-input">
+                                <option value="" disabled selected>Select a category...</option>
+                                <option value="blog">Blog Post</option>
+                                <option value="article">Article</option>
+                                <option value="essay">Essay</option>
+                                <option value="report">Report</option>
+                                <option value="creative">Creative Writing</option>
+                                <option value="technical">Technical Document</option>
+                                <option value="marketing">Marketing Content</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <div style="display: flex; align-items: center;">
+                                <label for="checkbox-outline">Only generate outline</label>
+                                <input type="checkbox" id="checkbox-outline" name="checkbox-outline" value="outline" style="margin-left: 8px; width: 16px; height: 16px" />
+                            </div>
+                        </div>
                     </div>
 
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--gap-1)">
+                        <p class="warning-text">AI can make mistakes—please review carefully for accuracy!</p>
+
                         <button class="generate-button">
                             <img src="/a7/forget/gs-ai.svg" alt="Generate" style="width: 22px; filter: var(--accent-svg)" />
                             Generate
                         </button>
-
-                        <p class="warning-text">AI can make mistakes—please review carefully for accuracy!</p>
                     </div>
                 </div>
             </div>
@@ -722,42 +743,6 @@ class GettingStarted extends LitElement {
         `;
     }
 
-    renderHelpDialog() {
-        return html`
-            <div class="dialog-content">
-                <button class="dialog-close" @click=${this.closeDialog}>
-                    <img src="/a7/forget/x.svg" alt="Close" style="filter: var(--themed-svg)" />
-                </button>
-                <h2 class="dialog-title">Help</h2>
-                <div class="main-group">
-                    <div style="display: flex; align-items: center; gap: var(--gap-3); font-size: 15px; flex-wrap: wrap">
-                        <label class="input-label">Quick Links</label>
-                        <div style="display: flex; gap: var(--gap-2); flex-wrap: wrap">
-                            <a target="_blank" href="https://wisk.cc/getting-started" class="quick-link">Getting Started</a>
-                            <a target="_blank" href="https://wisk.cc/faq" class="quick-link">FAQ</a>
-                            <a target="_blank" href="https://wisk.cc/blog" class="quick-link">Blog</a>
-                            <a target="_blank" href="https://discord.gg/YyqXEey4JS" class="quick-link">Discord</a>
-                            <a target="_blank" href="https://github.com/cynthwave/wisk/blob/master/docs/docs.md" class="quick-link">Documentation</a>
-                            <a target="_blank" href="https://wisk.cc/contact" class="quick-link">Contact Support</a>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: var(--gap-2); margin-top: var(--gap-3)">
-                        <h3>Tutorials</h3>
-                        <div style="display: flex; gap: var(--gap-2); overflow-x: auto; width: -webkit-fill-available;">
-                            <iframe width="360" height="200" style="border-radius: var(--radius); border: 1px solid var(--border-1)" src="https://www.youtube-nocookie.com/embed/H2qJRnV8ZGA?si=RisOjaFoNIM7Me0H" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <iframe width="360" height="200" style="border-radius: var(--radius); border: 1px solid var(--border-1)" src="https://www.youtube-nocookie.com/embed/BiZ1CLT3nEM?si=ibM4mAO6_QFvSkos" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <iframe width="360" height="200" style="border-radius: var(--radius); border: 1px solid var(--border-1)" src="https://www.youtube-nocookie.com/embed/rC2VQ-oyDG0?si=JIbXq-iepjYc75HJ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        </div>
-                    </div>
-
-                </div>
-
-
-            </div>
-        `;
-    }
-
     render() {
         return html`
             <div id="getting-started">
@@ -767,8 +752,8 @@ class GettingStarted extends LitElement {
                         <button class="gs-button" @click=${() => this.showDialog("draft")}>
                             <img src="/a7/forget/gs-draft-anything.svg" alt="" /> Draft anything
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog("outline")}>
-                            <img src="/a7/forget/gs-draft-outline.svg" alt="" /> Draft an outline
+                        <button class="gs-button" @click=${() => document.querySelector("template-dialog").show()}>
+                            <img src="/a7/forget/gs-templates.svg" alt="" /> Templates
                         </button>
                         <button class="gs-button" @click=${() => this.showDialog("brainstorm")} style="display: none">
                             <img src="/a7/forget/gs-brainstorm.svg" alt="" /> Brainstorm Ideas
@@ -779,7 +764,9 @@ class GettingStarted extends LitElement {
                         <button class="gs-button" @click=${() => this.showDialog("import")}>
                             <img src="/a7/forget/gs-import.svg" alt="" /> Import from file
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog("help")}><img src="/a7/forget/gs-help.svg" alt="" /> Help</button>
+                        <button class="gs-button" @click=${() => document.querySelector("help-dialog").show()}>
+                            <img src="/a7/forget/gs-help.svg" alt="" /> Help
+                        </button>
                     </div>
                 </div>
                 <p style="display: flex; margin-top: 20px; align-items: center; gap: var(--gap-1);"> 
@@ -788,10 +775,9 @@ class GettingStarted extends LitElement {
 
                 <div class="dialog-overlay" style="display: ${this.activeDialog ? "flex" : "none"}">
                     ${this.activeDialog === "draft" ? this.renderDraftAnythingDialog() : ""}
-                    ${this.activeDialog === "outline" ? this.renderOutlineDialog() : ""}
                     ${this.activeDialog === "brainstorm" ? this.renderBrainstormDialog() : ""}
                     ${this.activeDialog === "topics" ? this.renderTopicsDialog() : ""}
-                    ${this.activeDialog === "import" ? this.renderImportDialog() : ""} ${this.activeDialog === "help" ? this.renderHelpDialog() : ""}
+                    ${this.activeDialog === "import" ? this.renderImportDialog() : ""}
                 </div>
             </div>
         `;

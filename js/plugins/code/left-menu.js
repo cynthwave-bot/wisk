@@ -26,17 +26,48 @@ class LeftMenu extends LitElement {
             display: block;
             padding: var(--padding-w1);
             border-radius: var(--radius);
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .vert-nav {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-1);
+            padding: var(--padding-2) 0;
+        }
+        .vert-nav-button {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-2);
+            padding: var(--padding-w1);
+            border-radius: var(--radius);
+            color: var(--text-1);
+            background-color: var(--bg-1);
+            text-decoration: none;
+            cursor: pointer;
+            outline: none;
+            border: none;
+            width: 100%;
+            color: var(--accent-text);
+        }
+        .vert-nav-button img {
+            width: 18px;
+        }
+        .vert-nav-button:hover {
+            background-color: var(--accent-bg);
         }
         li a:hover {
             background-color: var(--bg-3);
             color: var(--text-1);
         }
         .outer {
-            padding: var(--padding-4);
+            padding: 0 var(--padding-3);
             display: flex;
             flex-direction: column;
             height: 100%;
-            gap: var(--gap-3);
+            gap: var(--gap-2);
         }
         .new {
             display: flex;
@@ -112,7 +143,7 @@ class LeftMenu extends LitElement {
             display: flex;
             gap: var(--gap-2);
             align-items: center;
-            padding: var(--padding-1) 0;
+            padding: 0;
         }
         .more-options {
             position: relative;
@@ -327,6 +358,18 @@ class LeftMenu extends LitElement {
 
         return html`
             <div class="outer" @click=${this.closeDropdown}>
+                <div class="vert-nav">
+                    <button class="vert-nav-button"> 
+                        <img src="/a7/forget/spark.svg" class="new-img" /> Neo AI
+                    </button>
+                    <button class="vert-nav-button"> 
+                        <img src="/a7/forget/layouts.svg" class="new-img" /> Templates
+                    </button>
+                    <button class="vert-nav-button">
+                        <img src="/a7/forget/help.svg" class="new-img" /> Help
+                    </button>
+                </div>
+
                 <div style="display: flex; gap: 10px; align-items: stretch;">
                     <div class="new-o">
                         <a href="/" class="new"> <img src="/a7/forget/plus1.svg" alt="New Page" class="new-img" /> New Page</a>
@@ -341,7 +384,9 @@ class LeftMenu extends LitElement {
                     ${this.filteredList.map(
                         (item) => html`
                             <li class="item">
-                                <a href="?id=${item.id}">${item.name}</a>
+                                <a href="?id=${item.id}" style="display: flex; gap: var(--gap-2); align-items: center; font-size: 13px">
+                                    <img src="/a7/forget/page-1.svg" alt="File" style="width: 18px; height: 18px; opacity: 0.8"/> ${item.name}
+                                </a>
                                 <div class="more-options" @click=${(e) => this.toggleDropdown(item.id, e)}>
                                     <img src="/a7/forget/morex.svg" alt="More options"/>
                                     ${this.openDropdownId === item.id ? html`

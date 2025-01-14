@@ -124,6 +124,7 @@ class LatexElement extends LitElement {
             border-radius: 50%;
             border-top-color: var(--accent-bg);
             animation: spin 0.8s linear infinite;
+            margin: calc(var(--padding-3) - 2px);
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
@@ -255,11 +256,11 @@ class LatexElement extends LitElement {
 
     async handleAiUpdate() {
         try {
-            var user = await document.querySelector("auth-component").getUserInfo();
-            var token = user.token;
-            
             this._isLoading = true;
             this.requestUpdate();
+
+            var user = await document.querySelector("auth-component").getUserInfo();
+            var token = user.token;
 
             const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
             
