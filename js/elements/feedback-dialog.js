@@ -98,7 +98,7 @@ class FeedbackDialog extends LitElement {
             height: inherit;
             display: flex;
             flex-direction: column;
-            gap: var(--gap-3);
+            gap: calc(var(--gap-3) * 2);
         }
 
         .input-group {
@@ -286,7 +286,7 @@ class FeedbackDialog extends LitElement {
                             ></textarea>
                         </div>
 
-                        <div class="input-group">
+                        <div class="input-group" style="display: none">
                             <label class="input-label">Attach Logs</label>
                             <div style="gap: var(--gap-2); display: flex; align-items: center;">
                                 <label class="input-description" for="attach-logs">Include logs to help us diagnose the issue.</label>
@@ -294,9 +294,7 @@ class FeedbackDialog extends LitElement {
                             </div>
                         </div>
 
-                        <button class="submit-button" @click=${this.handleSubmit}>
-                            Submit Feedback
-                        </button>
+                        <button class="submit-button" @click=${this.handleSubmit} ?disabled=${!this.rating && !this.feedback}>Submit Feedback</button>
                     </div>
                 </div>
             </div>
