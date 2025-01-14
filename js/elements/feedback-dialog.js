@@ -99,6 +99,7 @@ class FeedbackDialog extends LitElement {
             display: flex;
             flex-direction: column;
             gap: calc(var(--gap-3) * 2);
+            justify-content: flex-end;
         }
 
         .input-group {
@@ -157,7 +158,6 @@ class FeedbackDialog extends LitElement {
             border-radius: var(--radius);
             cursor: pointer;
             font-weight: 500;
-            margin-top: auto;
         }
 
         .submit-button:disabled {
