@@ -48,6 +48,7 @@ class TemplateDialog extends LitElement {
                 border-top-right-radius: var(--radius-large);
                 top: 10%;
                 left: 0;
+                max-height: none;
             }
 
             @starting-style {

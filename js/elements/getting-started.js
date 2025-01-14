@@ -79,6 +79,7 @@ class GettingStarted extends LitElement {
                 border-top-left-radius: var(--radius-large);
                 border-top-right-radius: var(--radius-large);
                 top: 10%;
+                max-height: none;
             }
             @starting-style {
                 .dialog-content {

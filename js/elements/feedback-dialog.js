@@ -49,6 +49,7 @@ class FeedbackDialog extends LitElement {
                 border-top-left-radius: var(--radius-large);
                 border-top-right-radius: var(--radius-large);
                 top: 5%;
+                max-height: none;
             }
 
             @starting-style {
