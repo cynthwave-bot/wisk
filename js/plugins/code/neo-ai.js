@@ -416,6 +416,10 @@ class NeoAI extends LitElement {
     setView(view) {
         this.view = view;
     }
+
+    expandDialog() {
+        this.view = "i-container";
+    }
     
     sendClicked() {
         console.log("Send clicked", this.shadowRoot.querySelector(".i-inp").value);

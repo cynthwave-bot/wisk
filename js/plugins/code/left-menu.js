@@ -359,13 +359,16 @@ class LeftMenu extends LitElement {
         return html`
             <div class="outer" @click=${this.closeDropdown}>
                 <div class="vert-nav">
-                    <button class="vert-nav-button"> 
+                    <button class="vert-nav-button" @click=${() => document.querySelector("neo-ai").expandDialog()}>
                         <img src="/a7/forget/spark.svg" class="new-img" /> Neo AI
                     </button>
-                    <button class="vert-nav-button"> 
+                    <button class="vert-nav-button" @click=${() => document.querySelector("template-dialog").show()}>
                         <img src="/a7/forget/layouts.svg" class="new-img" /> Templates
                     </button>
-                    <button class="vert-nav-button">
+                    <button class="vert-nav-button" @click=${() => document.querySelector("feedback-dialog").show()}>
+                        <img src="/a7/forget/feedback.svg" class="new-img" /> Feedback
+                    </button>
+                    <button class="vert-nav-button" @click=${() => document.querySelector("help-dialog").show()}>
                         <img src="/a7/forget/help.svg" class="new-img" /> Help
                     </button>
                 </div>
