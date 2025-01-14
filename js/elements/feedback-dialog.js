@@ -49,7 +49,6 @@ class FeedbackDialog extends LitElement {
                 border-top-left-radius: var(--radius-large);
                 border-top-right-radius: var(--radius-large);
                 top: 5%;
-                filter: var(--drop-shadow) var(--drop-shadow) var(--drop-shadow) var(--drop-shadow);
             }
 
             @starting-style {
@@ -104,7 +103,7 @@ class FeedbackDialog extends LitElement {
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: var(--gap-1);
+            gap: var(--gap-2);
         }
 
         .input-label {
@@ -256,6 +255,17 @@ class FeedbackDialog extends LitElement {
                     </button>
                     <h2 class="dialog-title">Send Feedback</h2>
                     <div class="main-group">
+
+                        <div class="input-group">
+                            <label class="input-label">What's on your mind?</label>
+                            <p class="input-description">Your feedback helps us improve the editor for everyone.</p>
+                            <textarea 
+                                placeholder="Share your thoughts, suggestions, or report issues..."
+                                .value=${this.feedback}
+                                @input=${this.handleFeedbackInput}
+                            ></textarea>
+                        </div>
+
                         <div class="input-group">
                             <label class="input-label">How would you rate your experience?</label>
                             <div class="rating-group">
@@ -276,15 +286,6 @@ class FeedbackDialog extends LitElement {
                             <input type="email" placeholder="Email Address" />
                         </div>
 
-                        <div class="input-group">
-                            <label class="input-label">What's on your mind?</label>
-                            <p class="input-description">Your feedback helps us improve the editor for everyone.</p>
-                            <textarea 
-                                placeholder="Share your thoughts, suggestions, or report issues..."
-                                .value=${this.feedback}
-                                @input=${this.handleFeedbackInput}
-                            ></textarea>
-                        </div>
 
                         <div class="input-group" style="display: none">
                             <label class="input-label">Attach Logs</label>

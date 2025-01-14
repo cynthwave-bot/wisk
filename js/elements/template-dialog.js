@@ -47,7 +47,7 @@ class TemplateDialog extends LitElement {
                 border-top-left-radius: var(--radius-large);
                 border-top-right-radius: var(--radius-large);
                 top: 5%;
-                filter: var(--drop-shadow) var(--drop-shadow) var(--drop-shadow) var(--drop-shadow);
+                left: 0;
             }
 
             @starting-style {

@@ -35,7 +35,6 @@ class HelpDialog extends LitElement {
             width: 90%;
             position: relative;
             z-index: 1000;
-            transform: translateZ(0);
         }
 
         @media (max-width: 768px) {
@@ -47,7 +46,7 @@ class HelpDialog extends LitElement {
                 border-top-left-radius: var(--radius-large);
                 border-top-right-radius: var(--radius-large);
                 top: 5%;
-                filter: var(--drop-shadow) var(--drop-shadow) var(--drop-shadow) var(--drop-shadow);
+                left: 0;
             }
 
             @starting-style {

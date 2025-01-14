@@ -69,7 +69,6 @@ class GettingStarted extends LitElement {
             width: 90%;
             position: relative;
             z-index: 1000;
-            transform: translateZ(0); /* fix for some weird rendering issue that i dont wanna debug */
         }
         @media (max-width: 768px) {
             .dialog-content {
@@ -80,7 +79,6 @@ class GettingStarted extends LitElement {
                 border-top-left-radius: var(--radius-large);
                 border-top-right-radius: var(--radius-large);
                 top: 5%;
-                filter: var(--drop-shadow) var(--drop-shadow) var(--drop-shadow) var(--drop-shadow);
             }
             @starting-style {
                 .dialog-content {
