@@ -33,7 +33,7 @@ class TemplateDialog extends LitElement {
             max-height: 700px;
             height: 90%;
             width: 90%;
-            position: relative;
+            position: absolute;
             z-index: 1000;
             transform: translateZ(0);
         }
@@ -46,7 +46,7 @@ class TemplateDialog extends LitElement {
                 border-radius: 0;
                 border-top-left-radius: var(--radius-large);
                 border-top-right-radius: var(--radius-large);
-                top: 5%;
+                top: 10%;
                 left: 0;
             }
 
