@@ -36,6 +36,12 @@ class BaseTextElement extends HTMLElement {
             }
         });
         this.references = [];
+
+        // emoji support if its not obvious by name
+        this.emojiSuggestions = [];
+        this.showingEmojiSuggestions = false;
+        this.selectedEmojiIndex = 0;
+        this.currentEmojiQuery = '';
     }
 
     getSelectionPosition() {
@@ -235,9 +241,11 @@ class BaseTextElement extends HTMLElement {
 
     connectedCallback() {
         this.editable = this.shadowRoot.querySelector("#editable");
+        this.emojiSuggestionsContainer = this.shadowRoot.querySelector('.emoji-suggestions');
 
         this.updatePlaceholder();
         this.bindEvents();
+
     }
 
     saveSelection() {
@@ -420,6 +428,23 @@ class BaseTextElement extends HTMLElement {
             observer.disconnect();
             this.shadowRoot.removeEventListener("selectionchange", handleSelectionChange);
         };
+
+        document.addEventListener('click', (e) => {
+            if (!this.editable.contains(e.target) && !this.emojiSuggestionsContainer.contains(e.target)) {
+                this.hideEmojiSuggestions();
+            }
+        });
+
+        // Handle blur event
+        this.editable.addEventListener("blur", () => {
+            setTimeout(() => {
+                // Check if focus moved to emoji suggestions
+                if (!this.emojiSuggestionsContainer.contains(document.activeElement)) {
+                    this.hideEmojiSuggestions();
+                }
+            }, 0);
+            this.updatePlaceholder();
+    });
     }
 
     handleMarkdown(event) {
@@ -564,15 +589,53 @@ class BaseTextElement extends HTMLElement {
             ::placeholder {
                 color: var(--text-3);
             }
-            h1 {
-            }
             .suggestion {
                 opacity: 0.6;
                 font-style: italic;
             }
+            .emoji-suggestions {
+                position: absolute;
+                background: var(--bg-1);
+                border: 1px solid var(--border-1);
+                border-radius: var(--radius);
+                padding: var(--padding-2);
+                box-shadow: var(--shadow-1);
+                display: none;
+                z-index: 1000;
+                max-height: 200px;
+                overflow-y: auto;
+                width: max-content;
+                min-width: 200px;
+            }
+            .emoji-suggestion {
+                padding: var(--padding-2);
+                display: flex;
+                align-items: center;
+                gap: var(--gap-2);
+                cursor: pointer;
+                border-radius: var(--radius);
+            }
+            .emoji-suggestion.selected {
+                background: var(--bg-3);
+            }
+            .emoji-suggestion:hover {
+                background: var(--bg-3);
+            }
+            .emoji-name {
+                color: var(--text-2);
+                font-size: 0.9em;
+            }
+            .emoji {
+                width: 30px;
+                text-align: center;
+            }
+            *::-webkit-scrollbar { width: 15px; }
+            *::-webkit-scrollbar-track { background: var(--bg-1); }
+            *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
+            *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
             </style>
         `;
-        const content = `<div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>`
+        const content = `<div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div><div class="emoji-suggestions"></div>`;
         this.shadowRoot.innerHTML = style + content;
     }
 
@@ -587,7 +650,99 @@ class BaseTextElement extends HTMLElement {
         return "ontouchstart" in window || navigator.maxTouchPoints > 0;
     }
 
+
+    navigateEmojiSuggestions(direction) {
+        if (direction === 'up') {
+            this.selectedEmojiIndex = Math.max(0, this.selectedEmojiIndex - 1);
+        } else {
+            this.selectedEmojiIndex = Math.min(this.emojiSuggestions.length - 1, this.selectedEmojiIndex + 1);
+        }
+        this.renderEmojiSuggestions();
+    }
+
+    insertSelectedEmoji() {
+        if (!this.showingEmojiSuggestions || !this.emojiSuggestions.length) return;
+
+        const selection = this.shadowRoot.getSelection();
+        if (!selection.rangeCount) return;
+
+        const range = selection.getRangeAt(0);
+        const selectedEmoji = this.emojiSuggestions[this.selectedEmojiIndex];
+
+        try {
+            // Find the text node and offset where the ':' character starts
+            const findColonPosition = (node, targetOffset) => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const text = node.textContent;
+                    const colonIndex = text.lastIndexOf(':', targetOffset);
+                    if (colonIndex !== -1) {
+                        return { node, offset: colonIndex };
+                    }
+                }
+                
+                if (!node.childNodes) return null;
+
+                for (let i = node.childNodes.length - 1; i >= 0; i--) {
+                    const child = node.childNodes[i];
+                    const result = findColonPosition(child, child.textContent.length);
+                    if (result) return result;
+                }
+                
+                return null;
+            };
+
+            const colonPos = findColonPosition(this.editable, range.startOffset);
+            if (!colonPos) return;
+
+            // Create a range from the colon to the current cursor position
+            const replaceRange = document.createRange();
+            replaceRange.setStart(colonPos.node, colonPos.offset);
+            replaceRange.setEnd(range.endContainer, range.endOffset);
+
+            // Replace the content with the emoji
+            replaceRange.deleteContents();
+            const emojiNode = document.createTextNode(selectedEmoji.emoji);
+            replaceRange.insertNode(emojiNode);
+
+            // Set cursor position after the emoji
+            const newRange = document.createRange();
+            newRange.setStartAfter(emojiNode);
+            newRange.setEndAfter(emojiNode);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+
+            this.hideEmojiSuggestions();
+            this.sendUpdates();
+        } catch (error) {
+            console.error('Error inserting emoji:', error);
+            // Fallback: just insert the emoji at cursor position
+            document.execCommand('insertText', false, selectedEmoji.emoji);
+            this.hideEmojiSuggestions();
+            this.sendUpdates();
+        }
+    }
+
     handleKeyDown(event) {
+        if (this.showingEmojiSuggestions) {
+            switch (event.key) {
+                case 'Enter':
+                    event.preventDefault();
+                    this.insertSelectedEmoji();
+                    return;
+                case 'ArrowUp':
+                    event.preventDefault();
+                    this.navigateEmojiSuggestions('up');
+                    return;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    this.navigateEmojiSuggestions('down');
+                    return;
+                case 'Escape':
+                    this.hideEmojiSuggestions();
+                    return;
+            }
+        }
+
         const keyHandlers = {
             Enter: () => this.handleEnterKey(event),
             Backspace: () => this.handleBackspace(event),
@@ -989,6 +1144,32 @@ class BaseTextElement extends HTMLElement {
     }
 
     onValueUpdated(event) {
+        const selection = this.shadowRoot.getSelection();
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const text = this.editable.textContent;
+            const cursorPosition = this.getFocus();
+
+            // Find the last ':' before cursor
+            const beforeCursor = text.substring(0, cursorPosition);
+            const colonIndex = beforeCursor.lastIndexOf(':');
+
+            if (colonIndex !== -1) {
+                const query = beforeCursor.substring(colonIndex + 1);
+
+                // If there's no space in the query, it's potentially an emoji shortcut
+                if (!query.includes(' ') && query.length > 0) {
+                    this.currentEmojiQuery = query;
+                    this.showEmojiSuggestions(query, range);
+                    return;
+                }
+            }
+        }
+
+        // Hide suggestions if we're not in an emoji query
+        this.hideEmojiSuggestions();
+
+        // Keep existing update logic
         this.updatePlaceholder();
         this.sendUpdates();
     }
@@ -1027,6 +1208,133 @@ class BaseTextElement extends HTMLElement {
         const range = sel.getRangeAt(0).cloneRange();
         range.setStart(this.editable, 0);
         return range.toString().length;
+    }
+
+    showEmojiSuggestions(query, range) {
+        const emojiSelector = document.querySelector('emoji-selector');
+        if (!emojiSelector) return;
+
+        this.emojiSuggestions = emojiSelector.searchDiscordEmojis(query);
+
+        if (this.emojiSuggestions.length > 0) {
+            const editableRect = this.editable.getBoundingClientRect();
+            const rangeRect = range.getBoundingClientRect();
+
+            this.emojiSuggestionsContainer.style.display = 'block';
+
+            this.emojiSuggestionsContainer.style.left = `0px`;
+            this.emojiSuggestionsContainer.style.bottom = `100%`;
+            this.emojiSuggestionsContainer.style.width = `100%`;
+
+            this.renderEmojiSuggestions();
+            this.showingEmojiSuggestions = true;
+            this.selectedEmojiIndex = 0;
+        } else {
+            this.hideEmojiSuggestions();
+        }
+    }
+
+    hideEmojiSuggestions() {
+        this.emojiSuggestionsContainer.style.display = 'none';
+        this.showingEmojiSuggestions = false;
+        this.emojiSuggestions = [];
+        this.currentEmojiQuery = '';
+    }
+
+    renderEmojiSuggestions() {
+        this.emojiSuggestionsContainer.innerHTML = this.emojiSuggestions
+            .map((emoji, index) => `
+            <div class="emoji-suggestion ${index === this.selectedEmojiIndex ? 'selected' : ''}"
+                 data-index="${index}">
+                <span class="emoji">${emoji.emoji}</span>
+                <span class="emoji-name">${emoji.name}</span>
+            </div>
+        `)
+            .join('');
+
+        // Add click handlers
+        this.emojiSuggestionsContainer.querySelectorAll('.emoji-suggestion').forEach(suggestion => {
+            suggestion.addEventListener('click', () => {
+                this.selectedEmojiIndex = parseInt(suggestion.dataset.index);
+                this.insertSelectedEmoji();
+            });
+        });
+    }
+
+    navigateEmojiSuggestions(direction) {
+        if (direction === 'up') {
+            this.selectedEmojiIndex = Math.max(0, this.selectedEmojiIndex - 1);
+        } else {
+            this.selectedEmojiIndex = Math.min(this.emojiSuggestions.length - 1, this.selectedEmojiIndex + 1);
+        }
+        this.renderEmojiSuggestions();
+        // scroll to selected emoji
+        const selectedEmoji = this.emojiSuggestionsContainer.querySelector('.emoji-suggestion.selected');
+        if (selectedEmoji) {
+            selectedEmoji.scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    insertSelectedEmoji() {
+        if (!this.showingEmojiSuggestions || !this.emojiSuggestions.length) return;
+
+        const selection = this.shadowRoot.getSelection();
+        if (!selection.rangeCount) return;
+
+        const range = selection.getRangeAt(0);
+        const selectedEmoji = this.emojiSuggestions[this.selectedEmojiIndex];
+
+        try {
+            // Find the text node and offset where the ':' character starts
+            const findColonPosition = (node, targetOffset) => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const text = node.textContent;
+                    const colonIndex = text.lastIndexOf(':', targetOffset);
+                    if (colonIndex !== -1) {
+                        return { node, offset: colonIndex };
+                    }
+                }
+
+                if (!node.childNodes) return null;
+
+                for (let i = node.childNodes.length - 1; i >= 0; i--) {
+                    const child = node.childNodes[i];
+                    const result = findColonPosition(child, child.textContent.length);
+                    if (result) return result;
+                }
+
+                return null;
+            };
+
+            const colonPos = findColonPosition(this.editable, range.startOffset);
+            if (!colonPos) return;
+
+            // Create a range from the colon to the current cursor position
+            const replaceRange = document.createRange();
+            replaceRange.setStart(colonPos.node, colonPos.offset);
+            replaceRange.setEnd(range.endContainer, range.endOffset);
+
+            // Replace the content with the emoji
+            replaceRange.deleteContents();
+            const emojiNode = document.createTextNode(selectedEmoji.emoji);
+            replaceRange.insertNode(emojiNode);
+
+            // Set cursor position after the emoji
+            const newRange = document.createRange();
+            newRange.setStartAfter(emojiNode);
+            newRange.setEndAfter(emojiNode);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+
+            this.hideEmojiSuggestions();
+            this.sendUpdates();
+        } catch (error) {
+            console.error('Error inserting emoji:', error);
+            // Fallback: just insert the emoji at cursor position
+            document.execCommand('insertText', false, selectedEmoji.emoji);
+            this.hideEmojiSuggestions();
+            this.sendUpdates();
+        }
     }
 }
 

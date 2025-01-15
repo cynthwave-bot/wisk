@@ -148,10 +148,12 @@ class LeftMenu extends LitElement {
         .more-options {
             position: relative;
             padding: 4px;
-            border-radius: var(--radius);
+            border-radius: 100px;
             cursor: pointer;
             opacity: 0;
             transition: opacity 0.2s;
+            height: 30px;
+            width: 30px;
         }
         .item:hover .more-options {
             opacity: 1;

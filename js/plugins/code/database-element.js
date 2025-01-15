@@ -16,6 +16,7 @@ class DatabaseElement extends LitElement {
             display: block;
             width: 100%;
             color: var(--text-1);
+            overflow: auto;
         }
         .view-switcher {
             display: flex;

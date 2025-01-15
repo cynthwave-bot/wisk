@@ -9,7 +9,8 @@ class CommandPalette extends HTMLElement {
 
     addGlobalShortcut() {
         document.addEventListener("keydown", (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === "e") {
+            // ctrl shift p
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode === 80) {
                 e.preventDefault();
                 this.show();
             }
@@ -243,6 +244,13 @@ class CommandPalette extends HTMLElement {
                 z-index: 100;
                 padding: 0;
                 overflow: hidden;
+                transition: all 0.1s;
+            }
+            @starting-style {
+                #selector {
+                    top: 20%;
+                    opacity: 0;
+                }
             }
             .displayNone {
                 display: none;
@@ -276,7 +284,8 @@ class CommandPalette extends HTMLElement {
                 font-weight: 500;
             }
             .selector-button-focused {
-                background-color: var(--bg-3);
+                background-color: var(--accent-bg);
+                color: var(--accent-text);
             }
             #selector-input {
                 width: 100%;
@@ -318,17 +327,12 @@ class CommandPalette extends HTMLElement {
                 font-family: var(--font);
                 padding: var(--padding-w2);
             }
-            *::-webkit-scrollbar {
-                width: 15px;
-            }
-            *::-webkit-scrollbar-track {
-                background: var(--bg-1);
-            }
-            *::-webkit-scrollbar-thumb {
-                background-color: var(--bg-3);
-                border-radius: 20px;
-                border: 4px solid var(--bg-1);
-            }
+
+            *::-webkit-scrollbar { width: 15px; }
+            *::-webkit-scrollbar-track { background: var(--bg-1); }
+            *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
+            *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+
             </style>
             <div id="selector-bg" class="displayNone"></div>
             <div id="selector" class="displayNone">

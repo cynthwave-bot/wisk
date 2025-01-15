@@ -63,7 +63,7 @@ class GettingStarted extends LitElement {
             border-radius: var(--radius-large);
             border: 1px solid var(--border-1);
             filter: var(--drop-shadow) var(--drop-shadow);
-            max-width: 1400px;
+            max-width: 1200px;
             max-height: 700px;
             height: 90%;
             width: 90%;
@@ -127,7 +127,7 @@ class GettingStarted extends LitElement {
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: var(--gap-1);
+            gap: var(--gap-2);
             margin-bottom: var(--gap-3);
         }
 
@@ -160,7 +160,7 @@ class GettingStarted extends LitElement {
         }
 
         .textarea {
-            min-height: 100px;
+            min-height: 70px;
             resize: vertical;
         }
 
@@ -531,8 +531,7 @@ class GettingStarted extends LitElement {
                     </div>
 
                     <div class="input-group">
-                        <label class="input-label">Category</label>
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--gap-2 gap: var(--gap-2))">
                             <select class="text-input">
                                 <option value="" disabled selected>Select a category...</option>
                                 <option value="blog">Blog Post</option>
@@ -752,7 +751,7 @@ class GettingStarted extends LitElement {
                             <img src="/a7/forget/gs-draft-anything.svg" alt="" /> Draft anything
                         </button>
                         <button class="gs-button" @click=${() => document.querySelector("template-dialog").show()}>
-                            <img src="/a7/forget/gs-templates.svg" alt="" /> Templates
+                            <img src="/a7/forget/gs-templates.svg" alt="" /> Start with Templates
                         </button>
                         <button class="gs-button" @click=${() => this.showDialog("brainstorm")} style="display: none">
                             <img src="/a7/forget/gs-brainstorm.svg" alt="" /> Brainstorm Ideas

@@ -230,6 +230,29 @@
             ]
         },
 
+        "main-element": {
+            "name": "main-element",
+            "title": "Main  Element",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "heading1.svg",
+            "tags": ["heading", "title", "h1"],
+            "description": "Heading 1 element",
+            "hide": true,
+            "contents": [
+                {
+                    "title": "Main Element",
+                    "icon": "heading1.svg",
+                    "category": "component",
+                    "component": "main-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "max"
+                }
+            ]
+        },
+
         "heading1-element": {
             "name": "heading1-element",
             "title": "Heading 1 Element",
@@ -540,12 +563,12 @@
 
         "database-element": {
             "name": "database-element",
-            "title": "Database Element",
+            "title": "Database",
             "author": "Wisk Team",
             "contact": "https://wisk.cc",
             "icon": "database.svg",
             "tags": ["database", "data", "table"],
-            "description": "Database element",
+            "description": "Database is a spreadsheet like element that allows you to store data in a table format and visualize it in different ways. This supports this supports: sorting and filtering with user defined properties in views like: table, kanban board, calender, list and gallery.",
             "contents": [
                 {
                     "title": "Database",

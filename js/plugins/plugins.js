@@ -2,6 +2,7 @@
 window.wisk.plugins = {
     defaultPlugins: [
         // editor elements
+        "main-element",
         "text-element",
         "heading1-element",
         "heading2-element",

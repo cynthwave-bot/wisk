@@ -127,6 +127,11 @@ class SelectorElement extends HTMLElement {
         buttonsContainer.innerHTML = "";
 
         for (let key in window.wisk.plugins.pluginData.list) {
+
+            if (wisk.plugins.pluginData.list[key].hide) {
+                continue;
+            }
+
             for (let i = 0; i < window.wisk.plugins.pluginData.list[key].contents.length; i++) {
                 if (window.wisk.plugins.pluginData.list[key].contents[i].category === "component") {
 

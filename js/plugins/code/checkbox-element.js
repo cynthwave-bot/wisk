@@ -226,12 +226,53 @@ class CheckboxElement extends BaseTextElement {
                 top: 0;
                 left: 0;
             }
+            .emoji-suggestions {
+                position: absolute;
+                background: var(--bg-1);
+                border: 1px solid var(--border-1);
+                border-radius: var(--radius);
+                padding: var(--padding-2);
+                box-shadow: var(--shadow-1);
+                display: none;
+                z-index: 1000;
+                max-height: 200px;
+                overflow-y: auto;
+                width: max-content;
+                min-width: 200px;
+            }
+            .emoji-suggestion {
+                padding: var(--padding-2);
+                display: flex;
+                align-items: center;
+                gap: var(--gap-2);
+                cursor: pointer;
+                border-radius: var(--radius);
+            }
+            .emoji-suggestion.selected {
+                background: var(--bg-3);
+            }
+            .emoji-suggestion:hover {
+                background: var(--bg-3);
+            }
+            .emoji-name {
+                color: var(--text-2);
+                font-size: 0.9em;
+            }
+            .emoji {
+                width: 30px;
+                text-align: center;
+            }
+            *::-webkit-scrollbar { width: 15px; }
+            *::-webkit-scrollbar-track { background: var(--bg-1); }
+            *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
+            *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
             </style>
         `;
         const content = `
             <div id="list-outer">
                 <input type="checkbox" id="checkbox" name="checkbox" value="checkbox" ${window.wisk.editor.wiskSite ? 'onclick="return false"' : ''} />
                 <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a task...'}"></div>
+                </div><div class="emoji-suggestions"></div>
             </div>
         `;
         this.shadowRoot.innerHTML = style + content;
