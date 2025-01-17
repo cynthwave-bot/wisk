@@ -2,6 +2,7 @@ class MainElement extends BaseTextElement {
     constructor() {
         super();
         this.placeholder = this.getAttribute("placeholder") || "edit me";
+        this.bannerSize = 'small'; // Can be 'small', 'big', 'bigger'
         this.emoji = this.getAttribute("emoji") || '';
         this.backgroundUrl = null;
         this.MAX_WIDTH = 1920;
@@ -39,6 +40,15 @@ class MainElement extends BaseTextElement {
         }
     }
 
+    getValue() {
+        return {
+            textContent: this.editable.innerHTML,
+            emoji: this.emoji,
+            backgroundUrl: this.backgroundUrl,
+            bannerSize: this.bannerSize
+        };
+    }
+
     setValue(path, value) {
         if (path === "value.append") {
             this.editable.innerHTML += value.textContent;
@@ -52,16 +62,29 @@ class MainElement extends BaseTextElement {
                 this.backgroundUrl = value.backgroundUrl;
                 this.updateBackground();
             }
+            if (value.bannerSize) {
+                this.bannerSize = value.bannerSize;
+                this.updateBannerSize();
+            }
         }
         this.updatePlaceholder();
     }
 
-    getValue() {
-        return {
-            textContent: this.editable.innerHTML,
-            emoji: this.emoji,
-            backgroundUrl: this.backgroundUrl
-        };
+    updateBannerSize() {
+        if (this.headerContainer) {
+            // Remove all size classes first
+            this.headerContainer.classList.remove('big-banner', 'bigger-banner');
+            
+            // Add appropriate class based on size
+            if (this.bannerSize === 'big') {
+                this.headerContainer.classList.add('big-banner');
+            } else if (this.bannerSize === 'bigger') {
+                this.headerContainer.classList.add('bigger-banner');
+            }
+        }
+
+        const bannerSizeButton = this.shadowRoot.querySelector('#banner-size-button');
+        bannerSizeButton.textContent = `${this.bannerSize.charAt(0).toUpperCase() + this.bannerSize.slice(1)} Banner`;
     }
 
     bindHeaderEvents() {
@@ -103,6 +126,24 @@ class MainElement extends BaseTextElement {
                 }
             });
         }
+
+        const bannerSizeButton = this.shadowRoot.querySelector('#banner-size-button');
+        bannerSizeButton.addEventListener('click', () => {
+            // Cycle through sizes
+            switch(this.bannerSize) {
+                case 'small':
+                    this.bannerSize = 'big';
+                    break;
+                case 'big':
+                    this.bannerSize = 'bigger';
+                    break;
+                case 'bigger':
+                    this.bannerSize = 'small';
+                    break;
+            }
+            this.updateBannerSize();
+            this.sendUpdates();
+        });
     }
 
     async onBackgroundSelected(event) {
@@ -163,7 +204,7 @@ class MainElement extends BaseTextElement {
                 canvas.toBlob(
                     (blob) => resolve(blob),
                     fileType,
-                    0.90
+                    0.70
                 );
             };
             img.onerror = reject;
@@ -224,7 +265,7 @@ class MainElement extends BaseTextElement {
             }
             .header-container {
                 padding: 0 max(calc((100% - 850px) / 2), var(--padding-4));
-                padding-top: 99px;
+                padding-top: 49px;
                 background-size: cover;
                 background-position: center;
                 border-radius: var(--radius);
@@ -233,12 +274,35 @@ class MainElement extends BaseTextElement {
             @media (max-width: 1150px) {
                 .header-container {
                     margin-top: 59px;
-                    padding-top: 69px;
+                    padding-top: 29px;
                 }
             }
+
             .has-background {
-                margin-bottom: 20px;
+                padding-top: 99px;
+                transition: padding-top 0.3s ease;
             }
+
+            .has-background.big-banner {
+                padding-top: 228px;
+            }
+
+            .has-background.bigger-banner {
+                padding-top: 357px;  /* 1.5x bigger than big-banner */
+            }
+
+            @media (max-width: 1150px) {
+                .has-background {
+                    padding-top: 49px;
+                }
+                .has-background.big-banner {
+                    padding-top: 123px;
+                }
+                .has-background.bigger-banner {
+                    padding-top: 197px;  /* 1.5x bigger than big-banner for mobile */
+                }
+            }
+
             .header-content {
                 display: flex;
                 align-items: flex-start;
@@ -285,7 +349,7 @@ class MainElement extends BaseTextElement {
                 padding: 8px 12px;
                 border-radius: var(--radius);
                 padding: 0 max(calc((100% - 850px) / 2), var(--padding-4));
-                margin-top: 36px;
+                margin-top: 28px;
             }
             #editable.empty:before {
                 content: attr(data-placeholder);
@@ -297,8 +361,8 @@ class MainElement extends BaseTextElement {
             #background-upload-button {
                 position: absolute;
                 bottom: 12px;
-                right: 12px;
-                padding: var(--padding-w2);
+                right: 0;
+                padding: var(--padding-w1);
                 background-color: var(--bg-1);
                 color: var(--text-1);
                 border: 1px solid var(--border-1);
@@ -359,6 +423,23 @@ class MainElement extends BaseTextElement {
                 width: 30px;
                 text-align: center;
             }
+            #banner-size-button {
+                position: absolute;
+                bottom: 12px;
+                right: 94px;
+                padding: var(--padding-w1);
+                background-color: var(--bg-1);
+                color: var(--text-1);
+                border: 1px solid var(--border-1);
+                border-radius: var(--radius);
+                cursor: pointer;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+            .header-container:hover #banner-size-button {
+                opacity: 1;
+            }
+
             *::-webkit-scrollbar { width: 15px; }
             *::-webkit-scrollbar-track { background: var(--bg-1); }
             *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
@@ -374,12 +455,14 @@ class MainElement extends BaseTextElement {
                     <div id="emoji">${this.emoji && this.emoji.trim() ? this.emoji : '<span class="add-emoji-text">add emoji</span>'}</div>
                     ${!window.wisk.editor.wiskSite ? `
                         <button id="background-upload-button">Add Cover</button>
+                        <button id="banner-size-button">
+                            ${this.isBigBanner ? 'Small Banner' : 'Big Banner'}
+                        </button>
                     ` : ''}
                 </div>
             </div>
             <h1 id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></h1>
-            <div class="emoji-suggestions"></div>
-        `;
+            <div class="emoji-suggestions"></div>`;
         this.shadowRoot.innerHTML = style + content;
     }
 
@@ -389,6 +472,30 @@ class MainElement extends BaseTextElement {
             text: `${this.emoji} ${this.editable.innerText}`,
             markdown: `# ${this.emoji} ${this.editable.innerText}`
         };
+    }
+
+    showEmojiSuggestions(query, range) {
+        const emojiSelector = document.querySelector('emoji-selector');
+        if (!emojiSelector) return;
+
+        this.emojiSuggestions = emojiSelector.searchDiscordEmojis(query);
+
+        if (this.emojiSuggestions.length > 0) {
+            const editableRect = this.editable.getBoundingClientRect();
+            const rangeRect = range.getBoundingClientRect();
+
+            this.emojiSuggestionsContainer.style.display = 'block';
+
+            this.emojiSuggestionsContainer.style.left = `max(calc((100% - 850px) / 2), var(--padding-4))`;
+            this.emojiSuggestionsContainer.style.top = `100%`;
+            this.emojiSuggestionsContainer.style.width = `calc(100% - calc(max(calc((100% - 850px) / 2), var(--padding-4)) * 2))`;
+
+            this.renderEmojiSuggestions();
+            this.showingEmojiSuggestions = true;
+            this.selectedEmojiIndex = 0;
+        } else {
+            this.hideEmojiSuggestions();
+        }
     }
 }
 
