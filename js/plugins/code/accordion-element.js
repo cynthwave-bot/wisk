@@ -8,26 +8,38 @@ class AccordionElement extends BaseTextElement {
             emoji: initialEmoji
         };
 
-        // Bind the emoji selection handler
         this.handleEmojiSelection = this.handleEmojiSelection.bind(this);
+        this.handleClick = this.handleClick.bind(this);
         
         this.render();
     }
 
     connectedCallback() {
         super.connectedCallback();
-        // Add event listener for emoji selection
         window.addEventListener("emoji-selector", this.handleEmojiSelection);
+        if (window.wisk.editor.wiskSite) {
+            this.addEventListener('click', this.handleClick);
+        }
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        // Clean up event listener
         window.removeEventListener("emoji-selector", this.handleEmojiSelection);
+        if (window.wisk.editor.wiskSite) {
+            this.removeEventListener('click', this.handleClick);
+        }
+    }
+
+    handleClick(event) {
+        if (window.wisk.editor.wiskSite) {
+            const editable = this.shadowRoot.querySelector('#editable');
+            const toggleBtn = this.shadowRoot.querySelector('.toggle-btn');
+            editable.classList.toggle('visible');
+            toggleBtn.classList.toggle('open');
+        }
     }
 
     handleEmojiSelection(event) {
-        // Only handle events meant for this instance
         if (event.detail.id === this.id) {
             this.value.emoji = event.detail.emoji;
             this.emojiButton.textContent = event.detail.emoji;
@@ -69,6 +81,9 @@ class AccordionElement extends BaseTextElement {
                 opacity: 0.6;
             }
             .toggle-btn.open {
+                transform: rotate(180deg);
+            }
+            .accordion-header.open .toggle-btn {
                 transform: rotate(180deg);
             }
             #editable {
@@ -181,29 +196,26 @@ class AccordionElement extends BaseTextElement {
 
         this.emojiButton = this.shadowRoot.querySelector('.emoji-button');
         this.emojiButton.addEventListener('click', (e) => {
-            if (window.wisk.editor.wiskSite) return;
-            
-            e.stopPropagation();
-            // Get the emoji selector component and show it
-            const emojiSelector = document.querySelector('emoji-selector');
-            if (emojiSelector) {
-                emojiSelector.show(this.id);
+            if (!wisk.editor.wiskSite) {
+                e.stopPropagation();
+                const emojiSelector = document.querySelector('emoji-selector');
+                if (emojiSelector) {
+                    emojiSelector.show(this.id);
+                }
             }
         });
 
-        this.setupToggleListener();
+        // Only setup toggle listener if not in wiskSite mode
+        if (!window.wisk.editor.wiskSite) {
+            this.setupToggleListener();
+        }
     }
 
     setupToggleListener() {
-        var toggleBtn = this.shadowRoot.querySelector('.toggle-btn');
-        if (wisk.editor.wiskSite) {
-            toggleBtn = this.shadowRoot.querySelector('.accordion-header');
-        }
-
+        const toggleBtn = this.shadowRoot.querySelector('.toggle-btn');
         const editable = this.shadowRoot.querySelector('#editable');
         
         toggleBtn.addEventListener('click', () => {
-            const isVisible = editable.classList.contains('visible');
             editable.classList.toggle('visible');
             toggleBtn.classList.toggle('open');
         });
