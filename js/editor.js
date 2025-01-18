@@ -606,6 +606,35 @@ window.wisk.editor.runBlockFunction = function (elementId, functionName, arg) {
     }
 };
 
+window.wisk.editor.useTemplate = async function (template) {
+    if (this.elements.length > 1) {
+        alert("You need to clear the current document before using a template.");
+        return;
+    }
+
+    for (const plugin of template.plugins) {
+        await window.wisk.plugins.loadPlugin(plugin);
+        await window.wisk.editor.addConfigChange([
+            { path: "document.config.plugins.add", values: { plugin } },
+        ]);
+    }
+
+    // delete all elements
+    for (const element of window.wisk.editor.elements) {
+        if (element.id !== "abcdefABCDEFxyz") window.wisk.editor.deleteBlock(element.id);
+    }
+
+    for (const element of template.elements) {
+        if (element.id === "abcdefABCDEFxyz") {
+            document.getElementById("abcdefABCDEFxyz").setValue("", element.value);
+            document.getElementById("abcdefABCDEFxyz").sendUpdates();
+        }
+        if (element.id !== "abcdefABCDEFxyz") window.wisk.editor.createNewBlock("", element.component, element.value, { x: 0 });
+    }
+
+    window.wisk.editor.justUpdates();
+}
+
 // Event Handler Functions
 function whenPlusClicked(elementId) {
     window.wisk.editor.createNewBlock(elementId, "text-element", { textContent: "" }, { x: 0 });

@@ -256,6 +256,15 @@ class OptionsComponent extends LitElement {
         .plugins-toggle:hover {
             background-color: var(--bg-2);
         }
+        .plugins-toggle-nohover {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: var(--padding-3);
+            border-radius: var(--radius);
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
         .plugins-manager {
             height: 100%;
             display: flex;
@@ -925,14 +934,13 @@ class OptionsComponent extends LitElement {
                     <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showSettingsView}" class="icon" draggable="false"/>
-                            <label>Developer Mode</label>
+                            <label>Developer Options</label>
                         </div>
                     </div>
 
-                    <div class="developer-options">
-                        <div class="developer-section">
-                            <p style="color: var(--text-2)">Coming soon...</p>
-                        </div>
+                    <div class="plugins-toggle-nohover options-section">
+                        <label>Copy Template Configurations</label>
+                        <button class="toggle-switch btn-primary" @click="${() => this.copyTemplateConfigurations()}">Copy</button>
                     </div>
                 </div>
 
@@ -956,7 +964,7 @@ class OptionsComponent extends LitElement {
                     </div>
 
                     <div class="plugins-toggle options-section" @click="${this.showDeveloperView}">
-                        <label>Developer Mode</label>
+                        <label>Developer Options</label>
                         <img src="/a7/iconoir/right.svg" alt="Developer" class="icon" draggable="false"/>
                     </div>
 
@@ -1070,6 +1078,24 @@ class OptionsComponent extends LitElement {
                 </div>
             </div>
         `;
+    }
+
+    copyTemplateConfigurations() {
+        var config = {
+            plugins: wisk.editor.data.config.plugins,
+            theme: wisk.editor.data.config.theme,
+            elements: wisk.editor.data.elements,
+            name: document.title,
+        };
+
+        navigator.clipboard.writeText(JSON.stringify(config)).then(
+            function () {
+                wisk.utils.showToast("Copied template configurations to clipboard", 3000);
+            },
+            function (err) {
+                wisk.utils.showToast("Failed to copy template configurations", 3000);
+            },
+        );
     }
 }
 
