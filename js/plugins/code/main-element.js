@@ -98,6 +98,7 @@ class MainElement extends BaseTextElement {
     }
 
     bindHeaderEvents() {
+        if (wisk.editor.wiskSite) return;
         // Emoji picker click handler
         this.emojiElement.addEventListener("click", () => {
             if (window.wisk.editor.wiskSite) return;

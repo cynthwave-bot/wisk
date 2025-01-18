@@ -421,6 +421,7 @@ class GettingStarted extends LitElement {
     }
 
     updated() {
+        if (wisk.editor.wiskSite) return;
         this.shadowRoot.getElementById("tip").innerText = this.tips[Math.floor(Math.random() * this.tips.length)];
     }
 

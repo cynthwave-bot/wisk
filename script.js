@@ -90,5 +90,5 @@ window.onSignOut = function() {
 
 if (window.location.href.includes(".wisk.site/")) {
     live();
-    document.querySelector('menu-1').style.display = 'none';
+    document.querySelector('#menu-1').style.display = 'none';
 }
