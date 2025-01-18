@@ -56,12 +56,16 @@ class AccordionElement extends BaseTextElement {
                 margin: 0;
                 font-family: var(--font);
             }
+            :host {
+                position: relative;
+            }
             .accordion-header {
                 display: flex;
                 align-items: center;
                 width: 100%;
                 padding: var(--padding-4);
                 padding-bottom: 0;
+                padding-right: 0;
             }
             .question {
                 flex: 1;
@@ -72,7 +76,16 @@ class AccordionElement extends BaseTextElement {
                 font-size: 18px;
                 color: var(--text-1);
                 background-color: transparent;
-                outline: none;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                min-height: 1.5em;
+            }
+            .question:empty:before {
+                content: "Question";
+                color: var(--text-2);
+                pointer-events: none;
+                position: absolute;
+                opacity: 0.6;
             }
             .toggle-btn {
                 cursor: pointer;
@@ -114,9 +127,6 @@ class AccordionElement extends BaseTextElement {
                 text-decoration: none;
                 margin: 0 1px;
                 font-family: var(--font-mono);
-            }
-            ::placeholder {
-                color: var(--text-2);
             }
             .emoji-suggestions {
                 position: absolute;
@@ -183,7 +193,7 @@ class AccordionElement extends BaseTextElement {
                 </div>
                 <div style="flex: 1">
                     <div class="accordion-header">
-                        <input class="question" type="text" placeholder="Question" value="${this.question || ''}" ${window.wisk.editor.wiskSite ? "disabled" : ""} />
+                        <div class="question" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false">${this.question || ''}</div>
                         <img src="/a7/plugins/accordion/down.svg" class="toggle-btn" />
                     </div>
                     <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
@@ -205,9 +215,12 @@ class AccordionElement extends BaseTextElement {
             }
         });
 
-        // Only setup toggle listener if not in wiskSite mode
-        if (!window.wisk.editor.wiskSite) {
+        if (!wisk.editor.wiskSite) {
             this.setupToggleListener();
+        } else {
+            for (const el of this.shadowRoot.querySelectorAll('*')) {
+                el.style.cursor = 'pointer';
+            }
         }
     }
 
@@ -227,7 +240,7 @@ class AccordionElement extends BaseTextElement {
         }
         return {
             textContent: this.editable.innerHTML,
-            question: this.shadowRoot.querySelector('.question').value,
+            question: this.shadowRoot.querySelector('.question').innerHTML,
             emoji: this.value?.emoji || "📌"
         };
     }
@@ -239,7 +252,7 @@ class AccordionElement extends BaseTextElement {
         if (path === "value.append") {
             this.editable.innerHTML += value.textContent;
             if (value.question) {
-                this.shadowRoot.querySelector('.question').value = value.question;
+                this.shadowRoot.querySelector('.question').innerHTML = value.question;
             }
             if (value.emoji) {
                 this.value.emoji = value.emoji;
@@ -248,7 +261,7 @@ class AccordionElement extends BaseTextElement {
         } else {
             this.editable.innerHTML = value.textContent;
             if (value.question) {
-                this.shadowRoot.querySelector('.question').value = value.question;
+                this.shadowRoot.querySelector('.question').innerHTML = value.question;
             }
             if (value.emoji) {
                 this.value.emoji = value.emoji;
@@ -260,9 +273,9 @@ class AccordionElement extends BaseTextElement {
 
     getTextContent() {
         return {
-            html: this.shadowRoot.querySelector('.question').value + "?<br>" + this.editable.innerHTML,
-            text: this.shadowRoot.querySelector('.question').value + "? " + this.editable.textContent,
-            markdown: "# " + this.shadowRoot.querySelector('.question').value + "?\n" + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML),
+            html: this.shadowRoot.querySelector('.question').innerHTML + "?<br>" + this.editable.innerHTML,
+            text: this.shadowRoot.querySelector('.question').textContent + "? " + this.editable.textContent,
+            markdown: "# " + this.shadowRoot.querySelector('.question').textContent + "?\n" + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML),
         }
     }
 }
