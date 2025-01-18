@@ -632,6 +632,9 @@ window.wisk.editor.useTemplate = async function (template) {
         if (element.id !== "abcdefABCDEFxyz") window.wisk.editor.createNewBlock("", element.component, element.value, { x: 0 });
     }
 
+    wisk.theme.setTheme(template.theme);
+    await wisk.editor.addConfigChange([{ path: "document.config.theme", values: { theme: template.theme } }]);
+
     window.wisk.editor.justUpdates();
 }
 
