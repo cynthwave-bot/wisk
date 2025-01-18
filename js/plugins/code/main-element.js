@@ -93,6 +93,8 @@ class MainElement extends BaseTextElement {
             }
         }
 
+        if (window.wisk.editor.wiskSite) return;
+
         const bannerSizeButton = this.shadowRoot.querySelector('#banner-size-button');
         bannerSizeButton.textContent = `${this.bannerSize.charAt(0).toUpperCase() + this.bannerSize.slice(1)} Banner`;
     }
