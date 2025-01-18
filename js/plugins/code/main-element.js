@@ -23,6 +23,7 @@ class MainElement extends BaseTextElement {
         
         // Add event listener for emoji selection
         window.addEventListener("emoji-selector", this.handleEmojiSelection);
+        this.setValue("", { textContent: "" });
     }
 
     disconnectedCallback() {
@@ -330,6 +331,7 @@ class MainElement extends BaseTextElement {
                 font-size: 16px;
                 color: var(--text-3);
                 opacity: 0.8;
+                padding: 4px 8px;
             }
             .empty-emoji {
                 background: var(--bg-2) !important;

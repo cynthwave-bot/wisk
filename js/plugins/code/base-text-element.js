@@ -4,6 +4,7 @@ class BaseTextElement extends HTMLElement {
         this.attachShadow({mode: "open"});
         this.render();
         this.updatePlaceholder();
+        this.isMouseOverSuggestions = false;
         this.isVirtualKeyboard = this.checkIfVirtualKeyboard();
         this.savedRange = null;
         this.savedSelection = null;
@@ -435,16 +436,23 @@ class BaseTextElement extends HTMLElement {
             }
         });
 
-        // Handle blur event
         this.editable.addEventListener("blur", () => {
             setTimeout(() => {
-                // Check if focus moved to emoji suggestions
-                if (!this.emojiSuggestionsContainer.contains(document.activeElement)) {
+                if (!this.emojiSuggestionsContainer.contains(document.activeElement) && 
+                    !this.emojiSuggestionsContainer.matches(':hover')) {
                     this.hideEmojiSuggestions();
                 }
             }, 0);
             this.updatePlaceholder();
-    });
+        });
+
+        this.emojiSuggestionsContainer.addEventListener('mouseenter', () => {
+            this.isMouseOverSuggestions = true;
+        });
+
+        this.emojiSuggestionsContainer.addEventListener('mouseleave', () => {
+            this.isMouseOverSuggestions = false;
+        });
     }
 
     handleMarkdown(event) {
@@ -1254,10 +1262,12 @@ class BaseTextElement extends HTMLElement {
 
         // Add click handlers
         this.emojiSuggestionsContainer.querySelectorAll('.emoji-suggestion').forEach(suggestion => {
-            suggestion.addEventListener('click', () => {
+            suggestion.addEventListener('mousedown', (e) => {
+                e.preventDefault(); // Prevent blur
                 this.selectedEmojiIndex = parseInt(suggestion.dataset.index);
                 this.insertSelectedEmoji();
             });
+
         });
     }
 
