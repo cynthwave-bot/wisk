@@ -1850,7 +1850,10 @@ class EmojiSelector extends LitElement {
     }
     
     show(id) {
+        this.searchResults = [];
+        this.selectedCategory = this.smileysAndEmotion;
         this.givenId = id;
+        this.shadowRoot.querySelector(".search input").value = "";
         this.shadowRoot.querySelector(".outer").classList.add("show");
         this.shadowRoot.querySelector(".inner").classList.add("show");
 
