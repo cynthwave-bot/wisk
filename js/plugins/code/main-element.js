@@ -1,7 +1,7 @@
 class MainElement extends BaseTextElement {
     constructor() {
         super();
-        this.placeholder = this.getAttribute("placeholder") || "edit me";
+        this.placeholder = this.getAttribute("placeholder") || wisk.editor.wiskSite? "": "edit me";
         this.bannerSize = 'small'; // Can be 'small', 'big', 'bigger'
         this.emoji = this.getAttribute("emoji") || '';
         this.backgroundUrl = null;
@@ -34,7 +34,7 @@ class MainElement extends BaseTextElement {
 
     handleEmojiSelection(event) {
         // Only handle events meant for this instance
-        if (event.detail.id === this.givenId) {
+        if (event.detail.id === this.id) {
             this.emoji = event.detail.emoji;
             this.updateEmoji();
             this.sendUpdates();
@@ -96,7 +96,7 @@ class MainElement extends BaseTextElement {
             // Get the emoji selector component and show it
             const emojiSelector = document.querySelector('emoji-selector');
             if (emojiSelector) {
-                emojiSelector.show(this.givenId);
+                emojiSelector.show(this.id);
             }
         });
 

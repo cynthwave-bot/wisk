@@ -8,7 +8,7 @@ class BaseTextElement extends HTMLElement {
         this.isVirtualKeyboard = this.checkIfVirtualKeyboard();
         this.savedRange = null;
         this.savedSelection = null;
-        this.placeholder = this.getAttribute("placeholder") || "Write something or press '/' for commands";
+        this.placeholder = this.getAttribute("placeholder") || wisk.editor.wiskSite? "": "Write something or press '/' for commands";
         this.toolbar = document.getElementById("formatting-toolbar");
         this.toolbar.addEventListener("toolbar-action", (e) => {
             if (e.detail.elementId === this.id) {

@@ -9,36 +9,31 @@ class CalloutElement extends BaseTextElement {
             emoji: initialEmoji
         };
 
+        // Bind the emoji selection handler
+        this.handleEmojiSelection = this.handleEmojiSelection.bind(this);
+        
         this.render();
-        this.setupEmojiPicker();
     }
 
-    setupEmojiPicker() {
-        const commonEmojis = [
-            "📝", "📌", "💡", "⭐", "❗", "❓", "💭", "📢", "🎯", "🔍",
-            "⚠️", "💪", "🎉", "🚀", "💻", "📊", "📈", "🎨", "🔧", "📚"
-        ];
+    connectedCallback() {
+        super.connectedCallback();
+        // Add event listener for emoji selection
+        window.addEventListener("emoji-selector", this.handleEmojiSelection);
+    }
 
-        const emojiMenu = document.createElement('div');
-        emojiMenu.className = 'emoji-menu';
-        
-        commonEmojis.forEach(emoji => {
-            const emojiOption = document.createElement('span');
-            emojiOption.textContent = emoji;
-            emojiOption.className = 'emoji-option';
-            emojiOption.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.value.emoji = emoji;
-                this.emojiButton.textContent = emoji;
-                emojiMenu.style.display = 'none';
-                this.sendUpdates();
-            });
-            emojiMenu.appendChild(emojiOption);
-        });
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        // Clean up event listener
+        window.removeEventListener("emoji-selector", this.handleEmojiSelection);
+    }
 
-        // Add the menu inside the container next to the button
-        const container = this.shadowRoot.querySelector('.container');
-        container.insertBefore(emojiMenu, container.firstChild.nextSibling);
+    handleEmojiSelection(event) {
+        // Only handle events meant for this instance
+        if (event.detail.id === this.id) {
+            this.value.emoji = event.detail.emoji;
+            this.emojiButton.textContent = event.detail.emoji;
+            this.sendUpdates();
+        }
     }
 
     getValue() {
@@ -119,30 +114,6 @@ class CalloutElement extends BaseTextElement {
             .emoji-button:hover {
                 background-color: var(--bg-2);
             }
-            .emoji-menu {
-                display: none;
-                left: var(--padding-4);
-                top: calc(100% - var(--padding-2));
-                background: var(--bg-1);
-                border: 1px solid var(--border);
-                border-radius: var(--radius);
-                padding: var(--padding-2);
-                grid-template-columns: repeat(5, 1fr);
-                gap: var(--padding-2);
-                z-index: 1000;
-                box-shadow: var(--shadow-lg);
-            }
-            .emoji-option {
-                cursor: pointer;
-                padding: var(--padding-1);
-                border-radius: var(--radius);
-                transition: background-color 0.2s;
-                text-align: center;
-                user-select: none;
-            }
-            .emoji-option:hover {
-                background-color: var(--bg-2);
-            }
             #editable {
                 flex: 1;
                 font-size: 16px;
@@ -221,7 +192,7 @@ class CalloutElement extends BaseTextElement {
             <div class="container">
                 <button class="emoji-button">${this.value?.emoji || "📌"}</button>
                 <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
-                </div><div class="emoji-suggestions"></div>
+                <div class="emoji-suggestions"></div>
             </div>
         `;
         this.shadowRoot.innerHTML = style + content;
@@ -229,21 +200,12 @@ class CalloutElement extends BaseTextElement {
         this.emojiButton = this.shadowRoot.querySelector('.emoji-button');
         this.emojiButton.addEventListener('click', (e) => {
             if (window.wisk.editor.wiskSite) return;
-
+            
             e.stopPropagation();
-            const emojiMenu = this.shadowRoot.querySelector('.emoji-menu');
-            if (emojiMenu.style.display === 'none' || !emojiMenu.style.display) {
-                emojiMenu.style.display = 'grid';
-            } else {
-                emojiMenu.style.display = 'none';
-            }
-        });
-
-        // Close emoji menu when clicking outside
-        document.addEventListener('click', () => {
-            const emojiMenu = this.shadowRoot.querySelector('.emoji-menu');
-            if (emojiMenu) {
-                emojiMenu.style.display = 'none';
+            // Get the emoji selector component and show it
+            const emojiSelector = document.querySelector('emoji-selector');
+            if (emojiSelector) {
+                emojiSelector.show(this.id);
             }
         });
 
