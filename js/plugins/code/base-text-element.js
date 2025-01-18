@@ -535,8 +535,7 @@ class BaseTextElement extends HTMLElement {
             return {textContent: "", references: []};
         }
         return {
-            textContent: this.editable.innerHTML, // Changed from innerText to preserve formatting
-            references: this.references
+            textContent: this.editable.innerHTML,
         };
     }
 
@@ -551,15 +550,15 @@ class BaseTextElement extends HTMLElement {
             this.editable.innerHTML = value.textContent;
         }
 
-        if (value.references && value.references.length) {
-            if (path == "value.append") {
-                this.references = this.references.concat(value.references);
-            } else {
-                this.references = value.references;
-            }
-        } 
-
         this.updatePlaceholder();
+    }
+
+    getTextContent() {
+        return {
+            html: this.editable.innerHTML,
+            text: this.editable.innerText,
+            markdown: "# " + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML)
+        }
     }
 
     render() {
@@ -974,14 +973,6 @@ class BaseTextElement extends HTMLElement {
                 window.wisk.editor.focusBlock(prevElement.id, {x: len});
             }
             window.wisk.editor.deleteBlock(this.id);
-        }
-    }
-
-    getTextContent() {
-        return {
-            html: this.editable.innerHTML,
-            text: this.editable.innerText,
-            markdown: "# " + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML)
         }
     }
 

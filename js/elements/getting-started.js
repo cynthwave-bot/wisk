@@ -742,6 +742,10 @@ class GettingStarted extends LitElement {
     }
 
     render() {
+        if (wisk.editor.wiskSite) {
+            return html``;
+        }
+
         return html`
             <div id="getting-started">
                 <div style="display: flex; gap: var(--gap-3); flex-wrap: wrap; align-items: center;">

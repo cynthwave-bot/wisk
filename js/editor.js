@@ -1,4 +1,3 @@
-// Shared state
 var debounceTimer;
 var deletedElements = [];
 var elementUpdatesLeft = [];
@@ -638,6 +637,8 @@ function handleEditorClick(event) {
 }
 
 window.wisk.editor.justUpdates = async function (elementId) {
+    window.dispatchEvent(new CustomEvent("something-updated", { detail: { id: elementId } }));
+
     if (elementId) {
 
         if (elementId === window.wisk.editor.elements[0].id) {

@@ -1030,6 +1030,50 @@
                     "experimental": true
                 }
             ]
+        },
+
+        "accordion-element": {
+            "name": "accordion-element",
+            "title": "Accordion",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "accordion.svg",
+            "tags": ["accordion", "expand", "collapse", "toggle"],
+            "description": "Accordion element for expanding and collapsing content, it can be used to create a FAQ or a help section",
+            "contents": [
+                {
+                    "title": "Accordion",
+                    "icon": "quote.svg",
+                    "category": "component",
+                    "component": "accordion-element",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
+        },
+
+        "table-of-contents": {
+            "name": "table-of-contents",
+            "title": "Table of Contents",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "table-of-contents.svg",
+            "tags": ["index", "page", "table", "contents"],
+            "description": "Page index element for creating a table of contents",
+            "contents": [
+                {
+                    "title": "Table of Contents",
+                    "icon": "table-of-contents.svg",
+                    "category": "component",
+                    "component": "table-of-contents",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": true,
+                    "width": "mini"
+                }
+            ]
         }
     }
 }

@@ -5,7 +5,6 @@ class CalloutElement extends BaseTextElement {
         
         this.value = {
             textContent: "",
-            references: [],
             emoji: initialEmoji
         };
 

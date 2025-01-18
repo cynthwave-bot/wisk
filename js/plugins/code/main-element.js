@@ -2,7 +2,7 @@ class MainElement extends BaseTextElement {
     constructor() {
         super();
         this.placeholder = this.getAttribute("placeholder") || wisk.editor.wiskSite? "": "edit me";
-        this.bannerSize = 'small'; // Can be 'small', 'big', 'bigger'
+        this.bannerSize = 'small'; // Can be 'small', 'big', 'bigger', 'biggest'
         this.emoji = this.getAttribute("emoji") || '';
         this.backgroundUrl = null;
         this.MAX_WIDTH = 1920;
@@ -74,13 +74,22 @@ class MainElement extends BaseTextElement {
     updateBannerSize() {
         if (this.headerContainer) {
             // Remove all size classes first
-            this.headerContainer.classList.remove('big-banner', 'bigger-banner');
+            this.headerContainer.classList.remove('big-banner', 'bigger-banner', 'biggest-banner');
             
             // Add appropriate class based on size
             if (this.bannerSize === 'big') {
                 this.headerContainer.classList.add('big-banner');
             } else if (this.bannerSize === 'bigger') {
                 this.headerContainer.classList.add('bigger-banner');
+            } else if (this.bannerSize === 'biggest') {
+                this.headerContainer.classList.add('biggest-banner');
+            }
+
+            // Toggle text overlay class
+            if (this.bannerSize === 'biggest') {
+                this.editable.classList.add('text-overlay');
+            } else {
+                this.editable.classList.remove('text-overlay');
             }
         }
 
@@ -139,6 +148,9 @@ class MainElement extends BaseTextElement {
                     this.bannerSize = 'bigger';
                     break;
                 case 'bigger':
+                    this.bannerSize = 'biggest';
+                    break;
+                case 'biggest':
                     this.bannerSize = 'small';
                     break;
             }
@@ -271,6 +283,7 @@ class MainElement extends BaseTextElement {
                 background-position: center;
                 border-radius: var(--radius);
                 transition: opacity 0.3s;
+                position: relative;
             }
             @media (max-width: 1150px) {
                 .header-container {
@@ -289,7 +302,11 @@ class MainElement extends BaseTextElement {
             }
 
             .has-background.bigger-banner {
-                padding-top: 357px;  /* 1.5x bigger than big-banner */
+                padding-top: 357px;
+            }
+
+            .has-background.biggest-banner {
+                padding-top: 486px;
             }
 
             @media (max-width: 1150px) {
@@ -300,7 +317,10 @@ class MainElement extends BaseTextElement {
                     padding-top: 123px;
                 }
                 .has-background.bigger-banner {
-                    padding-top: 197px;  /* 1.5x bigger than big-banner for mobile */
+                    padding-top: 197px;
+                }
+                .has-background.biggest-banner {
+                    padding-top: 271px;
                 }
             }
 
@@ -352,6 +372,16 @@ class MainElement extends BaseTextElement {
                 border-radius: var(--radius);
                 padding: 0 max(calc((100% - 850px) / 2), var(--padding-4));
                 margin-top: 28px;
+                transition: all 0.3s ease;
+            }
+            #editable.text-overlay-x { /* gotta think more about it */
+                position: absolute;
+                bottom: 40px;
+                color: white;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+                margin: 0;
+                width: 100%;
+                left: 0;
             }
             #editable.empty:before {
                 content: attr(data-placeholder);
@@ -417,7 +447,7 @@ class MainElement extends BaseTextElement {
             .emoji-suggestion:hover {
                 background: var(--bg-3);
             }
-            .emoji-name {
+                            .emoji-name {
                 color: var(--text-2);
                 font-size: 0.9em;
             }
@@ -457,9 +487,7 @@ class MainElement extends BaseTextElement {
                     <div id="emoji">${this.emoji && this.emoji.trim() ? this.emoji : '<span class="add-emoji-text">add emoji</span>'}</div>
                     ${!window.wisk.editor.wiskSite ? `
                         <button id="background-upload-button">Add Cover</button>
-                        <button id="banner-size-button">
-                            ${this.isBigBanner ? 'Small Banner' : 'Big Banner'}
-                        </button>
+                        <button id="banner-size-button">Small Banner</button>
                     ` : ''}
                 </div>
             </div>
