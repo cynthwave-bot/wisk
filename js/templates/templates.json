@@ -5,7 +5,14 @@
             "description": "Default Blog Template whose design is very human",
             "by": "Wisk Team",
             "link": "https://wisk.cc",
-            "path": "blog-simple"
+            "path": "blog-simple",
+            "images": ["desktop1.png"],
+            "links": [
+                {
+                    "text": "Banner photo by Codioful (formerly Gradienta)",
+                    "url": "https://www.pexels.com/photo/blue-and-purple-gradient-background-7130475/"
+                }
+            ]
         }
     ]
 }

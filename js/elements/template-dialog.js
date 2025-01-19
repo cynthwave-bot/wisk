@@ -13,6 +13,10 @@ class TemplateDialog extends LitElement {
             outline: none;
             transition: all 0.3s ease;
         }
+
+        ul {
+           list-style-position: inside;
+        }
         
         .dialog-overlay {
             position: fixed;
@@ -245,21 +249,13 @@ class TemplateDialog extends LitElement {
 
         .lrg {
             width: 100%;
+            height: 300px;
             display: flex;
             gap: var(--gap-3);
             overflow: auto;
         }
 
-        .desktop-preview-large {
-            height: 300px;
-            width: 600px;
-            border: 1px solid var(--border-1);
-            border-radius: var(--radius);
-        }
-
-        .mobile-preview-large {
-            height: 300px;
-            width: 138px;
+        .img-preview-large {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
         }
@@ -383,8 +379,30 @@ class TemplateDialog extends LitElement {
                                         <p>${this.selectedTemplate.description}</p>
                                     </div>
                                     <div class="lrg">
-                                        <img class="mobile-preview-large" src="/a7/templates/${this.selectedTemplate.path}/phone.png" @click=${() => this.makeImageFullScreen(`/a7/templates/${this.selectedTemplate.path}/phone.png`)} />
-                                        <img class="desktop-preview-large" src="/a7/templates/${this.selectedTemplate.path}/desktop.png" @click=${() => this.makeImageFullScreen(`/a7/templates/${this.selectedTemplate.path}/desktop.png`)} />
+                                        <img class="img-preview-large" src="/a7/templates/${this.selectedTemplate.path}/phone.png" @click=${() => this.makeImageFullScreen(`/a7/templates/${this.selectedTemplate.path}/phone.png`)} />
+                                        <img class="img-preview-large" src="/a7/templates/${this.selectedTemplate.path}/desktop.png" @click=${() => this.makeImageFullScreen(`/a7/templates/${this.selectedTemplate.path}/desktop.png`)} />
+                                        ${ this.selectedTemplate.images ? 
+                                            html`
+                                                ${this.selectedTemplate.images.map(image => html`
+                                                    <img class="img-preview-large" 
+                                                        src="/a7/templates/${this.selectedTemplate.path}/${image}" 
+                                                        @click=${() => this.makeImageFullScreen(`/a7/templates/${this.selectedTemplate.path}/${image}`)} />
+                                                `)}
+                                            ` 
+                                            : ''
+                                        }
+                                    </div>
+
+                                    <div>
+                                        <h3 style="margin-bottom: var(--gap-2)">Links</h3>
+                                        ${ this.selectedTemplate.links ? html`
+                                                <ul>
+                                                    ${this.selectedTemplate.links.map(link => html`
+                                                        <li><a href="${link.url}" target="_blank">${link.text}</a></li>
+                                                    `)}
+                                                </ul>
+                                            ` : ''
+                                        }
                                     </div>
                                 </div>
                             </div>

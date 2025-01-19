@@ -552,6 +552,16 @@ class OptionsComponent extends LitElement {
             gap: var(--gap-2);
             padding: var(--padding-3);
         }
+        .devops {
+            background-color: var(--text-1);
+            color: var(--bg-1);
+            border: 2px solid var(--text-1);
+        }
+        .devops:hover {
+            background-color: var(--bg-1);
+            color: var(--text-1);
+            border: 2px solid var(--text-1);
+        }
     `;
 
     static properties = {
@@ -940,7 +950,7 @@ class OptionsComponent extends LitElement {
 
                     <div class="plugins-toggle-nohover options-section">
                         <label>Copy Template Configurations</label>
-                        <button class="toggle-switch btn-primary" @click="${() => this.copyTemplateConfigurations()}">Copy</button>
+                        <button class="toggle-switch btn-primary devops" @click="${() => this.copyTemplateConfigurations()}">Copy</button>
                     </div>
                 </div>
 

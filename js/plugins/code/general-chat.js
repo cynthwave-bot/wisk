@@ -305,7 +305,7 @@ class GeneralChat extends LitElement {
 
     constructor() {
         super();
-        this.activeTab = 'text';
+        this.activeTab = 'video';
         this.messages = [];
         this.participants = [];
         this.isJoined = false;
@@ -1062,7 +1062,7 @@ class GeneralChat extends LitElement {
         return html`
             <div class="container">
                 <div class="tabs">
-                    <div class="tab ${this.activeTab === 'text' ? 'active' : ''}" 
+                    <div class="tab ${this.activeTab === 'text' ? 'active' : ''}" style="display: none"
                          @click=${() => this.switchTab('text')}>
                         Text Chat
                     </div>
