@@ -16,11 +16,11 @@
     .right-sidebar-hidden {
         display: none;
     }
-    
+
     .right-sidebar {
         transition: width 0.05s;
     }
-    
+
     /* Desktop-only resize handle */
     .resize-handle {
         position: absolute;
@@ -30,21 +30,21 @@
         z-index: 150;
         transition: background-color 0.2s;
     }
-    
+
     .resize-handle-left {
         left: -5px;
         cursor: col-resize;
     }
-    
+
     .resize-handle:hover {
         background-color: var(--bg-3);
     }
-    
+
     .sidebar-resizing {
         cursor: col-resize;
         user-select: none;
     }
-    
+
     .sidebar-resizing iframe,
     .sidebar-resizing .right-sidebar-body {
         pointer-events: none;
@@ -66,11 +66,11 @@
         border-left: 1px solid var(--border-1);
         transition: right 0.2s;
     }
-    
+
     .right-sidebar-hidden {
         right: -100%;
     }
-    
+
     .resize-handle {
         display: none;
     }

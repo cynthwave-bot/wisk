@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class HelpDialog extends LitElement {
     static styles = css`
@@ -9,7 +9,7 @@ class HelpDialog extends LitElement {
             padding: 0px;
             transition: all 0.3s ease;
         }
-        
+
         .dialog-overlay {
             position: fixed;
             top: 0;
@@ -110,14 +110,24 @@ class HelpDialog extends LitElement {
             font-weight: 500;
         }
 
-        *::-webkit-scrollbar { width: 15px; }
-        *::-webkit-scrollbar-track { background: var(--bg-1); }
-        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+        *::-webkit-scrollbar {
+            width: 15px;
+        }
+        *::-webkit-scrollbar-track {
+            background: var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--bg-3);
+            border-radius: 20px;
+            border: 4px solid var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-1);
+        }
     `;
 
     static properties = {
-        visible: { type: Boolean }
+        visible: { type: Boolean },
     };
 
     constructor() {
@@ -137,7 +147,7 @@ class HelpDialog extends LitElement {
 
     render() {
         return html`
-            <div class="dialog-overlay" style="display: ${this.visible ? "flex" : "none"}">
+            <div class="dialog-overlay" style="display: ${this.visible ? 'flex' : 'none'}">
                 <div class="dialog-content">
                     <button class="dialog-close" @click=${this.hide}>
                         <img src="/a7/forget/x.svg" alt="Close" style="filter: var(--themed-svg)" />
@@ -151,7 +161,9 @@ class HelpDialog extends LitElement {
                                 <a target="_blank" href="https://wisk.cc/faq" class="quick-link">FAQ</a>
                                 <a target="_blank" href="https://wisk.cc/blog" class="quick-link">Blog</a>
                                 <a target="_blank" href="https://discord.gg/YyqXEey4JS" class="quick-link">Discord</a>
-                                <a target="_blank" href="https://github.com/cynthwave/wisk/blob/master/docs/docs.md" class="quick-link">Documentation</a>
+                                <a target="_blank" href="https://github.com/cynthwave/wisk/blob/master/docs/docs.md" class="quick-link"
+                                    >Documentation</a
+                                >
                                 <a target="_blank" href="https://wisk.cc/contact" class="quick-link">Contact Support</a>
                             </div>
                         </div>
@@ -159,29 +171,41 @@ class HelpDialog extends LitElement {
                         <div style="display: flex; flex-direction: column; align-items: flex-start; gap: var(--gap-2); margin-top: var(--gap-3)">
                             <h3>Tutorials</h3>
                             <div style="display: flex; gap: var(--gap-2); overflow-x: auto; width: -webkit-fill-available;">
-                                <iframe width="360" height="200" style="border-radius: var(--radius); border: 1px solid var(--border-1)" 
-                                    src="https://www.youtube-nocookie.com/embed/H2qJRnV8ZGA?si=RisOjaFoNIM7Me0H" 
-                                    title="YouTube video player" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                    referrerpolicy="strict-origin-when-cross-origin" 
-                                    allowfullscreen>
+                                <iframe
+                                    width="360"
+                                    height="200"
+                                    style="border-radius: var(--radius); border: 1px solid var(--border-1)"
+                                    src="https://www.youtube-nocookie.com/embed/H2qJRnV8ZGA?si=RisOjaFoNIM7Me0H"
+                                    title="YouTube video player"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allowfullscreen
+                                >
                                 </iframe>
-                                <iframe width="360" height="200" style="border-radius: var(--radius); border: 1px solid var(--border-1)" 
-                                    src="https://www.youtube-nocookie.com/embed/BiZ1CLT3nEM?si=ibM4mAO6_QFvSkos" 
-                                    title="YouTube video player" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                    referrerpolicy="strict-origin-when-cross-origin" 
-                                    allowfullscreen>
+                                <iframe
+                                    width="360"
+                                    height="200"
+                                    style="border-radius: var(--radius); border: 1px solid var(--border-1)"
+                                    src="https://www.youtube-nocookie.com/embed/BiZ1CLT3nEM?si=ibM4mAO6_QFvSkos"
+                                    title="YouTube video player"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allowfullscreen
+                                >
                                 </iframe>
-                                <iframe width="360" height="200" style="border-radius: var(--radius); border: 1px solid var(--border-1)" 
-                                    src="https://www.youtube-nocookie.com/embed/rC2VQ-oyDG0?si=JIbXq-iepjYc75HJ" 
-                                    title="YouTube video player" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                    referrerpolicy="strict-origin-when-cross-origin" 
-                                    allowfullscreen>
+                                <iframe
+                                    width="360"
+                                    height="200"
+                                    style="border-radius: var(--radius); border: 1px solid var(--border-1)"
+                                    src="https://www.youtube-nocookie.com/embed/rC2VQ-oyDG0?si=JIbXq-iepjYc75HJ"
+                                    title="YouTube video player"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allowfullscreen
+                                >
                                 </iframe>
                             </div>
                         </div>
@@ -192,4 +216,4 @@ class HelpDialog extends LitElement {
     }
 }
 
-customElements.define("help-dialog", HelpDialog);
+customElements.define('help-dialog', HelpDialog);

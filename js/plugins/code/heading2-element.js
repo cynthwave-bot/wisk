@@ -1,7 +1,7 @@
 class Heading2Element extends BaseTextElement {
     constructor() {
         super();
-        this.placeholder = this.getAttribute("placeholder") || wisk.editor.wiskSite? "": "edit me";
+        this.placeholder = this.getAttribute('placeholder') || wisk.editor.wiskSite ? '' : 'edit me';
     }
 
     render() {
@@ -89,4 +89,4 @@ class Heading2Element extends BaseTextElement {
     }
 }
 
-customElements.define("heading2-element", Heading2Element);
+customElements.define('heading2-element', Heading2Element);

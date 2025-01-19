@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class TweaksElement extends LitElement {
     static styles = css`
@@ -32,7 +32,7 @@ class TweaksElement extends LitElement {
             padding: var(--padding-w2);
             display: block;
         }
-        input[type="file"] {
+        input[type='file'] {
             display: none;
         }
         .upload-tile {
@@ -84,22 +84,22 @@ class TweaksElement extends LitElement {
 
     static properties = {
         images: { type: Array },
-        uploadedImages: { type: Array }
+        uploadedImages: { type: Array },
     };
 
     constructor() {
         super();
         this.images = [
             {
-                src: "/a7/plugins/tweaks/pexels-codioful-7130469.jpg",
-                text: "Photo by Codioful (formerly Gradienta)",
-                link: "https://www.pexels.com/photo/multicolor-photo-7130469/",
+                src: '/a7/plugins/tweaks/pexels-codioful-7130469.jpg',
+                text: 'Photo by Codioful (formerly Gradienta)',
+                link: 'https://www.pexels.com/photo/multicolor-photo-7130469/',
             },
             {
-                src: "/a7/plugins/tweaks/pexels-fotios-photos-1414573.jpg",
-                text: "Photo by Lisa Fotios",
-                link: "https://www.pexels.com/photo/gray-cloudy-sky-with-gray-clouds-1414573/",
-            }
+                src: '/a7/plugins/tweaks/pexels-fotios-photos-1414573.jpg',
+                text: 'Photo by Lisa Fotios',
+                link: 'https://www.pexels.com/photo/gray-cloudy-sky-with-gray-clouds-1414573/',
+            },
         ];
         this.uploadedImages = [];
     }
@@ -108,12 +108,12 @@ class TweaksElement extends LitElement {
         const file = event.target.files[0];
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = e => {
                 const newImage = {
                     src: e.target.result,
                     text: file.name,
                     link: null,
-                    isUploaded: true
+                    isUploaded: true,
                 };
                 this.uploadedImages = [...this.uploadedImages, newImage];
                 this.requestUpdate();
@@ -123,9 +123,9 @@ class TweaksElement extends LitElement {
     }
 
     changeBackground(image) {
-        document.body.style.backgroundColor = "transparent";
+        document.body.style.backgroundColor = 'transparent';
         document.body.style.background = `url(${image.src}) no-repeat center center fixed`;
-        document.body.style.backgroundSize = "cover";
+        document.body.style.backgroundSize = 'cover';
     }
 
     render() {
@@ -135,21 +135,15 @@ class TweaksElement extends LitElement {
             <div>
                 <label for="tweaks">Background Image</label>
                 <div class="bgs">
-                    ${allImages.map((image) => html`
-                        <button class="bg" @click="${() => this.changeBackground(image)}">
-                            <img src="${image.src}" alt="${image.text}" />
-                            ${image.link 
-                                ? html`<a href="${image.link}" target="_blank">${image.text}</a>`
-                                : html`<a>${image.text}</a>`
-                            }
-                        </button>
-                    `)}
-                    <input 
-                        type="file" 
-                        id="imageUpload" 
-                        accept="image/*" 
-                        @change="${this.handleFileUpload}"
-                    />
+                    ${allImages.map(
+                        image => html`
+                            <button class="bg" @click="${() => this.changeBackground(image)}">
+                                <img src="${image.src}" alt="${image.text}" />
+                                ${image.link ? html`<a href="${image.link}" target="_blank">${image.text}</a>` : html`<a>${image.text}</a>`}
+                            </button>
+                        `
+                    )}
+                    <input type="file" id="imageUpload" accept="image/*" @change="${this.handleFileUpload}" />
                     <label for="imageUpload" class="bg upload-tile">
                         <div class="plus-icon"></div>
                         <span class="upload-text">Upload Image</span>
@@ -160,4 +154,4 @@ class TweaksElement extends LitElement {
     }
 }
 
-customElements.define("tweaks-element", TweaksElement);
+customElements.define('tweaks-element', TweaksElement);

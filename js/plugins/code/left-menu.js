@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class LeftMenu extends LitElement {
     static styles = css`
@@ -198,11 +198,20 @@ class LeftMenu extends LitElement {
             }
         }
 
-        *::-webkit-scrollbar { width: 15px; }
-        *::-webkit-scrollbar-track { background: var(--bg-1); }
-        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
-
+        *::-webkit-scrollbar {
+            width: 15px;
+        }
+        *::-webkit-scrollbar-track {
+            background: var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--bg-3);
+            border-radius: 20px;
+            border: 4px solid var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-1);
+        }
     `;
 
     static properties = {
@@ -224,12 +233,12 @@ class LeftMenu extends LitElement {
 
     async setList() {
         try {
-            const auth = await document.getElementById("auth").getUserInfo();
-            const response = await fetch("https://cloud.wisk.cc/v1/document", {
-                method: "GET",
+            const auth = await document.getElementById('auth').getUserInfo();
+            const response = await fetch('https://cloud.wisk.cc/v1/document', {
+                method: 'GET',
                 headers: {
-                    "Authorization": "Bearer " + auth.token,
-                }
+                    Authorization: 'Bearer ' + auth.token,
+                },
             });
 
             if (!response.ok) {
@@ -239,7 +248,7 @@ class LeftMenu extends LitElement {
             const data = await response.json();
             this.list = data.map(item => ({
                 id: item.id,
-                name: item.title
+                name: item.title,
             }));
             this.filteredList = [...this.list];
             this.requestUpdate();
@@ -249,33 +258,33 @@ class LeftMenu extends LitElement {
     }
 
     async removeItem(id) {
-        var result = confirm("Are you sure you want to delete this page?");
+        var result = confirm('Are you sure you want to delete this page?');
         if (!result) {
             return;
         }
 
         try {
-            const auth = await document.getElementById("auth").getUserInfo();
+            const auth = await document.getElementById('auth').getUserInfo();
             const response = await fetch(`https://cloud.wisk.cc/v1/document?id=${id}`, {
-                method: "DELETE",
+                method: 'DELETE',
                 headers: {
-                    "Authorization": "Bearer " + auth.token,
-                }
+                    Authorization: 'Bearer ' + auth.token,
+                },
             });
 
             if (!response.ok) {
                 throw new Error('Failed to delete document');
             }
 
-            this.list = this.list.filter((item) => item.id !== id);
-            this.filteredList = this.filteredList.filter((item) => item.id !== id);
+            this.list = this.list.filter(item => item.id !== id);
+            this.filteredList = this.filteredList.filter(item => item.id !== id);
             this.requestUpdate();
         } catch (error) {
             console.error('Error deleting document:', error);
         }
 
         if (id == window.wisk.editor.pageId) {
-            window.location.href = "/";
+            window.location.href = '/';
         }
     }
 
@@ -292,11 +301,7 @@ class LeftMenu extends LitElement {
                 if (b.charAt(i - 1) === a.charAt(j - 1)) {
                     matrix[i][j] = matrix[i - 1][j - 1];
                 } else {
-                    matrix[i][j] = Math.min(
-                        matrix[i - 1][j - 1] + 1,
-                        matrix[i][j - 1] + 1,
-                        matrix[i - 1][j] + 1
-                    );
+                    matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1);
                 }
             }
         }
@@ -318,12 +323,12 @@ class LeftMenu extends LitElement {
     }
 
     filterList(e) {
-        if (e.target.value === "") {
+        if (e.target.value === '') {
             this.filteredList = [...this.list];
             return;
         }
         const searchTerm = e.target.value.toLowerCase();
-        this.filteredList = this.list.filter((item) => {
+        this.filteredList = this.list.filter(item => {
             const itemName = item.name.toLowerCase();
             return this.fuzzySearch(searchTerm, itemName) || this.levenshteinDistance(searchTerm, itemName) <= 2;
         });
@@ -335,8 +340,8 @@ class LeftMenu extends LitElement {
     }
 
     openInEditor() {
-        var url = "https://app.wisk.cc?id=" + window.wisk.editor.pageId;
-        window.open(url, "_blank");
+        var url = 'https://app.wisk.cc?id=' + window.wisk.editor.pageId;
+        window.open(url, '_blank');
     }
 
     toggleDropdown(id, e) {
@@ -352,25 +357,25 @@ class LeftMenu extends LitElement {
     render() {
         if (window.wisk.editor.wiskSite) {
             return html`
-            <div class="outer">
-                <button @click=${this.openInEditor} class="new" style="cursor: pointer;"> Open in Editor </button>
-            </div>
+                <div class="outer">
+                    <button @click=${this.openInEditor} class="new" style="cursor: pointer;">Open in Editor</button>
+                </div>
             `;
         }
 
         return html`
             <div class="outer" @click=${this.closeDropdown}>
                 <div class="vert-nav">
-                    <button class="vert-nav-button" @click=${() => document.querySelector("neo-ai").expandDialog()}>
+                    <button class="vert-nav-button" @click=${() => document.querySelector('neo-ai').expandDialog()}>
                         <img src="/a7/forget/spark.svg" class="new-img" /> Neo AI
                     </button>
-                    <button class="vert-nav-button" @click=${() => document.querySelector("template-dialog").show()}>
+                    <button class="vert-nav-button" @click=${() => document.querySelector('template-dialog').show()}>
                         <img src="/a7/forget/layouts.svg" class="new-img" /> Templates
                     </button>
-                    <button class="vert-nav-button" @click=${() => document.querySelector("feedback-dialog").show()}>
+                    <button class="vert-nav-button" @click=${() => document.querySelector('feedback-dialog').show()}>
                         <img src="/a7/forget/feedback.svg" class="new-img" /> Feedback
                     </button>
-                    <button class="vert-nav-button" @click=${() => document.querySelector("help-dialog").show()}>
+                    <button class="vert-nav-button" @click=${() => document.querySelector('help-dialog').show()}>
                         <img src="/a7/forget/help.svg" class="new-img" /> Help
                     </button>
                 </div>
@@ -381,38 +386,39 @@ class LeftMenu extends LitElement {
                     </div>
 
                     <div class="search-div od">
-                        <img src="/a7/forget/search.svg" alt="Search"/>
+                        <img src="/a7/forget/search.svg" alt="Search" />
                         <input type="text" id="search" name="search" class="srch" placeholder="Search Documents" @input=${this.filterList} />
                     </div>
                 </div>
                 <ul style="flex: 1; overflow: auto;">
                     ${this.filteredList.map(
-                        (item) => html`
+                        item => html`
                             <li class="item">
                                 <a href="?id=${item.id}" style="display: flex; gap: var(--gap-2); align-items: center; font-size: 13px">
-                                    <img src="/a7/forget/page-1.svg" alt="File" style="width: 18px; height: 18px; opacity: 0.8"/> ${item.name}
+                                    <img src="/a7/forget/page-1.svg" alt="File" style="width: 18px; height: 18px; opacity: 0.8" /> ${item.name}
                                 </a>
-                                <div class="more-options" @click=${(e) => this.toggleDropdown(item.id, e)}>
-                                    <img src="/a7/forget/morex.svg" alt="More options"/>
-                                    ${this.openDropdownId === item.id ? html`
-                                        <div class="dropdown">
-                                            <div class="dropdown-item" @click=${() => this.removeItem(item.id)}>
-                                                <img src="/a7/forget/trash.svg" alt="Delete" style="width: 20px; height: 20px; padding: 2px;"/>
-                                                Delete
-                                            </div>
-                                        </div>
-                                    ` : ''}
+                                <div class="more-options" @click=${e => this.toggleDropdown(item.id, e)}>
+                                    <img src="/a7/forget/morex.svg" alt="More options" />
+                                    ${this.openDropdownId === item.id
+                                        ? html`
+                                              <div class="dropdown">
+                                                  <div class="dropdown-item" @click=${() => this.removeItem(item.id)}>
+                                                      <img src="/a7/forget/trash.svg" alt="Delete" style="width: 20px; height: 20px; padding: 2px;" />
+                                                      Delete
+                                                  </div>
+                                              </div>
+                                          `
+                                        : ''}
                                 </div>
                             </li>
                         `
                     )}
                 </ul>
 
-                <div>
-                </div>
+                <div></div>
             </div>
         `;
     }
 }
 
-customElements.define("left-menu", LeftMenu);
+customElements.define('left-menu', LeftMenu);

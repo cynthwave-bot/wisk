@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class GeneralChat extends LitElement {
     static styles = css`
@@ -229,7 +229,7 @@ class GeneralChat extends LitElement {
             outline: none;
             font-size: 14px;
         }
-        
+
         .hidden-canvas {
             display: none;
         }
@@ -277,16 +277,26 @@ class GeneralChat extends LitElement {
             justify-content: center;
         }
 
-        [contenteditable=true]:empty:before{
+        [contenteditable='true']:empty:before {
             content: attr(placeholder);
             pointer-events: none;
             display: block; /* For Firefox */
         }
 
-        *::-webkit-scrollbar { width: 15px; }
-        *::-webkit-scrollbar-track { background: var(--bg-1); }
-        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+        *::-webkit-scrollbar {
+            width: 15px;
+        }
+        *::-webkit-scrollbar-track {
+            background: var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--bg-3);
+            border-radius: 20px;
+            border: 4px solid var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-1);
+        }
     `;
 
     static properties = {
@@ -300,7 +310,7 @@ class GeneralChat extends LitElement {
         isCameraOn: { type: Boolean },
         isMicOn: { type: Boolean },
         currentFilter: { type: String },
-        processedStream: { type: Object }
+        processedStream: { type: Object },
     };
 
     constructor() {
@@ -314,14 +324,12 @@ class GeneralChat extends LitElement {
         this.peerConnections = new Map();
         this.localStream = null;
         this.ws = null;
-        this.u = "";
-        this.userId = "";
+        this.u = '';
+        this.userId = '';
 
         // Configuration for WebRTC
         this.rtcConfig = {
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' }
-            ]
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
         };
 
         this.currentFilter = 'none';
@@ -353,9 +361,9 @@ class GeneralChat extends LitElement {
             const r = data[i];
             const g = data[i + 1];
             const b = data[i + 2];
-            data[i] = Math.min(255, (r * 0.393) + (g * 0.769) + (b * 0.189));
-            data[i + 1] = Math.min(255, (r * 0.349) + (g * 0.686) + (b * 0.168));
-            data[i + 2] = Math.min(255, (r * 0.272) + (g * 0.534) + (b * 0.131));
+            data[i] = Math.min(255, r * 0.393 + g * 0.769 + b * 0.189);
+            data[i + 1] = Math.min(255, r * 0.349 + g * 0.686 + b * 0.168);
+            data[i + 2] = Math.min(255, r * 0.272 + g * 0.534 + b * 0.131);
         }
         this.ctx.putImageData(imageData, 0, 0);
     }
@@ -374,8 +382,12 @@ class GeneralChat extends LitElement {
 
     applyVignette() {
         const gradient = this.ctx.createRadialGradient(
-            this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / 3,
-            this.canvas.width / 2, this.canvas.height / 2, this.canvas.height
+            this.canvas.width / 2,
+            this.canvas.height / 2,
+            this.canvas.height / 3,
+            this.canvas.width / 2,
+            this.canvas.height / 2,
+            this.canvas.height
         );
         gradient.addColorStop(0, 'rgba(0,0,0,0)');
         gradient.addColorStop(1, 'rgba(0,0,0,0.6)');
@@ -399,9 +411,9 @@ class GeneralChat extends LitElement {
         const data = imageData.data;
         for (let i = 0; i < data.length; i += 4) {
             const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-            data[i] = avg < 128 ? 0 : 255;        // Red channel
-            data[i + 1] = avg < 128 ? 0 : 130;    // Green channel
-            data[i + 2] = avg < 128 ? 255 : 0;    // Blue channel
+            data[i] = avg < 128 ? 0 : 255; // Red channel
+            data[i + 1] = avg < 128 ? 0 : 130; // Green channel
+            data[i + 2] = avg < 128 ? 255 : 0; // Blue channel
         }
         this.ctx.putImageData(imageData, 0, 0);
     }
@@ -413,26 +425,28 @@ class GeneralChat extends LitElement {
         tempCanvas.width = this.canvas.width;
         tempCanvas.height = this.canvas.height;
         tempCtx.drawImage(this.canvas, 0, 0);
-        
+
         // Pixelate
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         for (let y = 0; y < this.canvas.height; y += pixelSize) {
             for (let x = 0; x < this.canvas.width; x += pixelSize) {
                 const imageData = tempCtx.getImageData(x, y, pixelSize, pixelSize);
                 const data = imageData.data;
-                let r = 0, g = 0, b = 0;
-                
+                let r = 0,
+                    g = 0,
+                    b = 0;
+
                 // Get average color
                 for (let i = 0; i < data.length; i += 4) {
                     r += data[i];
                     g += data[i + 1];
                     b += data[i + 2];
                 }
-                
+
                 r = r / (pixelSize * pixelSize);
                 g = g / (pixelSize * pixelSize);
                 b = b / (pixelSize * pixelSize);
-                
+
                 this.ctx.fillStyle = `rgb(${r},${g},${b})`;
                 this.ctx.fillRect(x, y, pixelSize, pixelSize);
             }
@@ -443,9 +457,9 @@ class GeneralChat extends LitElement {
         const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         const data = imageData.data;
         const time = Date.now() / 1000;
-        
+
         for (let y = 0; y < this.canvas.height; y++) {
-            const hue = (y / this.canvas.height * 360 + time * 50) % 360;
+            const hue = ((y / this.canvas.height) * 360 + time * 50) % 360;
             for (let x = 0; x < this.canvas.width; x++) {
                 const i = (y * this.canvas.width + x) * 4;
                 const [r, g, b] = this.hslToRgb(hue / 360, 0.5, 0.5);
@@ -490,34 +504,38 @@ class GeneralChat extends LitElement {
     applyVintage() {
         const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         const data = imageData.data;
-        
+
         for (let i = 0; i < data.length; i += 4) {
             const r = data[i];
             const g = data[i + 1];
             const b = data[i + 2];
-            
+
             // Sepia
-            data[i] = (r * 0.393) + (g * 0.769) + (b * 0.189);
-            data[i + 1] = (r * 0.349) + (g * 0.686) + (b * 0.168);
-            data[i + 2] = (r * 0.272) + (g * 0.534) + (b * 0.131);
-            
+            data[i] = r * 0.393 + g * 0.769 + b * 0.189;
+            data[i + 1] = r * 0.349 + g * 0.686 + b * 0.168;
+            data[i + 2] = r * 0.272 + g * 0.534 + b * 0.131;
+
             // Add noise
             const noise = (Math.random() - 0.5) * 50;
             data[i] += noise;
             data[i + 1] += noise;
             data[i + 2] += noise;
-            
+
             // Ensure values stay within bounds
             data[i] = Math.min(255, Math.max(0, data[i]));
             data[i + 1] = Math.min(255, Math.max(0, data[i + 1]));
             data[i + 2] = Math.min(255, Math.max(0, data[i + 2]));
         }
         this.ctx.putImageData(imageData, 0, 0);
-        
+
         // Add vignette
         const gradient = this.ctx.createRadialGradient(
-            this.canvas.width / 2, this.canvas.height / 2, 0,
-            this.canvas.width / 2, this.canvas.height / 2, Math.max(this.canvas.width, this.canvas.height) / 2
+            this.canvas.width / 2,
+            this.canvas.height / 2,
+            0,
+            this.canvas.width / 2,
+            this.canvas.height / 2,
+            Math.max(this.canvas.width, this.canvas.height) / 2
         );
         gradient.addColorStop(0.5, 'rgba(0,0,0,0)');
         gradient.addColorStop(1, 'rgba(0,0,0,0.5)');
@@ -534,7 +552,7 @@ class GeneralChat extends LitElement {
         // Create canvas for video processing
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
-        
+
         // Get video dimensions from the stream
         const videoTrack = stream.getVideoTracks()[0];
         const settings = videoTrack.getSettings();
@@ -552,7 +570,7 @@ class GeneralChat extends LitElement {
             if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
                 // Draw the video frame to canvas
                 this.ctx.drawImage(videoElement, 0, 0, this.canvas.width, this.canvas.height);
-                
+
                 // Apply filters based on currentFilter
                 switch (this.currentFilter) {
                     case 'grayscale':
@@ -656,19 +674,19 @@ class GeneralChat extends LitElement {
     applyCyberpunk() {
         const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         const data = imageData.data;
-        
+
         for (let i = 0; i < data.length; i += 4) {
             // Enhance blues and pinks
             if (data[i + 2] > data[i] && data[i + 2] > data[i + 1]) {
                 data[i + 2] *= 1.2; // Enhance blue
-                data[i] *= 1.1;     // Add some red
+                data[i] *= 1.1; // Add some red
             }
             // Add pink/purple tint
             if (data[i] > data[i + 1]) {
-                data[i] *= 1.2;     // Enhance red
+                data[i] *= 1.2; // Enhance red
                 data[i + 2] *= 1.1; // Add some blue
             }
-            
+
             // Add slight bloom effect
             const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
             if (brightness > 200) {
@@ -696,7 +714,7 @@ class GeneralChat extends LitElement {
             data[i] += noise;
             data[i + 1] += noise;
             data[i + 2] += noise;
-            
+
             // Ensure values stay within bounds
             data[i] = Math.min(255, Math.max(0, data[i]));
             data[i + 1] = Math.min(255, Math.max(0, data[i + 1]));
@@ -708,7 +726,7 @@ class GeneralChat extends LitElement {
     applyUnderwater() {
         const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         const data = imageData.data;
-        
+
         for (let i = 0; i < data.length; i += 4) {
             // Reduce red (underwater absorption)
             data[i] *= 0.7;
@@ -730,13 +748,13 @@ class GeneralChat extends LitElement {
     applyNightvision() {
         const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         const data = imageData.data;
-        
+
         for (let i = 0; i < data.length; i += 4) {
             // Convert to green-tinted grayscale
             const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-            data[i] = avg * 0.1;      // Almost no red
-            data[i + 1] = avg * 1.5;  // Enhanced green
-            data[i + 2] = avg * 0.1;  // Almost no blue
+            data[i] = avg * 0.1; // Almost no red
+            data[i + 1] = avg * 1.5; // Enhanced green
+            data[i + 2] = avg * 0.1; // Almost no blue
         }
         this.ctx.putImageData(imageData, 0, 0);
 
@@ -751,8 +769,12 @@ class GeneralChat extends LitElement {
 
         // Add vignette
         const gradient = this.ctx.createRadialGradient(
-            this.canvas.width / 2, this.canvas.height / 2, 0,
-            this.canvas.width / 2, this.canvas.height / 2, this.canvas.width / 1.5
+            this.canvas.width / 2,
+            this.canvas.height / 2,
+            0,
+            this.canvas.width / 2,
+            this.canvas.height / 2,
+            this.canvas.width / 1.5
         );
         gradient.addColorStop(0, 'rgba(0,0,0,0)');
         gradient.addColorStop(1, 'rgba(0,0,0,0.8)');
@@ -763,27 +785,27 @@ class GeneralChat extends LitElement {
     applyThermal() {
         const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         const data = imageData.data;
-        
+
         for (let i = 0; i < data.length; i += 4) {
             const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-            
+
             // Create thermal color mapping
             if (avg < 64) {
-                data[i] = 0;          // Red
-                data[i + 1] = 0;      // Green
+                data[i] = 0; // Red
+                data[i + 1] = 0; // Green
                 data[i + 2] = avg * 4; // Blue
             } else if (avg < 128) {
-                data[i] = 0;                    // Red
-                data[i + 1] = (avg - 64) * 4;   // Green
+                data[i] = 0; // Red
+                data[i + 1] = (avg - 64) * 4; // Green
                 data[i + 2] = 255 - (avg - 64) * 4; // Blue
             } else if (avg < 192) {
-                data[i] = (avg - 128) * 4;       // Red
-                data[i + 1] = 255;               // Green
-                data[i + 2] = 0;                 // Blue
+                data[i] = (avg - 128) * 4; // Red
+                data[i + 1] = 255; // Green
+                data[i + 2] = 0; // Blue
             } else {
-                data[i] = 255;                // Red
+                data[i] = 255; // Red
                 data[i + 1] = 255 - (avg - 192) * 4; // Green
-                data[i + 2] = 0;              // Blue
+                data[i + 2] = 0; // Blue
             }
         }
         this.ctx.putImageData(imageData, 0, 0);
@@ -799,17 +821,17 @@ class GeneralChat extends LitElement {
             const hue2rgb = (p, q, t) => {
                 if (t < 0) t += 1;
                 if (t > 1) t -= 1;
-                if (t < 1/6) return p + (q - p) * 6 * t;
-                if (t < 1/2) return q;
-                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                if (t < 1 / 6) return p + (q - p) * 6 * t;
+                if (t < 1 / 2) return q;
+                if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
                 return p;
             };
 
             const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
             const p = 2 * l - q;
-            r = hue2rgb(p, q, h + 1/3);
+            r = hue2rgb(p, q, h + 1 / 3);
             g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1/3);
+            b = hue2rgb(p, q, h - 1 / 3);
         }
 
         return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
@@ -819,19 +841,19 @@ class GeneralChat extends LitElement {
         event.preventDefault();
         const textarea = this.shadowRoot.querySelector('.input-textarea');
         const message = textarea.innerText.trim();
-        
+
         if (!message) return;
-        
+
         this.messages = [
             ...this.messages,
             {
                 id: this.messages.length + 1,
                 text: message,
-                sender: "Me",
-                sent: true
-            }
+                sender: 'Me',
+                sent: true,
+            },
         ];
-        
+
         textarea.innerText = '';
     }
 
@@ -841,14 +863,16 @@ class GeneralChat extends LitElement {
 
         this.ws.onopen = () => {
             // Join room
-            this.ws.send(JSON.stringify({
-                type: 'join',
-                roomId: roomId,
-                userId: this.userId
-            }));
+            this.ws.send(
+                JSON.stringify({
+                    type: 'join',
+                    roomId: roomId,
+                    userId: this.userId,
+                })
+            );
         };
 
-        this.ws.onmessage = async (event) => {
+        this.ws.onmessage = async event => {
             const message = JSON.parse(event.data);
             await this.handleSignalingMessage(message);
         };
@@ -885,26 +909,31 @@ class GeneralChat extends LitElement {
             peerConnection.addTrack(track, this.localStream);
         });
 
-        peerConnection.onicecandidate = (event) => {
+        peerConnection.onicecandidate = event => {
             if (event.candidate) {
-                this.ws.send(JSON.stringify({
-                    type: 'ice-candidate',
-                    userId: this.userId,
-                    targetUserId: userId,
-                    candidate: event.candidate
-                }));
+                this.ws.send(
+                    JSON.stringify({
+                        type: 'ice-candidate',
+                        userId: this.userId,
+                        targetUserId: userId,
+                        candidate: event.candidate,
+                    })
+                );
             }
         };
 
-        peerConnection.ontrack = (event) => {
+        peerConnection.ontrack = event => {
             const existingParticipant = this.participants.find(p => p.id === userId);
 
             if (!existingParticipant) {
-                this.participants = [...this.participants, {
-                    id: userId,
-                    name: userId.split('@')[0],
-                    stream: event.streams[0]
-                }];
+                this.participants = [
+                    ...this.participants,
+                    {
+                        id: userId,
+                        name: userId.split('@')[0],
+                        stream: event.streams[0],
+                    },
+                ];
                 this.requestUpdate();
             }
         };
@@ -913,12 +942,14 @@ class GeneralChat extends LitElement {
             const offer = await peerConnection.createOffer();
             await peerConnection.setLocalDescription(offer);
 
-            this.ws.send(JSON.stringify({
-                type: 'offer',
-                userId: this.userId,
-                targetUserId: userId,
-                offer
-            }));
+            this.ws.send(
+                JSON.stringify({
+                    type: 'offer',
+                    userId: this.userId,
+                    targetUserId: userId,
+                    offer,
+                })
+            );
         }
     }
 
@@ -930,26 +961,31 @@ class GeneralChat extends LitElement {
             peerConnection.addTrack(track, this.localStream);
         });
 
-        peerConnection.onicecandidate = (event) => {
+        peerConnection.onicecandidate = event => {
             if (event.candidate) {
-                this.ws.send(JSON.stringify({
-                    type: 'ice-candidate',
-                    userId: this.userId,
-                    targetUserId: userId,
-                    candidate: event.candidate
-                }));
+                this.ws.send(
+                    JSON.stringify({
+                        type: 'ice-candidate',
+                        userId: this.userId,
+                        targetUserId: userId,
+                        candidate: event.candidate,
+                    })
+                );
             }
         };
 
-        peerConnection.ontrack = (event) => {
+        peerConnection.ontrack = event => {
             const existingParticipant = this.participants.find(p => p.id === userId);
 
             if (!existingParticipant) {
-                this.participants = [...this.participants, {
-                    id: userId,
-                    name: userId.split('@')[0],
-                    stream: event.streams[0]
-                }];
+                this.participants = [
+                    ...this.participants,
+                    {
+                        id: userId,
+                        name: userId.split('@')[0],
+                        stream: event.streams[0],
+                    },
+                ];
                 this.requestUpdate();
             }
         };
@@ -958,12 +994,14 @@ class GeneralChat extends LitElement {
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
 
-        this.ws.send(JSON.stringify({
-            type: 'answer',
-            userId: this.userId,
-            targetUserId: userId,
-            answer
-        }));
+        this.ws.send(
+            JSON.stringify({
+                type: 'answer',
+                userId: this.userId,
+                targetUserId: userId,
+                answer,
+            })
+        );
     }
 
     async handleAnswer(userId, answer) {
@@ -996,7 +1034,7 @@ class GeneralChat extends LitElement {
             // Get user media
             const originalStream = await navigator.mediaDevices.getUserMedia({
                 video: true,
-                audio: true
+                audio: true,
             });
 
             // Process the video stream with filters
@@ -1008,15 +1046,14 @@ class GeneralChat extends LitElement {
                 {
                     id: 'local',
                     name: 'You',
-                    stream: this.localStream
-                }
+                    stream: this.localStream,
+                },
             ];
 
             // Connect to signaling server
             this.connectSignalingServer();
             this.isJoined = true;
             this.requestUpdate();
-
         } catch (err) {
             console.error('Error joining call:', err);
             alert('Error joining call: ' + err.message);
@@ -1036,11 +1073,13 @@ class GeneralChat extends LitElement {
         }
         // Previous endCall logic remains the same
         if (this.ws) {
-            this.ws.send(JSON.stringify({
-                type: 'leave',
-                roomId: wisk.editor.pageId,
-                userId: this.userId
-            }));
+            this.ws.send(
+                JSON.stringify({
+                    type: 'leave',
+                    roomId: wisk.editor.pageId,
+                    userId: this.userId,
+                })
+            );
             this.ws.close();
         }
 
@@ -1062,50 +1101,58 @@ class GeneralChat extends LitElement {
         return html`
             <div class="container">
                 <div class="tabs">
-                    <div class="tab ${this.activeTab === 'text' ? 'active' : ''}" style="display: none"
-                         @click=${() => this.switchTab('text')}>
+                    <div class="tab ${this.activeTab === 'text' ? 'active' : ''}" style="display: none" @click=${() => this.switchTab('text')}>
                         Text Chat
                     </div>
-                    <div class="tab ${this.activeTab === 'video' ? 'active' : ''}"
-                         @click=${() => this.switchTab('video')}>
-                        Video Call
-                    </div>
+                    <div class="tab ${this.activeTab === 'video' ? 'active' : ''}" @click=${() => this.switchTab('video')}>Video Call</div>
                 </div>
 
-                ${this.activeTab === 'text' ? html`
-                    <div class="chat-container">
-                        ${this.messages.length === 0 ? html` <p style="margin: auto; text-align: center">No messages yet<br/>Add friends and start talking</p> ` : html`` }
-                        ${this.messages.map(message => html`
-                            <div class="message ${message.sent ? 'sent' : ''}">
-                                <div class="message-bubble">${!message.sent ? html`<strong>${message.sender}:</strong> ` : ''}${message.text}</div>
-                            </div>
-                        `)}
-                    </div>
-                    <div class="input-container">
-                        <div class="input-wrapper">
-                            <div class="input-textarea" placeholder="Type a message..." 
-                                @keyup=${(e) => {
-                                    if (e.target.innerHTML.trim() === '<br>') {
-                                        e.target.innerHTML = '';
-                                    }
-                                }}
-                                @keydown=${(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                        this.sendMessage(e);
-                                    }
-                                    if (e.target.innerHTML.trim() === '<br>') {
-                                        e.target.innerHTML = '';
-                                    }
-
-                                }} contenteditable="true"></div>
-                            <button class="send-button" @click=${this.sendMessage}>
-                                <img src="/a7/plugins/general-chat/up.svg" style="filter: var(--themed-svg); width: 24px;" />
-                            </button>
-                        </div>
-                    </div>
-                ` : html`
-                    <div class="video-container">
-                        ${!this.isJoined ? html`
+                ${this.activeTab === 'text'
+                    ? html`
+                          <div class="chat-container">
+                              ${this.messages.length === 0
+                                  ? html` <p style="margin: auto; text-align: center">No messages yet<br />Add friends and start talking</p> `
+                                  : html``}
+                              ${this.messages.map(
+                                  message => html`
+                                      <div class="message ${message.sent ? 'sent' : ''}">
+                                          <div class="message-bubble">
+                                              ${!message.sent ? html`<strong>${message.sender}:</strong> ` : ''}${message.text}
+                                          </div>
+                                      </div>
+                                  `
+                              )}
+                          </div>
+                          <div class="input-container">
+                              <div class="input-wrapper">
+                                  <div
+                                      class="input-textarea"
+                                      placeholder="Type a message..."
+                                      @keyup=${e => {
+                                          if (e.target.innerHTML.trim() === '<br>') {
+                                              e.target.innerHTML = '';
+                                          }
+                                      }}
+                                      @keydown=${e => {
+                                          if (e.key === 'Enter' && !e.shiftKey) {
+                                              this.sendMessage(e);
+                                          }
+                                          if (e.target.innerHTML.trim() === '<br>') {
+                                              e.target.innerHTML = '';
+                                          }
+                                      }}
+                                      contenteditable="true"
+                                  ></div>
+                                  <button class="send-button" @click=${this.sendMessage}>
+                                      <img src="/a7/plugins/general-chat/up.svg" style="filter: var(--themed-svg); width: 24px;" />
+                                  </button>
+                              </div>
+                          </div>
+                      `
+                    : html`
+                          <div class="video-container">
+                              ${!this.isJoined
+                                  ? html`
                             <div class="join-container">
                                 <button class="join-button" @click=${this.joinCall}>
                                     Join Video Call
@@ -1126,89 +1173,88 @@ class GeneralChat extends LitElement {
 
                                 </div>
                             </div>
-                        ` : html`
-                            <div class="video-participants">
-                                ${this.participants.map(participant => html`
-                                    <div class="video-participant ${participant.id === 'local' ? `local-video ${this.currentFilter}` : ''}">
-                                        <video
-                                            id="${participant.id}-video"
-                                            class="participant-video"
-                                            ?muted=${participant.id === 'local'}
-                                            autoplay
-                                            playsinline
-                                            .srcObject=${participant.stream}
-                                        ></video>
-                                        <span class="participant-name">${participant.name}</span>
-                                    </div>
-                                `)}
-                            </div>
+                        `
+                                  : html`
+                                        <div class="video-participants">
+                                            ${this.participants.map(
+                                                participant => html`
+                                                    <div
+                                                        class="video-participant ${participant.id === 'local'
+                                                            ? `local-video ${this.currentFilter}`
+                                                            : ''}"
+                                                    >
+                                                        <video
+                                                            id="${participant.id}-video"
+                                                            class="participant-video"
+                                                            ?muted=${participant.id === 'local'}
+                                                            autoplay
+                                                            playsinline
+                                                            .srcObject=${participant.stream}
+                                                        ></video>
+                                                        <span class="participant-name">${participant.name}</span>
+                                                    </div>
+                                                `
+                                            )}
+                                        </div>
 
-                            <div class="video-controls">
-                                <button 
-                                    class="control-button ${!this.localStream ? 'disabled' : ''}"
-                                    @click=${this.toggleCamera}
-                                >
-                                    <img 
-                                        src=${this.isCameraOn ? "/a7/plugins/general-chat/cam-on.svg" : "/a7/plugins/general-chat/cam-off.svg"}
-                                        style="filter: var(--themed-svg)" 
-                                    />
-                                </button>
-                                <button 
-                                    class="control-button ${!this.localStream ? 'disabled' : ''}"
-                                    @click=${this.toggleMic}
-                                >
-                                    <img 
-                                        src=${this.isMicOn ? "/a7/plugins/general-chat/mic-on.svg" : "/a7/plugins/general-chat/mic-off.svg"}
-                                        style="filter: var(--themed-svg)" 
-                                    />
-                                </button>
-                                <button class="control-button end-call" @click=${this.endCall}>
-                                    <img 
-                                        src="/a7/plugins/general-chat/phone-exit.svg"
-                                        style="filter: invert(1)"
-                                    />
-                                </button>
+                                        <div class="video-controls">
+                                            <button class="control-button ${!this.localStream ? 'disabled' : ''}" @click=${this.toggleCamera}>
+                                                <img
+                                                    src=${this.isCameraOn
+                                                        ? '/a7/plugins/general-chat/cam-on.svg'
+                                                        : '/a7/plugins/general-chat/cam-off.svg'}
+                                                    style="filter: var(--themed-svg)"
+                                                />
+                                            </button>
+                                            <button class="control-button ${!this.localStream ? 'disabled' : ''}" @click=${this.toggleMic}>
+                                                <img
+                                                    src=${this.isMicOn
+                                                        ? '/a7/plugins/general-chat/mic-on.svg'
+                                                        : '/a7/plugins/general-chat/mic-off.svg'}
+                                                    style="filter: var(--themed-svg)"
+                                                />
+                                            </button>
+                                            <button class="control-button end-call" @click=${this.endCall}>
+                                                <img src="/a7/plugins/general-chat/phone-exit.svg" style="filter: invert(1)" />
+                                            </button>
 
-                                <button class="control-button" @click=${this.toggleMore}>
-                                    <img 
-                                        src="/a7/plugins/general-chat/more.svg"
-                                        style="filter: var(--themed-svg)"
-                                    />
-                                </button>
-                            </div>
+                                            <button class="control-button" @click=${this.toggleMore}>
+                                                <img src="/a7/plugins/general-chat/more.svg" style="filter: var(--themed-svg)" />
+                                            </button>
+                                        </div>
 
-                            <div class="more">
-                                <div class="more-horz">
-                                    <h3>Video Settings</h3>
-                                    <button class="close-more" @click=${this.toggleMore}> close </button>
-                                </div>
+                                        <div class="more">
+                                            <div class="more-horz">
+                                                <h3>Video Settings</h3>
+                                                <button class="close-more" @click=${this.toggleMore}>close</button>
+                                            </div>
 
-                                <div class="more-horz">
-                                    <label>Filter</label>
-                                    <select class="filter-select" @change=${this.handleFilterChange} .value=${this.currentFilter}>
-                                        <option value="none">No Filter</option>
-                                        <option value="grayscale">Grayscale</option>
-                                        <option value="sepia">Sepia</option>
-                                        <option value="brightness">Brightness</option>
-                                        <option value="vignette">Vignette</option>
-                                        <option value="invert">Invert</option>
-                                        <option value="duotone">Duotone</option>
-                                        <option value="pixelate">Pixelate</option>
-                                        <option value="rainbow">Rainbow</option>
-                                        <option value="glitch">Glitch</option>
-                                        <option value="vintage">Vintage</option>
-                                        <option value="cyberpunk">Cyberpunk</option>
-                                        <option value="noise">Noise</option>
-                                        <option value="scanlines">Scanlines</option>
-                                        <option value="underwater">Underwater</option>
-                                        <option value="nightvision">Night Vision</option>
-                                        <option value="thermal">Thermal</option>
-                                    </select>
-                                </div>
-                            </div>
-                        `}
-                    </div>
-                `}
+                                            <div class="more-horz">
+                                                <label>Filter</label>
+                                                <select class="filter-select" @change=${this.handleFilterChange} .value=${this.currentFilter}>
+                                                    <option value="none">No Filter</option>
+                                                    <option value="grayscale">Grayscale</option>
+                                                    <option value="sepia">Sepia</option>
+                                                    <option value="brightness">Brightness</option>
+                                                    <option value="vignette">Vignette</option>
+                                                    <option value="invert">Invert</option>
+                                                    <option value="duotone">Duotone</option>
+                                                    <option value="pixelate">Pixelate</option>
+                                                    <option value="rainbow">Rainbow</option>
+                                                    <option value="glitch">Glitch</option>
+                                                    <option value="vintage">Vintage</option>
+                                                    <option value="cyberpunk">Cyberpunk</option>
+                                                    <option value="noise">Noise</option>
+                                                    <option value="scanlines">Scanlines</option>
+                                                    <option value="underwater">Underwater</option>
+                                                    <option value="nightvision">Night Vision</option>
+                                                    <option value="thermal">Thermal</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    `}
+                          </div>
+                      `}
             </div>
         `;
     }
@@ -1218,5 +1264,4 @@ class GeneralChat extends LitElement {
     }
 }
 
-customElements.define("general-chat", GeneralChat);
-
+customElements.define('general-chat', GeneralChat);

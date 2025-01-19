@@ -2,13 +2,13 @@
 class CommandPalette extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });
+        this.attachShadow({ mode: 'open' });
         this.render();
         this.addGlobalShortcut();
     }
 
     addGlobalShortcut() {
-        document.addEventListener("keydown", (e) => {
+        document.addEventListener('keydown', e => {
             // ctrl shift p
             if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode === 80) {
                 e.preventDefault();
@@ -18,9 +18,9 @@ class CommandPalette extends HTMLElement {
     }
 
     connectedCallback() {
-        this.shadowRoot.querySelector("#selector-input").addEventListener("keydown", this.handleInput.bind(this));
-        this.shadowRoot.querySelector("#selector-input").addEventListener("keyup", this.handleInput.bind(this));
-        this.shadowRoot.querySelector("#selector-bg").addEventListener("click", this.hide.bind(this));
+        this.shadowRoot.querySelector('#selector-input').addEventListener('keydown', this.handleInput.bind(this));
+        this.shadowRoot.querySelector('#selector-input').addEventListener('keyup', this.handleInput.bind(this));
+        this.shadowRoot.querySelector('#selector-bg').addEventListener('click', this.hide.bind(this));
     }
 
     fuzzySearch(query, text) {
@@ -51,15 +51,15 @@ class CommandPalette extends HTMLElement {
             return;
         }
 
-        if (e.type === "keyup" && (e.keyCode == 13 || e.keyCode == 38 || e.keyCode == 40)) {
+        if (e.type === 'keyup' && (e.keyCode == 13 || e.keyCode == 38 || e.keyCode == 40)) {
             return;
         }
 
         if (e.keyCode === 13) {
-            const focusedButton = this.shadowRoot.querySelector(".selector-button-focused");
+            const focusedButton = this.shadowRoot.querySelector('.selector-button-focused');
             if (focusedButton) {
                 e.preventDefault();
-                const commandIndex = focusedButton.getAttribute("data-index");
+                const commandIndex = focusedButton.getAttribute('data-index');
                 this.executeCommand(getCommandRegistry()[commandIndex]);
             }
             return;
@@ -67,15 +67,17 @@ class CommandPalette extends HTMLElement {
 
         if (e.keyCode === 38 || e.keyCode === 40) {
             e.preventDefault();
-            const buttons = this.shadowRoot.querySelectorAll(".selector-button");
-            let focusedButton = this.shadowRoot.querySelector(".selector-button-focused");
+            const buttons = this.shadowRoot.querySelectorAll('.selector-button');
+            let focusedButton = this.shadowRoot.querySelector('.selector-button-focused');
             let nextButton;
 
             if (focusedButton) {
-                focusedButton.classList.remove("selector-button-focused");
-                if (e.keyCode === 38) { // Up arrow
+                focusedButton.classList.remove('selector-button-focused');
+                if (e.keyCode === 38) {
+                    // Up arrow
                     nextButton = this.getPreviousButton(focusedButton);
-                } else { // Down arrow
+                } else {
+                    // Down arrow
                     nextButton = this.getNextButton(focusedButton);
                 }
             } else {
@@ -83,11 +85,11 @@ class CommandPalette extends HTMLElement {
             }
 
             if (nextButton) {
-                nextButton.classList.add("selector-button-focused");
+                nextButton.classList.add('selector-button-focused');
                 nextButton.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest",
-                    inline: "nearest",
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'nearest',
                 });
             }
             return;
@@ -98,11 +100,11 @@ class CommandPalette extends HTMLElement {
 
     getPreviousButton(currentButton) {
         let previousElement = currentButton.previousElementSibling;
-        while (previousElement && !previousElement.classList.contains("selector-button")) {
+        while (previousElement && !previousElement.classList.contains('selector-button')) {
             previousElement = previousElement.previousElementSibling;
         }
         if (!previousElement) {
-            const buttons = this.shadowRoot.querySelectorAll(".selector-button");
+            const buttons = this.shadowRoot.querySelectorAll('.selector-button');
             previousElement = buttons[buttons.length - 1];
         }
         return previousElement;
@@ -110,19 +112,19 @@ class CommandPalette extends HTMLElement {
 
     getNextButton(currentButton) {
         let nextElement = currentButton.nextElementSibling;
-        while (nextElement && !nextElement.classList.contains("selector-button")) {
+        while (nextElement && !nextElement.classList.contains('selector-button')) {
             nextElement = nextElement.nextElementSibling;
         }
         if (!nextElement) {
-            const buttons = this.shadowRoot.querySelectorAll(".selector-button");
+            const buttons = this.shadowRoot.querySelectorAll('.selector-button');
             nextElement = buttons[0];
         }
         return nextElement;
     }
 
     renderButtons(query) {
-        const buttonsContainer = this.shadowRoot.querySelector(".buttons");
-        buttonsContainer.innerHTML = "";
+        const buttonsContainer = this.shadowRoot.querySelector('.buttons');
+        buttonsContainer.innerHTML = '';
 
         const commandsByCategory = {};
         getCommandRegistry().forEach((command, index) => {
@@ -133,13 +135,13 @@ class CommandPalette extends HTMLElement {
         });
 
         Object.entries(commandsByCategory).forEach(([category, commands]) => {
-            const filteredCommands = commands.filter(command => 
-                !query || this.fuzzySearch(query, `${command.category} ${command.title} ${command.description}`)
+            const filteredCommands = commands.filter(
+                command => !query || this.fuzzySearch(query, `${command.category} ${command.title} ${command.description}`)
             );
 
             if (filteredCommands.length > 0) {
-                const categoryHeader = document.createElement("div");
-                categoryHeader.classList.add("category-header");
+                const categoryHeader = document.createElement('div');
+                categoryHeader.classList.add('category-header');
                 categoryHeader.textContent = category;
                 buttonsContainer.appendChild(categoryHeader);
 
@@ -150,38 +152,38 @@ class CommandPalette extends HTMLElement {
             }
         });
 
-        const firstButton = this.shadowRoot.querySelector(".selector-button");
+        const firstButton = this.shadowRoot.querySelector('.selector-button');
         if (firstButton) {
-            firstButton.classList.add("selector-button-focused");
+            firstButton.classList.add('selector-button-focused');
         }
     }
 
     createCommandButton(command) {
-        const button = document.createElement("button");
-        button.classList.add("selector-button");
-        button.setAttribute("data-index", command.index);
+        const button = document.createElement('button');
+        button.classList.add('selector-button');
+        button.setAttribute('data-index', command.index);
 
-        const titleSpan = document.createElement("span");
-        titleSpan.classList.add("command-title");
+        const titleSpan = document.createElement('span');
+        titleSpan.classList.add('command-title');
         titleSpan.textContent = command.title;
 
-        const descSpan = document.createElement("span");
-        descSpan.classList.add("command-description");
+        const descSpan = document.createElement('span');
+        descSpan.classList.add('command-description');
         descSpan.textContent = command.description;
 
-        const shortcutSpan = document.createElement("span");
-        shortcutSpan.classList.add("command-shortcut");
+        const shortcutSpan = document.createElement('span');
+        shortcutSpan.classList.add('command-shortcut');
         shortcutSpan.textContent = command.shortcut;
 
         button.appendChild(titleSpan);
         button.appendChild(descSpan);
         //button.appendChild(shortcutSpan);
 
-        button.addEventListener("click", () => {
+        button.addEventListener('click', () => {
             this.executeCommand(command);
         });
 
-        button.addEventListener("mouseover", () => {
+        button.addEventListener('mouseover', () => {
             this.focusOnButton(button);
         });
 
@@ -189,29 +191,29 @@ class CommandPalette extends HTMLElement {
     }
 
     focusOnButton(button) {
-        const buttons = this.shadowRoot.querySelectorAll(".selector-button");
-        buttons.forEach((btn) => {
-            btn.classList.remove("selector-button-focused");
+        const buttons = this.shadowRoot.querySelectorAll('.selector-button');
+        buttons.forEach(btn => {
+            btn.classList.remove('selector-button-focused');
         });
-        button.classList.add("selector-button-focused");
+        button.classList.add('selector-button-focused');
     }
 
     show() {
-        this.shadowRoot.querySelector("#selector-input").value = "";
-        this.shadowRoot.querySelector("#selector").classList.remove("displayNone");
-        this.shadowRoot.querySelector("#selector-bg").classList.remove("displayNone");
-        this.shadowRoot.querySelector("#selector-input").focus();
-        this.renderButtons("");
+        this.shadowRoot.querySelector('#selector-input').value = '';
+        this.shadowRoot.querySelector('#selector').classList.remove('displayNone');
+        this.shadowRoot.querySelector('#selector-bg').classList.remove('displayNone');
+        this.shadowRoot.querySelector('#selector-input').focus();
+        this.renderButtons('');
 
-        const buttonsContainer = this.shadowRoot.querySelector(".buttons");
+        const buttonsContainer = this.shadowRoot.querySelector('.buttons');
         if (buttonsContainer) {
             buttonsContainer.scrollTop = 0;
         }
     }
 
     hide() {
-        this.shadowRoot.querySelector("#selector").classList.add("displayNone");
-        this.shadowRoot.querySelector("#selector-bg").classList.add("displayNone");
+        this.shadowRoot.querySelector('#selector').classList.add('displayNone');
+        this.shadowRoot.querySelector('#selector-bg').classList.add('displayNone');
     }
 
     render() {
@@ -349,13 +351,13 @@ class CommandPalette extends HTMLElement {
     }
 }
 
-customElements.define("command-palette", CommandPalette);
+customElements.define('command-palette', CommandPalette);
 
 var commandRegistry = [];
 
-function registerCommand(title, description, category, callback, shortcut = "") {
+function registerCommand(title, description, category, callback, shortcut = '') {
     // check if the command already exists
-    const existingCommand = commandRegistry.find((command) => command.title === title);
+    const existingCommand = commandRegistry.find(command => command.title === title);
     if (existingCommand) {
         console.error(`Command "${title} (${category}) - ${description}" already exists.`);
         return;
@@ -374,7 +376,7 @@ function getCommandRegistry() {
 }
 
 function showCommandPalette() {
-    const cp = document.querySelector("command-palette");
+    const cp = document.querySelector('command-palette');
     cp.show();
 }
 

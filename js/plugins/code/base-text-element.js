@@ -1,37 +1,37 @@
 class BaseTextElement extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
+        this.attachShadow({ mode: 'open' });
         this.render();
         this.updatePlaceholder();
         this.isMouseOverSuggestions = false;
         this.isVirtualKeyboard = this.checkIfVirtualKeyboard();
         this.savedRange = null;
         this.savedSelection = null;
-        this.placeholder = this.getAttribute("placeholder") || wisk.editor.wiskSite? "": "Write something or press '/' for commands";
-        this.toolbar = document.getElementById("formatting-toolbar");
-        this.toolbar.addEventListener("toolbar-action", (e) => {
+        this.placeholder = this.getAttribute('placeholder') || wisk.editor.wiskSite ? '' : "Write something or press '/' for commands";
+        this.toolbar = document.getElementById('formatting-toolbar');
+        this.toolbar.addEventListener('toolbar-action', e => {
             if (e.detail.elementId === this.id) {
-                console.log("Toolbar action received", e.detail);
+                console.log('Toolbar action received', e.detail);
                 this.handleToolbarAction(e.detail);
             }
         });
-        this.toolbar.addEventListener("save-selection", (e) => {
+        this.toolbar.addEventListener('save-selection', e => {
             if (e.detail.elementId === this.id) {
                 this.saveSelection();
             }
         });
-        this.toolbar.addEventListener("create-link", (e) => {
+        this.toolbar.addEventListener('create-link', e => {
             if (e.detail.elementId === this.id) {
                 this.handleCreateLink(e.detail.url);
             }
         });
-        this.toolbar.addEventListener("create-reference", (e) => {
+        this.toolbar.addEventListener('create-reference', e => {
             if (e.detail.elementId === this.id) {
                 this.handleCreateReference(e.detail);
             }
         });
-        this.toolbar.addEventListener("ai-operation-complete", (e) => {
+        this.toolbar.addEventListener('ai-operation-complete', e => {
             if (e.detail.elementId === this.id) {
                 this.handleAIOperationComplete(e.detail);
             }
@@ -53,11 +53,11 @@ class BaseTextElement extends HTMLElement {
         const rect = range.getBoundingClientRect();
 
         return {
-            x: rect.left + (rect.width / 2),
+            x: rect.left + rect.width / 2,
             y: rect.top,
             width: rect.width,
             height: rect.height,
-            selectedText: selection.toString()
+            selectedText: selection.toString(),
         };
     }
 
@@ -77,15 +77,15 @@ class BaseTextElement extends HTMLElement {
             const textNode = document.createTextNode(detail.newText);
             range.deleteContents();
             range.insertNode(textNode);
-            
+
             // Clean up selection
             range.collapse(false);
             selection.removeAllRanges();
             selection.addRange(range);
-            
+
             // Clear the saved selection
             this.clearSelection();
-            
+
             // Update the content
             this.sendUpdates();
         } catch (error) {
@@ -194,18 +194,18 @@ class BaseTextElement extends HTMLElement {
             // Extract the selected content and preserve formatting
             const fragment = range.extractContents();
             link.appendChild(fragment);
-            
+
             // Insert the link
             range.insertNode(link);
-            
+
             // Clean up selection
             range.collapse(false);
             selection.removeAllRanges();
             selection.addRange(range);
-            
+
             // Clear the saved selection
             this.clearSelection();
-            
+
             // Update the content
             this.sendUpdates();
         } catch (error) {
@@ -219,21 +219,21 @@ class BaseTextElement extends HTMLElement {
             // Fallback method using execCommand
             const text = selection.toString();
             document.execCommand('insertText', false, text);
-            
+
             const range = selection.getRangeAt(0);
             const link = document.createElement('a');
             link.href = this.normalizeUrl(url);
             link.target = '_blank';
             link.contentEditable = 'false';
-            
+
             // Create a new range for the just-inserted text
             const newRange = document.createRange();
             newRange.setStart(range.startContainer, range.startOffset - text.length);
             newRange.setEnd(range.startContainer, range.startOffset);
-            
+
             // Wrap the text in a link
             newRange.surroundContents(link);
-            
+
             this.sendUpdates();
         } catch (fallbackError) {
             console.error('Link fallback failed:', fallbackError);
@@ -241,12 +241,11 @@ class BaseTextElement extends HTMLElement {
     }
 
     connectedCallback() {
-        this.editable = this.shadowRoot.querySelector("#editable");
+        this.editable = this.shadowRoot.querySelector('#editable');
         this.emojiSuggestionsContainer = this.shadowRoot.querySelector('.emoji-suggestions');
 
         this.updatePlaceholder();
         this.bindEvents();
-
     }
 
     saveSelection() {
@@ -254,7 +253,7 @@ class BaseTextElement extends HTMLElement {
         if (selection.rangeCount > 0) {
             this.savedSelection = {
                 range: selection.getRangeAt(0).cloneRange(),
-                text: selection.toString()
+                text: selection.toString(),
             };
         }
     }
@@ -282,7 +281,7 @@ class BaseTextElement extends HTMLElement {
 
     findParentLink(node) {
         while (node && node !== this.editable) {
-            if (node.tagName === "A") {
+            if (node.tagName === 'A') {
                 return node;
             }
             node = node.parentNode;
@@ -291,51 +290,48 @@ class BaseTextElement extends HTMLElement {
     }
 
     createLink(url) {
-
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            url = "https://" + url;
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
         }
 
         const selection = this.shadowRoot.getSelection();
         if (!selection.rangeCount) return;
 
         const range = selection.getRangeAt(0);
-        
+
         try {
             const fragment = range.extractContents();
             const tempDiv = document.createElement('div');
             tempDiv.appendChild(fragment);
             const plainText = tempDiv.textContent;
             const textNode = document.createTextNode(plainText);
-            const link = document.createElement("a");
+            const link = document.createElement('a');
             link.href = url;
-            link.contentEditable = "false";
-            link.target = "_blank";
-            
+            link.contentEditable = 'false';
+            link.target = '_blank';
+
             link.appendChild(textNode);
             range.insertNode(link);
             range.collapse(false);
-            
         } catch (error) {
-            console.error("Error creating link:", error);
+            console.error('Error creating link:', error);
             try {
                 document.execCommand('insertText', false, selection.toString());
                 const newRange = document.createRange();
                 newRange.setStartBefore(range.startContainer);
                 newRange.setEndAfter(range.startContainer);
-                const link = document.createElement("a");
+                const link = document.createElement('a');
                 link.href = url;
-                link.contentEditable = "false";
-                link.target = "_blank";
+                link.contentEditable = 'false';
+                link.target = '_blank';
                 newRange.surroundContents(link);
             } catch (fallbackError) {
-                console.error("Fallback link creation failed:", fallbackError);
+                console.error('Fallback link creation failed:', fallbackError);
             }
         }
 
         this.sendUpdates();
     }
-
 
     applyFormat(format) {
         document.execCommand(format, false, null);
@@ -344,15 +340,15 @@ class BaseTextElement extends HTMLElement {
 
     bindEvents() {
         // Existing event listeners
-        this.editable.addEventListener("beforeinput", this.handleBeforeInput.bind(this));
-        this.editable.addEventListener("input", this.onValueUpdated.bind(this));
-        this.editable.addEventListener("keydown", this.handleKeyDown.bind(this));
-        this.editable.addEventListener("focus", () => {
-            if (this.editable.innerText.trim() === "") {
-                this.editable.classList.add("empty");
+        this.editable.addEventListener('beforeinput', this.handleBeforeInput.bind(this));
+        this.editable.addEventListener('input', this.onValueUpdated.bind(this));
+        this.editable.addEventListener('keydown', this.handleKeyDown.bind(this));
+        this.editable.addEventListener('focus', () => {
+            if (this.editable.innerText.trim() === '') {
+                this.editable.classList.add('empty');
             }
         });
-        this.editable.addEventListener("blur", () => {
+        this.editable.addEventListener('blur', () => {
             this.updatePlaceholder();
         });
 
@@ -382,37 +378,37 @@ class BaseTextElement extends HTMLElement {
         });
 
         // Listen for any selection changes in the shadow root
-        this.shadowRoot.addEventListener("selectionchange", handleSelectionChange);
+        this.shadowRoot.addEventListener('selectionchange', handleSelectionChange);
 
         // Keep existing mouse and keyboard event listeners as fallbacks
-        this.editable.addEventListener("mouseup", handleSelectionChange);
-        this.editable.addEventListener("keyup", (e) => {
-            if (e.key === "Shift" || e.key === "ArrowLeft" || e.key === "ArrowRight" || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a")) {
+        this.editable.addEventListener('mouseup', handleSelectionChange);
+        this.editable.addEventListener('keyup', e => {
+            if (e.key === 'Shift' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'a')) {
                 handleSelectionChange();
             }
         });
 
         // Handle keyboard shortcuts
-        this.editable.addEventListener("keydown", (e) => {
+        this.editable.addEventListener('keydown', e => {
             if (e.ctrlKey || e.metaKey) {
                 switch (e.key.toLowerCase()) {
-                    case "b":
+                    case 'b':
                         e.preventDefault();
-                        this.applyFormat("bold");
+                        this.applyFormat('bold');
                         break;
-                    case "d":
+                    case 'd':
                         e.preventDefault();
-                        this.applyFormat("strikeThrough");
+                        this.applyFormat('strikeThrough');
                         break;
-                    case "i":
+                    case 'i':
                         e.preventDefault();
-                        this.applyFormat("italic");
+                        this.applyFormat('italic');
                         break;
-                    case "u":
+                    case 'u':
                         e.preventDefault();
-                        this.applyFormat("underline");
+                        this.applyFormat('underline');
                         break;
-                    case "a":
+                    case 'a':
                         // Allow the selection to happen, then update toolbar
                         setTimeout(handleSelectionChange, 0);
                         break;
@@ -420,26 +416,25 @@ class BaseTextElement extends HTMLElement {
             }
         });
 
-        this.editable.addEventListener("keydown", (e) => {
+        this.editable.addEventListener('keydown', e => {
             this.handleMarkdown(e);
         });
 
         // Clean up the observer when the element is disconnected
         this.disconnectedCallback = () => {
             observer.disconnect();
-            this.shadowRoot.removeEventListener("selectionchange", handleSelectionChange);
+            this.shadowRoot.removeEventListener('selectionchange', handleSelectionChange);
         };
 
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', e => {
             if (!this.editable.contains(e.target) && !this.emojiSuggestionsContainer.contains(e.target)) {
                 this.hideEmojiSuggestions();
             }
         });
 
-        this.editable.addEventListener("blur", () => {
+        this.editable.addEventListener('blur', () => {
             setTimeout(() => {
-                if (!this.emojiSuggestionsContainer.contains(document.activeElement) && 
-                    !this.emojiSuggestionsContainer.matches(':hover')) {
+                if (!this.emojiSuggestionsContainer.contains(document.activeElement) && !this.emojiSuggestionsContainer.matches(':hover')) {
                     this.hideEmojiSuggestions();
                 }
             }, 0);
@@ -456,83 +451,83 @@ class BaseTextElement extends HTMLElement {
     }
 
     handleMarkdown(event) {
-        console.log("Markdown handling", this.editable.innerText, event.key);
-        if (this.editable.innerText == "``" && event.key == "`") {
-            console.log("Changing to code element");
-            wisk.editor.changeBlockType(this.id, {textContent: ""}, "code-element");
+        console.log('Markdown handling', this.editable.innerText, event.key);
+        if (this.editable.innerText == '``' && event.key == '`') {
+            console.log('Changing to code element');
+            wisk.editor.changeBlockType(this.id, { textContent: '' }, 'code-element');
             return;
-        } 
+        }
 
-        if (event.key != " ") return
+        if (event.key != ' ') return;
 
-        var newType = "uwu";
+        var newType = 'uwu';
         switch (this.editable.innerText.trim()) {
-            case "#":
-                newType = "heading1-element";
+            case '#':
+                newType = 'heading1-element';
                 break;
-            case "##":
-                newType = "heading2-element";
+            case '##':
+                newType = 'heading2-element';
                 break;
-            case "###":
-                newType = "heading3-element";
+            case '###':
+                newType = 'heading3-element';
                 break;
-            case "####":
-                newType = "heading4-element";
+            case '####':
+                newType = 'heading4-element';
                 break;
-            case "#####":
-                newType = "heading5-element";
+            case '#####':
+                newType = 'heading5-element';
                 break;
-            case "-":
-                newType = "list-element";
+            case '-':
+                newType = 'list-element';
                 break;
-            case "+":
-                newType = "list-element";
+            case '+':
+                newType = 'list-element';
                 break;
-            case "*":
-                newType = "list-element";
+            case '*':
+                newType = 'list-element';
                 break;
-            case "1.":
-                newType = "numbered-list-element";
+            case '1.':
+                newType = 'numbered-list-element';
                 break;
-            case "1)":
-                newType = "numbered-list-element";
+            case '1)':
+                newType = 'numbered-list-element';
                 break;
-            case ">":
-                newType = "quote-element";
+            case '>':
+                newType = 'quote-element';
                 break;
-            case "```":
-                newType = "code-element";
+            case '```':
+                newType = 'code-element';
                 break;
-            case "---":
-                newType = "divider-element";
+            case '---':
+                newType = 'divider-element';
                 break;
-            case "***":
-                newType = "divider-element";
+            case '***':
+                newType = 'divider-element';
                 break;
-            case "___":
-                newType = "divider-element";
+            case '___':
+                newType = 'divider-element';
                 break;
-            case "- [ ]":
-                newType = "checkbox-element";
+            case '- [ ]':
+                newType = 'checkbox-element';
                 break;
-            case "- [x]":
-                newType = "checkbox-element";
+            case '- [x]':
+                newType = 'checkbox-element';
                 break;
         }
 
-        if (newType != "uwu") {
-            var val = {textContent: ""};
-            if (this.editable.innerText.trim() === "- [x]") {
+        if (newType != 'uwu') {
+            var val = { textContent: '' };
+            if (this.editable.innerText.trim() === '- [x]') {
                 val.checked = true;
             }
-            
+
             wisk.editor.changeBlockType(this.id, val, newType);
         }
     }
 
     getValue() {
         if (!this.editable) {
-            return {textContent: "", references: []};
+            return { textContent: '', references: [] };
         }
         return {
             textContent: this.editable.innerHTML,
@@ -544,7 +539,7 @@ class BaseTextElement extends HTMLElement {
             return;
         }
 
-        if (path == "value.append") {
+        if (path == 'value.append') {
             this.editable.innerHTML += value.textContent;
         } else {
             this.editable.innerHTML = value.textContent;
@@ -557,8 +552,8 @@ class BaseTextElement extends HTMLElement {
         return {
             html: this.editable.innerHTML,
             text: this.editable.innerText,
-            markdown: "# " + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML)
-        }
+            markdown: '# ' + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML),
+        };
     }
 
     render() {
@@ -647,16 +642,15 @@ class BaseTextElement extends HTMLElement {
     }
 
     handleBeforeInput(event) {
-        if (event.inputType === "insertText" && event.data === "/" && this.editable.innerText.trim() === "") {
+        if (event.inputType === 'insertText' && event.data === '/' && this.editable.innerText.trim() === '') {
             event.preventDefault();
             window.wisk.editor.showSelector(this.id);
         }
     }
 
     checkIfVirtualKeyboard() {
-        return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     }
-
 
     navigateEmojiSuggestions(direction) {
         if (direction === 'up') {
@@ -686,7 +680,7 @@ class BaseTextElement extends HTMLElement {
                         return { node, offset: colonIndex };
                     }
                 }
-                
+
                 if (!node.childNodes) return null;
 
                 for (let i = node.childNodes.length - 1; i >= 0; i--) {
@@ -694,7 +688,7 @@ class BaseTextElement extends HTMLElement {
                     const result = findColonPosition(child, child.textContent.length);
                     if (result) return result;
                 }
-                
+
                 return null;
             };
 
@@ -754,10 +748,10 @@ class BaseTextElement extends HTMLElement {
             Enter: () => this.handleEnterKey(event),
             Backspace: () => this.handleBackspace(event),
             Tab: () => this.handleTab(event),
-            ArrowLeft: () => this.handleArrowKey(event, "next-up", 0),
-            ArrowRight: () => this.handleArrowKey(event, "next-down", this.editable.innerText.length),
-            ArrowUp: () => this.handleVerticalArrow(event, "next-up"),
-            ArrowDown: () => this.handleVerticalArrow(event, "next-down"),
+            ArrowLeft: () => this.handleArrowKey(event, 'next-up', 0),
+            ArrowRight: () => this.handleArrowKey(event, 'next-down', this.editable.innerText.length),
+            ArrowUp: () => this.handleVerticalArrow(event, 'next-up'),
+            ArrowDown: () => this.handleVerticalArrow(event, 'next-down'),
         };
 
         const handler = keyHandlers[event.key];
@@ -787,13 +781,7 @@ class BaseTextElement extends HTMLElement {
         const x = rect.left + rect.width / 2;
         const y = rect.top - 45;
 
-        this.toolbar.showToolbar(
-            Math.max(20, x), 
-            y, 
-            this.id, 
-            selectedText, 
-            this.editable.innerText
-        );
+        this.toolbar.showToolbar(Math.max(20, x), y, this.id, selectedText, this.editable.innerText);
 
         // Check if selection is still valid after a short delay
         setTimeout(() => {
@@ -818,20 +806,20 @@ class BaseTextElement extends HTMLElement {
             console.log(`Applying format: ${action} with value: ${formatValue}`);
 
             switch (action) {
-                case "bold":
-                case "italic":
-                case "underline":
-                case "strikeThrough":
-                case "subscript":
-                case "superscript":
+                case 'bold':
+                case 'italic':
+                case 'underline':
+                case 'strikeThrough':
+                case 'subscript':
+                case 'superscript':
                     document.execCommand(action, false, null);
                     break;
-                case "foreColor":
+                case 'foreColor':
                     document.execCommand('styleWithCSS', false, true);
                     document.execCommand('foreColor', false, formatValue);
                     document.execCommand('styleWithCSS', false, false);
                     break;
-                case "backColor":
+                case 'backColor':
                     // Try direct background-color application using a span
                     const selection = this.shadowRoot.getSelection();
                     if (selection.rangeCount > 0) {
@@ -849,11 +837,11 @@ class BaseTextElement extends HTMLElement {
                         selection.addRange(range);
                     }
                     break;
-                case "make-longer":
-                case "make-shorter":
-                case "fix-spelling-grammar":
-                case "improve-writing":
-                case "summarize":
+                case 'make-longer':
+                case 'make-shorter':
+                case 'fix-spelling-grammar':
+                case 'improve-writing':
+                case 'summarize':
                     // These are handled by the toolbar's AI operations
                     break;
             }
@@ -893,14 +881,14 @@ class BaseTextElement extends HTMLElement {
                 // Original fallback code for other formats
                 const span = document.createElement('span');
                 switch (action) {
-                    case "foreColor":
+                    case 'foreColor':
                         span.style.color = formatValue;
                         break;
-                    case "subscript":
+                    case 'subscript':
                         span.style.verticalAlign = 'sub';
                         span.style.fontSize = '0.8em';
                         break;
-                    case "superscript":
+                    case 'superscript':
                         span.style.verticalAlign = 'super';
                         span.style.fontSize = '0.8em';
                         break;
@@ -932,32 +920,26 @@ class BaseTextElement extends HTMLElement {
         event.preventDefault();
         const selection = this.shadowRoot.getSelection();
         const range = selection.getRangeAt(0);
-        
+
         const beforeRange = document.createRange();
         beforeRange.setStart(this.editable, 0);
         beforeRange.setEnd(range.startContainer, range.startOffset);
-        
+
         const afterRange = document.createRange();
         afterRange.setStart(range.endContainer, range.endOffset);
         afterRange.setEnd(this.editable, this.editable.childNodes.length);
-        
+
         const beforeContainer = document.createElement('div');
         const afterContainer = document.createElement('div');
-        
+
         beforeContainer.appendChild(beforeRange.cloneContents());
         afterContainer.appendChild(afterRange.cloneContents());
-        
+
         this.editable.innerHTML = beforeContainer.innerHTML;
         this.sendUpdates();
-        
-        window.wisk.editor.createNewBlock(
-            this.id, 
-            "text-element", 
-            {textContent: afterContainer.innerHTML}, 
-            {x: 0}
-        );
-    }
 
+        window.wisk.editor.createNewBlock(this.id, 'text-element', { textContent: afterContainer.innerHTML }, { x: 0 });
+    }
 
     handleBackspace(event) {
         if (this.getFocus() === 0) {
@@ -969,8 +951,8 @@ class BaseTextElement extends HTMLElement {
             const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
             if (prevComponentDetail.textual) {
                 const len = prevDomElement.getTextContent().text.length;
-                window.wisk.editor.updateBlock(prevElement.id, "value.append", {textContent: this.editable.innerHTML, references: this.references});
-                window.wisk.editor.focusBlock(prevElement.id, {x: len});
+                window.wisk.editor.updateBlock(prevElement.id, 'value.append', { textContent: this.editable.innerHTML, references: this.references });
+                window.wisk.editor.focusBlock(prevElement.id, { x: len });
             }
             window.wisk.editor.deleteBlock(this.id);
         }
@@ -978,7 +960,7 @@ class BaseTextElement extends HTMLElement {
 
     handleTab(event) {
         event.preventDefault();
-        document.execCommand("insertText", false, "    ");
+        document.execCommand('insertText', false, '    ');
         window.wisk.editor.justUpdates(this.id);
     }
 
@@ -986,21 +968,21 @@ class BaseTextElement extends HTMLElement {
         const pos = this.getFocus();
         if (pos === targetOffset) {
             event.preventDefault();
-            const adjacentElement = direction === "next-up" ? window.wisk.editor.prevElement(this.id) : window.wisk.editor.nextElement(this.id);
+            const adjacentElement = direction === 'next-up' ? window.wisk.editor.prevElement(this.id) : window.wisk.editor.nextElement(this.id);
 
             if (adjacentElement) {
                 const componentDetail = window.wisk.plugins.getPluginDetail(adjacentElement.component);
                 if (componentDetail.textual) {
-                    const focusPos = direction === "next-up" ? adjacentElement.value.textContent.length : 0;
-                    window.wisk.editor.focusBlock(adjacentElement.id, {x: focusPos});
+                    const focusPos = direction === 'next-up' ? adjacentElement.value.textContent.length : 0;
+                    window.wisk.editor.focusBlock(adjacentElement.id, { x: focusPos });
                 }
             }
         }
     }
 
     focus(identifier) {
-        console.log("Focus called with identifier", identifier, this.id);
-        if (typeof identifier.x != "number") {
+        console.log('Focus called with identifier', identifier, this.id);
+        if (typeof identifier.x != 'number') {
             identifier.x = 0;
         }
 
@@ -1016,7 +998,7 @@ class BaseTextElement extends HTMLElement {
             let offset = 0;
 
             // Find the first text node if it exists
-            const findFirstTextNode = (node) => {
+            const findFirstTextNode = node => {
                 if (node.nodeType === Node.TEXT_NODE) {
                     return node;
                 }
@@ -1040,7 +1022,7 @@ class BaseTextElement extends HTMLElement {
                 selection.addRange(range);
                 return;
             } catch (e) {
-                console.warn("Failed to set cursor at beginning:", e);
+                console.warn('Failed to set cursor at beginning:', e);
             }
         }
 
@@ -1057,7 +1039,7 @@ class BaseTextElement extends HTMLElement {
         let nodeOffset = 0;
         let skipToNext = false;
 
-        const findPosition = (node) => {
+        const findPosition = node => {
             if (currentOffset >= identifier.x) {
                 return true;
             }
@@ -1069,7 +1051,7 @@ class BaseTextElement extends HTMLElement {
                     return true;
                 }
                 currentOffset += node.length;
-            } else if (node.nodeType === Node.ELEMENT_NODE && node.contentEditable === "false") {
+            } else if (node.nodeType === Node.ELEMENT_NODE && node.contentEditable === 'false') {
                 const length = node.textContent.length;
                 if (currentOffset <= identifier.x && currentOffset + length >= identifier.x) {
                     targetNode = node.parentNode;
@@ -1113,10 +1095,10 @@ class BaseTextElement extends HTMLElement {
             selection.addRange(range);
 
             if (skipToNext) {
-                this.editable.scrollIntoView({block: "nearest"});
+                this.editable.scrollIntoView({ block: 'nearest' });
             }
         } catch (e) {
-            console.warn("Failed to set cursor position:", e);
+            console.warn('Failed to set cursor position:', e);
             range.selectNodeContents(this.editable);
             range.collapse(false);
             selection.removeAllRanges();
@@ -1125,17 +1107,17 @@ class BaseTextElement extends HTMLElement {
     }
 
     handleVerticalArrow(event, direction) {
-        console.log("Vertical arrow key pressed");
+        console.log('Vertical arrow key pressed');
         const pos = this.getFocus();
         setTimeout(() => {
             const newPos = this.getFocus();
-            if ((direction === "next-up" && newPos === 0) || (direction === "next-down" && newPos === this.editable.innerText.length)) {
-                const adjacentElement = direction === "next-up" ? window.wisk.editor.prevElement(this.id) : window.wisk.editor.nextElement(this.id);
+            if ((direction === 'next-up' && newPos === 0) || (direction === 'next-down' && newPos === this.editable.innerText.length)) {
+                const adjacentElement = direction === 'next-up' ? window.wisk.editor.prevElement(this.id) : window.wisk.editor.nextElement(this.id);
 
                 if (adjacentElement) {
                     const componentDetail = window.wisk.plugins.getPluginDetail(adjacentElement.component);
                     if (componentDetail.textual) {
-                        window.wisk.editor.focusBlock(adjacentElement.id, {x: pos});
+                        window.wisk.editor.focusBlock(adjacentElement.id, { x: pos });
                     }
                 }
             }
@@ -1175,10 +1157,10 @@ class BaseTextElement extends HTMLElement {
 
     updatePlaceholder() {
         if (this.editable) {
-            const isEmpty = this.editable.innerText.trim() === "";
-            this.editable.classList.toggle("empty", isEmpty);
+            const isEmpty = this.editable.innerText.trim() === '';
+            this.editable.classList.toggle('empty', isEmpty);
             // Update placeholder text if attribute changes
-            this.editable.dataset.placeholder = this.getAttribute("placeholder") || this.placeholder;
+            this.editable.dataset.placeholder = this.getAttribute('placeholder') || this.placeholder;
         }
     }
 
@@ -1189,11 +1171,11 @@ class BaseTextElement extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["placeholder"];
+        return ['placeholder'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        if (name === "placeholder" && oldValue !== newValue) {
+        if (name === 'placeholder' && oldValue !== newValue) {
             this.placeholder = newValue;
             if (this.editable) {
                 this.editable.dataset.placeholder = newValue;
@@ -1242,23 +1224,24 @@ class BaseTextElement extends HTMLElement {
 
     renderEmojiSuggestions() {
         this.emojiSuggestionsContainer.innerHTML = this.emojiSuggestions
-            .map((emoji, index) => `
+            .map(
+                (emoji, index) => `
             <div class="emoji-suggestion ${index === this.selectedEmojiIndex ? 'selected' : ''}"
                  data-index="${index}">
                 <span class="emoji">${emoji.emoji}</span>
                 <span class="emoji-name">${emoji.name}</span>
             </div>
-        `)
+        `
+            )
             .join('');
 
         // Add click handlers
         this.emojiSuggestionsContainer.querySelectorAll('.emoji-suggestion').forEach(suggestion => {
-            suggestion.addEventListener('mousedown', (e) => {
+            suggestion.addEventListener('mousedown', e => {
                 e.preventDefault(); // Prevent blur
                 this.selectedEmojiIndex = parseInt(suggestion.dataset.index);
                 this.insertSelectedEmoji();
             });
-
         });
     }
 
@@ -1339,4 +1322,4 @@ class BaseTextElement extends HTMLElement {
     }
 }
 
-customElements.define("base-text-element", BaseTextElement);
+customElements.define('base-text-element', BaseTextElement);

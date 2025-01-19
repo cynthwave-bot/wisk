@@ -1,7 +1,7 @@
 class CanvasElement extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });
+        this.attachShadow({ mode: 'open' });
         this.render();
         this.isInitialized = false;
         this.pendingValue = null;
@@ -15,7 +15,6 @@ class CanvasElement extends HTMLElement {
     }
 
     async connectedCallback() {
-
         await this.loadFabricJS();
 
         this.initializeCanvas();
@@ -23,7 +22,7 @@ class CanvasElement extends HTMLElement {
 
         this.isInitialized = true;
         if (this.pendingValue) {
-            this.setValue("", this.pendingValue);
+            this.setValue('', this.pendingValue);
             this.pendingValue = null;
         }
     }
@@ -35,7 +34,7 @@ class CanvasElement extends HTMLElement {
         }
 
         const script = document.createElement('script');
-        script.src = "https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js";
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js';
 
         await new Promise((resolve, reject) => {
             script.onload = resolve;
@@ -52,7 +51,7 @@ class CanvasElement extends HTMLElement {
         this.canvas = new fabric.Canvas(this.shadowRoot.getElementById('drawing-canvas'), {
             width: this.clientWidth,
             height: this.clientHeight,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
         });
 
         this.canvas.setZoom(1);
@@ -80,31 +79,30 @@ class CanvasElement extends HTMLElement {
     selectAllAndLeaveAll() {
         // Store current selection state
         const currentSelection = this.canvas.getActiveObjects();
-        
+
         const objects = this.canvas.getObjects();
         this.canvas.discardActiveObject();
-        
+
         if (objects.length > 0) {
             const selection = new fabric.ActiveSelection(objects, {
-                canvas: this.canvas
+                canvas: this.canvas,
             });
             this.canvas.setActiveObject(selection);
-            
+
             this.canvas.requestRenderAll();
-            
+
             this.canvas.discardActiveObject();
-            
+
             if (currentSelection.length > 0) {
                 const newSelection = new fabric.ActiveSelection(currentSelection, {
-                    canvas: this.canvas
+                    canvas: this.canvas,
                 });
                 this.canvas.setActiveObject(newSelection);
             }
         }
-        
+
         this.canvas.requestRenderAll();
     }
-
 
     bindEvents() {
         const toolbar = this.shadowRoot.getElementById('toolbar');
@@ -130,14 +128,14 @@ class CanvasElement extends HTMLElement {
         this.canvas.wrapperEl.addEventListener('mouseleave', this.onMouseLeave.bind(this));
 
         const colorPicker = this.shadowRoot.getElementById('color-picker');
-        colorPicker.addEventListener('change', (e) => {
+        colorPicker.addEventListener('change', e => {
             this.currentColor = e.target.value;
             this.canvas.freeDrawingBrush.color = this.currentColor;
             this.sendUpdates();
         });
 
         const thicknessSlider = this.shadowRoot.getElementById('thickness-slider');
-        thicknessSlider.addEventListener('input', (e) => {
+        thicknessSlider.addEventListener('input', e => {
             this.currentThickness = parseInt(e.target.value);
             this.canvas.freeDrawingBrush.width = this.currentThickness;
             this.sendUpdates();
@@ -149,132 +147,131 @@ class CanvasElement extends HTMLElement {
         const dy = touches[0].clientY - touches[1].clientY;
         return Math.sqrt(dx * dx + dy * dy);
     }
-onTouchStart(e) {
-    // Check if we're in a drawing mode
-    const isDrawingMode = ['draw', 'line', 'arrow', 'rectangle', 'circle', 'text'].includes(this.currentMode);
-    
-    if (isDrawingMode && e.touches.length === 1) {
-        // Handle drawing modes with single touch
-        const touch = e.touches[0];
-        const mouseEvent = new MouseEvent('mousedown', {
-            clientX: touch.clientX,
-            clientY: touch.clientY,
-            buttons: 1
-        });
-        this.onMouseDown({ 
-            e: mouseEvent, 
-            pointer: this.canvas.getPointer(mouseEvent) 
-        });
-        return; // Exit early to prevent default prevention
+    onTouchStart(e) {
+        // Check if we're in a drawing mode
+        const isDrawingMode = ['draw', 'line', 'arrow', 'rectangle', 'circle', 'text'].includes(this.currentMode);
+
+        if (isDrawingMode && e.touches.length === 1) {
+            // Handle drawing modes with single touch
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY,
+                buttons: 1,
+            });
+            this.onMouseDown({
+                e: mouseEvent,
+                pointer: this.canvas.getPointer(mouseEvent),
+            });
+            return; // Exit early to prevent default prevention
+        }
+
+        // For non-drawing modes, handle pan and zoom
+        e.preventDefault();
+
+        if (e.touches.length === 2) {
+            // Two finger touch - strictly for zooming
+            this.canvas.selection = false;
+            this.isPanning = false; // Ensure panning is disabled during zoom
+            this.initialPinchDistance = this.getTouchDistance(e.touches);
+            this.lastZoom = this.canvas.getZoom();
+        } else if (e.touches.length === 1) {
+            // Single finger touch - strictly for panning (when not in drawing mode)
+            const touch = e.touches[0];
+            this.lastPosX = touch.clientX;
+            this.lastPosY = touch.clientY;
+            this.isPanning = true;
+            this.canvas.selection = false;
+        }
     }
 
-    // For non-drawing modes, handle pan and zoom
-    e.preventDefault();
-    
-    if (e.touches.length === 2) {
-        // Two finger touch - strictly for zooming
-        this.canvas.selection = false;
-        this.isPanning = false; // Ensure panning is disabled during zoom
-        this.initialPinchDistance = this.getTouchDistance(e.touches);
-        this.lastZoom = this.canvas.getZoom();
-    } else if (e.touches.length === 1) {
-        // Single finger touch - strictly for panning (when not in drawing mode)
-        const touch = e.touches[0];
-        this.lastPosX = touch.clientX;
-        this.lastPosY = touch.clientY;
-        this.isPanning = true;
-        this.canvas.selection = false;
-    }
-}
+    onTouchMove(e) {
+        // Check if we're in a drawing mode
+        const isDrawingMode = ['draw', 'line', 'arrow', 'rectangle', 'circle', 'text'].includes(this.currentMode);
 
-onTouchMove(e) {
-    // Check if we're in a drawing mode
-    const isDrawingMode = ['draw', 'line', 'arrow', 'rectangle', 'circle', 'text'].includes(this.currentMode);
-    
-    if (isDrawingMode && e.touches.length === 1) {
-        // Handle drawing with single touch
-        const touch = e.touches[0];
-        const mouseEvent = new MouseEvent('mousemove', {
-            clientX: touch.clientX,
-            clientY: touch.clientY,
-            buttons: 1
-        });
-        this.onMouseMove({ 
-            e: mouseEvent, 
-            pointer: this.canvas.getPointer(mouseEvent) 
-        });
-        return; // Exit early to prevent default prevention
-    }
+        if (isDrawingMode && e.touches.length === 1) {
+            // Handle drawing with single touch
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY,
+                buttons: 1,
+            });
+            this.onMouseMove({
+                e: mouseEvent,
+                pointer: this.canvas.getPointer(mouseEvent),
+            });
+            return; // Exit early to prevent default prevention
+        }
 
-    e.preventDefault();
+        e.preventDefault();
 
-    if (e.touches.length === 2) {
-        // Handle pinch zoom
-        const currentDistance = this.getTouchDistance(e.touches);
-        const scaleFactor = currentDistance / this.initialPinchDistance;
-        let newZoom = this.lastZoom * scaleFactor;
-        
-        // Limit zoom range
-        newZoom = Math.min(Math.max(newZoom, 0.1), 20);
-        
-        const center = {
-            x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
-            y: (e.touches[0].clientY + e.touches[1].clientY) / 2
-        };
-        
-        const rect = this.canvas.wrapperEl.getBoundingClientRect();
-        const canvasCenter = {
-            x: center.x - rect.left,
-            y: center.y - rect.top
-        };
-        
-        this.canvas.zoomToPoint(new fabric.Point(canvasCenter.x, canvasCenter.y), newZoom);
-        this.canvas.requestRenderAll();
-        
-    } else if (e.touches.length === 1 && this.isPanning && !isDrawingMode) {
-        // Handle single finger pan with reduced sensitivity (only when not drawing)
-        const touch = e.touches[0];
-        const deltaX = (touch.clientX - this.lastPosX) * 0.3;
-        const deltaY = (touch.clientY - this.lastPosY) * 0.3;
-        
-        const vpt = this.canvas.viewportTransform;
-        vpt[4] += deltaX;
-        vpt[5] += deltaY;
-        
-        this.canvas.requestRenderAll();
-        this.lastPosX = touch.clientX;
-        this.lastPosY = touch.clientY;
-    }
-}
+        if (e.touches.length === 2) {
+            // Handle pinch zoom
+            const currentDistance = this.getTouchDistance(e.touches);
+            const scaleFactor = currentDistance / this.initialPinchDistance;
+            let newZoom = this.lastZoom * scaleFactor;
 
-onTouchEnd(e) {
-    // Check if we're in a drawing mode
-    const isDrawingMode = ['draw', 'line', 'arrow', 'rectangle', 'circle', 'text'].includes(this.currentMode);
-    
-    if (isDrawingMode) {
-        // Handle end of drawing
-        const mouseEvent = new MouseEvent('mouseup', {
-            buttons: 0
-        });
-        this.onMouseUp({ e: mouseEvent });
-        return;
+            // Limit zoom range
+            newZoom = Math.min(Math.max(newZoom, 0.1), 20);
+
+            const center = {
+                x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+                y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
+            };
+
+            const rect = this.canvas.wrapperEl.getBoundingClientRect();
+            const canvasCenter = {
+                x: center.x - rect.left,
+                y: center.y - rect.top,
+            };
+
+            this.canvas.zoomToPoint(new fabric.Point(canvasCenter.x, canvasCenter.y), newZoom);
+            this.canvas.requestRenderAll();
+        } else if (e.touches.length === 1 && this.isPanning && !isDrawingMode) {
+            // Handle single finger pan with reduced sensitivity (only when not drawing)
+            const touch = e.touches[0];
+            const deltaX = (touch.clientX - this.lastPosX) * 0.3;
+            const deltaY = (touch.clientY - this.lastPosY) * 0.3;
+
+            const vpt = this.canvas.viewportTransform;
+            vpt[4] += deltaX;
+            vpt[5] += deltaY;
+
+            this.canvas.requestRenderAll();
+            this.lastPosX = touch.clientX;
+            this.lastPosY = touch.clientY;
+        }
     }
 
-    // For non-drawing modes
-    if (e.touches.length === 0) {
-        // Reset all states when all fingers are lifted
-        this.isPanning = false;
-        this.initialPinchDistance = 0;
-        this.canvas.selection = true;
-    } else if (e.touches.length === 1) {
-        // If going from 2 fingers to 1, update the last position
-        const touch = e.touches[0];
-        this.lastPosX = touch.clientX;
-        this.lastPosY = touch.clientY;
-        this.isPanning = true;
-        this.canvas.selection = false;
+    onTouchEnd(e) {
+        // Check if we're in a drawing mode
+        const isDrawingMode = ['draw', 'line', 'arrow', 'rectangle', 'circle', 'text'].includes(this.currentMode);
+
+        if (isDrawingMode) {
+            // Handle end of drawing
+            const mouseEvent = new MouseEvent('mouseup', {
+                buttons: 0,
+            });
+            this.onMouseUp({ e: mouseEvent });
+            return;
+        }
+
+        // For non-drawing modes
+        if (e.touches.length === 0) {
+            // Reset all states when all fingers are lifted
+            this.isPanning = false;
+            this.initialPinchDistance = 0;
+            this.canvas.selection = true;
+        } else if (e.touches.length === 1) {
+            // If going from 2 fingers to 1, update the last position
+            const touch = e.touches[0];
+            this.lastPosX = touch.clientX;
+            this.lastPosY = touch.clientY;
+            this.isPanning = true;
+            this.canvas.selection = false;
+        }
     }
-}
 
     handleToolbarClick(e) {
         const action = e.target.dataset.action;
@@ -323,16 +320,16 @@ onTouchEnd(e) {
             }
 
             const reader = new FileReader();
-            reader.onload = (event) => {
-                fabric.Image.fromURL(event.target.result, (img) => {
+            reader.onload = event => {
+                fabric.Image.fromURL(event.target.result, img => {
                     // Scale image to reasonable size if too large
                     const maxSize = 500;
                     let scale = 1;
-                    
+
                     if (img.width > maxSize || img.height > maxSize) {
                         scale = maxSize / Math.max(img.width, img.height);
                     }
-                    
+
                     img.scale(scale);
 
                     // Center the image on the canvas
@@ -340,10 +337,10 @@ onTouchEnd(e) {
                     const vpw = this.canvas.width / zoom;
                     const vph = this.canvas.height / zoom;
                     const center = this.canvas.getVpCenter();
-                    
+
                     img.set({
-                        left: center.x - (img.width * scale / 2),
-                        top: center.y - (img.height * scale / 2)
+                        left: center.x - (img.width * scale) / 2,
+                        top: center.y - (img.height * scale) / 2,
                     });
 
                     this.canvas.add(img);
@@ -360,10 +357,11 @@ onTouchEnd(e) {
 
     setMode(mode) {
         if (mode == 'pan' && this.isTouchDevice) {
-            alert('Pan mode is currently not supported on touch devices, to move the canvas by zooming out and then zooming in on target, sorry for inconvinence.');
+            alert(
+                'Pan mode is currently not supported on touch devices, to move the canvas by zooming out and then zooming in on target, sorry for inconvinence.'
+            );
             return;
         }
-
 
         for (const button of this.shadowRoot.querySelectorAll('#toolbar button')) {
             button.classList.remove('button-active');
@@ -373,7 +371,6 @@ onTouchEnd(e) {
         if (activeButton) {
             activeButton.classList.add('button-active');
         }
-
 
         this.currentMode = mode;
         this.canvas.isDrawingMode = mode === 'draw';
@@ -416,7 +413,8 @@ onTouchEnd(e) {
     }
 
     onMouseWheelDown(e) {
-        if (e.button === 1) { // Middle mouse button
+        if (e.button === 1) {
+            // Middle mouse button
             this.isMouseWheelPanning = true;
             this.lastPosX = e.clientX;
             this.lastPosY = e.clientY;
@@ -427,7 +425,8 @@ onTouchEnd(e) {
     }
 
     onMouseWheelUp(e) {
-        if (e.button === 1) { // Middle mouse button
+        if (e.button === 1) {
+            // Middle mouse button
             this.isMouseWheelPanning = false;
             this.canvas.defaultCursor = 'default';
             this.canvas.selection = true;
@@ -440,7 +439,7 @@ onTouchEnd(e) {
         if (opt.e.button === 1 || this.isMouseWheelPanning) {
             return;
         }
-        
+
         if (this.currentMode === 'text' && !this.isEditing) {
             this.addText(opt);
             return;
@@ -460,7 +459,7 @@ onTouchEnd(e) {
         const pointer = this.canvas.getPointer(opt.e);
         const computedStyle = getComputedStyle(this);
         const fontFamily = computedStyle.getPropertyValue('--font').trim() || 'system-ui';
-        
+
         const text = new fabric.IText('Text', {
             left: pointer.x,
             top: pointer.y,
@@ -468,14 +467,14 @@ onTouchEnd(e) {
             fontSize: 20,
             fill: this.currentColor,
             selectable: true,
-            evented: true
+            evented: true,
         });
 
         this.canvas.add(text);
         this.canvas.setActiveObject(text);
         text.enterEditing();
         this.isEditing = true;
-        
+
         text.on('editing:exited', () => {
             this.isEditing = false;
             if (text.text.trim() === '') {
@@ -555,7 +554,7 @@ onTouchEnd(e) {
                     strokeWidth: this.currentThickness,
                     fill: this.currentColor,
                     selectable: false,
-                    evented: false
+                    evented: false,
                 });
                 break;
             case 'line':
@@ -565,7 +564,7 @@ onTouchEnd(e) {
                     stroke: this.currentColor,
                     strokeWidth: this.currentThickness,
                     selectable: false,
-                    evented: false
+                    evented: false,
                 });
                 break;
             case 'rectangle':
@@ -580,7 +579,7 @@ onTouchEnd(e) {
                     stroke: this.currentColor,
                     strokeWidth: this.currentThickness,
                     selectable: false,
-                    evented: false
+                    evented: false,
                 });
                 break;
             case 'circle':
@@ -592,7 +591,7 @@ onTouchEnd(e) {
                     radius: 0,
                     fill: 'transparent',
                     stroke: this.currentColor,
-                    strokeWidth: this.currentThickness
+                    strokeWidth: this.currentThickness,
                 });
                 break;
         }
@@ -639,7 +638,7 @@ onTouchEnd(e) {
                     strokeWidth: this.currentThickness,
                     fill: 'transparent',
                     selectable: false,
-                    evented: false
+                    evented: false,
                 });
 
                 // Add the new arrow to the canvas
@@ -654,7 +653,7 @@ onTouchEnd(e) {
                     stroke: this.currentColor,
                     strokeWidth: this.currentThickness,
                     selectable: false,
-                    evented: false
+                    evented: false,
                 });
 
                 // Add the new line to the canvas
@@ -679,17 +678,14 @@ onTouchEnd(e) {
                     stroke: this.currentColor,
                     strokeWidth: this.currentThickness,
                     selectable: false,
-                    evented: false
+                    evented: false,
                 });
 
                 // Add the new rectangle to the canvas
                 this.canvas.add(this.drawingObject);
                 break;
             case 'circle':
-                const radius = Math.sqrt(
-                    Math.pow(pointer.x - this.drawingObject.left, 2) +
-                    Math.pow(pointer.y - this.drawingObject.top, 2)
-                ) / 2;
+                const radius = Math.sqrt(Math.pow(pointer.x - this.drawingObject.left, 2) + Math.pow(pointer.y - this.drawingObject.top, 2)) / 2;
                 this.drawingObject.set({ radius: radius });
                 break;
         }
@@ -710,7 +706,7 @@ onTouchEnd(e) {
                 // Re-enable selection and events after drawing is complete
                 this.drawingObject.set({
                     selectable: true,
-                    evented: true
+                    evented: true,
                 });
             }
         }
@@ -732,16 +728,15 @@ onTouchEnd(e) {
             end.x,
             end.y,
             end.x - headLength * Math.cos(angle + headAngle),
-            end.y - headLength * Math.sin(angle + headAngle)
+            end.y - headLength * Math.sin(angle + headAngle),
         ];
 
         arrow.path = [
             ['M', start.x, start.y],
             ['L', end.x, end.y],
-            ['M', ...arrowHeadPoints]
+            ['M', ...arrowHeadPoints],
         ];
     }
-
 
     setValue(identifier, value) {
         if (!this.isInitialized) {
@@ -755,13 +750,17 @@ onTouchEnd(e) {
             return;
         }
 
-        this.canvas.loadFromJSON(value.canvasContent, () => {
-            this.canvas.renderAll();
-            console.log("Canvas content loaded successfully");
-            this.sendUpdates();
-        }, (o, object) => {
-            console.log("Loading object: ", object);
-        });
+        this.canvas.loadFromJSON(
+            value.canvasContent,
+            () => {
+                this.canvas.renderAll();
+                console.log('Canvas content loaded successfully');
+                this.sendUpdates();
+            },
+            (o, object) => {
+                console.log('Loading object: ', object);
+            }
+        );
     }
 
     getValue() {
@@ -769,7 +768,7 @@ onTouchEnd(e) {
             return { canvasContent: null };
         }
         return {
-            canvasContent: JSON.stringify(this.canvas.toJSON())
+            canvasContent: JSON.stringify(this.canvas.toJSON()),
         };
     }
 
@@ -916,21 +915,21 @@ onTouchEnd(e) {
                 <button class="tbn" data-action="home"><img data-action="home" src="/a7/plugins/canvas-element/home.svg" alt="Home"/></button>
                 <button class="tbn" data-action="pan"><img data-action="pan" src="/a7/plugins/canvas-element/pan.svg" alt="Pan"/></button>
                 <button class="tbn" data-action="select"><img data-action="select" src="/a7/plugins/canvas-element/select.svg" alt="Select"/></button>
-                <button class="tbn ${x? 'none': ''}" data-action="draw"><img data-action="draw" src="/a7/plugins/canvas-element/draw.svg" alt="Draw"/></button>
-                <button class="tbn ${x? 'none': ''}" data-action="line"><img data-action="line" src="/a7/plugins/canvas-element/line.svg" alt="Line"/></button>
-                <button class="tbn ${x? 'none': ''}" data-action="arrow"><img data-action="arrow" src="/a7/plugins/canvas-element/arrow.svg" alt="Arrow"/></button>
-                <button class="tbn ${x? 'none': ''}" data-action="rectangle"><img data-action="rectangle" src="/a7/plugins/canvas-element/rectangle.svg" alt="Rectangle"/></button>
-                <button class="tbn ${x? 'none': ''}" data-action="circle"><img data-action="circle" src="/a7/plugins/canvas-element/circle.svg" alt="Circle"/></button>
-                <button class="tbn ${x? 'none': ''}" data-action="text"><img data-action="text" src="/a7/plugins/canvas-element/text.svg" alt="Text"/></button>
-                <button class="tbn ${x? 'none': ''}" data-action="image"><img data-action="image" src="/a7/plugins/canvas-element/image.svg" alt="Add Image"/></button>
-                <button class="tbn ${x? 'none': ''}" data-action="delete"><img data-action="delete" src="/a7/plugins/canvas-element/trash.svg" alt="Delete"/></button>
-                <input type="file" id="image-input" accept="image/*" class="${x? 'none': ''}" />
+                <button class="tbn ${x ? 'none' : ''}" data-action="draw"><img data-action="draw" src="/a7/plugins/canvas-element/draw.svg" alt="Draw"/></button>
+                <button class="tbn ${x ? 'none' : ''}" data-action="line"><img data-action="line" src="/a7/plugins/canvas-element/line.svg" alt="Line"/></button>
+                <button class="tbn ${x ? 'none' : ''}" data-action="arrow"><img data-action="arrow" src="/a7/plugins/canvas-element/arrow.svg" alt="Arrow"/></button>
+                <button class="tbn ${x ? 'none' : ''}" data-action="rectangle"><img data-action="rectangle" src="/a7/plugins/canvas-element/rectangle.svg" alt="Rectangle"/></button>
+                <button class="tbn ${x ? 'none' : ''}" data-action="circle"><img data-action="circle" src="/a7/plugins/canvas-element/circle.svg" alt="Circle"/></button>
+                <button class="tbn ${x ? 'none' : ''}" data-action="text"><img data-action="text" src="/a7/plugins/canvas-element/text.svg" alt="Text"/></button>
+                <button class="tbn ${x ? 'none' : ''}" data-action="image"><img data-action="image" src="/a7/plugins/canvas-element/image.svg" alt="Add Image"/></button>
+                <button class="tbn ${x ? 'none' : ''}" data-action="delete"><img data-action="delete" src="/a7/plugins/canvas-element/trash.svg" alt="Delete"/></button>
+                <input type="file" id="image-input" accept="image/*" class="${x ? 'none' : ''}" />
 
                 <div style="flex: 1"></div>
-                <div id="color-picker-wrapper" class="${x? 'none': ''}">
+                <div id="color-picker-wrapper" class="${x ? 'none' : ''}">
                     <input type="color" id="color-picker" value="#000000">
                 </div>
-                <div id="thickness-slider-wrapper" class="${x? 'none': ''}">
+                <div id="thickness-slider-wrapper" class="${x ? 'none' : ''}">
                     <input type="range" id="thickness-slider" min="1" max="20" value="2">
                 </div>
             </div>
@@ -940,4 +939,4 @@ onTouchEnd(e) {
     }
 }
 
-customElements.define("canvas-element", CanvasElement);
+customElements.define('canvas-element', CanvasElement);

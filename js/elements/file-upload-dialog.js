@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class FileUploadDialog extends LitElement {
     static styles = css`
@@ -16,7 +16,7 @@ class FileUploadDialog extends LitElement {
         }
         .dialog {
             background-color: var(--bg-1);
-            padding: calc(2*var(--padding-4));
+            padding: calc(2 * var(--padding-4));
             border-radius: var(--radius-large);
             box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
             max-width: 500px;
@@ -77,14 +77,27 @@ class FileUploadDialog extends LitElement {
             color: var(--bg-blue);
         }
 
-        ::-webkit-scrollbar{width:14px;height:14px}::-webkit-scrollbar-track{background-color:transparent;}
-        ::-webkit-scrollbar-thumb{background: var(--text-2);border-radius: 7px;border: 4px solid transparent; background-clip: padding-box;}
-        ::-webkit-scrollbar-thumb:hover{background-color: var(--text-1);}
+        ::-webkit-scrollbar {
+            width: 14px;
+            height: 14px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-2);
+            border-radius: 7px;
+            border: 4px solid transparent;
+            background-clip: padding-box;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-1);
+        }
     `;
 
     static properties = {
         isOpen: { type: Boolean },
-        files: { type: Array }
+        files: { type: Array },
     };
 
     constructor() {
@@ -100,14 +113,16 @@ class FileUploadDialog extends LitElement {
             <div class="overlay">
                 <div class="dialog">
                     <h2>Upload Files</h2>
-                    <input type="file" multiple @change=${this.handleFileSelect} class="file-input">
+                    <input type="file" multiple @change=${this.handleFileSelect} class="file-input" />
                     <div class="file-list">
-                        ${this.files.map((file, index) => html`
-                            <div class="file-item">
-                                <span>${file.name}</span>
-                                <button class="remove-file" @click=${() => this.removeFile(index)}>Remove</button>
-                            </div>
-                        `)}
+                        ${this.files.map(
+                            (file, index) => html`
+                                <div class="file-item">
+                                    <span>${file.name}</span>
+                                    <button class="remove-file" @click=${() => this.removeFile(index)}>Remove</button>
+                                </div>
+                            `
+                        )}
                     </div>
                     <div class="actions">
                         <button class="cancel" @click=${this.close}>Cancel</button>

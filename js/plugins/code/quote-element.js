@@ -88,4 +88,4 @@ class QuoteElement extends BaseTextElement {
     }
 }
 
-customElements.define("quote-element", QuoteElement);
+customElements.define('quote-element', QuoteElement);

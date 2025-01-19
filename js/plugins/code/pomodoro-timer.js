@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class PomodoroTimerElement extends LitElement {
     static styles = css`
@@ -49,7 +49,7 @@ class PomodoroTimerElement extends LitElement {
     static properties = {
         isRunning: { type: Boolean, reflect: true },
         timeLeft: { type: Number },
-        totalMinutes: { type: Number }
+        totalMinutes: { type: Number },
     };
 
     constructor() {
@@ -58,7 +58,7 @@ class PomodoroTimerElement extends LitElement {
         this.isRunning = false;
         this.timeLeft = this.totalMinutes * 60;
         this.intervalId = null;
-        
+
         this.audioContext = null;
         this.oscillator = null;
         this.gainNode = null;
@@ -76,36 +76,39 @@ class PomodoroTimerElement extends LitElement {
 
     startBeeping() {
         if (this.isBeeping) return;
-        
+
         this.initAudio();
         this.isBeeping = true;
-        
+
         this.oscillator = this.audioContext.createOscillator();
         this.oscillator.type = 'sine';
         this.oscillator.frequency.value = 800;
         this.oscillator.connect(this.gainNode);
-        
+
         const beepDuration = 0.2;
         const beepInterval = 2;
         const now = this.audioContext.currentTime;
-        
+
         this.oscillator.start(now);
-        
-        const scheduleBeeps = (startTime) => {
+
+        const scheduleBeeps = startTime => {
             for (let i = 0; i < 10; i++) {
-                const beepTime = startTime + (i * beepInterval);
+                const beepTime = startTime + i * beepInterval;
                 this.gainNode.gain.setValueAtTime(0, beepTime);
                 this.gainNode.gain.linearRampToValueAtTime(0.5, beepTime + 0.01);
                 this.gainNode.gain.linearRampToValueAtTime(0, beepTime + beepDuration);
             }
-            
+
             if (this.isBeeping) {
-                setTimeout(() => {
-                    scheduleBeeps(startTime + (10 * beepInterval));
-                }, (10 * beepInterval - 1) * 1000);
+                setTimeout(
+                    () => {
+                        scheduleBeeps(startTime + 10 * beepInterval);
+                    },
+                    (10 * beepInterval - 1) * 1000
+                );
             }
         };
-        
+
         scheduleBeeps(now);
     }
 
@@ -131,7 +134,7 @@ class PomodoroTimerElement extends LitElement {
 
     startTimer() {
         if (this.timeLeft === 0) return;
-        
+
         this.isRunning = true;
         this.intervalId = setInterval(() => {
             this.timeLeft--;
@@ -168,17 +171,14 @@ class PomodoroTimerElement extends LitElement {
     render() {
         return html`
             <div class="timer-container">
-                <button 
-                    @click=${this.toggleTimer} 
-                    aria-label=${this.isRunning ? 'Pause' : 'Start'}
-                >
-                    ${this.isRunning 
-                        ? html`<img src="/a7/plugins/nightwave-plaza/pause.svg" alt="Pause">` 
-                        : html`<img src="/a7/plugins/nightwave-plaza/play.svg" alt="Play">`}
+                <button @click=${this.toggleTimer} aria-label=${this.isRunning ? 'Pause' : 'Start'}>
+                    ${this.isRunning
+                        ? html`<img src="/a7/plugins/nightwave-plaza/pause.svg" alt="Pause" />`
+                        : html`<img src="/a7/plugins/nightwave-plaza/play.svg" alt="Play" />`}
                 </button>
                 <span class="timer-display">${this.formatTime(this.timeLeft)}</span>
                 <button @click=${this.resetTimer} aria-label="Reset">
-                    <img src="/a7/plugins/nightwave-plaza/refresh.svg" alt="Reset">
+                    <img src="/a7/plugins/nightwave-plaza/refresh.svg" alt="Reset" />
                 </button>
             </div>
         `;
@@ -193,4 +193,4 @@ class PomodoroTimerElement extends LitElement {
     }
 }
 
-customElements.define("pomodoro-timer", PomodoroTimerElement);
+customElements.define('pomodoro-timer', PomodoroTimerElement);

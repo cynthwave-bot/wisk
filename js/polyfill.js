@@ -1,5 +1,5 @@
 // thanks random stranger
-// https://jsfiddle.net/dbalcomb/oLnkyv78/ 
+// https://jsfiddle.net/dbalcomb/oLnkyv78/
 
 const SUPPORTS_SHADOW_SELECTION = typeof window.ShadowRoot.prototype.getSelection === 'function';
 const SUPPORTS_BEFORE_INPUT = typeof window.InputEvent.prototype.getTargetRanges === 'function';
@@ -40,54 +40,66 @@ function getActiveElement() {
 }
 
 if (IS_FIREFOX && !SUPPORTS_SHADOW_SELECTION) {
-    window.ShadowRoot.prototype.getSelection = function() {
+    window.ShadowRoot.prototype.getSelection = function () {
         return document.getSelection();
-    }
+    };
 }
 
 if (!IS_FIREFOX && !SUPPORTS_SHADOW_SELECTION && SUPPORTS_BEFORE_INPUT) {
     let processing = false;
     let selection = new ShadowSelection();
 
-    window.ShadowRoot.prototype.getSelection = function() {
+    window.ShadowRoot.prototype.getSelection = function () {
         return selection;
-    }
+    };
 
-    window.addEventListener('selectionchange', () => {
-        if (!processing) {
-            processing = true;
+    window.addEventListener(
+        'selectionchange',
+        () => {
+            if (!processing) {
+                processing = true;
 
-            const active = getActiveElement();
+                const active = getActiveElement();
 
-            if (active && (active.getAttribute('contenteditable') === 'true')) {
-                document.execCommand('indent');
-            } else {
-                selection.removeAllRanges();
+                if (active && active.getAttribute('contenteditable') === 'true') {
+                    document.execCommand('indent');
+                } else {
+                    selection.removeAllRanges();
+                }
+
+                processing = false;
             }
+        },
+        true
+    );
 
-            processing = false;
-        }
-    }, true);
+    window.addEventListener(
+        'beforeinput',
+        event => {
+            if (processing) {
+                const ranges = event.getTargetRanges();
+                const range = ranges[0];
 
-    window.addEventListener('beforeinput', (event) => {
-        if (processing) {
-            const ranges = event.getTargetRanges();
-            const range = ranges[0];
+                const newRange = new Range();
 
-            const newRange = new Range();
+                newRange.setStart(range.startContainer, range.startOffset);
+                newRange.setEnd(range.endContainer, range.endOffset);
 
-            newRange.setStart(range.startContainer, range.startOffset);
-            newRange.setEnd(range.endContainer, range.endOffset);
+                selection.removeAllRanges();
+                selection.addRange(newRange);
 
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            }
+        },
+        true
+    );
+
+    window.addEventListener(
+        'selectstart',
+        event => {
             selection.removeAllRanges();
-            selection.addRange(newRange);
-
-            event.preventDefault();
-            event.stopImmediatePropagation();
-        }
-    }, true);
-
-    window.addEventListener('selectstart', (event) => {
-        selection.removeAllRanges();
-    }, true);
+        },
+        true
+    );
 }

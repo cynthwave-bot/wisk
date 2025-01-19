@@ -5,12 +5,12 @@ var deletedElementsLeft = [];
 var configChanges = [];
 
 // Utility functions
-const createHoverImageContainer = (elementId) => {
-    const imageContainer = document.createElement("div");
-    imageContainer.classList.add("hover-images");
+const createHoverImageContainer = elementId => {
+    const imageContainer = document.createElement('div');
+    imageContainer.classList.add('hover-images');
 
-    const addButton = createHoverButton("/a7/forget/plus.svg", () => whenPlusClicked(elementId));
-    const deleteButton = createHoverButton("/a7/forget/trash.svg", () => whenTrashClicked(elementId));
+    const addButton = createHoverButton('/a7/forget/plus.svg', () => whenPlusClicked(elementId));
+    const deleteButton = createHoverButton('/a7/forget/trash.svg', () => whenTrashClicked(elementId));
 
     imageContainer.appendChild(addButton);
     imageContainer.appendChild(deleteButton);
@@ -19,18 +19,18 @@ const createHoverImageContainer = (elementId) => {
 };
 
 const createHoverButton = (src, clickHandler) => {
-    const img = document.createElement("img");
+    const img = document.createElement('img');
     img.src = src;
-    img.alt = "Hover image";
-    img.classList.add("hover-image", "plugin-icon");
-    img.addEventListener("click", clickHandler);
+    img.alt = 'Hover image';
+    img.classList.add('hover-image', 'plugin-icon');
+    img.addEventListener('click', clickHandler);
     return img;
 };
 
 const createFullWidthWrapper = (elementId, block, imageContainer) => {
-    const wrapper = document.createElement("div");
+    const wrapper = document.createElement('div');
     wrapper.id = `full-width-wrapper-${elementId}`;
-    wrapper.classList.add("full-width-wrapper");
+    wrapper.classList.add('full-width-wrapper');
     wrapper.appendChild(block);
 
     if (!window.wisk.editor.wiskSite) {
@@ -40,12 +40,12 @@ const createFullWidthWrapper = (elementId, block, imageContainer) => {
 };
 
 const createBlockContainer = (elementId, blockType) => {
-    const container = document.createElement("div");
+    const container = document.createElement('div');
     container.id = `div-${elementId}`;
-    container.classList.add("rndr");
+    container.classList.add('rndr');
 
-    if (window.wisk.plugins.getPluginDetail(blockType).width === "max") {
-        container.classList.add("rndr-full-width");
+    if (window.wisk.plugins.getPluginDetail(blockType).width === 'max') {
+        container.classList.add('rndr-full-width');
     }
 
     return container;
@@ -58,16 +58,16 @@ const createBlockElement = (elementId, blockType) => {
 };
 
 // Editor core functions
-window.wisk.editor.generateNewId = () => [...Array(15)]
-    .map(() => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random() * 52)]).join("");
+window.wisk.editor.generateNewId = () =>
+    [...Array(15)].map(() => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random() * 52)]).join('');
 
 window.wisk.editor.elements = [];
 
 window.wisk.editor.addConfigChange = async function (arr) {
     await saveUpdates(
         arr,
-        window.wisk.editor.elements.map((e) => e.id),
-        [],
+        window.wisk.editor.elements.map(e => e.id),
+        []
     );
 
     for (const change of arr) {
@@ -77,11 +77,11 @@ window.wisk.editor.addConfigChange = async function (arr) {
 };
 
 window.wisk.editor.savePluginData = async function (identifier, data) {
-    var arr = [{path: "document.plugin." + identifier, values: { data: data }}];
+    var arr = [{ path: 'document.plugin.' + identifier, values: { data: data } }];
     await saveUpdates(
         arr,
-        window.wisk.editor.elements.map((e) => e.id),
-        [],
+        window.wisk.editor.elements.map(e => e.id),
+        []
     );
 
     for (const change of arr) {
@@ -91,8 +91,11 @@ window.wisk.editor.savePluginData = async function (identifier, data) {
 };
 
 window.wisk.editor.createBlockBase = function (elementId, blockType, value, remoteId, isRemote = false) {
-    if (elementId === "") {
-        elementId = window.wisk.editor.elements.length > 1 ? window.wisk.editor.elements[window.wisk.editor.elements.length - 1].id : window.wisk.editor.elements[0].id;
+    if (elementId === '') {
+        elementId =
+            window.wisk.editor.elements.length > 1
+                ? window.wisk.editor.elements[window.wisk.editor.elements.length - 1].id
+                : window.wisk.editor.elements[0].id;
     }
 
     const id = isRemote ? remoteId : window.wisk.editor.generateNewId();
@@ -107,9 +110,9 @@ window.wisk.editor.createBlockBase = function (elementId, blockType, value, remo
     const container = createBlockContainer(id, blockType);
 
     container.appendChild(fullWidthWrapper);
-    document.getElementById("editor").insertBefore(container, prevElement.nextSibling);
+    document.getElementById('editor').insertBefore(container, prevElement.nextSibling);
 
-    const elementIndex = window.wisk.editor.elements.findIndex((e) => e.id === elementId);
+    const elementIndex = window.wisk.editor.elements.findIndex(e => e.id === elementId);
     window.wisk.editor.elements.splice(elementIndex + 1, 0, obj);
 
     return { id, blockElement };
@@ -119,7 +122,7 @@ window.wisk.editor.createRemoteBlock = function (elementId, blockType, value, re
     const { id, blockElement } = this.createBlockBase(elementId, blockType, value, remoteId, true);
 
     setTimeout(() => {
-        window.wisk.editor.updateBlock(id, "", value, "uwu");
+        window.wisk.editor.updateBlock(id, '', value, 'uwu');
     }, 0);
 };
 
@@ -127,7 +130,7 @@ window.wisk.editor.createNewBlock = function (elementId, blockType, value, focus
     const { id, blockElement } = this.createBlockBase(elementId, blockType, value, null, false);
 
     setTimeout(() => {
-        window.wisk.editor.updateBlock(id, "", value, rec);
+        window.wisk.editor.updateBlock(id, '', value, rec);
         window.wisk.editor.focusBlock(id, focusIdentifier);
     }, 0);
 };
@@ -147,31 +150,31 @@ window.wisk.editor.handleChanges = async function (updateObject) {
 
     // Handle updates and additions
     for (const change of changes) {
-        if (change.path === "document.elements") {
+        if (change.path === 'document.elements') {
             await handleElementChange(change.values, allElements);
         }
-        if (change.path.startsWith("document.config.access")) {
-            if (change.path.includes("public")) {
+        if (change.path.startsWith('document.config.access')) {
+            if (change.path.includes('public')) {
                 window.wisk.editor.data.config.public = change.values.public;
             }
-            if (change.path.includes("add")) {
+            if (change.path.includes('add')) {
                 window.wisk.editor.data.config.access.push(change.values.email);
             }
-            if (change.path.includes("remove")) {
-                window.wisk.editor.data.config.access = window.wisk.editor.data.config.access.filter((a) => a !== change.values.email);
+            if (change.path.includes('remove')) {
+                window.wisk.editor.data.config.access = window.wisk.editor.data.config.access.filter(a => a !== change.values.email);
             }
         }
-        if (change.path.startsWith("document.config.plugins")) {
-            if (change.path.includes("add")) {
+        if (change.path.startsWith('document.config.plugins')) {
+            if (change.path.includes('add')) {
                 window.wisk.plugins.loadPlugin(change.values.plugin);
             }
         }
-        if (change.path.startsWith("document.config.theme")) {
+        if (change.path.startsWith('document.config.theme')) {
             window.wisk.theme.setTheme(change.values.theme);
         }
-        if (change.path.startsWith("document.plugin")) {
+        if (change.path.startsWith('document.plugin')) {
             if (change.values.data) {
-                document.getElementById(change.path.replace("document.plugin.", "")).loadData(change.values.data);
+                document.getElementById(change.path.replace('document.plugin.', '')).loadData(change.values.data);
             }
         }
     }
@@ -185,16 +188,16 @@ window.wisk.editor.handleChanges = async function (updateObject) {
 const handleElementChange = async (updatedElement, allElements) => {
     if (!updatedElement) return;
 
-    const existingElement = window.wisk.editor.elements.find((e) => e.id === updatedElement.id);
+    const existingElement = window.wisk.editor.elements.find(e => e.id === updatedElement.id);
     const domElement = document.getElementById(updatedElement.id);
 
     if (!existingElement || !domElement) {
         const currentIndex = allElements.indexOf(updatedElement.id);
-        const prevElementId = currentIndex > 0 ? allElements[currentIndex - 1] : "";
+        const prevElementId = currentIndex > 0 ? allElements[currentIndex - 1] : '';
 
         window.wisk.editor.createRemoteBlock(prevElementId, updatedElement.component, updatedElement.value, updatedElement.id);
     } else {
-        updateExistingElement(existingElement, updatedElement, domElement, "uwu");
+        updateExistingElement(existingElement, updatedElement, domElement, 'uwu');
     }
 };
 
@@ -212,12 +215,12 @@ const updateExistingElement = (existingElement, updatedElement, domElement, rec)
         }
     } else {
         setTimeout(() => {
-            domElement.setValue("", updatedElement.value);
+            domElement.setValue('', updatedElement.value);
         }, 0);
     }
 };
 
-const handleElementDeletions = async (newDeletedElements) => {
+const handleElementDeletions = async newDeletedElements => {
     if (!Array.isArray(newDeletedElements)) return;
 
     for (const deletedId of newDeletedElements) {
@@ -225,17 +228,17 @@ const handleElementDeletions = async (newDeletedElements) => {
             deletedElements.push(deletedId);
             const element = document.getElementById(`div-${deletedId}`);
             if (element) {
-                document.getElementById("editor").removeChild(element);
-                window.wisk.editor.elements = window.wisk.editor.elements.filter((e) => e.id !== deletedId);
+                document.getElementById('editor').removeChild(element);
+                window.wisk.editor.elements = window.wisk.editor.elements.filter(e => e.id !== deletedId);
             }
         }
     }
 };
 
-const smartReorderElements = (allElements) => {
+const smartReorderElements = allElements => {
     if (!Array.isArray(allElements) || allElements.length === 0) return;
 
-    const editorElement = document.getElementById("editor");
+    const editorElement = document.getElementById('editor');
     if (!editorElement) return;
 
     // Get currently focused element if any
@@ -245,7 +248,7 @@ const smartReorderElements = (allElements) => {
     // Create a map of current positions
     const currentPositions = new Map();
     Array.from(editorElement.children).forEach((element, index) => {
-        const id = element.id?.replace("div-", "");
+        const id = element.id?.replace('div-', '');
         if (id) currentPositions.set(id, index);
     });
 
@@ -289,7 +292,7 @@ function disableEverything(root = document) {
     editableElements.forEach(el => {
         el.contentEditable = false;
     });
-    
+
     // Also catch any elements that might have contenteditable set via JavaScript
     root.querySelectorAll('*').forEach(el => {
         if (el.isContentEditable) {
@@ -336,7 +339,7 @@ function disableEverything(root = document) {
         if ('disabled' in el) {
             el.disabled = true;
         }
-        
+
         // Remove click handlers
         el.onclick = null;
         el.onmousedown = null;
@@ -344,18 +347,18 @@ function disableEverything(root = document) {
         el.onkeydown = null;
         el.onkeyup = null;
         el.onkeypress = null;
-        
+
         // Prevent pointer events
         el.style.pointerEvents = 'none';
-        
+
         // Remove from tab order
         if (el.tabIndex !== -1) {
             el.tabIndex = -1;
         }
-        
+
         // Disable dragging
         el.draggable = false;
-        
+
         // Remove all event listeners (for good measure)
         el.replaceWith(el.cloneNode(true));
     });
@@ -380,7 +383,7 @@ function disableEverything(root = document) {
 }
 
 async function initEditor(doc) {
-    console.log("INIT EDITOR", doc);
+    console.log('INIT EDITOR', doc);
     window.wisk.editor.data = doc.data;
     document.title = doc.name;
 
@@ -391,8 +394,8 @@ async function initEditor(doc) {
 
     await Promise.all(
         doc.data.config.plugins
-        .filter((plugin) => !window.wisk.plugins.loadedPlugins.includes(plugin))
-        .map((plugin) => window.wisk.plugins.loadPlugin(plugin)),
+            .filter(plugin => !window.wisk.plugins.loadedPlugins.includes(plugin))
+            .map(plugin => window.wisk.plugins.loadPlugin(plugin))
     );
 
     // once plugins are loaded we load the data of plugins using their identifiers
@@ -413,7 +416,7 @@ async function initEditor(doc) {
     window.wisk.editor.elements = page.elements;
 
     if (!window.wisk.editor.wiskSite) {
-        document.getElementById("last-space").addEventListener("click", handleEditorClick);
+        document.getElementById('last-space').addEventListener('click', handleEditorClick);
     }
 
     await initializeElements();
@@ -423,26 +426,26 @@ async function initEditor(doc) {
 
 async function initializeElements() {
     if (window.wisk.editor.elements.length > 1) {
-        document.getElementById("getting-started").style.display = "none";
+        document.getElementById('getting-started').style.display = 'none';
     }
 
     const firstElement = window.wisk.editor.elements[0];
     const container = createBlockContainer(firstElement.id, firstElement.component);
     const block = createBlockElement(firstElement.id, firstElement.component);
-    const imageContainer = document.createElement("div");
-    imageContainer.classList.add("hover-images");
+    const imageContainer = document.createElement('div');
+    imageContainer.classList.add('hover-images');
 
-    const plusButton = createHoverButton("/a7/forget/plus.svg", () => whenPlusClicked(firstElement.id));
+    const plusButton = createHoverButton('/a7/forget/plus.svg', () => whenPlusClicked(firstElement.id));
     imageContainer.appendChild(plusButton);
 
     const fullWidthWrapper = createFullWidthWrapper(firstElement.id, block, imageContainer);
     container.appendChild(fullWidthWrapper);
-    document.getElementById("editor").appendChild(container);
+    document.getElementById('editor').appendChild(container);
 
-    window.dispatchEvent(new CustomEvent("block-created", { detail: { id: firstElement.id } }));
+    window.dispatchEvent(new CustomEvent('block-created', { detail: { id: firstElement.id } }));
 
     setTimeout(() => {
-        document.getElementById(firstElement.id).setValue("", firstElement.value);
+        document.getElementById(firstElement.id).setValue('', firstElement.value);
 
         if (window.wisk.editor.elements.length === 1) {
             window.wisk.editor.focusBlock(firstElement.id, {
@@ -466,22 +469,22 @@ async function initializeRemainingElements() {
 
         const fullWidthWrapper = createFullWidthWrapper(element.id, block, imageContainer);
         container.appendChild(fullWidthWrapper);
-        document.getElementById("editor").appendChild(container);
+        document.getElementById('editor').appendChild(container);
 
-        window.dispatchEvent(new CustomEvent("block-created", { detail: { id: element.id } }));
+        window.dispatchEvent(new CustomEvent('block-created', { detail: { id: element.id } }));
 
         setTimeout(() => {
-            document.getElementById(element.id).setValue("", element.value);
+            document.getElementById(element.id).setValue('', element.value);
         }, 0);
     }
 }
 
 window.wisk.editor.htmlToMarkdown = function (html) {
-    const temp = document.createElement("div");
+    const temp = document.createElement('div');
     temp.innerHTML = html;
 
     function escapeBackslashes(text) {
-        return text.replace(/\\/g, "\\\\");
+        return text.replace(/\\/g, '\\\\');
     }
 
     function processNode(node) {
@@ -489,33 +492,33 @@ window.wisk.editor.htmlToMarkdown = function (html) {
             return escapeBackslashes(node.textContent);
         }
 
-        let result = "";
+        let result = '';
 
         for (const child of node.childNodes) {
             result += processNode(child);
         }
 
         switch (node.nodeName.toLowerCase()) {
-            case "a":
-                if (node.classList?.contains("reference-number")) {
-                    const refNum = result.replace(/[\[\]]/g, "");
+            case 'a':
+                if (node.classList?.contains('reference-number')) {
+                    const refNum = result.replace(/[\[\]]/g, '');
                     return `[ref_${refNum}]`;
                 }
                 return `[${result}](${node.href})`;
-            case "b":
-            case "strong":
+            case 'b':
+            case 'strong':
                 return `**${result}**`;
-            case "i":
-            case "em":
+            case 'i':
+            case 'em':
                 return `*${result}*`;
-            case "strike":
+            case 'strike':
                 return `~~${result}~~`;
-            case "u":
+            case 'u':
                 return `__${result}__`;
-            case "span":
-                const refSpan = node.querySelector(".reference-number");
+            case 'span':
+                const refSpan = node.querySelector('.reference-number');
                 if (refSpan) {
-                    const refNum = refSpan.textContent.replace(/[\[\]]/g, "");
+                    const refNum = refSpan.textContent.replace(/[\[\]]/g, '');
                     return result.replace(refSpan.outerHTML, `[ref_${refNum}]`);
                 }
                 return result;
@@ -529,7 +532,7 @@ window.wisk.editor.htmlToMarkdown = function (html) {
 
 // Element Navigation/Management Functions
 window.wisk.editor.getElement = function (elementId) {
-    return window.wisk.editor.elements.find((e) => e.id === elementId);
+    return window.wisk.editor.elements.find(e => e.id === elementId);
 };
 
 window.wisk.editor.prevElement = function (elementId) {
@@ -537,17 +540,17 @@ window.wisk.editor.prevElement = function (elementId) {
         return null;
     }
 
-    const index = window.wisk.editor.elements.findIndex((e) => e.id === elementId);
+    const index = window.wisk.editor.elements.findIndex(e => e.id === elementId);
     return index > 0 ? window.wisk.editor.elements[index - 1] : null;
 };
 
 window.wisk.editor.nextElement = function (elementId) {
-    const index = window.wisk.editor.elements.findIndex((e) => e.id === elementId);
+    const index = window.wisk.editor.elements.findIndex(e => e.id === elementId);
     return index < window.wisk.editor.elements.length - 1 ? window.wisk.editor.elements[index + 1] : null;
 };
 
 window.wisk.editor.showSelector = function (elementId, focusIdentifier) {
-    const selector = byQuery("selector-element");
+    const selector = byQuery('selector-element');
     selector.show(elementId);
 };
 
@@ -555,11 +558,11 @@ window.wisk.editor.deleteBlock = function (elementId, rec) {
     deletedElements.push(elementId);
     const element = document.getElementById(`div-${elementId}`);
     if (element) {
-        document.getElementById("editor").removeChild(element);
-        window.wisk.editor.elements = window.wisk.editor.elements.filter((e) => e.id !== elementId);
+        document.getElementById('editor').removeChild(element);
+        window.wisk.editor.elements = window.wisk.editor.elements.filter(e => e.id !== elementId);
         deletedElementsLeft.push(elementId);
 
-        window.dispatchEvent(new CustomEvent("block-deleted", { detail: { id: elementId } }));
+        window.dispatchEvent(new CustomEvent('block-deleted', { detail: { id: elementId } }));
 
         if (rec == undefined) {
             window.wisk.editor.justUpdates();
@@ -579,7 +582,7 @@ window.wisk.editor.updateBlock = function (elementId, path, newValue, rec) {
     if (element) {
         element.setValue(path, newValue);
 
-        window.dispatchEvent(new CustomEvent("block-updated", { detail: { id: elementId } }));
+        window.dispatchEvent(new CustomEvent('block-updated', { detail: { id: elementId } }));
 
         if (rec === undefined) {
             this.justUpdates(elementId);
@@ -596,51 +599,49 @@ window.wisk.editor.changeBlockType = function (elementId, value, newType, rec) {
     window.wisk.editor.deleteBlock(elementId, rec);
     window.wisk.editor.createNewBlock(prevElement.id, newType, value, { x: 0 }, rec);
 
-    window.dispatchEvent(new CustomEvent("block-changed", { detail: { id: prevElement.id } }));
+    window.dispatchEvent(new CustomEvent('block-changed', { detail: { id: prevElement.id } }));
 };
 
 window.wisk.editor.runBlockFunction = function (elementId, functionName, arg) {
     const element = document.getElementById(elementId);
-    if (element && typeof element[functionName] === "function") {
+    if (element && typeof element[functionName] === 'function') {
         element[functionName](arg);
     }
 };
 
 window.wisk.editor.useTemplate = async function (template) {
     if (this.elements.length > 1) {
-        alert("You need to clear the current document before using a template.");
+        alert('You need to clear the current document before using a template.');
         return;
     }
 
     for (const plugin of template.plugins) {
         await window.wisk.plugins.loadPlugin(plugin);
-        await window.wisk.editor.addConfigChange([
-            { path: "document.config.plugins.add", values: { plugin } },
-        ]);
+        await window.wisk.editor.addConfigChange([{ path: 'document.config.plugins.add', values: { plugin } }]);
     }
 
     // delete all elements
     for (const element of window.wisk.editor.elements) {
-        if (element.id !== "abcdefABCDEFxyz") window.wisk.editor.deleteBlock(element.id);
+        if (element.id !== 'abcdefABCDEFxyz') window.wisk.editor.deleteBlock(element.id);
     }
 
     for (const element of template.elements) {
-        if (element.id === "abcdefABCDEFxyz") {
-            document.getElementById("abcdefABCDEFxyz").setValue("", element.value);
-            document.getElementById("abcdefABCDEFxyz").sendUpdates();
+        if (element.id === 'abcdefABCDEFxyz') {
+            document.getElementById('abcdefABCDEFxyz').setValue('', element.value);
+            document.getElementById('abcdefABCDEFxyz').sendUpdates();
         }
-        if (element.id !== "abcdefABCDEFxyz") window.wisk.editor.createNewBlock("", element.component, element.value, { x: 0 });
+        if (element.id !== 'abcdefABCDEFxyz') window.wisk.editor.createNewBlock('', element.component, element.value, { x: 0 });
     }
 
     wisk.theme.setTheme(template.theme);
-    await wisk.editor.addConfigChange([{ path: "document.config.theme", values: { theme: template.theme } }]);
+    await wisk.editor.addConfigChange([{ path: 'document.config.theme', values: { theme: template.theme } }]);
 
     window.wisk.editor.justUpdates();
-}
+};
 
 // Event Handler Functions
 function whenPlusClicked(elementId) {
-    window.wisk.editor.createNewBlock(elementId, "text-element", { textContent: "" }, { x: 0 });
+    window.wisk.editor.createNewBlock(elementId, 'text-element', { textContent: '' }, { x: 0 });
     const nextElement = window.wisk.editor.nextElement(elementId);
     if (nextElement) {
         window.wisk.editor.showSelector(nextElement.id, { x: 0 });
@@ -648,7 +649,7 @@ function whenPlusClicked(elementId) {
 }
 
 function whenTrashClicked(elementId) {
-    console.log("TRASH CLICKED", elementId);
+    console.log('TRASH CLICKED', elementId);
     window.wisk.editor.deleteBlock(elementId);
 }
 
@@ -659,23 +660,22 @@ function handleEditorClick(event) {
 
     const lastElement = window.wisk.editor.elements[window.wisk.editor.elements.length - 1];
 
-    if (lastElement.component === "text-element") {
+    if (lastElement.component === 'text-element') {
         window.wisk.editor.focusBlock(lastElement.id, {
             x: lastElement.value.textContent.length,
         });
     } else {
-        window.wisk.editor.createNewBlock(lastElement.id, "text-element", { textContent: "" }, { x: 0 });
+        window.wisk.editor.createNewBlock(lastElement.id, 'text-element', { textContent: '' }, { x: 0 });
     }
 }
 
 window.wisk.editor.justUpdates = async function (elementId) {
-    window.dispatchEvent(new CustomEvent("something-updated", { detail: { id: elementId } }));
+    window.dispatchEvent(new CustomEvent('something-updated', { detail: { id: elementId } }));
 
     if (elementId) {
-
         if (elementId === window.wisk.editor.elements[0].id) {
-            document.title = byQuery("#" + elementId).getTextContent().text;
-            window.wisk.editor.addConfigChange([{path: "document.name", values: { name: byQuery("#" + elementId).getTextContent().text }}]);
+            document.title = byQuery('#' + elementId).getTextContent().text;
+            window.wisk.editor.addConfigChange([{ path: 'document.name', values: { name: byQuery('#' + elementId).getTextContent().text } }]);
         }
 
         const element = window.wisk.editor.getElement(elementId);
@@ -685,8 +685,8 @@ window.wisk.editor.justUpdates = async function (elementId) {
                 element.value = domElement.getValue();
                 element.lastEdited = Math.floor(Date.now() / 1000);
                 element.component = domElement.tagName.toLowerCase();
-                document.getElementById("nav").classList.add("nav-disappear");
-                document.getElementById("getting-started").style.display = "none";
+                document.getElementById('nav').classList.add('nav-disappear');
+                document.getElementById('getting-started').style.display = 'none';
 
                 if (!elementUpdatesLeft.includes(elementId)) {
                     elementUpdatesLeft.push(elementId);
@@ -698,11 +698,11 @@ window.wisk.editor.justUpdates = async function (elementId) {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
         const changed = elementUpdatesLeft
-            .map((elementId) => {
+            .map(elementId => {
                 const element = window.wisk.editor.getElement(elementId);
                 if (element) {
                     return {
-                        path: "document.elements",
+                        path: 'document.elements',
                         values: {
                             id: element.id,
                             value: element.value,
@@ -715,7 +715,7 @@ window.wisk.editor.justUpdates = async function (elementId) {
             })
             .filter(Boolean);
 
-        const elementIds = window.wisk.editor.elements.map((e) => e.id);
+        const elementIds = window.wisk.editor.elements.map(e => e.id);
 
         await saveUpdates(changed, elementIds, deletedElementsLeft);
 
@@ -733,8 +733,10 @@ class FocusMonitor {
     }
 
     init() {
-        document.addEventListener("focusin", (event) => {
-            const webComponent = event.target.closest(":not(:defined)") || Array.from(event.composedPath()).find((el) => el instanceof HTMLElement && el.tagName.includes("-"));
+        document.addEventListener('focusin', event => {
+            const webComponent =
+                event.target.closest(':not(:defined)') ||
+                Array.from(event.composedPath()).find(el => el instanceof HTMLElement && el.tagName.includes('-'));
 
             if (webComponent) {
                 this.clearTimer();
@@ -743,7 +745,7 @@ class FocusMonitor {
             }
         });
 
-        document.addEventListener("focusout", () => {
+        document.addEventListener('focusout', () => {
             this.clearTimer();
         });
     }
@@ -751,7 +753,7 @@ class FocusMonitor {
     startTimer() {
         this.focusTimer = setTimeout(() => {
             if (this.currentElement) {
-                console.log("Element focused for 2 seconds:", {
+                console.log('Element focused for 2 seconds:', {
                     element: this.currentElement,
                     tagName: this.currentElement.tagName,
                     activeElement: this.findActiveElement(this.currentElement),
@@ -789,23 +791,23 @@ class PlainTextPasteHandler {
 
     init() {
         document.addEventListener(
-            "paste",
-            (event) => {
+            'paste',
+            event => {
                 const activeElement = this.getDeepActiveElement();
-                if (activeElement?.hasAttribute("contenteditable") && this.isWithinWebComponent(activeElement)) {
+                if (activeElement?.hasAttribute('contenteditable') && this.isWithinWebComponent(activeElement)) {
                     event.preventDefault();
-                    let text = event.clipboardData?.getData("text/plain") || "";
+                    let text = event.clipboardData?.getData('text/plain') || '';
 
                     // Clean the text:
                     // 1. Replace all whitespace characters (including newlines, tabs) with single spaces
                     // 2. Trim any leading/trailing whitespace
-                    text = text.replace(/\s+/g, " ").trim();
+                    text = text.replace(/\s+/g, ' ').trim();
                     if (text) {
-                        document.execCommand("insertText", false, text);
+                        document.execCommand('insertText', false, text);
                     }
                 }
             },
-            true,
+            true
         );
     }
 
@@ -823,7 +825,7 @@ class PlainTextPasteHandler {
         let parent = element;
 
         while (parent) {
-            if (parent.tagName?.includes("-")) {
+            if (parent.tagName?.includes('-')) {
                 return true;
             }
             parent = parent.parentElement || parent.getRootNode()?.host;

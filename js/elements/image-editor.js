@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class ImageEditor extends LitElement {
     static styles = css`
@@ -60,10 +60,10 @@ class ImageEditor extends LitElement {
     }
 
     firstUpdated() {
-        this.canvas = this.shadowRoot.querySelector("#canvas");
-        this.previewCanvas = this.shadowRoot.querySelector("#previewCanvas");
-        this.ctx = this.canvas.getContext("2d");
-        this.previewCtx = this.previewCanvas.getContext("2d");
+        this.canvas = this.shadowRoot.querySelector('#canvas');
+        this.previewCanvas = this.shadowRoot.querySelector('#previewCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.previewCtx = this.previewCanvas.getContext('2d');
 
         if (this.image) {
             this._loadImage();
@@ -71,7 +71,7 @@ class ImageEditor extends LitElement {
     }
 
     updated(changedProperties) {
-        if (changedProperties.has("image") && this.image) {
+        if (changedProperties.has('image') && this.image) {
             this._loadImage();
         }
     }
@@ -95,12 +95,12 @@ class ImageEditor extends LitElement {
 
     _updateCursor() {
         const mode = this._getActiveMode();
-        const size = this.shadowRoot.querySelector("#brushSize").value;
+        const size = this.shadowRoot.querySelector('#brushSize').value;
 
-        if (mode === "wand") {
-            this.canvas.style.cursor = "crosshair";
+        if (mode === 'wand') {
+            this.canvas.style.cursor = 'crosshair';
         } else {
-            const color = mode === "erase" ? "black" : "green";
+            const color = mode === 'erase' ? 'black' : 'green';
             this.canvas.style.cursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 1}" fill="none" stroke="${color}" /></svg>') ${size / 2} ${size / 2}, auto`;
         }
     }
@@ -152,7 +152,12 @@ class ImageEditor extends LitElement {
                         component.add(currentPos);
                         size++;
 
-                        const neighbors = [cy > 0 ? currentPos - width : null, cy < height - 1 ? currentPos + width : null, cx > 0 ? currentPos - 1 : null, cx < width - 1 ? currentPos + 1 : null];
+                        const neighbors = [
+                            cy > 0 ? currentPos - width : null,
+                            cy < height - 1 ? currentPos + width : null,
+                            cx > 0 ? currentPos - 1 : null,
+                            cx < width - 1 ? currentPos + 1 : null,
+                        ];
 
                         for (const neighbor of neighbors) {
                             if (neighbor !== null && !visited.has(neighbor)) {
@@ -175,7 +180,7 @@ class ImageEditor extends LitElement {
     }
 
     _brushAt(x, y, isRestore) {
-        const size = parseInt(this.shadowRoot.querySelector("#brushSize").value);
+        const size = parseInt(this.shadowRoot.querySelector('#brushSize').value);
         const radius = size / 2;
         const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
@@ -203,10 +208,10 @@ class ImageEditor extends LitElement {
 
     _showBrushPreview(x, y) {
         this.previewCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        const size = parseInt(this.shadowRoot.querySelector("#brushSize").value);
+        const size = parseInt(this.shadowRoot.querySelector('#brushSize').value);
         this.previewCtx.beginPath();
         this.previewCtx.arc(x, y, size / 2, 0, Math.PI * 2);
-        this.previewCtx.strokeStyle = this._getActiveMode() === "restore" ? "green" : "black";
+        this.previewCtx.strokeStyle = this._getActiveMode() === 'restore' ? 'green' : 'black';
         this.previewCtx.stroke();
     }
 
@@ -272,7 +277,7 @@ class ImageEditor extends LitElement {
     _updatePreview(x, y) {
         const mode = this._getActiveMode();
 
-        if (mode !== "wand") {
+        if (mode !== 'wand') {
             this._showBrushPreview(x, y);
             return;
         }
@@ -283,7 +288,7 @@ class ImageEditor extends LitElement {
         this._lastPreviewY = y;
 
         const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        const threshold = this.shadowRoot.querySelector("#threshold").value;
+        const threshold = this.shadowRoot.querySelector('#threshold').value;
         const { affectedPixels } = this._floodFill(x, y, threshold, imageData, true);
 
         this.previewCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -301,25 +306,25 @@ class ImageEditor extends LitElement {
     _performAction(x, y) {
         const mode = this._getActiveMode();
 
-        if (mode === "wand") {
+        if (mode === 'wand') {
             if (this._isDrawing) return;
             this._saveState();
             const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-            const threshold = this.shadowRoot.querySelector("#threshold").value;
+            const threshold = this.shadowRoot.querySelector('#threshold').value;
             const { imageData: updatedImageData } = this._floodFill(x, y, threshold, imageData);
             const cleanedImageData = this._removeIsolatedPixels(updatedImageData);
             this.ctx.putImageData(cleanedImageData, 0, 0);
             this.previewCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         } else {
             if (!this._isDrawing) this._saveState();
-            this._brushAt(x, y, mode === "restore");
+            this._brushAt(x, y, mode === 'restore');
         }
     }
 
     _handleMouseDown(e) {
         this._isDrawing = true;
         const mode = this._getActiveMode();
-        if (mode !== "wand") {
+        if (mode !== 'wand') {
             const rect = this.canvas.getBoundingClientRect();
             const x = Math.floor(e.clientX - rect.left);
             const y = Math.floor(e.clientY - rect.top);
@@ -336,7 +341,7 @@ class ImageEditor extends LitElement {
         const x = Math.floor(e.clientX - rect.left);
         const y = Math.floor(e.clientY - rect.top);
 
-        if (this._isDrawing && this._getActiveMode() !== "wand") {
+        if (this._isDrawing && this._getActiveMode() !== 'wand') {
             this._performAction(x, y);
         }
         this._updatePreview(x, y);
@@ -366,14 +371,14 @@ class ImageEditor extends LitElement {
     }
 
     _handleSave() {
-        this.canvas.toBlob((blob) => {
-            const event = new CustomEvent("save-image", {
+        this.canvas.toBlob(blob => {
+            const event = new CustomEvent('save-image', {
                 detail: { blob },
                 bubbles: true,
                 composed: true,
             });
             this.dispatchEvent(event);
-        }, "image/png");
+        }, 'image/png');
     }
 
     render() {
@@ -404,7 +409,7 @@ class ImageEditor extends LitElement {
                                 min="1"
                                 max="100"
                                 value="30"
-                                @input=${(e) => {
+                                @input=${e => {
                                     if (this._lastPreviewX !== -1 && this._lastPreviewY !== -1) {
                                         this._updatePreview(this._lastPreviewX, this._lastPreviewY);
                                     }
@@ -430,7 +435,14 @@ class ImageEditor extends LitElement {
                 </div>
 
                 <div class="canvas-container">
-                    <canvas id="canvas" @mousedown=${this._handleMouseDown} @mouseup=${this._handleMouseUp} @mousemove=${this._handleMouseMove} @mouseleave=${this._handleMouseLeave} @click=${this._handleClick}></canvas>
+                    <canvas
+                        id="canvas"
+                        @mousedown=${this._handleMouseDown}
+                        @mouseup=${this._handleMouseUp}
+                        @mousemove=${this._handleMouseMove}
+                        @mouseleave=${this._handleMouseLeave}
+                        @click=${this._handleClick}
+                    ></canvas>
                     <canvas id="previewCanvas"></canvas>
                 </div>
             </div>
@@ -438,4 +450,4 @@ class ImageEditor extends LitElement {
     }
 }
 
-customElements.define("image-editor", ImageEditor);
+customElements.define('image-editor', ImageEditor);

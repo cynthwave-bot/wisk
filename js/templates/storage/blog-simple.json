@@ -1,9 +1,5 @@
 {
-    "plugins": [
-        "database-element",
-        "accordion-element",
-        "table-of-contents"
-    ],
+    "plugins": ["database-element", "accordion-element", "table-of-contents"],
     "theme": "Light",
     "elements": [
         {

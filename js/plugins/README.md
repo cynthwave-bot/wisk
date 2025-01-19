@@ -16,7 +16,7 @@ Plugins can be elements or other things that gets added to editor.
 ```
 
 | option      | compulsory | description                                                                                               |
-|-------------|------------|-----------------------------------------------------------------------------------------------------------|
+| ----------- | ---------- | --------------------------------------------------------------------------------------------------------- |
 | name        | true       | like a username but for plugins                                                                           |
 | icon        | true       | name of the icon file                                                                                     |
 | title       | true       | title of the plugin                                                                                       |
@@ -27,10 +27,12 @@ Plugins can be elements or other things that gets added to editor.
 ### Category
 
 #### Element
+
 This is a plugin that will be added to the editor as an element. So this must render something, and it should adhere to the editor's design and its api.
 It must have a function `latexCode` that will return the latex code for the rendering the element in a pdf.
 
 #### Other
+
 These will be shown as a dialog box or a sidebar. They will be added to the editor as a button or a menu item, and when clicked, they will open a dialog box or a sidebar.
 
 icon should be square svg (24px) in black color and transparent background with a stroke of 1.8px.

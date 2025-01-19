@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { LitElement, html, css } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class DatabaseElement extends LitElement {
     static styles = css`
@@ -9,7 +9,12 @@ class DatabaseElement extends LitElement {
             padding: 0;
             font-size: 14px;
         }
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-size: revert;
         }
         :host {
@@ -299,8 +304,8 @@ class DatabaseElement extends LitElement {
             border-radius: var(--radius);
             border: 1px solid var(--border-1);
         }
-        input[type="text"],
-        input[type="date"] {
+        input[type='text'],
+        input[type='date'] {
             font-family: var(--font);
             padding: var(--padding-w1);
             border-radius: var(--radius);
@@ -648,7 +653,7 @@ class DatabaseElement extends LitElement {
         }
 
         /* Style for checkbox cells */
-        td input[type="checkbox"] {
+        td input[type='checkbox'] {
             margin: 0;
             vertical-align: middle;
         }
@@ -735,31 +740,95 @@ class DatabaseElement extends LitElement {
     constructor() {
         super();
         this.entries = [
-            { id: 1, title: "Implement login system", status: "In Progress", date: "2023-05-01", tags: ["important", "frontend"], completed: false, url: "https://github.com/project/issue/1", email: "john@example.com", phone: "123-456-7890" },
-            { id: 2, title: "Design database schema", status: "Done", date: "2023-04-28", tags: ["important", "backend"], completed: true, url: "https://github.com/project/issue/2", email: "jane@example.com", phone: "098-765-4321" },
-            { id: 3, title: "Implement user registration", status: "To Do", date: "2023-05-05", tags: ["frontend"], completed: false, url: "https://github.com/project/issue/3", email: "alice@example.com", phone: "111-222-3333" },
-            { id: 4, title: "Set up CI/CD pipeline", status: "In Progress", date: "2023-05-02", tags: ["devops", "important"], completed: false, url: "https://github.com/project/issue/4", email: "bob@example.com", phone: "444-555-6666" },
-            { id: 5, title: "Write API documentation", status: "To Do", date: "2023-05-10", tags: ["documentation"], completed: false, url: "https://github.com/project/issue/5", email: "charlie@example.com", phone: "777-888-9999" },
-            { id: 6, title: "Implement password reset", status: "Done", date: "2023-04-30", tags: ["backend", "security"], completed: true, url: "https://github.com/project/issue/6", email: "dave@example.com", phone: "000-111-2222" },
+            {
+                id: 1,
+                title: 'Implement login system',
+                status: 'In Progress',
+                date: '2023-05-01',
+                tags: ['important', 'frontend'],
+                completed: false,
+                url: 'https://github.com/project/issue/1',
+                email: 'john@example.com',
+                phone: '123-456-7890',
+            },
+            {
+                id: 2,
+                title: 'Design database schema',
+                status: 'Done',
+                date: '2023-04-28',
+                tags: ['important', 'backend'],
+                completed: true,
+                url: 'https://github.com/project/issue/2',
+                email: 'jane@example.com',
+                phone: '098-765-4321',
+            },
+            {
+                id: 3,
+                title: 'Implement user registration',
+                status: 'To Do',
+                date: '2023-05-05',
+                tags: ['frontend'],
+                completed: false,
+                url: 'https://github.com/project/issue/3',
+                email: 'alice@example.com',
+                phone: '111-222-3333',
+            },
+            {
+                id: 4,
+                title: 'Set up CI/CD pipeline',
+                status: 'In Progress',
+                date: '2023-05-02',
+                tags: ['devops', 'important'],
+                completed: false,
+                url: 'https://github.com/project/issue/4',
+                email: 'bob@example.com',
+                phone: '444-555-6666',
+            },
+            {
+                id: 5,
+                title: 'Write API documentation',
+                status: 'To Do',
+                date: '2023-05-10',
+                tags: ['documentation'],
+                completed: false,
+                url: 'https://github.com/project/issue/5',
+                email: 'charlie@example.com',
+                phone: '777-888-9999',
+            },
+            {
+                id: 6,
+                title: 'Implement password reset',
+                status: 'Done',
+                date: '2023-04-30',
+                tags: ['backend', 'security'],
+                completed: true,
+                url: 'https://github.com/project/issue/6',
+                email: 'dave@example.com',
+                phone: '000-111-2222',
+            },
         ];
         this.properties = [
-            { name: "title", type: "text" },
-            { name: "status", type: "select", options: ["To Do", "In Progress", "Done"] },
-            { name: "date", type: "date" },
-            { name: "tags", type: "multi-select", options: ["important", "frontend", "backend", "devops", "documentation", "security", "performance"] },
-            { name: "completed", type: "checkbox" },
-            { name: "url", type: "url" },
-            { name: "email", type: "email" },
-            { name: "phone", type: "phone" },
+            { name: 'title', type: 'text' },
+            { name: 'status', type: 'select', options: ['To Do', 'In Progress', 'Done'] },
+            { name: 'date', type: 'date' },
+            {
+                name: 'tags',
+                type: 'multi-select',
+                options: ['important', 'frontend', 'backend', 'devops', 'documentation', 'security', 'performance'],
+            },
+            { name: 'completed', type: 'checkbox' },
+            { name: 'url', type: 'url' },
+            { name: 'email', type: 'email' },
+            { name: 'phone', type: 'phone' },
         ];
         this.views = [
-            { id: "default-table", name: "Default Table", type: "table", filters: [], sorts: [] },
-            { id: "default-board", name: "Default Board", type: "board", filters: [], sorts: [], groupBy: "status" },
-            { id: "default-calendar", name: "Default Calendar", type: "calendar", filters: [], sorts: [], dateProperty: "date" },
-            { id: "default-gallery", name: "Default Gallery", type: "gallery", filters: [], sorts: [] },
-            { id: "default-list", name: "Default List", type: "list", filters: [], sorts: [], visibleProperties: ["title", "status", "date"] },
+            { id: 'default-table', name: 'Default Table', type: 'table', filters: [], sorts: [] },
+            { id: 'default-board', name: 'Default Board', type: 'board', filters: [], sorts: [], groupBy: 'status' },
+            { id: 'default-calendar', name: 'Default Calendar', type: 'calendar', filters: [], sorts: [], dateProperty: 'date' },
+            { id: 'default-gallery', name: 'Default Gallery', type: 'gallery', filters: [], sorts: [] },
+            { id: 'default-list', name: 'Default List', type: 'list', filters: [], sorts: [], visibleProperties: ['title', 'status', 'date'] },
         ];
-        this.currentViewId = "default-table";
+        this.currentViewId = 'default-table';
         this.editingEntry = null;
         this.editingView = null;
         this.editingItem = null;
@@ -769,9 +838,9 @@ class DatabaseElement extends LitElement {
         this.draggedItem = null;
         this.showAddColumnForm = false;
 
-        this.newColumnName = "";
-        this.newColumnType = "text";
-        this.newColumnOptions = "";
+        this.newColumnName = '';
+        this.newColumnType = 'text';
+        this.newColumnOptions = '';
 
         this.showEditPropertiesDialog = false;
         this.editingProperties = [];
@@ -789,7 +858,7 @@ class DatabaseElement extends LitElement {
     }
 
     get currentView() {
-        return this.views.find((view) => view.id === this.currentViewId);
+        return this.views.find(view => view.id === this.currentViewId);
     }
 
     setValue(identifier, value) {
@@ -811,20 +880,20 @@ class DatabaseElement extends LitElement {
         let filteredEntries = entries;
 
         // Apply filters
-        this.currentView.filters.forEach((filter) => {
-            filteredEntries = filteredEntries.filter((entry) => {
+        this.currentView.filters.forEach(filter => {
+            filteredEntries = filteredEntries.filter(entry => {
                 const value = entry[filter.property];
                 switch (filter.operator) {
-                    case "equals":
+                    case 'equals':
                         return value === filter.value;
-                    case "contains":
+                    case 'contains':
                         if (Array.isArray(value)) {
                             return value.includes(filter.value);
                         }
                         return value.toString().toLowerCase().includes(filter.value.toLowerCase());
-                    case "greater_than":
+                    case 'greater_than':
                         return new Date(value) > new Date(filter.value);
-                    case "less_than":
+                    case 'less_than':
                         return new Date(value) < new Date(filter.value);
                     default:
                         return true;
@@ -833,19 +902,19 @@ class DatabaseElement extends LitElement {
         });
 
         // Apply sorts
-        this.currentView.sorts.forEach((sort) => {
+        this.currentView.sorts.forEach(sort => {
             filteredEntries.sort((a, b) => {
                 let valueA = a[sort.property];
                 let valueB = b[sort.property];
 
                 // Handle date comparison
-                if (this.properties.find((p) => p.name === sort.property).type === "date") {
+                if (this.properties.find(p => p.name === sort.property).type === 'date') {
                     valueA = new Date(valueA);
                     valueB = new Date(valueB);
                 }
 
-                if (valueA < valueB) return sort.direction === "asc" ? -1 : 1;
-                if (valueA > valueB) return sort.direction === "asc" ? 1 : -1;
+                if (valueA < valueB) return sort.direction === 'asc' ? -1 : 1;
+                if (valueA > valueB) return sort.direction === 'asc' ? 1 : -1;
                 return 0;
             });
         });
@@ -862,15 +931,15 @@ class DatabaseElement extends LitElement {
     }
 
     addNewEntry(year, month, day) {
-        const dateProperty = this.currentView.dateProperty || "date";
+        const dateProperty = this.currentView.dateProperty || 'date';
         // Create a date in the local timezone
         const date = new Date(year, month, day);
         // Format the date as YYYY-MM-DD
-        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
         const newEntry = {
-            id: "temp_" + Date.now(),
-            title: "New Entry",
+            id: 'temp_' + Date.now(),
+            title: 'New Entry',
             [dateProperty]: formattedDate,
         };
         this.startEditing(newEntry);
@@ -885,10 +954,10 @@ class DatabaseElement extends LitElement {
         this.editingEntry = JSON.parse(JSON.stringify(entry));
 
         // Ensure all properties exist in the editing entry
-        this.properties.forEach((prop) => {
+        this.properties.forEach(prop => {
             if (!(prop.name in this.editingEntry)) {
                 // Initialize missing properties with default values
-                this.editingEntry[prop.name] = prop.type === "checkbox" ? false : prop.type === "multi-select" ? [] : "";
+                this.editingEntry[prop.name] = prop.type === 'checkbox' ? false : prop.type === 'multi-select' ? [] : '';
             }
         });
 
@@ -896,13 +965,13 @@ class DatabaseElement extends LitElement {
     }
 
     saveEdit() {
-        if (this.editingEntry.id.toString().startsWith("temp_")) {
+        if (this.editingEntry.id.toString().startsWith('temp_')) {
             // It's a new entry, assign a real id and add it to entries
             this.editingEntry.id = Date.now();
             this.entries = [...this.entries, this.editingEntry];
         } else {
             // It's an existing entry, update it
-            const index = this.entries.findIndex((e) => e.id === this.editingEntry.id);
+            const index = this.entries.findIndex(e => e.id === this.editingEntry.id);
             if (index !== -1) {
                 this.entries = [...this.entries.slice(0, index), this.editingEntry, ...this.entries.slice(index + 1)];
             }
@@ -929,14 +998,17 @@ class DatabaseElement extends LitElement {
                 <div class="dialog">
                     <h2>Edit Entry</h2>
                     ${this.properties.map(
-                        (prop) => html`
+                        prop => html`
                             <div>
-                                <label> ${prop.name}: ${this.renderEditableCell(this.editingEntry, prop, (value) => this.updateEditingEntry(prop.name, value))} </label>
+                                <label>
+                                    ${prop.name}:
+                                    ${this.renderEditableCell(this.editingEntry, prop, value => this.updateEditingEntry(prop.name, value))}
+                                </label>
                             </div>
-                        `,
+                        `
                     )}
                     <div class="dialog-buttons">
-                        ${this.editingEntry.id.toString().startsWith("temp_") 
+                        ${this.editingEntry.id.toString().startsWith('temp_')
                             ? html``
                             : html`<button class="delete-button" @click=${this.deleteEntry}>Delete Entry</button>`}
                         <div>
@@ -950,7 +1022,7 @@ class DatabaseElement extends LitElement {
     }
 
     deleteEntry() {
-        if (confirm("Are you sure you want to delete this entry?")) {
+        if (confirm('Are you sure you want to delete this entry?')) {
             this.entries = this.entries.filter(entry => entry.id !== this.editingEntry.id);
             this.editingEntry = null;
             this.requestUpdate();
@@ -962,7 +1034,7 @@ class DatabaseElement extends LitElement {
         this.showAddRowForm = !this.showAddRowForm;
         if (this.showAddRowForm) {
             this.newEntry = this.properties.reduce((acc, prop) => {
-                acc[prop.name] = prop.type === "checkbox" ? false : "";
+                acc[prop.name] = prop.type === 'checkbox' ? false : '';
                 return acc;
             }, {});
         }
@@ -973,11 +1045,11 @@ class DatabaseElement extends LitElement {
     }
 
     startEditingItem(entryId) {
-        this.editingItem = this.entries.find((entry) => entry.id === entryId);
+        this.editingItem = this.entries.find(entry => entry.id === entryId);
     }
 
     addNewRow() {
-        const newId = Math.max(...this.entries.map((e) => e.id), 0) + 1;
+        const newId = Math.max(...this.entries.map(e => e.id), 0) + 1;
         this.entries = [...this.entries, { id: newId, ...this.newEntry }];
         this.toggleAddRowForm();
         this.requestUpdate();
@@ -989,13 +1061,19 @@ class DatabaseElement extends LitElement {
     }
 
     renderAddRowDialog() {
-        if (!this.showAddRowForm) return "";
+        if (!this.showAddRowForm) return '';
 
         return html`
             <div class="dialog-overlay">
                 <div class="dialog">
                     <h2>Add New Row</h2>
-                    ${this.properties.map((prop) => html` <label> ${prop.name}: ${this.renderEditableCell({ id: "new" }, prop, (value) => this.updateNewEntry(prop.name, value))} </label> `)}
+                    ${this.properties.map(
+                        prop => html`
+                            <label>
+                                ${prop.name}: ${this.renderEditableCell({ id: 'new' }, prop, value => this.updateNewEntry(prop.name, value))}
+                            </label>
+                        `
+                    )}
                     <div class="dialog-buttons">
                         <div></div>
                         <div>
@@ -1010,8 +1088,8 @@ class DatabaseElement extends LitElement {
 
     renderEditableCell(entry, prop, updateCallback = null) {
         const value = entry[prop.name];
-        const onChange = (e) => {
-            const newValue = prop.type === "checkbox" ? e.target.checked : e.target.value;
+        const onChange = e => {
+            const newValue = prop.type === 'checkbox' ? e.target.checked : e.target.value;
             if (updateCallback) {
                 updateCallback(newValue);
             } else {
@@ -1021,26 +1099,26 @@ class DatabaseElement extends LitElement {
         };
 
         switch (prop.type) {
-            case "text":
-            case "number":
-            case "url":
-            case "email":
-            case "phone":
+            case 'text':
+            case 'number':
+            case 'url':
+            case 'email':
+            case 'phone':
                 return html`<input type="${prop.type}" .value=${value} @input=${onChange} />`;
-            case "select":
+            case 'select':
                 return html`
                     <select .value=${value} @change=${onChange}>
-                        <option value="" disabled selected=${value === ""}>Select an option</option>
-                        ${prop.options.map((option) => html` <option value="${option}" ?selected=${value === option}>${option}</option> `)}
+                        <option value="" disabled selected=${value === ''}>Select an option</option>
+                        ${prop.options.map(option => html` <option value="${option}" ?selected=${value === option}>${option}</option> `)}
                     </select>
                 `;
-            case "multi-select":
+            case 'multi-select':
                 return html`
                     <select
                         multiple
                         .value=${value || []}
-                        @change=${(e) => {
-                            const newValue = Array.from(e.target.selectedOptions).map((option) => option.value);
+                        @change=${e => {
+                            const newValue = Array.from(e.target.selectedOptions).map(option => option.value);
                             if (updateCallback) {
                                 updateCallback(newValue);
                             } else {
@@ -1049,13 +1127,15 @@ class DatabaseElement extends LitElement {
                             }
                         }}
                     >
-                        ${prop.options.map((option) => html` <option value="${option}" ?selected=${value && value.includes(option)}>${option}</option> `)}
+                        ${prop.options.map(
+                            option => html` <option value="${option}" ?selected=${value && value.includes(option)}>${option}</option> `
+                        )}
                     </select>
                 `;
-            case "date":
-            case "datetime-local":
+            case 'date':
+            case 'datetime-local':
                 return html`<input type="${prop.type}" .value=${value} @input=${onChange} />`;
-            case "checkbox":
+            case 'checkbox':
                 return html`<input type="checkbox" ?checked=${value} @change=${onChange} />`;
             default:
                 return html`<span>${value}</span>`;
@@ -1064,27 +1144,27 @@ class DatabaseElement extends LitElement {
 
     handleDragStart(e, entry) {
         this.draggedItem = entry;
-        e.dataTransfer.effectAllowed = "move";
-        e.target.classList.add("dragging");
+        e.dataTransfer.effectAllowed = 'move';
+        e.target.classList.add('dragging');
     }
 
     handleDragEnd(e) {
-        e.target.classList.remove("dragging");
+        e.target.classList.remove('dragging');
     }
 
     handleDragOver(e) {
         e.preventDefault();
-        e.dataTransfer.dropEffect = "move";
-        e.currentTarget.classList.add("drag-over");
+        e.dataTransfer.dropEffect = 'move';
+        e.currentTarget.classList.add('drag-over');
     }
 
     handleDrop(e, newGroup) {
         e.preventDefault();
-        e.currentTarget.classList.remove("drag-over");
+        e.currentTarget.classList.remove('drag-over');
         if (this.draggedItem) {
-            const groupByProperty = this.currentView.groupBy || "status";
+            const groupByProperty = this.currentView.groupBy || 'status';
             const updatedEntry = { ...this.draggedItem, [groupByProperty]: newGroup };
-            const index = this.entries.findIndex((entry) => entry.id === this.draggedItem.id);
+            const index = this.entries.findIndex(entry => entry.id === this.draggedItem.id);
             if (index !== -1) {
                 this.entries = [...this.entries.slice(0, index), updatedEntry, ...this.entries.slice(index + 1)];
                 this.requestUpdate();
@@ -1095,7 +1175,7 @@ class DatabaseElement extends LitElement {
     }
 
     renderAddColumnDialog() {
-        if (!this.showAddColumnForm) return "";
+        if (!this.showAddColumnForm) return '';
 
         return html`
             <div class="dialog-overlay">
@@ -1103,11 +1183,16 @@ class DatabaseElement extends LitElement {
                     <h2>Add New Column</h2>
                     <label>
                         Column Name:
-                        <input id="newColumnName" type="text" .value=${this.newColumnName || ""} @input=${(e) => (this.newColumnName = e.target.value)} />
+                        <input
+                            id="newColumnName"
+                            type="text"
+                            .value=${this.newColumnName || ''}
+                            @input=${e => (this.newColumnName = e.target.value)}
+                        />
                     </label>
                     <label>
                         Column Type:
-                        <select id="newColumnType" .value=${this.newColumnType || "text"} @change=${this.handleNewColumnTypeChange}>
+                        <select id="newColumnType" .value=${this.newColumnType || 'text'} @change=${this.handleNewColumnTypeChange}>
                             <option value="text">Text</option>
                             <option value="number">Number</option>
                             <option value="select">Select</option>
@@ -1134,35 +1219,35 @@ class DatabaseElement extends LitElement {
     }
 
     renderColumnTypeSpecificFields() {
-        if (this.newColumnType === "select" || this.newColumnType === "multi-select") {
+        if (this.newColumnType === 'select' || this.newColumnType === 'multi-select') {
             return html`
                 <label>
                     Options (comma-separated):
-                    <input type="text" .value=${this.newColumnOptions || ""} @input=${(e) => (this.newColumnOptions = e.target.value)} />
+                    <input type="text" .value=${this.newColumnOptions || ''} @input=${e => (this.newColumnOptions = e.target.value)} />
                 </label>
             `;
         }
-        return "";
+        return '';
     }
 
     handleNewColumnTypeChange(e) {
         this.newColumnType = e.target.value;
-        this.newColumnOptions = ""; // Reset options when type changes
+        this.newColumnOptions = ''; // Reset options when type changes
         this.requestUpdate();
     }
 
     addNewColumn() {
         if (this.newColumnName && this.newColumnType) {
             let newColumn = { name: this.newColumnName, type: this.newColumnType };
-            if (this.newColumnType === "select" || this.newColumnType === "multi-select") {
-                newColumn.options = this.newColumnOptions.split(",").map((option) => option.trim());
+            if (this.newColumnType === 'select' || this.newColumnType === 'multi-select') {
+                newColumn.options = this.newColumnOptions.split(',').map(option => option.trim());
             }
             this.properties = [...this.properties, newColumn];
-            this.entries = this.entries.map((entry) => ({ ...entry, [this.newColumnName]: "" }));
+            this.entries = this.entries.map(entry => ({ ...entry, [this.newColumnName]: '' }));
             this.toggleAddColumnForm();
-            this.newColumnName = "";
-            this.newColumnType = "text";
-            this.newColumnOptions = "";
+            this.newColumnName = '';
+            this.newColumnType = 'text';
+            this.newColumnOptions = '';
             this.requestUpdate();
             this.onUpdate();
         }
@@ -1201,7 +1286,13 @@ class DatabaseElement extends LitElement {
                         <img src="/a7/plugins/database-element/properties.svg" class="plugin-icon" alt="Edit properties" />
                     </button>
 
-                    ${this.views.map((view) => html` <button class="view-tab ${this.currentViewId === view.id ? "active" : ""}" @click=${() => (this.currentViewId = view.id)}>${view.name}</button> `)}
+                    ${this.views.map(
+                        view => html`
+                            <button class="view-tab ${this.currentViewId === view.id ? 'active' : ''}" @click=${() => (this.currentViewId = view.id)}>
+                                ${view.name}
+                            </button>
+                        `
+                    )}
                     <button class="view-tab add-view plugin-icon-button" @click=${this.createNewView}>
                         <img src="/a7/plugins/database-element/plus.svg" class="plugin-icon" alt="Add view" />
                     </button>
@@ -1212,7 +1303,7 @@ class DatabaseElement extends LitElement {
     }
 
     renderEditPropertiesDialog() {
-        if (!this.showEditPropertiesDialog) return "";
+        if (!this.showEditPropertiesDialog) return '';
 
         return html`
             <div class="dialog-overlay">
@@ -1220,9 +1311,14 @@ class DatabaseElement extends LitElement {
                     <h2>Edit Properties</h2>
                     ${this.editingProperties.map(
                         (prop, index) => html`
-                            <div class="property-item ${prop.removed ? "removed" : ""}">
-                                <input type="text" .value=${prop.name} @input=${(e) => this.updatePropertyName(index, e.target.value)} ?disabled=${prop.removed} />
-                                <select .value=${prop.type} @change=${(e) => this.updatePropertyType(index, e.target.value)} ?disabled=${prop.removed}>
+                            <div class="property-item ${prop.removed ? 'removed' : ''}">
+                                <input
+                                    type="text"
+                                    .value=${prop.name}
+                                    @input=${e => this.updatePropertyName(index, e.target.value)}
+                                    ?disabled=${prop.removed}
+                                />
+                                <select .value=${prop.type} @change=${e => this.updatePropertyType(index, e.target.value)} ?disabled=${prop.removed}>
                                     <option value="text">Text</option>
                                     <option value="number">Number</option>
                                     <option value="select">Select</option>
@@ -1234,12 +1330,21 @@ class DatabaseElement extends LitElement {
                                     <option value="email">Email</option>
                                     <option value="phone">Phone</option>
                                 </select>
-                                ${(prop.type === "select" || prop.type === "multi-select") && !prop.removed
-                                    ? html` <input type="text" placeholder="Options (comma-separated)" .value=${prop.options ? prop.options.join(", ") : ""} @input=${(e) => this.updatePropertyOptions(index, e.target.value)} /> `
-                                    : ""}
-                                ${prop.removed ? html` <button @click=${() => this.restoreProperty(index)}>Restore</button> ` : html` <button @click=${() => this.removeProperty(index)}>Remove</button> `}
+                                ${(prop.type === 'select' || prop.type === 'multi-select') && !prop.removed
+                                    ? html`
+                                          <input
+                                              type="text"
+                                              placeholder="Options (comma-separated)"
+                                              .value=${prop.options ? prop.options.join(', ') : ''}
+                                              @input=${e => this.updatePropertyOptions(index, e.target.value)}
+                                          />
+                                      `
+                                    : ''}
+                                ${prop.removed
+                                    ? html` <button @click=${() => this.restoreProperty(index)}>Restore</button> `
+                                    : html` <button @click=${() => this.removeProperty(index)}>Remove</button> `}
                             </div>
-                        `,
+                        `
                     )}
                     <button @click=${this.addNewProperty}>Add New Property</button>
                     <div class="dialog-buttons">
@@ -1269,7 +1374,7 @@ class DatabaseElement extends LitElement {
 
     updatePropertyType(index, newType) {
         this.editingProperties[index].type = newType;
-        if (newType === "select" || newType === "multi-select") {
+        if (newType === 'select' || newType === 'multi-select') {
             this.editingProperties[index].options = this.editingProperties[index].options || [];
         } else {
             delete this.editingProperties[index].options;
@@ -1278,7 +1383,7 @@ class DatabaseElement extends LitElement {
     }
 
     updatePropertyOptions(index, optionsString) {
-        this.editingProperties[index].options = optionsString.split(",").map((opt) => opt.trim());
+        this.editingProperties[index].options = optionsString.split(',').map(opt => opt.trim());
         this.requestUpdate();
     }
 
@@ -1338,20 +1443,20 @@ class DatabaseElement extends LitElement {
 
     addNewProperty() {
         const newPropName = `New Property ${this.editingProperties.length + 1}`;
-        const newProperty = { name: newPropName, type: "text" };
+        const newProperty = { name: newPropName, type: 'text' };
         this.editingProperties.push(newProperty);
 
         // Use the same logic as addNewColumn
-        this.entries = this.entries.map((entry) => ({ ...entry, [newPropName]: "" }));
+        this.entries = this.entries.map(entry => ({ ...entry, [newPropName]: '' }));
 
         this.requestUpdate();
     }
     saveProperties() {
         // Filter out removed properties
-        const newProperties = this.editingProperties.filter((prop) => !prop.removed);
+        const newProperties = this.editingProperties.filter(prop => !prop.removed);
 
         // Check for removed properties
-        const removedProperties = this.properties.filter((prop) => !newProperties.some((newProp) => newProp.name === prop.name));
+        const removedProperties = this.properties.filter(prop => !newProperties.some(newProp => newProp.name === prop.name));
 
         for (let removedProp of removedProperties) {
             const dependencyMessage = this.checkPropertyDependencies(removedProp.name);
@@ -1365,17 +1470,17 @@ class DatabaseElement extends LitElement {
         this.properties = newProperties;
 
         // Update entries to ensure all properties exist
-        this.entries = this.entries.map((entry) => {
+        this.entries = this.entries.map(entry => {
             const newEntry = { ...entry };
             for (let prop of this.properties) {
                 if (!(prop.name in newEntry)) {
                     // Initialize new properties with default values
-                    newEntry[prop.name] = prop.type === "checkbox" ? false : prop.type === "multi-select" ? [] : "";
+                    newEntry[prop.name] = prop.type === 'checkbox' ? false : prop.type === 'multi-select' ? [] : '';
                 }
             }
             // Remove properties that no longer exist
-            Object.keys(newEntry).forEach((key) => {
-                if (!this.properties.some((prop) => prop.name === key) && key !== "id") {
+            Object.keys(newEntry).forEach(key => {
+                if (!this.properties.some(prop => prop.name === key) && key !== 'id') {
                     delete newEntry[key];
                 }
             });
@@ -1390,7 +1495,7 @@ class DatabaseElement extends LitElement {
     renderFilterSortPanel() {
         return;
 
-        if (!this.currentView) return "";
+        if (!this.currentView) return '';
         return html`
             <div class="filter-sort-panel">
                 <h4>Filters</h4>
@@ -1400,7 +1505,7 @@ class DatabaseElement extends LitElement {
                             ${filter.property} ${filter.operator} ${filter.value}
                             <button @click=${() => this.removeFilter(index)}>Remove</button>
                         </div>
-                    `,
+                    `
                 )}
                 <button @click=${this.addFilter}>Add Filter</button>
 
@@ -1411,7 +1516,7 @@ class DatabaseElement extends LitElement {
                             ${sort.property} (${sort.direction})
                             <button @click=${() => this.removeSort(index)}>Remove</button>
                         </div>
-                    `,
+                    `
                 )}
                 <button @click=${this.addSort}>Add Sort</button>
             </div>
@@ -1422,7 +1527,7 @@ class DatabaseElement extends LitElement {
         const newView = {
             id: `view-${Date.now()}`,
             name: `New View ${this.views.length + 1}`,
-            type: "table",
+            type: 'table',
             filters: [],
             sorts: [],
         };
@@ -1433,9 +1538,9 @@ class DatabaseElement extends LitElement {
     }
 
     deleteCurrentView() {
-        if (confirm("Are you sure you want to delete this view?") && this.editingView && this.editingView.id !== "default-table") {
-            this.views = this.views.filter((view) => view.id !== this.editingView.id);
-            this.currentViewId = "default-table";
+        if (confirm('Are you sure you want to delete this view?') && this.editingView && this.editingView.id !== 'default-table') {
+            this.views = this.views.filter(view => view.id !== this.editingView.id);
+            this.currentViewId = 'default-table';
             this.editingView = null;
             this.requestUpdate();
             this.onUpdate();
@@ -1444,7 +1549,7 @@ class DatabaseElement extends LitElement {
 
     addFilter() {
         if (!this.editingView) this.editingView = { ...this.currentView };
-        this.editingView.filters = [...this.editingView.filters, { property: this.properties[0].name, operator: "equals", value: "" }];
+        this.editingView.filters = [...this.editingView.filters, { property: this.properties[0].name, operator: 'equals', value: '' }];
         this.requestUpdate();
     }
 
@@ -1456,7 +1561,7 @@ class DatabaseElement extends LitElement {
 
     addSort() {
         if (!this.editingView) this.editingView = { ...this.currentView };
-        this.editingView.sorts = [...this.editingView.sorts, { property: this.properties[0].name, direction: "asc" }];
+        this.editingView.sorts = [...this.editingView.sorts, { property: this.properties[0].name, direction: 'asc' }];
         this.requestUpdate();
     }
 
@@ -1467,7 +1572,7 @@ class DatabaseElement extends LitElement {
     }
 
     saveEditView() {
-        const index = this.views.findIndex((view) => view.id === this.editingView.id);
+        const index = this.views.findIndex(view => view.id === this.editingView.id);
         if (index !== -1) {
             this.views = [...this.views.slice(0, index), this.editingView, ...this.views.slice(index + 1)];
         } else {
@@ -1480,28 +1585,28 @@ class DatabaseElement extends LitElement {
     }
 
     renderEditViewDialog() {
-        if (!this.editingView) return "";
+        if (!this.editingView) return '';
         return html`
             <div class="dialog-overlay">
                 <div class="dialog">
                     <h2>Edit View</h2>
                     <label>
                         View Name:
-                        <input type="text" .value=${this.editingView.name} @input=${(e) => (this.editingView.name = e.target.value)} />
+                        <input type="text" .value=${this.editingView.name} @input=${e => (this.editingView.name = e.target.value)} />
                     </label>
                     <label>
                         Type:
                         <select
                             .value=${this.editingView.type}
-                            @change=${(e) => {
+                            @change=${e => {
                                 this.editingView.type = e.target.value;
-                                if (e.target.value === "board" && !this.editingView.groupBy) {
+                                if (e.target.value === 'board' && !this.editingView.groupBy) {
                                     this.editingView.groupBy = this.properties[0].name;
                                 }
-                                if (e.target.value === "calendar" && !this.editingView.dateProperty) {
-                                    this.editingView.dateProperty = this.properties.find((p) => p.type === "date")?.name || this.properties[0].name;
+                                if (e.target.value === 'calendar' && !this.editingView.dateProperty) {
+                                    this.editingView.dateProperty = this.properties.find(p => p.type === 'date')?.name || this.properties[0].name;
                                 }
-                                if (e.target.value === "list" && !this.editingView.visibleProperties) {
+                                if (e.target.value === 'list' && !this.editingView.visibleProperties) {
                                     this.editingView.visibleProperties = [this.properties[0].name];
                                 }
                                 this.requestUpdate();
@@ -1514,73 +1619,91 @@ class DatabaseElement extends LitElement {
                             <option value="list">List</option>
                         </select>
                     </label>
-                    ${this.editingView.type === "board"
+                    ${this.editingView.type === 'board'
                         ? html`
                               <label>
                                   Group By:
-                                  <select .value=${this.editingView.groupBy} @change=${(e) => (this.editingView.groupBy = e.target.value)}>
-                                      ${this.properties.map((prop) => html` <option value=${prop.name} ?selected=${this.editingView.groupBy === prop.name}>${prop.name}</option> `)}
+                                  <select .value=${this.editingView.groupBy} @change=${e => (this.editingView.groupBy = e.target.value)}>
+                                      ${this.properties.map(
+                                          prop => html`
+                                              <option value=${prop.name} ?selected=${this.editingView.groupBy === prop.name}>${prop.name}</option>
+                                          `
+                                      )}
                                   </select>
                               </label>
                           `
-                        : ""}
-                    ${this.editingView.type === "list"
+                        : ''}
+                    ${this.editingView.type === 'list'
                         ? html`
                               <label>
                                   Visible Properties:
                                   <div class="property-checkboxes">
                                       ${this.properties.map(
-                                          (prop) => html`
+                                          prop => html`
                                               <label>
-                                                  <input type="checkbox" .checked=${this.editingView.visibleProperties.includes(prop.name)} @change=${(e) => this.toggleVisibleProperty(prop.name, e.target.checked)} />
+                                                  <input
+                                                      type="checkbox"
+                                                      .checked=${this.editingView.visibleProperties.includes(prop.name)}
+                                                      @change=${e => this.toggleVisibleProperty(prop.name, e.target.checked)}
+                                                  />
                                                   ${prop.name}
                                               </label>
-                                          `,
+                                          `
                                       )}
                                   </div>
                               </label>
                           `
-                        : ""}
-                    ${this.editingView.type === "calendar"
+                        : ''}
+                    ${this.editingView.type === 'calendar'
                         ? html`
                               <label>
                                   Date Property:
-                                  <select .value=${this.editingView.dateProperty} @change=${(e) => (this.editingView.dateProperty = e.target.value)}>
-                                      ${this.properties.filter((prop) => prop.type === "date" || prop.type === "datetime-local").map((prop) => html` <option value=${prop.name} ?selected=${this.editingView.dateProperty === prop.name}>${prop.name}</option> `)}
+                                  <select .value=${this.editingView.dateProperty} @change=${e => (this.editingView.dateProperty = e.target.value)}>
+                                      ${this.properties
+                                          .filter(prop => prop.type === 'date' || prop.type === 'datetime-local')
+                                          .map(
+                                              prop => html`
+                                                  <option value=${prop.name} ?selected=${this.editingView.dateProperty === prop.name}>
+                                                      ${prop.name}
+                                                  </option>
+                                              `
+                                          )}
                                   </select>
                               </label>
                           `
-                        : ""}
+                        : ''}
                     <h3>Filters</h3>
                     ${this.editingView.filters.map(
                         (filter, index) => html`
                             <div>
                                 <select
                                     .value=${filter.property}
-                                    @change=${(e) => {
+                                    @change=${e => {
                                         filter.property = e.target.value;
-                                        filter.value = ""; // Reset value when property changes
+                                        filter.value = ''; // Reset value when property changes
                                         this.requestUpdate();
                                     }}
                                 >
-                                    ${this.properties.map((prop) => html` <option value=${prop.name} ?selected=${filter.property === prop.name}>${prop.name}</option> `)}
+                                    ${this.properties.map(
+                                        prop => html` <option value=${prop.name} ?selected=${filter.property === prop.name}>${prop.name}</option> `
+                                    )}
                                 </select>
                                 <select
                                     .value=${filter.operator}
-                                    @change=${(e) => {
+                                    @change=${e => {
                                         filter.operator = e.target.value;
                                         this.requestUpdate();
                                     }}
                                 >
-                                    <option value="equals" ?selected=${filter.operator === "equals"}>Equals</option>
-                                    <option value="contains" ?selected=${filter.operator === "contains"}>Contains</option>
-                                    <option value="greater_than" ?selected=${filter.operator === "greater_than"}>Greater Than</option>
-                                    <option value="less_than" ?selected=${filter.operator === "less_than"}>Less Than</option>
+                                    <option value="equals" ?selected=${filter.operator === 'equals'}>Equals</option>
+                                    <option value="contains" ?selected=${filter.operator === 'contains'}>Contains</option>
+                                    <option value="greater_than" ?selected=${filter.operator === 'greater_than'}>Greater Than</option>
+                                    <option value="less_than" ?selected=${filter.operator === 'less_than'}>Less Than</option>
                                 </select>
                                 ${this.renderFilterValueInput(filter, index)}
                                 <button @click=${() => this.removeFilter(index)}>Remove</button>
                             </div>
-                        `,
+                        `
                     )}
                     <button @click=${this.addFilter}>Add Filter</button>
                     <h3>Sorts</h3>
@@ -1589,30 +1712,34 @@ class DatabaseElement extends LitElement {
                             <div>
                                 <select
                                     .value=${sort.property}
-                                    @change=${(e) => {
+                                    @change=${e => {
                                         sort.property = e.target.value;
                                         this.requestUpdate();
                                     }}
                                 >
-                                    ${this.properties.map((prop) => html` <option value=${prop.name} ?selected=${sort.property === prop.name}>${prop.name}</option> `)}
+                                    ${this.properties.map(
+                                        prop => html` <option value=${prop.name} ?selected=${sort.property === prop.name}>${prop.name}</option> `
+                                    )}
                                 </select>
                                 <select
                                     .value=${sort.direction}
-                                    @change=${(e) => {
+                                    @change=${e => {
                                         sort.direction = e.target.value;
                                         this.requestUpdate();
                                     }}
                                 >
-                                    <option value="asc" ?selected=${sort.direction === "asc"}>Ascending</option>
-                                    <option value="desc" ?selected=${sort.direction === "desc"}>Descending</option>
+                                    <option value="asc" ?selected=${sort.direction === 'asc'}>Ascending</option>
+                                    <option value="desc" ?selected=${sort.direction === 'desc'}>Descending</option>
                                 </select>
                                 <button @click=${() => this.removeSort(index)}>Remove</button>
                             </div>
-                        `,
+                        `
                     )}
                     <button @click=${this.addSort}>Add Sort</button>
                     <div class="dialog-buttons">
-                        ${this.editingView.id !== "default-table" ? html` <button class="delete-button" @click=${this.deleteCurrentView}>Delete View</button> ` : ""}
+                        ${this.editingView.id !== 'default-table'
+                            ? html` <button class="delete-button" @click=${this.deleteCurrentView}>Delete View</button> `
+                            : ''}
                         <div>
                             <button @click=${() => (this.editingView = null)}>Cancel</button>
                             <button @click=${this.saveEditView}>Save</button>
@@ -1624,57 +1751,57 @@ class DatabaseElement extends LitElement {
     }
 
     renderFilterValueInput(filter, index) {
-        const property = this.properties.find((p) => p.name === filter.property);
+        const property = this.properties.find(p => p.name === filter.property);
         switch (property.type) {
-            case "select":
+            case 'select':
                 return html`
                     <select
                         .value=${filter.value}
-                        @change=${(e) => {
+                        @change=${e => {
                             this.editingView.filters[index].value = e.target.value;
                             this.requestUpdate();
                         }}
                     >
-                        <option value="" ?selected=${filter.value === ""}>Select a value</option>
-                        ${property.options.map((option) => html` <option value=${option} ?selected=${filter.value === option}>${option}</option> `)}
+                        <option value="" ?selected=${filter.value === ''}>Select a value</option>
+                        ${property.options.map(option => html` <option value=${option} ?selected=${filter.value === option}>${option}</option> `)}
                     </select>
                 `;
-            case "multi-select":
+            case 'multi-select':
                 return html`
                     <select
                         .value=${filter.value}
-                        @change=${(e) => {
+                        @change=${e => {
                             this.editingView.filters[index].value = e.target.value;
                             this.requestUpdate();
                         }}
                     >
-                        <option value="" ?selected=${filter.value === ""}>Select a value</option>
-                        ${property.options.map((option) => html` <option value=${option} ?selected=${filter.value === option}>${option}</option> `)}
+                        <option value="" ?selected=${filter.value === ''}>Select a value</option>
+                        ${property.options.map(option => html` <option value=${option} ?selected=${filter.value === option}>${option}</option> `)}
                     </select>
                 `;
-            case "date":
+            case 'date':
                 return html`
                     <input
                         type="date"
                         .value=${filter.value}
-                        @input=${(e) => {
+                        @input=${e => {
                             this.editingView.filters[index].value = e.target.value;
                             this.requestUpdate();
                         }}
                     />
                 `;
-            case "checkbox":
+            case 'checkbox':
                 return html`
                     <select
                         .value=${filter.value}
-                        @change=${(e) => {
+                        @change=${e => {
                             this.editingView.filters[index].value = e.target.value;
                             this.requestUpdate();
                         }}
                     >
                         <option value="">Select a value</option>
-                        <option value="true" ?selected=${filter.value === "true"}>True</option>
-                        <option value="false" ?selected=${filter.value === "false"}>False</option>
+                        <option value="true" ?selected=${filter.value === 'true'}>True</option>
+                        <option value="false" ?selected=${filter.value === 'false'}>False</option>
                     </select>
                 `;
             default:
@@ -1682,7 +1809,7 @@ class DatabaseElement extends LitElement {
                     <input
                         type="text"
                         .value=${filter.value}
-                        @input=${(e) => {
+                        @input=${e => {
                             this.editingView.filters[index].value = e.target.value;
                             this.requestUpdate();
                         }}
@@ -1696,7 +1823,7 @@ class DatabaseElement extends LitElement {
             <table>
                 <thead>
                     <tr>
-                        ${this.properties.map((prop) => html`<th>${prop.name}</th>`)}
+                        ${this.properties.map(prop => html`<th>${prop.name}</th>`)}
                         <th>
                             <button @click=${this.toggleAddColumnForm} class="add-column-button">+</button>
                         </th>
@@ -1704,12 +1831,12 @@ class DatabaseElement extends LitElement {
                 </thead>
                 <tbody>
                     ${entries.map(
-                        (entry) => html`
+                        entry => html`
                             <tr @click=${() => this.startEditing(entry)}>
-                                ${this.properties.map((prop) => html` <td>${this.renderCellValue(entry[prop.name], prop)}</td> `)}
+                                ${this.properties.map(prop => html` <td>${this.renderCellValue(entry[prop.name], prop)}</td> `)}
                                 <td></td>
                             </tr>
-                        `,
+                        `
                     )}
                 </tbody>
             </table>
@@ -1721,50 +1848,50 @@ class DatabaseElement extends LitElement {
         if (isChecked) {
             this.editingView.visibleProperties = [...this.editingView.visibleProperties, propName];
         } else {
-            this.editingView.visibleProperties = this.editingView.visibleProperties.filter((p) => p !== propName);
+            this.editingView.visibleProperties = this.editingView.visibleProperties.filter(p => p !== propName);
         }
         this.requestUpdate();
     }
 
     renderCellValue(value, property) {
         if (value === undefined || value === null) {
-            return property.type === "checkbox" ? "✗" : "";
+            return property.type === 'checkbox' ? '✗' : '';
         }
-        if (property.type === "checkbox") {
-            return value ? "✓" : "✗";
-        } else if (property.type === "multi-select" && Array.isArray(value)) {
-            return value.join(", ");
+        if (property.type === 'checkbox') {
+            return value ? '✓' : '✗';
+        } else if (property.type === 'multi-select' && Array.isArray(value)) {
+            return value.join(', ');
         } else {
             return value.toString();
         }
     }
 
     renderBoardView(entries) {
-        const groupByProperty = this.currentView.groupBy || "status";
-        const allGroups = this.properties.find((p) => p.name === groupByProperty)?.options || [];
-        const groupsFromEntries = [...new Set(entries.map((entry) => entry[groupByProperty]))];
+        const groupByProperty = this.currentView.groupBy || 'status';
+        const allGroups = this.properties.find(p => p.name === groupByProperty)?.options || [];
+        const groupsFromEntries = [...new Set(entries.map(entry => entry[groupByProperty]))];
         const groups = [...new Set([...allGroups, ...groupsFromEntries])];
 
         return html`
             <div class="board">
                 ${groups.map(
-                    (group) => html`
-                        <div class="board-column" data-group="${group}" @dragover=${this.handleDragOver} @drop=${(e) => this.handleDrop(e, group)}>
+                    group => html`
+                        <div class="board-column" data-group="${group}" @dragover=${this.handleDragOver} @drop=${e => this.handleDrop(e, group)}>
                             <div class="board-column-header">
                                 <h3>${group}</h3>
                                 <button class="add-entry-button" @click=${() => this.startAddingNewEntry(groupByProperty, group)}>+</button>
                             </div>
                             ${entries
-                                .filter((entry) => entry[groupByProperty] === group)
+                                .filter(entry => entry[groupByProperty] === group)
                                 .map(
-                                    (entry) => html`
+                                    entry => html`
                                         <div
                                             class="board-item"
                                             draggable="true"
-                                            @dragstart=${(e) => this.handleDragStart(e, entry)}
+                                            @dragstart=${e => this.handleDragStart(e, entry)}
                                             @dragend=${this.handleDragEnd}
-                                            @touchstart=${(e) => this.handleTouchStart(e, entry)}
-                                            @click=${(e) => {
+                                            @touchstart=${e => this.handleTouchStart(e, entry)}
+                                            @click=${e => {
                                                 if (!this.touchMoving) {
                                                     e.preventDefault();
                                                     this.startEditing(entry);
@@ -1774,10 +1901,10 @@ class DatabaseElement extends LitElement {
                                             <strong>${entry.title}</strong>
                                             <p>${entry[groupByProperty]}</p>
                                         </div>
-                                    `,
+                                    `
                                 )}
                         </div>
-                    `,
+                    `
                 )}
             </div>
         `;
@@ -1788,16 +1915,16 @@ class DatabaseElement extends LitElement {
         this.touchStartY = e.touches[0].clientY;
         this.draggedItem = entry;
         this.touchMoving = false;
-        this.draggedElement = e.target.closest(".board-item");
+        this.draggedElement = e.target.closest('.board-item');
 
         if (this.draggedElement) {
-            this.draggedElement.style.opacity = "0.5";
-            this.draggedElement.style.transform = "scale(1.05)";
+            this.draggedElement.style.opacity = '0.5';
+            this.draggedElement.style.transform = 'scale(1.05)';
         }
 
         // Add touch move and end listeners to the document
-        document.addEventListener("touchmove", this.handleTouchMove.bind(this), { passive: false });
-        document.addEventListener("touchend", this.handleTouchEnd.bind(this));
+        document.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+        document.addEventListener('touchend', this.handleTouchEnd.bind(this));
     }
 
     handleTouchMove(e) {
@@ -1813,10 +1940,10 @@ class DatabaseElement extends LitElement {
         }
 
         if (this.touchMoving) {
-            this.draggedElement.style.position = "fixed";
+            this.draggedElement.style.position = 'fixed';
             this.draggedElement.style.left = `${touchX - this.draggedElement.offsetWidth / 2}px`;
             this.draggedElement.style.top = `${touchY - this.draggedElement.offsetHeight / 2}px`;
-            this.draggedElement.style.zIndex = "1000";
+            this.draggedElement.style.zIndex = '1000';
         }
 
         e.preventDefault(); // Prevent scrolling while dragging
@@ -1828,21 +1955,21 @@ class DatabaseElement extends LitElement {
         // Get the element under the touch point
         const touch = e.changedTouches[0];
         const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
-        const newColumnElement = elementUnderTouch.closest(".board-column");
+        const newColumnElement = elementUnderTouch.closest('.board-column');
 
         // Reset draggedElement styles
-        this.draggedElement.style.opacity = "1";
-        this.draggedElement.style.transform = "scale(1)";
-        this.draggedElement.style.position = "static";
-        this.draggedElement.style.zIndex = "auto";
+        this.draggedElement.style.opacity = '1';
+        this.draggedElement.style.transform = 'scale(1)';
+        this.draggedElement.style.position = 'static';
+        this.draggedElement.style.zIndex = 'auto';
 
         if (this.touchMoving && newColumnElement) {
-            const groupByProperty = this.currentView.groupBy || "status";
+            const groupByProperty = this.currentView.groupBy || 'status';
             const newGroup = newColumnElement.dataset.group;
 
             if (newGroup) {
                 const updatedEntry = { ...this.draggedItem, [groupByProperty]: newGroup };
-                const index = this.entries.findIndex((entry) => entry.id === this.draggedItem.id);
+                const index = this.entries.findIndex(entry => entry.id === this.draggedItem.id);
                 if (index !== -1) {
                     this.entries = [...this.entries.slice(0, index), updatedEntry, ...this.entries.slice(index + 1)];
                     this.requestUpdate();
@@ -1857,14 +1984,14 @@ class DatabaseElement extends LitElement {
         this.touchMoving = false;
 
         // Remove document listeners
-        document.removeEventListener("touchmove", this.handleTouchMove);
-        document.removeEventListener("touchend", this.handleTouchEnd);
+        document.removeEventListener('touchmove', this.handleTouchMove);
+        document.removeEventListener('touchend', this.handleTouchEnd);
     }
 
     startAddingNewEntry(groupByProperty = null, groupValue = null) {
         const newEntry = {
             id: `temp_${Date.now()}`,
-            title: "New Entry",
+            title: 'New Entry',
         };
         if (groupByProperty && groupValue) {
             newEntry[groupByProperty] = groupValue;
@@ -1873,18 +2000,20 @@ class DatabaseElement extends LitElement {
     }
 
     renderListView(entries) {
-        const visibleProperties = this.currentView.visibleProperties || ["title"];
+        const visibleProperties = this.currentView.visibleProperties || ['title'];
         return html`
             <div class="list-view">
                 ${entries.map(
-                    (entry) => html`
+                    entry => html`
                         <div class="list-item" @click=${() => this.startEditing(entry)}>
-                            ${visibleProperties.map((propName) => {
-                                const prop = this.properties.find((p) => p.name === propName);
-                                return html` <div class="list-item-property"><strong>${propName}:</strong> ${this.renderCellValue(entry[propName], prop)}</div> `;
+                            ${visibleProperties.map(propName => {
+                                const prop = this.properties.find(p => p.name === propName);
+                                return html`
+                                    <div class="list-item-property"><strong>${propName}:</strong> ${this.renderCellValue(entry[propName], prop)}</div>
+                                `;
                             })}
                         </div>
-                    `,
+                    `
                 )}
                 <div class="list-item new-entry" @click=${() => this.startAddingNewEntry()}>
                     <div class="new-entry-placeholder">+</div>
@@ -1895,7 +2024,7 @@ class DatabaseElement extends LitElement {
     }
 
     renderCalendarView(entries) {
-        const dateProperty = this.currentView.dateProperty || "date";
+        const dateProperty = this.currentView.dateProperty || 'date';
         const now = new Date();
         const [currentYear, currentMonth] = [now.getFullYear(), now.getMonth()];
         const [year, month] = this.calendarDate ? [this.calendarDate.getFullYear(), this.calendarDate.getMonth()] : [currentYear, currentMonth];
@@ -1906,7 +2035,7 @@ class DatabaseElement extends LitElement {
         const startingDayOfWeek = firstDayOfMonth.getDay();
 
         const weeks = Math.ceil((daysInMonth + startingDayOfWeek) / 7);
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
         return html`
             <div class="calendar-container">
@@ -1915,7 +2044,9 @@ class DatabaseElement extends LitElement {
                     <h3>${monthNames[month]} ${year}</h3>
                     <button @click=${() => this.changeMonth(1)}>&gt;</button>
                 </div>
-                <div class="calendar-weekdays">${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => html`<div class="weekday">${day}</div>`)}</div>
+                <div class="calendar-weekdays">
+                    ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => html`<div class="weekday">${day}</div>`)}
+                </div>
 
                 <div class="calendar-grid">
                     ${Array(weeks)
@@ -1929,25 +2060,39 @@ class DatabaseElement extends LitElement {
                                             const dayNumber = weekIndex * 7 + dayIndex - startingDayOfWeek + 1;
                                             const isCurrentMonth = dayNumber > 0 && dayNumber <= daysInMonth;
 
-                                            const dayEntries = entries.filter((entry) => {
+                                            const dayEntries = entries.filter(entry => {
                                                 const entryDate = new Date(entry[dateProperty]);
-                                                return entryDate.getFullYear() === year && entryDate.getMonth() === month && entryDate.getDate() === dayNumber;
+                                                return (
+                                                    entryDate.getFullYear() === year &&
+                                                    entryDate.getMonth() === month &&
+                                                    entryDate.getDate() === dayNumber
+                                                );
                                             });
 
                                             return html`
-                                                <div class="calendar-day ${isCurrentMonth ? "current-month" : "other-month"}">
+                                                <div class="calendar-day ${isCurrentMonth ? 'current-month' : 'other-month'}">
                                                     ${isCurrentMonth
                                                         ? html`
                                                               <div class="day-number">${dayNumber}</div>
-                                                              <div class="day-content">${dayEntries.map((entry) => html` <div class="calendar-item" @click=${() => this.startEditing(entry)}>${entry.title}</div> `)}</div>
-                                                              <div class="add-entry-button" @click=${() => this.addNewEntry(year, month, dayNumber)}>+</div>
+                                                              <div class="day-content">
+                                                                  ${dayEntries.map(
+                                                                      entry => html`
+                                                                          <div class="calendar-item" @click=${() => this.startEditing(entry)}>
+                                                                              ${entry.title}
+                                                                          </div>
+                                                                      `
+                                                                  )}
+                                                              </div>
+                                                              <div class="add-entry-button" @click=${() => this.addNewEntry(year, month, dayNumber)}>
+                                                                  +
+                                                              </div>
                                                           `
-                                                        : ""}
+                                                        : ''}
                                                 </div>
                                             `;
                                         })}
                                 </div>
-                            `,
+                            `
                         )}
                 </div>
             </div>
@@ -1958,12 +2103,16 @@ class DatabaseElement extends LitElement {
         return html`
             <div class="gallery">
                 ${entries.map(
-                    (entry) => html`
+                    entry => html`
                         <div class="gallery-item" @click=${() => this.startEditing(entry)}>
-                            <img src="${entry.image || "/placeholder-image.jpg"}" alt="${entry.title}" style="width: 100%; height: auto; display: none" />
+                            <img
+                                src="${entry.image || '/placeholder-image.jpg'}"
+                                alt="${entry.title}"
+                                style="width: 100%; height: auto; display: none"
+                            />
                             <strong>${entry.title}</strong>
                         </div>
-                    `,
+                    `
                 )}
                 <div class="gallery-item new-entry" @click=${() => this.startAddingNewEntry()}>
                     <div class="new-entry-placeholder">+</div>
@@ -1980,21 +2129,18 @@ class DatabaseElement extends LitElement {
             ${this.currentView.type === 'table'
                 ? this.renderTableView(filteredEntries)
                 : this.currentView.type === 'board'
-                ? this.renderBoardView(filteredEntries)
-                : this.currentView.type === 'calendar'
-                ? this.renderCalendarView(filteredEntries)
-                : this.currentView.type === 'gallery'
-                ? this.renderGalleryView(filteredEntries)
-                : this.currentView.type === 'list'
-                ? this.renderListView(filteredEntries)
-                : html`<p>Unknown view type</p>`}
-            ${this.renderAddRowDialog()}
-            ${this.renderAddColumnDialog()}
-            ${this.renderEditDialog()}
-            ${this.renderEditViewDialog()}
+                  ? this.renderBoardView(filteredEntries)
+                  : this.currentView.type === 'calendar'
+                    ? this.renderCalendarView(filteredEntries)
+                    : this.currentView.type === 'gallery'
+                      ? this.renderGalleryView(filteredEntries)
+                      : this.currentView.type === 'list'
+                        ? this.renderListView(filteredEntries)
+                        : html`<p>Unknown view type</p>`}
+            ${this.renderAddRowDialog()} ${this.renderAddColumnDialog()} ${this.renderEditDialog()} ${this.renderEditViewDialog()}
             ${this.renderEditPropertiesDialog()}
         `;
     }
 }
 
-customElements.define("database-element", DatabaseElement);
+customElements.define('database-element', DatabaseElement);

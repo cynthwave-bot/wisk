@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class NightwavePlazaRadioElement extends LitElement {
     static styles = css`
@@ -52,7 +52,7 @@ class NightwavePlazaRadioElement extends LitElement {
     `;
 
     static properties = {
-        isPlaying: { type: Boolean }
+        isPlaying: { type: Boolean },
     };
 
     constructor() {
@@ -62,7 +62,7 @@ class NightwavePlazaRadioElement extends LitElement {
     }
 
     firstUpdated() {
-        this.audioElement = new Audio("https://radio.plaza.one/mp3");
+        this.audioElement = new Audio('https://radio.plaza.one/mp3');
     }
 
     togglePlay() {
@@ -82,7 +82,9 @@ class NightwavePlazaRadioElement extends LitElement {
         return html`
             <div class="radio-container">
                 <button @click=${this.togglePlay} aria-label=${this.isPlaying ? 'Pause' : 'Play'}>
-                    ${this.isPlaying ? html`<img src="/a7/plugins/nightwave-plaza/pause.svg" alt="Pause">` : html`<img src="/a7/plugins/nightwave-plaza/play.svg" alt="Play">`}
+                    ${this.isPlaying
+                        ? html`<img src="/a7/plugins/nightwave-plaza/pause.svg" alt="Pause" />`
+                        : html`<img src="/a7/plugins/nightwave-plaza/play.svg" alt="Play" />`}
                 </button>
 
                 <span class="station-name">Nightwave Plaza</span>
@@ -95,4 +97,4 @@ class NightwavePlazaRadioElement extends LitElement {
     }
 }
 
-customElements.define("nightwave-plaza-radio", NightwavePlazaRadioElement);
+customElements.define('nightwave-plaza-radio', NightwavePlazaRadioElement);

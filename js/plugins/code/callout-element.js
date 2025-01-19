@@ -1,29 +1,29 @@
 class CalloutElement extends BaseTextElement {
     constructor() {
-        const initialEmoji = "📌";
+        const initialEmoji = '📌';
         super();
-        
+
         this.value = {
-            textContent: "",
-            emoji: initialEmoji
+            textContent: '',
+            emoji: initialEmoji,
         };
 
         // Bind the emoji selection handler
         this.handleEmojiSelection = this.handleEmojiSelection.bind(this);
-        
+
         this.render();
     }
 
     connectedCallback() {
         super.connectedCallback();
         // Add event listener for emoji selection
-        window.addEventListener("emoji-selector", this.handleEmojiSelection);
+        window.addEventListener('emoji-selector', this.handleEmojiSelection);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
         // Clean up event listener
-        window.removeEventListener("emoji-selector", this.handleEmojiSelection);
+        window.removeEventListener('emoji-selector', this.handleEmojiSelection);
     }
 
     handleEmojiSelection(event) {
@@ -38,15 +38,15 @@ class CalloutElement extends BaseTextElement {
     getValue() {
         if (!this.editable) {
             return {
-                textContent: "",
+                textContent: '',
                 references: [],
-                emoji: this.value?.emoji || "📌"
+                emoji: this.value?.emoji || '📌',
             };
         }
         return {
             textContent: this.editable.innerHTML,
             references: this.references,
-            emoji: this.value?.emoji || "📌"
+            emoji: this.value?.emoji || '📌',
         };
     }
 
@@ -55,14 +55,14 @@ class CalloutElement extends BaseTextElement {
             return;
         }
 
-        if (path == "value.append") {
+        if (path == 'value.append') {
             this.editable.innerHTML += value.textContent;
         } else {
             this.editable.innerHTML = value.textContent;
         }
 
         if (value.references && value.references.length) {
-            if (path == "value.append") {
+            if (path == 'value.append') {
                 this.references = this.references.concat(value.references);
             } else {
                 this.references = value.references;
@@ -189,7 +189,7 @@ class CalloutElement extends BaseTextElement {
         `;
         const content = `
             <div class="container">
-                <button class="emoji-button">${this.value?.emoji || "📌"}</button>
+                <button class="emoji-button">${this.value?.emoji || '📌'}</button>
                 <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
                 <div class="emoji-suggestions"></div>
             </div>
@@ -197,9 +197,9 @@ class CalloutElement extends BaseTextElement {
         this.shadowRoot.innerHTML = style + content;
 
         this.emojiButton = this.shadowRoot.querySelector('.emoji-button');
-        this.emojiButton.addEventListener('click', (e) => {
+        this.emojiButton.addEventListener('click', e => {
             if (window.wisk.editor.wiskSite) return;
-            
+
             e.stopPropagation();
             // Get the emoji selector component and show it
             const emojiSelector = document.querySelector('emoji-selector');
@@ -208,16 +208,16 @@ class CalloutElement extends BaseTextElement {
             }
         });
 
-        this.editable = this.shadowRoot.querySelector("#editable");
+        this.editable = this.shadowRoot.querySelector('#editable');
     }
 
     getTextContent() {
         return {
             html: this.editable.innerHTML,
             text: this.editable.innerText,
-            markdown: "> " + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML)
-        }
+            markdown: '> ' + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML),
+        };
     }
 }
 
-customElements.define("callout-element", CalloutElement);
+customElements.define('callout-element', CalloutElement);

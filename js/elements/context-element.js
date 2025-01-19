@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class ContextElement extends LitElement {
     static styles = css`
@@ -19,9 +19,8 @@ class ContextElement extends LitElement {
     }
 
     render() {
-        return html`
-        `;
+        return html``;
     }
 }
 
-customElements.define("context-element", ContextElement);
+customElements.define('context-element', ContextElement);

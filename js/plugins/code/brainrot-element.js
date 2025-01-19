@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class BrainrotElement extends LitElement {
     static styles = css`
@@ -34,7 +34,8 @@ class BrainrotElement extends LitElement {
             align-items: center;
             gap: 8px;
         }
-        button, select {
+        button,
+        select {
             padding: var(--padding-w2);
             background-color: var(--text-1);
             color: var(--bg-1);
@@ -58,7 +59,8 @@ class BrainrotElement extends LitElement {
         .container:hover .controls {
             opacity: 1;
         }
-        .control-button, select.control-select {
+        .control-button,
+        select.control-select {
             padding: 4px 8px;
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
@@ -67,7 +69,8 @@ class BrainrotElement extends LitElement {
             cursor: pointer;
             font-size: 12px;
         }
-        .control-button:hover, select.control-select:hover {
+        .control-button:hover,
+        select.control-select:hover {
             background-color: rgba(0, 0, 0, 0.7);
         }
         .drag-handle {
@@ -101,27 +104,27 @@ class BrainrotElement extends LitElement {
         this.currentY = 0;
         this.moveDistance = 0;
         this.videos = {
-            'GTA 5': "https://s3.cynthwave.com/brainrot/gta5.mp4",
-            'Minecraft': "https://s3.cynthwave.com/brainrot/minecraft.mp4",
-            'Subway Surfers': "https://s3.cynthwave.com/brainrot/subwaysurfers.mp4",
-            'Fallguys': "https://s3.cynthwave.com/brainrot/fallguys.mp4",
-            'Riders Republic': "https://s3.cynthwave.com/brainrot/ridersrepublic.mp4",
-            'Forza Horizon 5 - Day': "https://s3.cynthwave.com/brainrot/forzahorizon-2.mp4",
-            'Forza Horizon 5 - Night': "https://s3.cynthwave.com/brainrot/forzahorizon-1.mp4",
-            'WRC 7': "https://s3.cynthwave.com/brainrot/wrc-7.mp4",
+            'GTA 5': 'https://s3.cynthwave.com/brainrot/gta5.mp4',
+            Minecraft: 'https://s3.cynthwave.com/brainrot/minecraft.mp4',
+            'Subway Surfers': 'https://s3.cynthwave.com/brainrot/subwaysurfers.mp4',
+            Fallguys: 'https://s3.cynthwave.com/brainrot/fallguys.mp4',
+            'Riders Republic': 'https://s3.cynthwave.com/brainrot/ridersrepublic.mp4',
+            'Forza Horizon 5 - Day': 'https://s3.cynthwave.com/brainrot/forzahorizon-2.mp4',
+            'Forza Horizon 5 - Night': 'https://s3.cynthwave.com/brainrot/forzahorizon-1.mp4',
+            'WRC 7': 'https://s3.cynthwave.com/brainrot/wrc-7.mp4',
         };
         this.currentVideo = this.videos[Object.keys(this.videos)[Math.floor(Math.random() * Object.keys(this.videos).length)]];
     }
 
-    startDragging = (e) => {
+    startDragging = e => {
         if (!this.show && !e.target.closest('.drag-handle')) return;
         if (e.target.classList.contains('control-button') || e.target.classList.contains('control-select')) return;
-        
+
         this.isDragging = true;
         this.moveDistance = 0;
 
         const rect = this.getBoundingClientRect();
-        
+
         if (e.type === 'mousedown') {
             this.startX = e.clientX - rect.left;
             this.startY = e.clientY - rect.top;
@@ -134,12 +137,12 @@ class BrainrotElement extends LitElement {
         window.addEventListener('mouseup', this.stopDragHandler);
         window.addEventListener('touchmove', this.dragHandler);
         window.addEventListener('touchend', this.stopDragHandler);
-    }
+    };
 
-    dragHandler = (e) => {
+    dragHandler = e => {
         if (!this.isDragging) return;
         e.preventDefault();
-        
+
         let clientX, clientY;
         if (e.type === 'mousemove') {
             clientX = e.clientX;
@@ -164,16 +167,16 @@ class BrainrotElement extends LitElement {
         this.style.left = Math.min(Math.max(padding, newX), maxX - padding) + 'px';
         this.style.bottom = Math.min(Math.max(padding, window.innerHeight - newY - rect.height), maxY - padding) + 'px';
         this.style.right = 'auto';
-    }
+    };
 
-    stopDragHandler = (e) => {
+    stopDragHandler = e => {
         if (this.isDragging) {
             this.isDragging = false;
             window.removeEventListener('mousemove', this.dragHandler);
             window.removeEventListener('mouseup', this.stopDragHandler);
             window.removeEventListener('touchmove', this.dragHandler);
             window.removeEventListener('touchend', this.stopDragHandler);
-            
+
             if (this.moveDistance < 5 && !this.show) {
                 const target = e.target;
                 if (target.tagName.toLowerCase() === 'button' && !target.classList.contains('control-button')) {
@@ -181,7 +184,7 @@ class BrainrotElement extends LitElement {
                 }
             }
         }
-    }
+    };
 
     toggleShow() {
         this.show = !this.show;
@@ -208,48 +211,36 @@ class BrainrotElement extends LitElement {
 
     render() {
         return html`
-            ${this.show 
+            ${this.show
                 ? html`
-                    <div class="container"
-                        @mousedown=${this.startDragging}
-                        @touchstart=${this.startDragging}>
-                        <video 
-                            src="${this.currentVideo}" 
-                            autoplay 
-                            loop 
-                            muted>
-                        </video>
-                        <div class="controls">
-                            <select class="control-select" @change=${this.handleVideoChange}>
-                                ${Object.entries(this.videos).map(([name, url]) => html`
-                                    <option value="${url}" ?selected=${url === this.currentVideo}>${name}</option>
-                                `)}
-                            </select>
-                            <button class="control-button" @click=${this.toggleMute}>
-                                Unmute
-                            </button>
-                            <button class="control-button" @click=${this.toggleShow}>
-                                Hide
-                            </button>
-                        </div>
-                    </div>
-                ` 
+                      <div class="container" @mousedown=${this.startDragging} @touchstart=${this.startDragging}>
+                          <video src="${this.currentVideo}" autoplay loop muted></video>
+                          <div class="controls">
+                              <select class="control-select" @change=${this.handleVideoChange}>
+                                  ${Object.entries(this.videos).map(
+                                      ([name, url]) => html` <option value="${url}" ?selected=${url === this.currentVideo}>${name}</option> `
+                                  )}
+                              </select>
+                              <button class="control-button" @click=${this.toggleMute}>Unmute</button>
+                              <button class="control-button" @click=${this.toggleShow}>Hide</button>
+                          </div>
+                      </div>
+                  `
                 : html`
-                    <div class="button-container">
-                        <div class="drag-handle" @mousedown=${this.startDragging} @touchstart=${this.startDragging}>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M5 9h14M5 15h14"/>
-                            </svg>
-                        </div>
-                        <button @click=${this.toggleShow}>Show Brainrot</button>
-                    </div>
-                `
-            }
+                      <div class="button-container">
+                          <div class="drag-handle" @mousedown=${this.startDragging} @touchstart=${this.startDragging}>
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <path d="M5 9h14M5 15h14" />
+                              </svg>
+                          </div>
+                          <button @click=${this.toggleShow}>Show Brainrot</button>
+                      </div>
+                  `}
         `;
     }
 }
 
-customElements.define("brainrot-element", BrainrotElement);
-document.body.appendChild(document.createElement("brainrot-element"));
+customElements.define('brainrot-element', BrainrotElement);
+document.body.appendChild(document.createElement('brainrot-element'));
 
 document.querySelector('brainrot-element').style.zIndex = 99;

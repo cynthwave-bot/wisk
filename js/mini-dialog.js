@@ -13,7 +13,7 @@ function toggleMiniDialogNew(component, title) {
     const dialog = byQuery('.mini-dialog');
     const titleElement = byQuery('.mini-dialog-title');
     const allComponents = byQuery('.mini-dialog-body').querySelectorAll('[data-plugin-component]');
-    
+
     if (dialog.classList.contains('hidden')) {
         if (byQuery(component).opened) byQuery(component).opened();
         // Show dialog

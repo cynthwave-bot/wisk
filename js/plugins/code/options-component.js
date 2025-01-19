@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class OptionsComponent extends LitElement {
     static styles = css`
@@ -574,8 +574,8 @@ class OptionsComponent extends LitElement {
     constructor() {
         super();
         this.plugins = [];
-        this.searchTerm = "";
-        this.currentView = "main";
+        this.searchTerm = '';
+        this.currentView = 'main';
         this.selectedPlugin = null;
     }
 
@@ -585,21 +585,21 @@ class OptionsComponent extends LitElement {
     }
 
     showAboutView() {
-        this.currentView = "about";
+        this.currentView = 'about';
     }
 
     showSettingsView() {
-        this.currentView = "settings";
+        this.currentView = 'settings';
     }
 
     showThemesView() {
-        this.currentView = "themes";
+        this.currentView = 'themes';
     }
 
     loadPlugins() {
         if (window.wisk.plugins.pluginData && window.wisk.plugins.pluginData.list) {
             this.plugins = Object.values(window.wisk.plugins.pluginData.list).filter(
-                (plugin) => !window.wisk.plugins.defaultPlugins.includes(plugin.name),
+                plugin => !window.wisk.plugins.defaultPlugins.includes(plugin.name)
             );
         }
     }
@@ -609,23 +609,21 @@ class OptionsComponent extends LitElement {
     }
 
     showPluginsManager() {
-        this.currentView = "plugins";
+        this.currentView = 'plugins';
     }
 
     showMainView() {
-        this.currentView = "main";
+        this.currentView = 'main';
     }
 
     togglePlugin(plugin) {
         this.selectedPlugin = plugin;
-        this.currentView = "plugin-details";
+        this.currentView = 'plugin-details';
     }
 
     async handlePluginInstall(plugin) {
         await window.wisk.plugins.loadPlugin(plugin.name);
-        await window.wisk.editor.addConfigChange([
-            { path: "document.config.plugins.add", values: { plugin: plugin.name } },
-        ]);
+        await window.wisk.editor.addConfigChange([{ path: 'document.config.plugins.add', values: { plugin: plugin.name } }]);
         this.requestUpdate();
     }
 
@@ -635,16 +633,16 @@ class OptionsComponent extends LitElement {
 
     opened() {
         // TODO reset window;
-        this.currentView = "main";
-        this.shadowRoot.querySelector(".plugin-search").value = "";
-        this.handleSearch({ target: { value: "" } });
+        this.currentView = 'main';
+        this.shadowRoot.querySelector('.plugin-search').value = '';
+        this.handleSearch({ target: { value: '' } });
         this.requestUpdate();
     }
 
     async changeTheme(theme) {
         this.selectedTheme = theme;
         window.wisk.theme.setTheme(theme);
-        await window.wisk.editor.addConfigChange([{ path: "document.config.theme", values: { theme: theme } }]);
+        await window.wisk.editor.addConfigChange([{ path: 'document.config.theme', values: { theme: theme } }]);
         this.requestUpdate();
     }
 
@@ -653,29 +651,29 @@ class OptionsComponent extends LitElement {
     }
 
     showDeveloperView() {
-        this.currentView = "developer";
+        this.currentView = 'developer';
     }
 
     render() {
         const filteredPlugins = this.plugins.filter(
-            (plugin) =>
+            plugin =>
                 plugin.title.toLowerCase().includes(this.searchTerm) ||
                 plugin.description.toLowerCase().includes(this.searchTerm) ||
-                plugin.tags.some((tag) => tag.toLowerCase().includes(this.searchTerm)) ||
+                plugin.tags.some(tag => tag.toLowerCase().includes(this.searchTerm)) ||
                 plugin.author.toLowerCase().includes(this.searchTerm) ||
-                plugin.contents.some((content) => content.experimental && "experimental".includes(this.searchTerm)),
+                plugin.contents.some(content => content.experimental && 'experimental'.includes(this.searchTerm))
         );
 
         const urlRegex = /(https?:\/\/[^\s]+)/g;
         var parts = [];
-        if (this.currentView === "plugin-details") {
+        if (this.currentView === 'plugin-details') {
             parts = this.selectedPlugin.description.split(urlRegex);
         }
 
         return html`
             <div class="view-container" data-view="${this.currentView}">
                 <!-- Main View -->
-                <div class="view ${this.currentView === "main" ? "active" : ""}">
+                <div class="view ${this.currentView === 'main' ? 'active' : ''}">
 
                     <div class="plugins-toggle options-section" @click="${this.showThemesView}">
                         <label>Themes</label>
@@ -700,7 +698,7 @@ class OptionsComponent extends LitElement {
                 </div>
 
                 <!-- Plugins View -->
-                <div class="view ${this.currentView === "plugins" ? "active" : ""}">
+                <div class="view ${this.currentView === 'plugins' ? 'active' : ''}">
                     <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
@@ -714,14 +712,10 @@ class OptionsComponent extends LitElement {
                         ${filteredPlugins
                             .sort((a, b) => a.title.localeCompare(b.title))
                             .map(
-                                (plugin) => html`
-                                    <div
-                                        class="plugin-item"
-                                        @click="${() => this.togglePlugin(plugin)}"
-                                        style="cursor: pointer;"
-                                    >
+                                plugin => html`
+                                    <div class="plugin-item" @click="${() => this.togglePlugin(plugin)}" style="cursor: pointer;">
                                         <img
-                                            src="${SERVER + window.wisk.plugins.pluginData["icon-path"] + plugin.icon}"
+                                            src="${SERVER + window.wisk.plugins.pluginData['icon-path'] + plugin.icon}"
                                             alt="${plugin.title}"
                                             class="plugin-icon"
                                             draggable="false"
@@ -731,13 +725,13 @@ class OptionsComponent extends LitElement {
                                             <span class="plugin-description">${plugin.description}</span>
                                         </div>
                                     </div>
-                                `,
+                                `
                             )}
                     </div>
                 </div>
 
                 <!-- Plugin Details View -->
-                <div class="view vgap ${this.currentView === "plugin-details" ? "active" : ""}">
+                <div class="view vgap ${this.currentView === 'plugin-details' ? 'active' : ''}">
                     ${
                         this.selectedPlugin
                             ? html`
@@ -746,7 +740,7 @@ class OptionsComponent extends LitElement {
                                           <img
                                               src="/a7/iconoir/left.svg"
                                               alt="Back"
-                                              @click="${() => (this.currentView = "plugins")}"
+                                              @click="${() => (this.currentView = 'plugins')}"
                                               class="icon"
                                               draggable="false"
                                           />
@@ -756,9 +750,7 @@ class OptionsComponent extends LitElement {
 
                                   <div class="installer-confirm__header">
                                       <img
-                                          src="${SERVER +
-                                          window.wisk.plugins.pluginData["icon-path"] +
-                                          this.selectedPlugin.icon}"
+                                          src="${SERVER + window.wisk.plugins.pluginData['icon-path'] + this.selectedPlugin.icon}"
                                           class="plugin-icon"
                                           draggable="false"
                                       />
@@ -766,168 +758,110 @@ class OptionsComponent extends LitElement {
                                           <h4>${this.selectedPlugin.title}</h4>
                                           <p style="font-size: 14px">
                                               made by
-                                              <a
-                                                  href="${this.selectedPlugin.contact}"
-                                                  target="_blank"
-                                                  style="color: var(--text-2)"
-                                              >
+                                              <a href="${this.selectedPlugin.contact}" target="_blank" style="color: var(--text-2)">
                                                   ${this.selectedPlugin.author}
                                               </a>
                                           </p>
                                       </div>
                                       <div style="flex: 1"></div>
-                                      <div
-                                          style="padding: var(--padding-3); display: flex; align-items: center; justify-content: center;"
-                                      >
+                                      <div style="padding: var(--padding-3); display: flex; align-items: center; justify-content: center;">
                                           <button
                                               class="toggle-switch btn-primary"
                                               @click="${() => this.handlePluginInstall(this.selectedPlugin)}"
                                               ?disabled="${this.isPluginInstalled(this.selectedPlugin.name)}"
                                           >
-                                              ${this.isPluginInstalled(this.selectedPlugin.name)
-                                                  ? "Installed"
-                                                  : "Install"}
+                                              ${this.isPluginInstalled(this.selectedPlugin.name) ? 'Installed' : 'Install'}
                                           </button>
                                       </div>
                                   </div>
 
                                   <div class="options-section options-section--column">
                                       ${this.selectedPlugin.contents.some(
-                                          (content) =>
-                                              content.category.includes("mini-dialog") ||
-                                              content.category.includes("full-dialog") ||
-                                              content.category.includes("right-sidebar") ||
-                                              content.category.includes("left-sidebar") ||
-                                              content.category.includes("component") ||
-                                              content.category.includes("auto") ||
-                                              content.category.includes("context-box") ||
+                                          content =>
+                                              content.category.includes('mini-dialog') ||
+                                              content.category.includes('full-dialog') ||
+                                              content.category.includes('right-sidebar') ||
+                                              content.category.includes('left-sidebar') ||
+                                              content.category.includes('component') ||
+                                              content.category.includes('auto') ||
+                                              content.category.includes('context-box') ||
                                               content.nav ||
-                                              content.experimental,
+                                              content.experimental
                                       )
                                           ? html`
                                                 <div class="options-section-inside">
                                                     <div>
                                                         <span class="tags"
-                                                            >${this.selectedPlugin.contents
-                                                                .map((content) => content.category)
-                                                                .join(", ")}</span
+                                                            >${this.selectedPlugin.contents.map(content => content.category).join(', ')}</span
                                                         >
-                                                        ${this.selectedPlugin.contents.some((content) => content.nav)
+                                                        ${this.selectedPlugin.contents.some(content => content.nav)
                                                             ? html`<span class="tags">navigation</span>`
-                                                            : ""}
-                                                        ${this.selectedPlugin.contents.some(
-                                                            (content) => content.experimental,
-                                                        )
-                                                            ? html`<span
-                                                                  class="tags"
-                                                                  style="background-color: var(--bg-red); color: var(--fg-red);"
+                                                            : ''}
+                                                        ${this.selectedPlugin.contents.some(content => content.experimental)
+                                                            ? html`<span class="tags" style="background-color: var(--bg-red); color: var(--fg-red);"
                                                                   >experimental</span
                                                               >`
-                                                            : ""}
+                                                            : ''}
                                                     </div>
 
-                                                    <ul
-                                                        style="color: var(--text-2); display: flex; flex-direction: column; gap: var(--gap-1)"
-                                                    >
-                                                        ${this.selectedPlugin.contents.some((content) =>
-                                                            content.category.includes("mini-dialog"),
-                                                        )
+                                                    <ul style="color: var(--text-2); display: flex; flex-direction: column; gap: var(--gap-1)">
+                                                        ${this.selectedPlugin.contents.some(content => content.category.includes('mini-dialog'))
+                                                            ? html` <p style="font-size: 14px;">• opens as a small dialog box</p> `
+                                                            : ''}
+                                                        ${this.selectedPlugin.contents.some(content => content.category.includes('full-dialog'))
                                                             ? html`
                                                                   <p style="font-size: 14px;">
-                                                                      • opens as a small dialog box
+                                                                      • opens as a full-screen dialog box (Not implemented yet)
                                                                   </p>
                                                               `
-                                                            : ""}
-                                                        ${this.selectedPlugin.contents.some((content) =>
-                                                            content.category.includes("full-dialog"),
-                                                        )
+                                                            : ''}
+                                                        ${this.selectedPlugin.contents.some(content => content.category.includes('right-sidebar'))
+                                                            ? html` <p style="font-size: 14px;">• appears in the right sidebar</p> `
+                                                            : ''}
+                                                        ${this.selectedPlugin.contents.some(content => content.category.includes('left-sidebar'))
+                                                            ? html` <p style="font-size: 14px;">• appears in the left sidebar</p> `
+                                                            : ''}
+                                                        ${this.selectedPlugin.contents.some(content => content.category.includes('component'))
+                                                            ? html` <p style="font-size: 14px;">• adds a new block to the editor</p> `
+                                                            : ''}
+                                                        ${this.selectedPlugin.contents.some(content => content.category.includes('auto'))
                                                             ? html`
                                                                   <p style="font-size: 14px;">
-                                                                      • opens as a full-screen dialog box (Not
-                                                                      implemented yet)
+                                                                      • runs automatically without user intervention/has custom ui
                                                                   </p>
                                                               `
-                                                            : ""}
-                                                        ${this.selectedPlugin.contents.some((content) =>
-                                                            content.category.includes("right-sidebar"),
-                                                        )
+                                                            : ''}
+                                                        ${this.selectedPlugin.contents.some(content => content.category.includes('context-box'))
                                                             ? html`
                                                                   <p style="font-size: 14px;">
-                                                                      • appears in the right sidebar
+                                                                      • appears as a context menu or box (Not implemented yet)
                                                                   </p>
                                                               `
-                                                            : ""}
-                                                        ${this.selectedPlugin.contents.some((content) =>
-                                                            content.category.includes("left-sidebar"),
-                                                        )
+                                                            : ''}
+                                                        ${this.selectedPlugin.contents.some(content => content.experimental)
                                                             ? html`
                                                                   <p style="font-size: 14px;">
-                                                                      • appears in the left sidebar
+                                                                      • is experimental and may cause issues and is not recommended to use
                                                                   </p>
                                                               `
-                                                            : ""}
-                                                        ${this.selectedPlugin.contents.some((content) =>
-                                                            content.category.includes("component"),
-                                                        )
-                                                            ? html`
-                                                                  <p style="font-size: 14px;">
-                                                                      • adds a new block to the editor
-                                                                  </p>
-                                                              `
-                                                            : ""}
-                                                        ${this.selectedPlugin.contents.some((content) =>
-                                                            content.category.includes("auto"),
-                                                        )
-                                                            ? html`
-                                                                  <p style="font-size: 14px;">
-                                                                      • runs automatically without user intervention/has
-                                                                      custom ui
-                                                                  </p>
-                                                              `
-                                                            : ""}
-                                                        ${this.selectedPlugin.contents.some((content) =>
-                                                            content.category.includes("context-box"),
-                                                        )
-                                                            ? html`
-                                                                  <p style="font-size: 14px;">
-                                                                      • appears as a context menu or box (Not
-                                                                      implemented yet)
-                                                                  </p>
-                                                              `
-                                                            : ""}
-                                                        ${this.selectedPlugin.contents.some(
-                                                            (content) => content.experimental,
-                                                        )
-                                                            ? html`
-                                                                  <p style="font-size: 14px;">
-                                                                      • is experimental and may cause issues and is not
-                                                                      recommended to use
-                                                                  </p>
-                                                              `
-                                                            : ""}
-                                                        ${this.selectedPlugin.contents.some((content) => content.nav)
-                                                            ? html`
-                                                                  <p style="font-size: 14px;">
-                                                                      • will be shown in the navigation bar
-                                                                  </p>
-                                                              `
-                                                            : ""}
+                                                            : ''}
+                                                        ${this.selectedPlugin.contents.some(content => content.nav)
+                                                            ? html` <p style="font-size: 14px;">• will be shown in the navigation bar</p> `
+                                                            : ''}
                                                     </ul>
                                                 </div>
                                             `
-                                          : ""}
+                                          : ''}
 
                                       <div class="tags-div">
-                                          ${this.selectedPlugin.tags.map(
-                                              (tag) => html`<span class="tags-div-inner">#${tag}</span>`,
-                                          )}
+                                          ${this.selectedPlugin.tags.map(tag => html`<span class="tags-div-inner">#${tag}</span>`)}
                                       </div>
 
                                       <p>
                                           ${parts.map((part, index) => {
                                               if (part.match(urlRegex)) {
                                                   return html`<a href="${part}" class="link-blue" target="_blank"
-                                                      >${part.replace(/(^\w+:|^)\/\//, "")}</a
+                                                      >${part.replace(/(^\w+:|^)\/\//, '')}</a
                                                   >`;
                                               }
                                               return part;
@@ -935,12 +869,12 @@ class OptionsComponent extends LitElement {
                                       </p>
                                   </div>
                               `
-                            : ""
+                            : ''
                     }
                 </div>
 
                 <!-- Developer View -->
-                <div class="view ${this.currentView === "developer" ? "active" : ""}">
+                <div class="view ${this.currentView === 'developer' ? 'active' : ''}">
                     <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showSettingsView}" class="icon" draggable="false"/>
@@ -955,7 +889,7 @@ class OptionsComponent extends LitElement {
                 </div>
 
                 <!-- Settings View -->
-                <div class="view ${this.currentView === "settings" ? "active" : ""}">
+                <div class="view ${this.currentView === 'settings' ? 'active' : ''}">
                     <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
@@ -981,7 +915,7 @@ class OptionsComponent extends LitElement {
                 </div>
 
                 <!-- Themes View -->
-                <div class="view ${this.currentView === "themes" ? "active" : ""}">
+                <div class="view ${this.currentView === 'themes' ? 'active' : ''}">
                     <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
@@ -991,26 +925,24 @@ class OptionsComponent extends LitElement {
 
                     <div class="themes-grid">
                         ${window.wisk.theme.getThemes().map(
-                            (theme) => html`
+                            theme => html`
                                 <div
-                                    class="theme-card ${window.wisk.theme.getTheme() == theme.name ? "selected" : ""}"
+                                    class="theme-card ${window.wisk.theme.getTheme() == theme.name ? 'selected' : ''}"
                                     @click="${() => this.changeTheme(theme.name)}"
                                 >
-                                    <div class="theme-preview" style="background-color: ${theme["--bg-1"]};">
+                                    <div class="theme-preview" style="background-color: ${theme['--bg-1']};">
                                         <div
                                             style="
-                                        border-top: 1px solid ${theme["--border-1"]}; border-left: 1px solid ${theme[
-                                                "--border-1"
-                                            ]};
-                                        border-top-left-radius: ${theme["--radius"]}; padding: ${theme["--padding-w1"]};
+                                        border-top: 1px solid ${theme['--border-1']}; border-left: 1px solid ${theme['--border-1']};
+                                        border-top-left-radius: ${theme['--radius']}; padding: ${theme['--padding-w1']};
                                         width: 70%; display: block; margin-left: auto; height: 70%;
-                                        filter: ${theme["--drop-shadow"]};
-                                        background-color: ${theme["--bg-2"]}; 
+                                        filter: ${theme['--drop-shadow']};
+                                        background-color: ${theme['--bg-2']}; 
                                     "
                                         >
                                             <h1
                                                 style="
-                                            font-family: ${theme["--font"]}; color: ${theme["--text-1"]};
+                                            font-family: ${theme['--font']}; color: ${theme['--text-1']};
 
                                             "
                                             >
@@ -1018,7 +950,7 @@ class OptionsComponent extends LitElement {
                                             </h1>
                                             <span
                                                 style="
-                                            font-family: ${theme["--font"]}; color: ${theme["--text-2"]};
+                                            font-family: ${theme['--font']}; color: ${theme['--text-2']};
                                             "
                                                 >Aa</span
                                             >
@@ -1026,14 +958,14 @@ class OptionsComponent extends LitElement {
                                     </div>
                                     <span class="theme-name">${theme.name}</span>
                                 </div>
-                            `,
+                            `
                         )}
                     </div>
                 </div>
 
 
                 <!-- About View -->
-                <div class="view ${this.currentView === "about" ? "active" : ""}">
+                <div class="view ${this.currentView === 'about' ? 'active' : ''}">
                     <div class="plugins-header" style="margin-bottom: 10px">
                         <div class="plugins-header">
                             <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showSettingsView}" class="icon" draggable="false"/>
@@ -1100,13 +1032,13 @@ class OptionsComponent extends LitElement {
 
         navigator.clipboard.writeText(JSON.stringify(config)).then(
             function () {
-                wisk.utils.showToast("Copied template configurations to clipboard", 3000);
+                wisk.utils.showToast('Copied template configurations to clipboard', 3000);
             },
             function (err) {
-                wisk.utils.showToast("Failed to copy template configurations", 3000);
-            },
+                wisk.utils.showToast('Failed to copy template configurations', 3000);
+            }
         );
     }
 }
 
-customElements.define("options-component", OptionsComponent);
+customElements.define('options-component', OptionsComponent);

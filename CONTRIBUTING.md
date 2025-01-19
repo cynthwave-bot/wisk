@@ -9,14 +9,15 @@ Thank you for your interest in contributing to Wisk! As an open-source project f
 3. Create a new branch: `git checkout -b feature-name`
 4. Make your changes
 5. Test your changes locally using a simple HTTP server:
-   ```bash
-   python -m http.server 8000
-   # Visit http://localhost:8000
-   ```
+    ```bash
+    python -m http.server 8000
+    # Visit http://localhost:8000
+    ```
 
 ## Development Guidelines
 
 ### Code Style
+
 - Use vanilla JavaScript (ES6+)
 - Follow existing code formatting
 - Keep files focused and modular
@@ -24,12 +25,14 @@ Thank you for your interest in contributing to Wisk! As an open-source project f
 - Use meaningful variable and function names
 
 ### Plugin Development
+
 - Prefer plugins to work offline, but its not a requirement
 - Follow the plugin API documentation
 - Include a clear README for your plugin
 - Test thoroughly in offline mode
 
 ### Submitting Changes
+
 1. Commit your changes: `git commit -m "Brief description of changes"`
 2. Push to your fork: `git push origin feature-name`
 3. Open a Pull Request
@@ -37,6 +40,7 @@ Thank you for your interest in contributing to Wisk! As an open-source project f
 5. Link any related issues
 
 ### What We Accept
+
 - Bug fixes
 - Performance improvements
 - New plugins

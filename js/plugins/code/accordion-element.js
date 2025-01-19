@@ -1,22 +1,22 @@
 class AccordionElement extends BaseTextElement {
     constructor() {
-        const initialEmoji = "🍏";
+        const initialEmoji = '🍏';
         super();
-        
+
         this.value = {
-            textContent: "",
-            emoji: initialEmoji
+            textContent: '',
+            emoji: initialEmoji,
         };
 
         this.handleEmojiSelection = this.handleEmojiSelection.bind(this);
         this.handleClick = this.handleClick.bind(this);
-        
+
         this.render();
     }
 
     connectedCallback() {
         super.connectedCallback();
-        window.addEventListener("emoji-selector", this.handleEmojiSelection);
+        window.addEventListener('emoji-selector', this.handleEmojiSelection);
         if (window.wisk.editor.wiskSite) {
             this.addEventListener('click', this.handleClick);
         }
@@ -24,7 +24,7 @@ class AccordionElement extends BaseTextElement {
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        window.removeEventListener("emoji-selector", this.handleEmojiSelection);
+        window.removeEventListener('emoji-selector', this.handleEmojiSelection);
         if (window.wisk.editor.wiskSite) {
             this.removeEventListener('click', this.handleClick);
         }
@@ -185,11 +185,11 @@ class AccordionElement extends BaseTextElement {
             }
             </style>
         `;
-        
+
         const content = `
             <div style="display: flex">
                 <div style="padding: var(--padding-4); padding-right: 0; padding-top: var(--padding-3); padding-left: 0;">
-                    <button class="emoji-button" ?disabled="${window.wisk.editor.wiskSite}">${this.value?.emoji || "📌"}</button>
+                    <button class="emoji-button" ?disabled="${window.wisk.editor.wiskSite}">${this.value?.emoji || '📌'}</button>
                 </div>
                 <div style="flex: 1">
                     <div class="accordion-header">
@@ -201,11 +201,11 @@ class AccordionElement extends BaseTextElement {
                 </div>
             </div>
         `;
-        
+
         this.shadowRoot.innerHTML = style + content;
 
         this.emojiButton = this.shadowRoot.querySelector('.emoji-button');
-        this.emojiButton.addEventListener('click', (e) => {
+        this.emojiButton.addEventListener('click', e => {
             if (!wisk.editor.wiskSite) {
                 e.stopPropagation();
                 const emojiSelector = document.querySelector('emoji-selector');
@@ -227,7 +227,7 @@ class AccordionElement extends BaseTextElement {
     setupToggleListener() {
         const toggleBtn = this.shadowRoot.querySelector('.toggle-btn');
         const editable = this.shadowRoot.querySelector('#editable');
-        
+
         toggleBtn.addEventListener('click', () => {
             editable.classList.toggle('visible');
             toggleBtn.classList.toggle('open');
@@ -236,12 +236,12 @@ class AccordionElement extends BaseTextElement {
 
     getValue() {
         if (!this.editable) {
-            return { textContent: "", question: "", emoji: this.value?.emoji || "📌" };
+            return { textContent: '', question: '', emoji: this.value?.emoji || '📌' };
         }
         return {
             textContent: this.editable.innerHTML,
             question: this.shadowRoot.querySelector('.question').innerHTML,
-            emoji: this.value?.emoji || "📌"
+            emoji: this.value?.emoji || '📌',
         };
     }
 
@@ -249,7 +249,7 @@ class AccordionElement extends BaseTextElement {
         if (!this.editable) {
             return;
         }
-        if (path === "value.append") {
+        if (path === 'value.append') {
             this.editable.innerHTML += value.textContent;
             if (value.question) {
                 this.shadowRoot.querySelector('.question').innerHTML = value.question;
@@ -273,11 +273,12 @@ class AccordionElement extends BaseTextElement {
 
     getTextContent() {
         return {
-            html: this.shadowRoot.querySelector('.question').innerHTML + "?<br>" + this.editable.innerHTML,
-            text: this.shadowRoot.querySelector('.question').textContent + "? " + this.editable.textContent,
-            markdown: "# " + this.shadowRoot.querySelector('.question').textContent + "?\n" + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML),
-        }
+            html: this.shadowRoot.querySelector('.question').innerHTML + '?<br>' + this.editable.innerHTML,
+            text: this.shadowRoot.querySelector('.question').textContent + '? ' + this.editable.textContent,
+            markdown:
+                '# ' + this.shadowRoot.querySelector('.question').textContent + '?\n' + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML),
+        };
     }
 }
 
-customElements.define("accordion-element", AccordionElement);
+customElements.define('accordion-element', AccordionElement);

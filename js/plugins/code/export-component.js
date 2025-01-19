@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class ExportComponent extends LitElement {
     static styles = css`
@@ -18,7 +18,9 @@ class ExportComponent extends LitElement {
             align-items: center;
             opacity: 1;
             transform: translateY(0);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition:
+                opacity 0.3s ease,
+                transform 0.3s ease;
             padding: var(--padding-3);
         }
         select {
@@ -28,7 +30,9 @@ class ExportComponent extends LitElement {
             background-color: var(--bg-2);
             outline: none;
             border-radius: var(--radius);
-            transition: border-color 0.2s ease, background-color 0.2s ease;
+            transition:
+                border-color 0.2s ease,
+                background-color 0.2s ease;
         }
         select:hover {
             border-color: var(--border-2);
@@ -79,23 +83,35 @@ class ExportComponent extends LitElement {
     constructor() {
         super();
 
-        window.wisk.editor.registerCommand("Download as PDF", "", "Plugin", () => { 
-            this.shadowRoot.querySelector("select").value = "pdf";
-            this.download(); 
-        }, "");
-        window.wisk.editor.registerCommand("Download as DOCX", "", "Plugin", () => { 
-            this.shadowRoot.querySelector("select").value = "docx";
-            this.download(); 
-        }, "");
+        window.wisk.editor.registerCommand(
+            'Download as PDF',
+            '',
+            'Plugin',
+            () => {
+                this.shadowRoot.querySelector('select').value = 'pdf';
+                this.download();
+            },
+            ''
+        );
+        window.wisk.editor.registerCommand(
+            'Download as DOCX',
+            '',
+            'Plugin',
+            () => {
+                this.shadowRoot.querySelector('select').value = 'docx';
+                this.download();
+            },
+            ''
+        );
     }
 
     async download() {
-        var user = await document.querySelector("auth-component").getUserInfo();
+        var user = await document.querySelector('auth-component').getUserInfo();
         var token = user.token;
 
-        window.wisk.utils.showLoading("Downloading file...");
+        window.wisk.utils.showLoading('Downloading file...');
 
-        var md = "";
+        var md = '';
         var references = [];
 
         for (var i = 0; i < window.wisk.editor.elements.length; i++) {
@@ -103,7 +119,7 @@ class ExportComponent extends LitElement {
             var e = document.getElementById(element.id);
             if ('getTextContent' in e) {
                 var textContent = e.getTextContent();
-                md += textContent.markdown + "\n\n";
+                md += textContent.markdown + '\n\n';
             }
             if ('getValue' in e) {
                 var value = e.getValue();
@@ -113,36 +129,39 @@ class ExportComponent extends LitElement {
             }
         }
 
-        var response = await fetch("https://cloud.wisk.cc/v1/download", {
-            method: "POST",
+        var response = await fetch('https://cloud.wisk.cc/v1/download', {
+            method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-                format: this.shadowRoot.querySelector("select").value,
+                format: this.shadowRoot.querySelector('select').value,
                 markdown: md,
-                title: document.getElementById(window.wisk.editor.elements[0].id).getTextContent().text.replace(/[^a-zA-Z0-9 ]/g, ""),
+                title: document
+                    .getElementById(window.wisk.editor.elements[0].id)
+                    .getTextContent()
+                    .text.replace(/[^a-zA-Z0-9 ]/g, ''),
                 references: references,
-                author: "",
-                date: "",
+                author: '',
+                date: '',
             }),
         });
 
         if (response.status !== 200) {
-            window.showToast("Error downloading file", 5000);
+            window.showToast('Error downloading file', 5000);
             window.wisk.utils.hideLoading();
             return;
         }
 
         var blob = await response.blob();
         var url = URL.createObjectURL(blob);
-        var a = document.createElement("a");
+        var a = document.createElement('a');
         a.href = url;
-        var sel = this.shadowRoot.querySelector("select");
-        if (sel.value === "pdf") {
-            a.download = "file.pdf";
+        var sel = this.shadowRoot.querySelector('select');
+        if (sel.value === 'pdf') {
+            a.download = 'file.pdf';
         } else {
-            a.download = "file.docx";
+            a.download = 'file.docx';
         }
         a.click();
 

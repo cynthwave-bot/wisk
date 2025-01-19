@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class FeedbackDialog extends LitElement {
     static styles = css`
@@ -11,7 +11,7 @@ class FeedbackDialog extends LitElement {
             user-select: none;
             outline: none;
         }
-        
+
         .dialog-overlay {
             position: fixed;
             top: 0;
@@ -165,12 +165,22 @@ class FeedbackDialog extends LitElement {
             cursor: not-allowed;
         }
 
-        *::-webkit-scrollbar { width: 15px; }
-        *::-webkit-scrollbar-track { background: var(--bg-1); }
-        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+        *::-webkit-scrollbar {
+            width: 15px;
+        }
+        *::-webkit-scrollbar-track {
+            background: var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--bg-3);
+            border-radius: 20px;
+            border: 4px solid var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-1);
+        }
 
-        input[type="email"] {
+        input[type='email'] {
             padding: var(--padding-3);
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
@@ -183,7 +193,7 @@ class FeedbackDialog extends LitElement {
     static properties = {
         visible: { type: Boolean },
         rating: { type: Number },
-        feedback: { type: String }
+        feedback: { type: String },
     };
 
     constructor() {
@@ -221,7 +231,7 @@ class FeedbackDialog extends LitElement {
                 rating: this.rating,
                 description: this.feedback,
                 contact: emailInput.value.trim(),
-                logs: '' // TODO - Implement log attachment -- for that clear the logs that have personal information then we add it :)
+                logs: '', // TODO - Implement log attachment -- for that clear the logs that have personal information then we add it :)
             };
 
             const response = await fetch('https://cloud.wisk.cc/v2/feedback', {
@@ -229,7 +239,7 @@ class FeedbackDialog extends LitElement {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(feedbackData)
+                body: JSON.stringify(feedbackData),
             });
 
             if (!response.ok) {
@@ -241,7 +251,6 @@ class FeedbackDialog extends LitElement {
             emailInput.value = '';
             this.hide();
             wisk.utils.showToast('Feedback submitted successfully!', 3000);
-
         } catch (error) {
             console.error('Error submitting feedback:', error);
         }
@@ -249,18 +258,17 @@ class FeedbackDialog extends LitElement {
 
     render() {
         return html`
-            <div class="dialog-overlay" style="display: ${this.visible ? "flex" : "none"}">
+            <div class="dialog-overlay" style="display: ${this.visible ? 'flex' : 'none'}">
                 <div class="dialog-content">
                     <button class="dialog-close" @click=${this.hide}>
                         <img src="/a7/forget/x.svg" alt="Close" style="filter: var(--themed-svg)" />
                     </button>
                     <h2 class="dialog-title">Send Feedback</h2>
                     <div class="main-group">
-
                         <div class="input-group">
                             <label class="input-label">What's on your mind?</label>
                             <p class="input-description">Your feedback helps us improve the editor for everyone.</p>
-                            <textarea 
+                            <textarea
                                 placeholder="Share your thoughts, suggestions, or report issues..."
                                 .value=${this.feedback}
                                 @input=${this.handleFeedbackInput}
@@ -270,14 +278,16 @@ class FeedbackDialog extends LitElement {
                         <div class="input-group">
                             <label class="input-label">How would you rate your experience?</label>
                             <div class="rating-group">
-                                ${[1, 2, 3, 4, 5].map(num => html`
-                                    <button 
-                                        class="rating-button ${this.rating === num ? 'selected' : ''}"
-                                        @click=${() => this.handleRatingSelect(num)}
-                                    >
-                                        ${num}
-                                    </button>
-                                `)}
+                                ${[1, 2, 3, 4, 5].map(
+                                    num => html`
+                                        <button
+                                            class="rating-button ${this.rating === num ? 'selected' : ''}"
+                                            @click=${() => this.handleRatingSelect(num)}
+                                        >
+                                            ${num}
+                                        </button>
+                                    `
+                                )}
                             </div>
                         </div>
 
@@ -286,7 +296,6 @@ class FeedbackDialog extends LitElement {
                             <p class="input-description">We may need to follow up with you to get more details. (Optional)</p>
                             <input type="email" placeholder="Email Address" />
                         </div>
-
 
                         <div class="input-group" style="display: none">
                             <label class="input-label">Attach Logs</label>
@@ -304,4 +313,4 @@ class FeedbackDialog extends LitElement {
     }
 }
 
-customElements.define("feedback-dialog", FeedbackDialog);
+customElements.define('feedback-dialog', FeedbackDialog);

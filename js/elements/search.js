@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class CySearch extends LitElement {
     static styles = css`
@@ -18,7 +18,7 @@ class CySearch extends LitElement {
             text-align: center;
             margin-bottom: 20px;
             margin-top: 20px;
-            font-family: "Plus Jakarta Sans", sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             display: none;
         }
 
@@ -36,14 +36,14 @@ class CySearch extends LitElement {
             max-width: 200px;
         }
 
-        input[type="checkbox"] {
+        input[type='checkbox'] {
             width: 20px;
             height: 20px;
             cursor: pointer;
         }
 
         @media (max-width: 1000px) {
-            input[type="checkbox"] {
+            input[type='checkbox'] {
                 width: 18px;
                 height: 18px;
             }
@@ -294,38 +294,38 @@ class CySearch extends LitElement {
 
     constructor() {
         super();
-        this.defaultOption = "diagram";
+        this.defaultOption = 'diagram';
         this.connectionLock = false;
-        this.currentOption = "diagram";
+        this.currentOption = 'diagram';
         this.selectedFiles = []; // this will keep files in base64 format
         this.suggestions = {
-            "case-study": [
+            'case-study': [
                 {
-                    short: "Impact of remote work on productivity in the ...",
-                    long: "Impact of remote work on productivity in the tech industry over the past five years",
+                    short: 'Impact of remote work on productivity in the ...',
+                    long: 'Impact of remote work on productivity in the tech industry over the past five years',
                 },
                 {
-                    short: "Examining the success of renewable energy initiatives in reducing ...",
-                    long: "Examining the success of renewable energy initiatives in reducing carbon emissions in European countries, with a focus on solar and wind energy from 2015 to 2023",
+                    short: 'Examining the success of renewable energy initiatives in reducing ...',
+                    long: 'Examining the success of renewable energy initiatives in reducing carbon emissions in European countries, with a focus on solar and wind energy from 2015 to 2023',
                 },
                 {
-                    short: "Role of microfinance in empowering women entrepreneurs in ...",
-                    long: "Role of microfinance in empowering women entrepreneurs in Southeast Asia, with success stories and economic impact analysis from the last decade",
+                    short: 'Role of microfinance in empowering women entrepreneurs in ...',
+                    long: 'Role of microfinance in empowering women entrepreneurs in Southeast Asia, with success stories and economic impact analysis from the last decade',
                 },
             ],
-            "data-analysis": [],
+            'data-analysis': [],
             diagram: [
                 {
-                    short: "Show how lending loan works in banks ...",
-                    long: "Show how lending loan works in banks using sequence diagram in detail",
+                    short: 'Show how lending loan works in banks ...',
+                    long: 'Show how lending loan works in banks using sequence diagram in detail',
                 },
                 {
-                    short: "Explain the working of fizzbuzz program",
-                    long: "Explain the working of fizzbuzz program using flowchart",
+                    short: 'Explain the working of fizzbuzz program',
+                    long: 'Explain the working of fizzbuzz program using flowchart',
                 },
                 {
-                    short: "Show an outline of how to take a product from idea to ...",
-                    long: "Show an outline of how to take a product from idea to market in detail",
+                    short: 'Show an outline of how to take a product from idea to ...',
+                    long: 'Show an outline of how to take a product from idea to market in detail',
                 },
             ],
         };
@@ -335,12 +335,12 @@ class CySearch extends LitElement {
         const select = this.defaultOption;
         this.updateButtonLabels(this.defaultOption);
 
-        const searchInput = this.renderRoot.querySelector(".search-input");
-        searchInput.addEventListener("keydown", this.handleInputKeydown.bind(this));
+        const searchInput = this.renderRoot.querySelector('.search-input');
+        searchInput.addEventListener('keydown', this.handleInputKeydown.bind(this));
     }
 
     handleInputKeydown(event) {
-        if (event.key === "Enter") {
+        if (event.key === 'Enter') {
             event.preventDefault();
             this.onSearchInput();
         }
@@ -354,7 +354,7 @@ class CySearch extends LitElement {
                 button.textContent = suggestion.short;
             }
         });
-        this.shadowRoot.querySelector(".search-input").value = "";
+        this.shadowRoot.querySelector('.search-input').value = '';
     }
 
     onFirstSuggestionClick() {
@@ -372,12 +372,12 @@ class CySearch extends LitElement {
     async animateSuggestion(str) {
         if (this.connectionLock) return;
         this.connectionLock = true;
-        const it = this.shadowRoot.querySelector(".search-input");
+        const it = this.shadowRoot.querySelector('.search-input');
 
         for (var i = 0; i < str.length + 1; i++) {
             it.value = str.substring(0, i);
             it.scrollLeft = it.scrollWidth; // Update scroll position
-            await new Promise((r) => setTimeout(r, 15));
+            await new Promise(r => setTimeout(r, 15));
         }
 
         it.focus();
@@ -385,106 +385,106 @@ class CySearch extends LitElement {
     }
 
     async onSearchInput() {
-        console.log("searching");
+        console.log('searching');
         if (this.connectionLock) return;
         this.connectionLock = true;
-        console.log("done");
+        console.log('done');
 
         if (window.__user == null) {
-            window.location.href = "/signin";
+            window.location.href = '/signin';
             return;
         }
 
-        if (this.shadowRoot.querySelector(".search-input").value.length < 25) {
-            window.showErrorOrInfoDialog("Query should be at least 25 character long", "error");
+        if (this.shadowRoot.querySelector('.search-input').value.length < 25) {
+            window.showErrorOrInfoDialog('Query should be at least 25 character long', 'error');
             this.connectionLock = false;
-            this.shadowRoot.querySelector(".search-input").blur();
+            this.shadowRoot.querySelector('.search-input').blur();
             return;
         }
 
-        if (this.shadowRoot.querySelector(".search-input").value.length > 1500) {
-            window.showErrorOrInfoDialog("Query should be at most 1500 character long", "error");
+        if (this.shadowRoot.querySelector('.search-input').value.length > 1500) {
+            window.showErrorOrInfoDialog('Query should be at most 1500 character long', 'error');
             this.connectionLock = false;
-            this.shadowRoot.querySelector(".search-input").blur();
+            this.shadowRoot.querySelector('.search-input').blur();
             return;
         }
 
-        if (this.currentOption == "diagram") {
-            const cooking = document.querySelector("#cooking");
-            cooking.style.display = "flex";
+        if (this.currentOption == 'diagram') {
+            const cooking = document.querySelector('#cooking');
+            cooking.style.display = 'flex';
 
             cooking.animate([{ opacity: 0 }, { opacity: 1 }], {
                 duration: 200,
                 iterations: 1,
-                fill: "forwards",
+                fill: 'forwards',
             });
 
             (async () => {
-                const rawResponse = await fetch("https://cloud.diagram.chat/v3/diagram/project", {
-                    method: "POST",
+                const rawResponse = await fetch('https://cloud.diagram.chat/v3/diagram/project', {
+                    method: 'POST',
                     headers: {
                         Authorization: `Bearer ${window.__user.accessToken}`,
                     },
                     body: JSON.stringify({
-                        query: this.shadowRoot.querySelector(".search-input").value,
-                        type: "diagram",
+                        query: this.shadowRoot.querySelector('.search-input').value,
+                        type: 'diagram',
                     }),
                 });
 
-                document.querySelector("#cooking").style.display = "none";
+                document.querySelector('#cooking').style.display = 'none';
                 if (rawResponse.status !== 200) {
-                    alert("Something went wrong. Please try again.");
-                    window.showErrorOrInfoDialog("Something went wrong. Please try again.", "error");
+                    alert('Something went wrong. Please try again.');
+                    window.showErrorOrInfoDialog('Something went wrong. Please try again.', 'error');
                     return;
                 }
 
                 const responseText = await rawResponse.text();
-                window.location.href = "/editor/diagram?id=" + responseText;
+                window.location.href = '/editor/diagram?id=' + responseText;
             })();
         }
 
-        if (this.currentOption == "case-study") {
-            const cooking = document.querySelector("#cooking");
-            cooking.style.display = "flex";
+        if (this.currentOption == 'case-study') {
+            const cooking = document.querySelector('#cooking');
+            cooking.style.display = 'flex';
 
             cooking.animate([{ opacity: 0 }, { opacity: 1 }], {
                 duration: 200,
                 iterations: 1,
-                fill: "forwards",
+                fill: 'forwards',
             });
 
             await this.fetchData();
         }
 
         this.connectionLock = false;
-        this.shadowRoot.querySelector(".search-input").blur();
+        this.shadowRoot.querySelector('.search-input').blur();
     }
 
     async fetchData() {
-        const cooking = document.querySelector("#cooking");
-        const input = this.shadowRoot.querySelector(".search-input");
-        const scrapeWeb = this.shadowRoot.querySelector("#file-checkbox").checked;
-        const generateOutlineOnly = this.shadowRoot.querySelector("#outline-checkbox").checked;
+        const cooking = document.querySelector('#cooking');
+        const input = this.shadowRoot.querySelector('.search-input');
+        const scrapeWeb = this.shadowRoot.querySelector('#file-checkbox').checked;
+        const generateOutlineOnly = this.shadowRoot.querySelector('#outline-checkbox').checked;
         const attachedStuff = this.selectedFiles.length > 0;
         const attachments = this.selectedFiles;
 
         // disable scrolling
-        document.body.style.overflow = "hidden";
+        document.body.style.overflow = 'hidden';
         try {
-            console.log("fetching data");
+            console.log('fetching data');
 
             const tokn = window.__user.accessToken;
-            const socket = new WebSocket("wss://cloud.diagram.chat/v3/document/new");
+            const socket = new WebSocket('wss://cloud.diagram.chat/v3/document/new');
 
-            console.log("socket", tokn);
+            console.log('socket', tokn);
 
             socket.onopen = function (e) {
-                console.log("[open] Connection established");
+                console.log('[open] Connection established');
 
                 const data = {
                     firebaseAuthToken: tokn,
                     query: input.value,
-                    type_name: "case-study",
+                    type_name: 'case-study',
                     scrape_web: scrapeWeb,
                     generate_outline_only: generateOutlineOnly,
                     attached_stuff: attachedStuff,
@@ -492,121 +492,121 @@ class CySearch extends LitElement {
                 };
 
                 // Send the data through WebSocket
-                console.log("[message] Sending data to server: ", data);
+                console.log('[message] Sending data to server: ', data);
                 socket.send(JSON.stringify(data));
             };
 
             socket.onmessage = function (event) {
                 console.log(`[message] Data received from server: ${event.data}`);
-                if (event.data.startsWith("err")) {
-                    document.body.style.overflow = "auto";
-                    cooking.style.display = "none";
+                if (event.data.startsWith('err')) {
+                    document.body.style.overflow = 'auto';
+                    cooking.style.display = 'none';
 
                     window.clearCooking();
-                    window.showErrorOrInfoDialog(event.data.substring(3), "error");
+                    window.showErrorOrInfoDialog(event.data.substring(3), 'error');
                     return;
                 }
-                if (event.data.startsWith("inf")) {
-                    document.body.style.overflow = "auto";
-                    cooking.style.display = "none";
+                if (event.data.startsWith('inf')) {
+                    document.body.style.overflow = 'auto';
+                    cooking.style.display = 'none';
 
                     window.clearCooking();
-                    window.showErrorOrInfoDialog(event.data.substring(3), "info");
+                    window.showErrorOrInfoDialog(event.data.substring(3), 'info');
                     return;
                 }
-                if (event.data.startsWith("msg")) {
-                    const resTextDiv = document.getElementById("cooking-p");
-                    const messageSpan = document.createElement("span");
-                    messageSpan.style.overflow = "hidden";
+                if (event.data.startsWith('msg')) {
+                    const resTextDiv = document.getElementById('cooking-p');
+                    const messageSpan = document.createElement('span');
+                    messageSpan.style.overflow = 'hidden';
 
-                    messageSpan.innerHTML = event.data.substring(3) + "<br>";
+                    messageSpan.innerHTML = event.data.substring(3) + '<br>';
                     resTextDiv.appendChild(messageSpan);
 
-                    const resTextv = document.getElementById("cooking");
+                    const resTextv = document.getElementById('cooking');
                     resTextv.scrollTop = resTextv.scrollHeight;
                     return;
                 }
-                if (event.data.startsWith("res")) {
-                    const pageId = event.data.split(" ")[1];
-                    window.location.href = "/editor/case-study?id=" + pageId;
+                if (event.data.startsWith('res')) {
+                    const pageId = event.data.split(' ')[1];
+                    window.location.href = '/editor/case-study?id=' + pageId;
                     return;
                 }
             };
 
             socket.onerror = function (error) {
                 console.log(`[error] ${error.message}`);
-                alert("Something went wrong, please try again later");
-                cooking.style.display = "none";
-                document.body.style.overflow = "auto";
+                alert('Something went wrong, please try again later');
+                cooking.style.display = 'none';
+                document.body.style.overflow = 'auto';
             };
 
             socket.onclose = function (event) {
                 if (event.wasClean) {
                     console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
                 } else {
-                    console.log("[close] Connection died");
+                    console.log('[close] Connection died');
                     window.clearCooking();
-                    window.showErrorOrInfoDialog("Connection died", "error");
+                    window.showErrorOrInfoDialog('Connection died', 'error');
                 }
             };
         } catch (err) {
             console.error(err);
-            alert("Something went wrong, please try again later");
-            cooking.style.display = "none";
-            document.body.style.overflow = "auto";
+            alert('Something went wrong, please try again later');
+            cooking.style.display = 'none';
+            document.body.style.overflow = 'auto';
         } finally {
-            console.log("finally");
+            console.log('finally');
             // Make sure 'cooking' is defined and used correctly
         }
     }
 
     selectedButton(name) {
         this.currentOption = name;
-        if (name === "case-study") {
-            this.shadowRoot.querySelector(".case-study").classList.remove("displaynone");
-            this.shadowRoot.querySelector(".data-analysis").classList.add("displaynone");
+        if (name === 'case-study') {
+            this.shadowRoot.querySelector('.case-study').classList.remove('displaynone');
+            this.shadowRoot.querySelector('.data-analysis').classList.add('displaynone');
 
             // change the background color of the button
-            this.shadowRoot.querySelector("#case-study-button").classList.add("select-active");
-            this.shadowRoot.querySelector("#diagram-button").classList.remove("select-active");
-            this.shadowRoot.querySelector("#data-analysis-button").classList.remove("select-active");
-        } else if (name === "data-analysis") {
-            this.shadowRoot.querySelector(".case-study").classList.add("displaynone");
-            this.shadowRoot.querySelector(".data-analysis").classList.remove("displaynone");
+            this.shadowRoot.querySelector('#case-study-button').classList.add('select-active');
+            this.shadowRoot.querySelector('#diagram-button').classList.remove('select-active');
+            this.shadowRoot.querySelector('#data-analysis-button').classList.remove('select-active');
+        } else if (name === 'data-analysis') {
+            this.shadowRoot.querySelector('.case-study').classList.add('displaynone');
+            this.shadowRoot.querySelector('.data-analysis').classList.remove('displaynone');
 
             // change the background color of the button
-            this.shadowRoot.querySelector("#data-analysis-button").classList.add("select-active");
-            this.shadowRoot.querySelector("#diagram-button").classList.remove("select-active");
-            this.shadowRoot.querySelector("#case-study-button").classList.remove("select-active");
+            this.shadowRoot.querySelector('#data-analysis-button').classList.add('select-active');
+            this.shadowRoot.querySelector('#diagram-button').classList.remove('select-active');
+            this.shadowRoot.querySelector('#case-study-button').classList.remove('select-active');
         } else {
-            this.shadowRoot.querySelector(".case-study").classList.add("displaynone");
-            this.shadowRoot.querySelector(".data-analysis").classList.add("displaynone");
+            this.shadowRoot.querySelector('.case-study').classList.add('displaynone');
+            this.shadowRoot.querySelector('.data-analysis').classList.add('displaynone');
 
             // change the background color of the button
-            this.shadowRoot.querySelector("#diagram-button").classList.add("select-active");
-            this.shadowRoot.querySelector("#case-study-button").classList.remove("select-active");
-            this.shadowRoot.querySelector("#data-analysis-button").classList.remove("select-active");
+            this.shadowRoot.querySelector('#diagram-button').classList.add('select-active');
+            this.shadowRoot.querySelector('#case-study-button').classList.remove('select-active');
+            this.shadowRoot.querySelector('#data-analysis-button').classList.remove('select-active');
         }
         this.updateButtonLabels(name);
     }
 
     onFileCheckboxChange(event) {
         if (event.target.checked) {
-            this.shadowRoot.querySelector("#outline-checkbox").checked = false;
-            this.shadowRoot.querySelector("#file").disabled = false;
+            this.shadowRoot.querySelector('#outline-checkbox').checked = false;
+            this.shadowRoot.querySelector('#file').disabled = false;
         } else {
-            this.shadowRoot.querySelector("#outline-checkbox").checked = true;
-            this.shadowRoot.querySelector("#file").disabled = true;
+            this.shadowRoot.querySelector('#outline-checkbox').checked = true;
+            this.shadowRoot.querySelector('#file').disabled = true;
         }
     }
 
     onOutlineCheckboxChange(event) {
         if (event.target.checked) {
-            this.shadowRoot.querySelector("#file-checkbox").checked = false;
-            this.shadowRoot.querySelector("#file").disabled = true;
+            this.shadowRoot.querySelector('#file-checkbox').checked = false;
+            this.shadowRoot.querySelector('#file').disabled = true;
         } else {
-            this.shadowRoot.querySelector("#file-checkbox").checked = true;
-            this.shadowRoot.querySelector("#file").disabled = false;
+            this.shadowRoot.querySelector('#file-checkbox').checked = true;
+            this.shadowRoot.querySelector('#file').disabled = false;
         }
     }
 
@@ -615,16 +615,16 @@ class CySearch extends LitElement {
         for (let i = 0; i < event.target.files.length; i++) {
             const file = event.target.files[i];
             const reader = new FileReader();
-            reader.onload = (e) => {
-                if (e.target.result.startsWith("data:application/pdf") == true) {
+            reader.onload = e => {
+                if (e.target.result.startsWith('data:application/pdf') == true) {
                     // remove the data:application/pdf;base64, part
-                    this.selectedFiles.push(e.target.result.split(",")[1]);
+                    this.selectedFiles.push(e.target.result.split(',')[1]);
                 }
             };
             reader.readAsDataURL(file);
         }
         if (this.selectedFiles.length > 0) {
-            this.shadowRoot.querySelector("#outline-checkbox").checked = false;
+            this.shadowRoot.querySelector('#outline-checkbox').checked = false;
         }
     }
 
@@ -633,18 +633,28 @@ class CySearch extends LitElement {
             <div
                 class="search"
                 @mouseover="${() => {
-                    this.shadowRoot.querySelector(".suggestions").classList.remove("suggestions-hidden");
+                    this.shadowRoot.querySelector('.suggestions').classList.remove('suggestions-hidden');
                 }}"
                 @mouseout="${() => {
-                    this.shadowRoot.querySelector(".suggestions").classList.add("suggestions-hidden");
+                    this.shadowRoot.querySelector('.suggestions').classList.add('suggestions-hidden');
                 }}"
             >
                 <p class="p12">Research and create, <br />with AI Agents.</p>
 
                 <div class="select-bar">
-                    <button class="select-button select-active" @click="${() => this.selectedButton("diagram")}" id="diagram-button">Diagram</button>
-                    <button class="select-button btn-disabled" disabled @click="${() => this.selectedButton("case-study")}" id="case-study-button">Document</button>
-                    <button class="select-button btn-disabled" @click="${() => this.selectedButton("data-analysis")}" id="data-analysis-button" disabled title="Coming soon">Data Analysis</button>
+                    <button class="select-button select-active" @click="${() => this.selectedButton('diagram')}" id="diagram-button">Diagram</button>
+                    <button class="select-button btn-disabled" disabled @click="${() => this.selectedButton('case-study')}" id="case-study-button">
+                        Document
+                    </button>
+                    <button
+                        class="select-button btn-disabled"
+                        @click="${() => this.selectedButton('data-analysis')}"
+                        id="data-analysis-button"
+                        disabled
+                        title="Coming soon"
+                    >
+                        Data Analysis
+                    </button>
                 </div>
 
                 <div class="search-bar">
@@ -660,14 +670,29 @@ class CySearch extends LitElement {
                     <div style="display: flex; flex-direction: column; gap: 10px; flex: 1">
                         <div style="display: flex; flex-direction: row; gap: 10px">
                             <label for="file-checkbox" class="checkbox-label">Use Internet for Research</label>
-                            <input type="checkbox" id="file-checkbox" name="file-checkbox" value="file" checked @change="${this.onFileCheckboxChange}" />
+                            <input
+                                type="checkbox"
+                                id="file-checkbox"
+                                name="file-checkbox"
+                                value="file"
+                                checked
+                                @change="${this.onFileCheckboxChange}"
+                            />
                         </div>
                         <div style="display: flex; flex-direction: row; gap: 10px">
                             <label for="outline-checkbox" class="checkbox-label">Generate outline only</label>
-                            <input type="checkbox" id="outline-checkbox" name="outline-checkbox" value="outline" @change="${this.onOutlineCheckboxChange}" />
+                            <input
+                                type="checkbox"
+                                id="outline-checkbox"
+                                name="outline-checkbox"
+                                value="outline"
+                                @change="${this.onOutlineCheckboxChange}"
+                            />
                         </div>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: 10px; padding: 10px; border-radius: 14px; border: 1px solid #e8e8e8; background-color: #efefef; min-height: 110px;">
+                    <div
+                        style="display: flex; flex-direction: column; gap: 10px; padding: 10px; border-radius: 14px; border: 1px solid #e8e8e8; background-color: #efefef; min-height: 110px;"
+                    >
                         <label for="file">Upload files</label>
                         <label for="file" style="font-size: 14px; color: #333">Files are optional (pdf) </label>
                         <input type="file" id="file" name="file" accept=".pdf" multiple="multiple" @change="${this.onFileChange}" />
@@ -675,7 +700,9 @@ class CySearch extends LitElement {
                 </div>
 
                 <div class="data-analysis below displaynone" style="justify-content: flex-end">
-                    <div style="display: flex; flex-direction: column; gap: 10px; padding: 10px; border-radius: 4px; border: 1px solid #e8e8e8; background-color: #efefef; min-height: 110px;">
+                    <div
+                        style="display: flex; flex-direction: column; gap: 10px; padding: 10px; border-radius: 4px; border: 1px solid #e8e8e8; background-color: #efefef; min-height: 110px;"
+                    >
                         <label for="data-analysis-file">Upload files</label>
                         <label for="data-analysis-file" style="font-size: 14px; color: #333">Files are needed (csv, xlsx, xls)</label>
                         <input type="file" id="data-analysis-file" name="file" accept=".csv, .xlsx, .xls" multiple="multiple" />
@@ -693,4 +720,4 @@ class CySearch extends LitElement {
     }
 }
 
-customElements.define("cy-search", CySearch);
+customElements.define('cy-search', CySearch);

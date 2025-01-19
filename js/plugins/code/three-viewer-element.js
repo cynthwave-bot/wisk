@@ -1,14 +1,14 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
-var threeReady = new Promise((resolve) => {
+var threeReady = new Promise(resolve => {
     if (window.THREE) {
         resolve();
         return;
     }
-    
+
     const loadScripts = async () => {
         // Load Three.js core
-        await new Promise((resolve) => {
+        await new Promise(resolve => {
             const threeScript = document.createElement('script');
             threeScript.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js';
             threeScript.onload = resolve;
@@ -16,7 +16,7 @@ var threeReady = new Promise((resolve) => {
         });
 
         // Load OrbitControls from separate module
-        await new Promise((resolve) => {
+        await new Promise(resolve => {
             const orbitScript = document.createElement('script');
             orbitScript.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js';
             orbitScript.onload = resolve;
@@ -26,24 +26,23 @@ var threeReady = new Promise((resolve) => {
         // Load model loaders
         const loaderScripts = [
             'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js',
-            'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js'
+            'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js',
         ];
 
         for (const src of loaderScripts) {
-            await new Promise((resolve) => {
+            await new Promise(resolve => {
                 const script = document.createElement('script');
                 script.src = src;
                 script.onload = resolve;
                 document.head.appendChild(script);
             });
         }
-        
+
         resolve();
     };
 
     loadScripts();
 });
-
 
 class ThreeViewerElement extends LitElement {
     static styles = css`
@@ -102,7 +101,7 @@ class ThreeViewerElement extends LitElement {
         modelUrl: { type: String },
         error: { type: String },
         _theme: { type: Object, state: true },
-        loading: { type: Boolean, state: true }
+        loading: { type: Boolean, state: true },
     };
 
     constructor() {
@@ -129,8 +128,8 @@ class ThreeViewerElement extends LitElement {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'Authorization': 'Bearer ' + user.token
-                }
+                    Authorization: 'Bearer ' + user.token,
+                },
             });
 
             if (!response.ok) {
@@ -170,7 +169,7 @@ class ThreeViewerElement extends LitElement {
             // Clear existing model
             if (this.model) {
                 this.scene.remove(this.model);
-                this.model.traverse((child) => {
+                this.model.traverse(child => {
                     if (child.geometry) child.geometry.dispose();
                     if (child.material) {
                         if (Array.isArray(child.material)) {
@@ -183,20 +182,22 @@ class ThreeViewerElement extends LitElement {
             }
 
             const result = await new Promise((resolve, reject) => {
-                loader.load(url,
-                    (loaded) => resolve(loaded),
+                loader.load(
+                    url,
+                    loaded => resolve(loaded),
                     undefined,
-                    (error) => reject(error)
+                    error => reject(error)
                 );
             });
 
             this.model = fileType === 'obj' ? result : result.scene;
-            
+
             // Apply default materials for objects without textures
-            this.model.traverse((child) => {
+            this.model.traverse(child => {
                 if (child.isMesh) {
                     // Check if the material is default white or missing
-                    const needsDefaultMaterial = !child.material ||
+                    const needsDefaultMaterial =
+                        !child.material ||
                         (child.material.type === 'MeshBasicMaterial' && child.material.color.getHex() === 0xffffff) ||
                         (child.material.map === null && child.material.color.getHex() === 0xffffff);
 
@@ -206,30 +207,30 @@ class ThreeViewerElement extends LitElement {
                             color: 0x808080, // Medium gray color
                             shininess: 30,
                             flatShading: false,
-                            side: THREE.DoubleSide // Render both sides of faces
+                            side: THREE.DoubleSide, // Render both sides of faces
                         });
                     }
                 }
             });
-            
+
             // Center and scale model
             const box = new THREE.Box3().setFromObject(this.model);
             const center = box.getCenter(new THREE.Vector3());
             const size = box.getSize(new THREE.Vector3());
             const maxDim = Math.max(size.x, size.y, size.z);
             const scale = 2 / maxDim;
-            
+
             this.model.position.sub(center);
             this.model.scale.multiplyScalar(scale);
-            
+
             this.scene.add(this.model);
-            
+
             // Set initial camera position
             this.camera.position.set(2, 2, 5);
             this.camera.lookAt(0, 0, 0);
             this.controls.target.set(0, 0, 0);
             this.controls.update();
-            
+
             this.error = '';
         } catch (error) {
             console.error('Error loading model:', error);
@@ -256,14 +257,14 @@ class ThreeViewerElement extends LitElement {
 
         try {
             const fileType = file.name.split('.').pop().toLowerCase();
-            
+
             if (fileType === 'gltf') {
                 // Handle GLTF with binary file
-                const binFile = await new Promise((resolve) => {
+                const binFile = await new Promise(resolve => {
                     const input = document.createElement('input');
                     input.type = 'file';
                     input.accept = '.bin';
-                    input.onchange = (e) => resolve(e.target.files[0]);
+                    input.onchange = e => resolve(e.target.files[0]);
                     input.click();
                 });
 
@@ -272,18 +273,15 @@ class ThreeViewerElement extends LitElement {
                 }
 
                 // Upload both files
-                const [gltfUrl, binUrl] = await Promise.all([
-                    this.uploadToServer(file),
-                    this.uploadToServer(binFile)
-                ]);
+                const [gltfUrl, binUrl] = await Promise.all([this.uploadToServer(file), this.uploadToServer(binFile)]);
 
                 // Store the main URL
                 this.modelUrl = gltfUrl;
-                
+
                 // Create URL map for the binary file
                 const binFileName = file.name.replace('.gltf', '.bin');
                 const urlMap = {
-                    [binFileName]: binUrl
+                    [binFileName]: binUrl,
                 };
 
                 // Load the model using both URLs
@@ -310,18 +308,15 @@ class ThreeViewerElement extends LitElement {
     render() {
         return html`
             <div class="viewer-container ${this.loading ? 'loading' : ''}">
-                ${!this.model ? html`
-                    <div class="upload-area" @click=${() => this.shadowRoot.querySelector('#file-input').click()}>
-                        <input 
-                            type="file" 
-                            id="file-input" 
-                            accept=".gltf,.glb,.obj" 
-                            @change=${this.handleFileSelect}
-                        />
-                        <button class="upload-button">Upload 3D Model</button>
-                        <div>Supported formats: GLTF, GLB, OBJ</div>
-                    </div>
-                ` : ''}
+                ${!this.model
+                    ? html`
+                          <div class="upload-area" @click=${() => this.shadowRoot.querySelector('#file-input').click()}>
+                              <input type="file" id="file-input" accept=".gltf,.glb,.obj" @change=${this.handleFileSelect} />
+                              <button class="upload-button">Upload 3D Model</button>
+                              <div>Supported formats: GLTF, GLB, OBJ</div>
+                          </div>
+                      `
+                    : ''}
                 ${this.error ? html`<div class="error">${this.error}</div>` : ''}
             </div>
         `;
@@ -329,9 +324,9 @@ class ThreeViewerElement extends LitElement {
 
     getTextContent() {
         return {
-            html: "",
-            text: "",
-            markdown: this.modelUrl ? `[3D Model: ${this.modelUrl}]` : ""
+            html: '',
+            text: '',
+            markdown: this.modelUrl ? `[3D Model: ${this.modelUrl}]` : '',
         };
     }
 
@@ -362,7 +357,7 @@ class ThreeViewerElement extends LitElement {
         await threeReady;
         console.log('Initializing Three.js');
         const container = this.shadowRoot.querySelector('.viewer-container');
-        
+
         // Scene setup
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(this._theme['--bg-1']);
@@ -390,12 +385,12 @@ class ThreeViewerElement extends LitElement {
         this.controls.panSpeed = 1.0; // Adjust pan speed
         this.controls.touches = {
             ONE: THREE.TOUCH.ROTATE,
-            TWO: THREE.TOUCH.PAN
+            TWO: THREE.TOUCH.PAN,
         };
         this.controls.mouseButtons = {
             LEFT: THREE.MOUSE.ROTATE,
             MIDDLE: THREE.MOUSE.PAN,
-            RIGHT: THREE.MOUSE.DOLLY
+            RIGHT: THREE.MOUSE.DOLLY,
         };
         this.controls.target.set(0, 0, 0);
         this.controls.update();
@@ -432,7 +427,7 @@ class ThreeViewerElement extends LitElement {
 
     animate() {
         if (!this.renderer) return;
-        
+
         requestAnimationFrame(() => this.animate());
         if (this.controls) {
             this.controls.update();
@@ -445,18 +440,15 @@ class ThreeViewerElement extends LitElement {
     render() {
         return html`
             <div class="viewer-container ${this.loading ? 'loading' : ''}">
-                ${!this.model ? html`
-                    <div class="upload-area" @click=${() => this.shadowRoot.querySelector('#file-input').click()}>
-                        <input 
-                            type="file" 
-                            id="file-input" 
-                            accept=".glb" 
-                            @change=${this.handleFileSelect}
-                        />
-                        <button class="upload-button">Upload 3D Model</button>
-                        <div>Supported formats: GLB</div>
-                    </div>
-                ` : ''}
+                ${!this.model
+                    ? html`
+                          <div class="upload-area" @click=${() => this.shadowRoot.querySelector('#file-input').click()}>
+                              <input type="file" id="file-input" accept=".glb" @change=${this.handleFileSelect} />
+                              <button class="upload-button">Upload 3D Model</button>
+                              <div>Supported formats: GLB</div>
+                          </div>
+                      `
+                    : ''}
                 ${this.error ? html`<div class="error">${this.error}</div>` : ''}
             </div>
         `;
@@ -464,7 +456,7 @@ class ThreeViewerElement extends LitElement {
 
     setValue(path, value) {
         if (!value || typeof value !== 'object') return;
-        
+
         if (value.modelUrl !== undefined && value.modelUrl !== this.modelUrl) {
             console.log('Setting model URL: three', value.modelUrl);
             this.modelUrl = value.modelUrl;
@@ -481,7 +473,7 @@ class ThreeViewerElement extends LitElement {
 
     getValue() {
         return {
-            modelUrl: this.modelUrl || ''
+            modelUrl: this.modelUrl || '',
         };
     }
 
@@ -492,4 +484,4 @@ class ThreeViewerElement extends LitElement {
     }
 }
 
-customElements.define("three-viewer-element", ThreeViewerElement);
+customElements.define('three-viewer-element', ThreeViewerElement);

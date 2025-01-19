@@ -1,6 +1,6 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
-var chartjsReady = new Promise((resolve) => {
+var chartjsReady = new Promise(resolve => {
     if (window.Chart) {
         resolve();
         return;
@@ -125,7 +125,9 @@ class ChartElement extends LitElement {
             opacity: 0.8;
         }
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
         .primary-button {
             background: transparent;
@@ -174,27 +176,33 @@ class ChartElement extends LitElement {
         _isLoading: { type: Boolean, state: true },
         _aiSuggestion: { type: String, state: true },
         _showAiSuggestion: { type: Boolean, state: true },
-        _selectedType: { type: String, state: true }
+        _selectedType: { type: String, state: true },
     };
 
     constructor() {
         super();
-        this._chartConfig = JSON.stringify({
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Dataset',
-                    data: [12, 19, 3, 5, 2, 3],
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
+        this._chartConfig = JSON.stringify(
+            {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        {
+                            label: 'Dataset',
+                            data: [12, 19, 3, 5, 2, 3],
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                },
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        }, null, 2);
+            null,
+            2
+        );
         this.backup = this._chartConfig;
         this.error = '';
         this._showDialog = false;
@@ -223,28 +231,28 @@ class ChartElement extends LitElement {
             this._isLoading = true;
             this.requestUpdate();
 
-            var user = await document.querySelector("auth-component").getUserInfo();
+            var user = await document.querySelector('auth-component').getUserInfo();
             var token = user.token;
 
             const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
 
-            var response = await fetch("https://cloud.wisk.cc/v2/plugins/chartjs", {
-                method: "POST",
+            var response = await fetch('https://cloud.wisk.cc/v2/plugins/chartjs', {
+                method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     command: aiPrompt,
                     chartjs: this._chartConfig,
-                    type: this._selectedType
+                    type: this._selectedType,
                 }),
             });
 
             this._isLoading = false;
 
             if (response.status !== 200) {
-                window.showToast("Error updating chart", 5000);
+                window.showToast('Error updating chart', 5000);
                 return;
             }
 
@@ -267,14 +275,14 @@ class ChartElement extends LitElement {
 
             chartContent = contentLines.join('\n');
             chartContent = chartContent.replace(/```/g, '');
-            
+
             this._aiSuggestion = chartContent;
             this._showAiSuggestion = true;
             this.requestUpdate();
             this.renderChart();
         } catch (error) {
             console.error('Error:', error);
-            window.showToast("Error updating chart", 5000);
+            window.showToast('Error updating chart', 5000);
             this._isLoading = false;
             this.requestUpdate();
         }
@@ -314,9 +322,9 @@ class ChartElement extends LitElement {
 
         try {
             await chartjsReady;
-            
+
             const config = JSON.parse(this._showAiSuggestion ? this._aiSuggestion : this._chartConfig);
-            
+
             if (this._chart) {
                 this._chart.destroy();
             }
@@ -326,10 +334,10 @@ class ChartElement extends LitElement {
                 options: {
                     ...config.options,
                     responsive: true,
-                    maintainAspectRatio: false
-                }
+                    maintainAspectRatio: false,
+                },
             });
-            
+
             this.error = '';
         } catch (e) {
             console.error('Chart Error:', e);
@@ -343,7 +351,7 @@ class ChartElement extends LitElement {
 
     setValue(identifier, value) {
         if (!value || typeof value !== 'object') return;
-        
+
         if (value.chartConfig !== undefined) {
             this._chartConfig = value.chartConfig;
             this.backup = value.chartConfig;
@@ -355,16 +363,16 @@ class ChartElement extends LitElement {
 
     getValue() {
         return {
-            chartConfig: this._chartConfig
+            chartConfig: this._chartConfig,
         };
     }
 
     getTextContent() {
         return {
-            html: "",
-            text: "",
-            markdown: '```json\n' + this._chartConfig + '\n```'
-        }
+            html: '',
+            text: '',
+            markdown: '```json\n' + this._chartConfig + '\n```',
+        };
     }
 
     sendUpdates() {
@@ -418,70 +426,74 @@ class ChartElement extends LitElement {
                 </button>
             </div>
 
-            ${this._showAiInput ? html`
-                <div class="dialog">
-                    <div class="ai-input-container">
-                        <div class="input-row">
-                            <textarea 
-                                class="ai-input" 
-                                placeholder="Ask AI for any changes ..." 
-                                ?disabled=${this._isLoading || this._showAiSuggestion}
-                                style="flex: 1;"
-                            ></textarea>
-                        </div>
-                        <div class="dialog-buttons">
-                            ${this._isLoading ? 
-                                html`<div class="loading-spinner"></div>` :
-                                this._showAiSuggestion ? html`
-                                    <button @click=${this.handleRejectAiChanges} class="button inner-buttons">
-                                        <img src="/a7/plugins/latex-element/discard.svg" alt="Discard" />
-                                        Discard
-                                    </button>
-                                    <button class="primary-button button inner-buttons" @click=${this.handleAcceptAiChanges}>
-                                        <img src="/a7/plugins/latex-element/accept.svg" alt="Accept" style="filter: var(--accent-svg);" />
-                                        Accept
-                                    </button>
-                                ` : html`
-                                    <button class="button" @click=${this.handleCancel}>Cancel</button>
-                                    <div style="flex: 1"></div>
-                                    <button class="button inner-buttons" @click=${this.handleShowCodeEditor}>
-                                        <img src="/a7/plugins/latex-element/code.svg" alt="Code" />
-                                    </button>
+            ${this._showAiInput
+                ? html`
+                      <div class="dialog">
+                          <div class="ai-input-container">
+                              <div class="input-row">
+                                  <textarea
+                                      class="ai-input"
+                                      placeholder="Ask AI for any changes ..."
+                                      ?disabled=${this._isLoading || this._showAiSuggestion}
+                                      style="flex: 1;"
+                                  ></textarea>
+                              </div>
+                              <div class="dialog-buttons">
+                                  ${this._isLoading
+                                      ? html`<div class="loading-spinner"></div>`
+                                      : this._showAiSuggestion
+                                        ? html`
+                                              <button @click=${this.handleRejectAiChanges} class="button inner-buttons">
+                                                  <img src="/a7/plugins/latex-element/discard.svg" alt="Discard" />
+                                                  Discard
+                                              </button>
+                                              <button class="primary-button button inner-buttons" @click=${this.handleAcceptAiChanges}>
+                                                  <img src="/a7/plugins/latex-element/accept.svg" alt="Accept" style="filter: var(--accent-svg);" />
+                                                  Accept
+                                              </button>
+                                          `
+                                        : html`
+                                              <button class="button" @click=${this.handleCancel}>Cancel</button>
+                                              <div style="flex: 1"></div>
+                                              <button class="button inner-buttons" @click=${this.handleShowCodeEditor}>
+                                                  <img src="/a7/plugins/latex-element/code.svg" alt="Code" />
+                                              </button>
 
-                                    <select .value=${this._selectedType} @change=${this.handleTypeChange} ?disabled=${this._isLoading || this._showAiSuggestion} >
-                                        <option value="line">Line Chart</option>
-                                        <option value="bar">Bar Chart</option>
-                                        <option value="pie">Pie Chart</option>
-                                        <option value="doughnut">Doughnut Chart</option>
-                                        <option value="radar">Radar Chart</option>
-                                        <option value="scatter">Scatter Plot</option>
-                                    </select>
-                                    <button class="button primary-button inner-buttons" @click=${this.handleAiUpdate}>
-                                        <img src="/a7/plugins/latex-element/up.svg" alt="AI"/>
-                                    </button>
-                                `
-                            }
-                        </div>
-                    </div>
-                </div>
-            ` : ''}
-
-            ${this._showCodeEditor ? html`
-                <div class="dialog">
-                    <textarea 
-                        class="code-editor" 
-                        .value=${this._chartConfig} 
-                        @input=${this.updateChart}
-                    ></textarea>
-                    <div class="dialog-buttons">
-                        <button class="button inner-buttons" @click=${this.handleReset}>Reset</button>
-                        <button class="button inner-buttons" @click=${this.handleCancel}>Cancel</button>
-                        <button class="button inner-buttons primary-button" @click=${this.handleSave}>Save</button>
-                    </div>
-                </div>
-            ` : ''}
+                                              <select
+                                                  .value=${this._selectedType}
+                                                  @change=${this.handleTypeChange}
+                                                  ?disabled=${this._isLoading || this._showAiSuggestion}
+                                              >
+                                                  <option value="line">Line Chart</option>
+                                                  <option value="bar">Bar Chart</option>
+                                                  <option value="pie">Pie Chart</option>
+                                                  <option value="doughnut">Doughnut Chart</option>
+                                                  <option value="radar">Radar Chart</option>
+                                                  <option value="scatter">Scatter Plot</option>
+                                              </select>
+                                              <button class="button primary-button inner-buttons" @click=${this.handleAiUpdate}>
+                                                  <img src="/a7/plugins/latex-element/up.svg" alt="AI" />
+                                              </button>
+                                          `}
+                              </div>
+                          </div>
+                      </div>
+                  `
+                : ''}
+            ${this._showCodeEditor
+                ? html`
+                      <div class="dialog">
+                          <textarea class="code-editor" .value=${this._chartConfig} @input=${this.updateChart}></textarea>
+                          <div class="dialog-buttons">
+                              <button class="button inner-buttons" @click=${this.handleReset}>Reset</button>
+                              <button class="button inner-buttons" @click=${this.handleCancel}>Cancel</button>
+                              <button class="button inner-buttons primary-button" @click=${this.handleSave}>Save</button>
+                          </div>
+                      </div>
+                  `
+                : ''}
         `;
     }
 }
 
-customElements.define("chart-element", ChartElement);
+customElements.define('chart-element', ChartElement);

@@ -1,10 +1,10 @@
 class HelloWorld extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({ mode: 'open' });
         this.items = ['Editable Item 1', 'Editable Item 2', 'Editable Item 3']; // Example array
         this.render();
-        this.shadowRoot.addEventListener('input', (event) => this.handleEdit(event));
+        this.shadowRoot.addEventListener('input', event => this.handleEdit(event));
     }
 
     render() {
@@ -34,7 +34,7 @@ class HelloWorld extends HTMLElement {
         const updateEvent = new CustomEvent('text-update', {
             bubbles: true,
             composed: true, // allows the event to cross the shadow DOM boundary
-            detail: { text: event.target.innerText }
+            detail: { text: event.target.innerText },
         });
         this.dispatchEvent(updateEvent);
     }

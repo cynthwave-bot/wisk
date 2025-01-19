@@ -1,8 +1,8 @@
 class EmbedElement extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });
-        this.link = "wisk.cc";
+        this.attachShadow({ mode: 'open' });
+        this.link = 'wisk.cc';
         this.render();
         this.isVirtualKeyboard = this.checkIfVirtualKeyboard();
     }
@@ -12,8 +12,8 @@ class EmbedElement extends HTMLElement {
     }
 
     connectedCallback() {
-        this.editable = this.shadowRoot.querySelector("#editable");
-        this.iframe = this.shadowRoot.querySelector("iframe");
+        this.editable = this.shadowRoot.querySelector('#editable');
+        this.iframe = this.shadowRoot.querySelector('iframe');
         this.bindEvents();
     }
 
@@ -35,8 +35,8 @@ class EmbedElement extends HTMLElement {
                 content = extractedSrc;
             }
         }
-        
-        if (path === "value.append") {
+
+        if (path === 'value.append') {
             this.editable.innerText += content;
         } else {
             this.editable.innerText = content;
@@ -47,7 +47,7 @@ class EmbedElement extends HTMLElement {
 
     getValue() {
         return {
-            textContent: this.editable.innerText
+            textContent: this.editable.innerText,
         };
     }
 
@@ -64,8 +64,8 @@ class EmbedElement extends HTMLElement {
                 this.editable.innerText = text;
             }
         }
-        
-        if (this.handleSpecialKeys(event) || event.key.includes("Arrow")) {
+
+        if (this.handleSpecialKeys(event) || event.key.includes('Arrow')) {
             return;
         }
 
@@ -85,10 +85,10 @@ class EmbedElement extends HTMLElement {
             Enter: () => this.handleEnterKey(event),
             Backspace: () => this.handleBackspace(event),
             Tab: () => this.handleTab(event),
-            ArrowLeft: () => this.handleArrowKey(event, "next-up", 0),
-            ArrowRight: () => this.handleArrowKey(event, "next-down", this.editable.innerText.length),
-            ArrowUp: () => this.handleVerticalArrow(event, "next-up"),
-            ArrowDown: () => this.handleVerticalArrow(event, "next-down"),
+            ArrowLeft: () => this.handleArrowKey(event, 'next-up', 0),
+            ArrowRight: () => this.handleArrowKey(event, 'next-down', this.editable.innerText.length),
+            ArrowUp: () => this.handleVerticalArrow(event, 'next-up'),
+            ArrowDown: () => this.handleVerticalArrow(event, 'next-down'),
         };
 
         const handler = keyHandlers[event.key];
@@ -98,7 +98,7 @@ class EmbedElement extends HTMLElement {
     handleEnterKey(event) {
         if (!this.isVirtualKeyboard) {
             event.preventDefault();
-            window.wisk.editor.createNewBlock(this.id, "text-element", { textContent: "" }, { x: 0 });
+            window.wisk.editor.createNewBlock(this.id, 'text-element', { textContent: '' }, { x: 0 });
             return true;
         }
         return false;
@@ -119,7 +119,7 @@ class EmbedElement extends HTMLElement {
     }
 
     handleVerticalArrow(event, direction) {
-        if (direction === "next-up") {
+        if (direction === 'next-up') {
             var prevElement = window.wisk.editor.prevElement(this.id);
             if (prevElement != null) {
                 const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
@@ -127,7 +127,7 @@ class EmbedElement extends HTMLElement {
                     window.wisk.editor.focusBlock(prevElement.id, { x: prevElement.value.textContent.length });
                 }
             }
-        } else if (direction === "next-down") {
+        } else if (direction === 'next-down') {
             var nextElement = window.wisk.editor.nextElement(this.id);
             if (nextElement != null) {
                 const nextComponentDetail = window.wisk.plugins.getPluginDetail(nextElement.component);
@@ -142,7 +142,7 @@ class EmbedElement extends HTMLElement {
         const currentOffset = this.getCurrentOffset();
         if (currentOffset === targetOffset) {
             event.preventDefault();
-            if (direction === "next-up") {
+            if (direction === 'next-up') {
                 var prevElement = window.wisk.editor.prevElement(this.id);
                 if (prevElement != null) {
                     const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
@@ -150,7 +150,7 @@ class EmbedElement extends HTMLElement {
                         window.wisk.editor.focusBlock(prevElement.id, { x: prevElement.value.textContent.length });
                     }
                 }
-            } else if (direction === "next-down") {
+            } else if (direction === 'next-down') {
                 var nextElement = window.wisk.editor.nextElement(this.id);
                 if (nextElement != null) {
                     const nextComponentDetail = window.wisk.plugins.getPluginDetail(nextElement.component);
@@ -277,14 +277,14 @@ class EmbedElement extends HTMLElement {
     }
 
     bindEvents() {
-        const eventType = this.isVirtualKeyboard ? "input" : "keyup";
+        const eventType = this.isVirtualKeyboard ? 'input' : 'keyup';
         this.editable.addEventListener(eventType, this.onValueUpdated.bind(this));
-        this.editable.addEventListener("focus", () => {
-            if (this.editable.innerText.trim() === "") {
-                this.editable.classList.add("empty");
+        this.editable.addEventListener('focus', () => {
+            if (this.editable.innerText.trim() === '') {
+                this.editable.classList.add('empty');
             }
         });
     }
 }
 
-customElements.define("embed-element", EmbedElement);
+customElements.define('embed-element', EmbedElement);

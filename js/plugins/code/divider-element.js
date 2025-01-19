@@ -1,33 +1,30 @@
 class DividerElement extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });
+        this.attachShadow({ mode: 'open' });
         this.render();
     }
 
-    setValue(value) {
-    }
+    setValue(value) {}
 
     getValue() {
-        return { };
+        return {};
     }
 
     getCurrentIndex() {
         return 0;
     }
 
-    focusOnIndex(index) {
-    }
+    focusOnIndex(index) {}
 
-    focus(identifier) {
-    }
+    focus(identifier) {}
 
     getTextContent() {
-        return { 
-            html: "",
-            text: "",
-            markdown: "---"
-        }
+        return {
+            html: '',
+            text: '',
+            markdown: '---',
+        };
     }
 
     render() {
@@ -54,4 +51,4 @@ class DividerElement extends HTMLElement {
     }
 }
 
-customElements.define("divider-element", DividerElement);
+customElements.define('divider-element', DividerElement);

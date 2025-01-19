@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class WhitenoiseRadioElement extends LitElement {
     static styles = css`
@@ -52,7 +52,7 @@ class WhitenoiseRadioElement extends LitElement {
     `;
 
     static properties = {
-        isPlaying: { type: Boolean }
+        isPlaying: { type: Boolean },
     };
 
     constructor() {
@@ -62,7 +62,7 @@ class WhitenoiseRadioElement extends LitElement {
     }
 
     firstUpdated() {
-        this.audioElement = new Audio("/a7/forget/youtube_AslKWwxPNbY_audio.mp3");
+        this.audioElement = new Audio('/a7/forget/youtube_AslKWwxPNbY_audio.mp3');
         this.audioElement.loop = true;
     }
 
@@ -83,7 +83,7 @@ class WhitenoiseRadioElement extends LitElement {
         return html`
             <div class="radio-container">
                 <button @click=${this.togglePlay} aria-label=${this.isPlaying ? 'Pause' : 'Play'}>
-                    ${this.isPlaying ? html`<img src="/a7/plugins/nightwave-plaza/pause.svg" alt="Pause">` : html`<img src="/a7/plugins/nightwave-plaza/play.svg" alt="Play">`}
+                    ${this.isPlaying ? html`<img src="/a7/plugins/nightwave-plaza/pause.svg" alt="Pause" />` : html`<img src="/a7/plugins/nightwave-plaza/play.svg" alt="Play" />`}
                 </button>
 
                 <span class="station-name">Whitenoise</span>
@@ -95,4 +95,4 @@ class WhitenoiseRadioElement extends LitElement {
     }
 }
 
-customElements.define("whitenoise-radio", WhitenoiseRadioElement);
+customElements.define('whitenoise-radio', WhitenoiseRadioElement);

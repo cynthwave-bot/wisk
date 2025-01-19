@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class GettingStarted extends LitElement {
     static styles = css`
@@ -394,10 +394,20 @@ class GettingStarted extends LitElement {
             white-space: nowrap;
         }
 
-        *::-webkit-scrollbar { width: 15px; }
-        *::-webkit-scrollbar-track { background: var(--bg-1); }
-        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+        *::-webkit-scrollbar {
+            width: 15px;
+        }
+        *::-webkit-scrollbar-track {
+            background: var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--bg-3);
+            border-radius: 20px;
+            border: 4px solid var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-1);
+        }
 
         select {
             max-width: 300px;
@@ -412,9 +422,9 @@ class GettingStarted extends LitElement {
     constructor() {
         super();
         this.tips = [
-            "You can use the command palette by pressing Ctrl+e or Cmd+e",
-            "You can create and install plugins to extend the functionality of your editor",
-            "You can create and use custom themes to personalize your editor",
+            'You can use the command palette by pressing Ctrl+e or Cmd+e',
+            'You can create and install plugins to extend the functionality of your editor',
+            'You can create and use custom themes to personalize your editor',
             "When AI Chat gets too long, clear the chat by clicking the Clear Chat button, that'll improve the results",
         ];
         this.activeDialog = null;
@@ -422,7 +432,7 @@ class GettingStarted extends LitElement {
 
     updated() {
         if (wisk.editor.wiskSite) return;
-        this.shadowRoot.getElementById("tip").innerText = this.tips[Math.floor(Math.random() * this.tips.length)];
+        this.shadowRoot.getElementById('tip').innerText = this.tips[Math.floor(Math.random() * this.tips.length)];
     }
 
     showDialog(type) {
@@ -436,32 +446,32 @@ class GettingStarted extends LitElement {
     }
 
     formatFileSize(bytes) {
-        if (bytes === 0) return "0 Bytes";
+        if (bytes === 0) return '0 Bytes';
         const k = 1024;
-        const sizes = ["Bytes", "KB", "MB", "GB"];
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
     handleDragOver(e) {
         e.preventDefault();
         e.stopPropagation();
         const dropZone = e.currentTarget;
-        dropZone.classList.add("drag-over");
+        dropZone.classList.add('drag-over');
     }
 
     handleDragLeave(e) {
         e.preventDefault();
         e.stopPropagation();
         const dropZone = e.currentTarget;
-        dropZone.classList.remove("drag-over");
+        dropZone.classList.remove('drag-over');
     }
 
     handleDrop(e) {
         e.preventDefault();
         e.stopPropagation();
         const dropZone = e.currentTarget;
-        dropZone.classList.remove("drag-over");
+        dropZone.classList.remove('drag-over');
 
         const file = e.dataTransfer.files[0];
         if (file) {
@@ -474,7 +484,7 @@ class GettingStarted extends LitElement {
         if (file) {
             this.processFile(file);
         }
-        e.target.value = "";
+        e.target.value = '';
     }
 
     removeFile() {
@@ -483,18 +493,18 @@ class GettingStarted extends LitElement {
     }
 
     triggerFileInput() {
-        this.shadowRoot.getElementById("fileInput").click();
+        this.shadowRoot.getElementById('fileInput').click();
     }
 
     processFile(file) {
-        const validExtensions = [".pdf", ".docx", ".md", ".markdown"];
-        const ext = "." + file.name.split(".").pop().toLowerCase();
+        const validExtensions = ['.pdf', '.docx', '.md', '.markdown'];
+        const ext = '.' + file.name.split('.').pop().toLowerCase();
 
         if (validExtensions.includes(ext)) {
             this.selectedFile = file;
             this.requestUpdate();
         } else {
-            wisk.utils.showToast("Invalid file format", 5000);
+            wisk.utils.showToast('Invalid file format', 5000);
         }
     }
 
@@ -546,7 +556,13 @@ class GettingStarted extends LitElement {
                             </select>
                             <div style="display: flex; align-items: center;">
                                 <label for="checkbox-outline">Only generate outline</label>
-                                <input type="checkbox" id="checkbox-outline" name="checkbox-outline" value="outline" style="margin-left: 8px; width: 16px; height: 16px" />
+                                <input
+                                    type="checkbox"
+                                    id="checkbox-outline"
+                                    name="checkbox-outline"
+                                    value="outline"
+                                    style="margin-left: 8px; width: 16px; height: 16px"
+                                />
                             </div>
                         </div>
                     </div>
@@ -752,39 +768,39 @@ class GettingStarted extends LitElement {
                 <div style="display: flex; gap: var(--gap-3); flex-wrap: wrap; align-items: center;">
                     Get started with
                     <div style="display: flex; gap: var(--gap-2); flex-wrap: wrap">
-                        <button class="gs-button" @click=${() => this.showDialog("draft")}>
+                        <button class="gs-button" @click=${() => this.showDialog('draft')}>
                             <img src="/a7/forget/gs-draft-anything.svg" alt="" /> Draft anything
                         </button>
-                        <button class="gs-button" @click=${() => document.querySelector("template-dialog").show()}>
+                        <button class="gs-button" @click=${() => document.querySelector('template-dialog').show()}>
                             <img src="/a7/forget/gs-templates.svg" alt="" /> Start with Templates
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog("brainstorm")} style="display: none">
+                        <button class="gs-button" @click=${() => this.showDialog('brainstorm')} style="display: none">
                             <img src="/a7/forget/gs-brainstorm.svg" alt="" /> Brainstorm Ideas
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog("topics")} style="display: none">
+                        <button class="gs-button" @click=${() => this.showDialog('topics')} style="display: none">
                             <img src="/a7/forget/gs-cover.svg" alt="" /> Topics to cover
                         </button>
-                        <button class="gs-button" @click=${() => this.showDialog("import")}>
+                        <button class="gs-button" @click=${() => this.showDialog('import')}>
                             <img src="/a7/forget/gs-import.svg" alt="" /> Import from file
                         </button>
-                        <button class="gs-button" @click=${() => document.querySelector("help-dialog").show()}>
+                        <button class="gs-button" @click=${() => document.querySelector('help-dialog').show()}>
                             <img src="/a7/forget/gs-help.svg" alt="" /> Help
                         </button>
                     </div>
                 </div>
-                <p style="display: flex; margin-top: 20px; align-items: center; gap: var(--gap-1);"> 
-                    <img src="/a7/forget/gs-info.svg" alt="Tip" style="height: 16px; filter: var(--accent-svg)" title="Tip"/> <span id="tip"></span>
+                <p style="display: flex; margin-top: 20px; align-items: center; gap: var(--gap-1);">
+                    <img src="/a7/forget/gs-info.svg" alt="Tip" style="height: 16px; filter: var(--accent-svg)" title="Tip" /> <span id="tip"></span>
                 </p>
 
-                <div class="dialog-overlay" style="display: ${this.activeDialog ? "flex" : "none"}">
-                    ${this.activeDialog === "draft" ? this.renderDraftAnythingDialog() : ""}
-                    ${this.activeDialog === "brainstorm" ? this.renderBrainstormDialog() : ""}
-                    ${this.activeDialog === "topics" ? this.renderTopicsDialog() : ""}
-                    ${this.activeDialog === "import" ? this.renderImportDialog() : ""}
+                <div class="dialog-overlay" style="display: ${this.activeDialog ? 'flex' : 'none'}">
+                    ${this.activeDialog === 'draft' ? this.renderDraftAnythingDialog() : ''}
+                    ${this.activeDialog === 'brainstorm' ? this.renderBrainstormDialog() : ''}
+                    ${this.activeDialog === 'topics' ? this.renderTopicsDialog() : ''}
+                    ${this.activeDialog === 'import' ? this.renderImportDialog() : ''}
                 </div>
             </div>
         `;
     }
 }
 
-customElements.define("getting-started", GettingStarted);
+customElements.define('getting-started', GettingStarted);

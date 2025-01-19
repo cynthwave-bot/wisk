@@ -1,35 +1,35 @@
 class MainElement extends BaseTextElement {
     constructor() {
         super();
-        this.placeholder = this.getAttribute("placeholder") || wisk.editor.wiskSite? "": "edit me";
+        this.placeholder = this.getAttribute('placeholder') || wisk.editor.wiskSite ? '' : 'edit me';
         this.bannerSize = 'small'; // Can be 'small', 'big', 'bigger', 'biggest'
-        this.emoji = this.getAttribute("emoji") || '';
+        this.emoji = this.getAttribute('emoji') || '';
         this.backgroundUrl = null;
         this.MAX_WIDTH = 1920;
         this.MAX_HEIGHT = 1080;
         this.loading = false;
-        
+
         // Bind the emoji selection handler
         this.handleEmojiSelection = this.handleEmojiSelection.bind(this);
     }
 
     connectedCallback() {
         super.connectedCallback();
-        this.emojiElement = this.shadowRoot.querySelector("#emoji");
-        this.fileInput = this.shadowRoot.querySelector("#background-file");
-        this.backgroundUploadButton = this.shadowRoot.querySelector("#background-upload-button");
-        this.headerContainer = this.shadowRoot.querySelector(".header-container");
+        this.emojiElement = this.shadowRoot.querySelector('#emoji');
+        this.fileInput = this.shadowRoot.querySelector('#background-file');
+        this.backgroundUploadButton = this.shadowRoot.querySelector('#background-upload-button');
+        this.headerContainer = this.shadowRoot.querySelector('.header-container');
         this.bindHeaderEvents();
-        
+
         // Add event listener for emoji selection
-        window.addEventListener("emoji-selector", this.handleEmojiSelection);
-        this.setValue("", { textContent: "" });
+        window.addEventListener('emoji-selector', this.handleEmojiSelection);
+        this.setValue('', { textContent: '' });
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
         // Clean up event listener
-        window.removeEventListener("emoji-selector", this.handleEmojiSelection);
+        window.removeEventListener('emoji-selector', this.handleEmojiSelection);
     }
 
     handleEmojiSelection(event) {
@@ -46,12 +46,12 @@ class MainElement extends BaseTextElement {
             textContent: this.editable.innerHTML,
             emoji: this.emoji,
             backgroundUrl: this.backgroundUrl,
-            bannerSize: this.bannerSize
+            bannerSize: this.bannerSize,
         };
     }
 
     setValue(path, value) {
-        if (path === "value.append") {
+        if (path === 'value.append') {
             this.editable.innerHTML += value.textContent;
         } else {
             this.editable.innerHTML = value.textContent;
@@ -75,7 +75,7 @@ class MainElement extends BaseTextElement {
         if (this.headerContainer) {
             // Remove all size classes first
             this.headerContainer.classList.remove('big-banner', 'bigger-banner', 'biggest-banner');
-            
+
             // Add appropriate class based on size
             if (this.bannerSize === 'big') {
                 this.headerContainer.classList.add('big-banner');
@@ -102,9 +102,9 @@ class MainElement extends BaseTextElement {
     bindHeaderEvents() {
         if (wisk.editor.wiskSite) return;
         // Emoji picker click handler
-        this.emojiElement.addEventListener("click", () => {
+        this.emojiElement.addEventListener('click', () => {
             if (window.wisk.editor.wiskSite) return;
-            
+
             // Get the emoji selector component and show it
             const emojiSelector = document.querySelector('emoji-selector');
             if (emojiSelector) {
@@ -114,14 +114,14 @@ class MainElement extends BaseTextElement {
 
         // Background image upload handlers
         if (!window.wisk.editor.wiskSite) {
-            this.fileInput.addEventListener("change", this.onBackgroundSelected.bind(this));
-            this.backgroundUploadButton.addEventListener("click", (e) => {
+            this.fileInput.addEventListener('change', this.onBackgroundSelected.bind(this));
+            this.backgroundUploadButton.addEventListener('click', e => {
                 e.stopPropagation();
                 this.fileInput.click();
             });
 
             // Drag and drop for background
-            this.headerContainer.addEventListener('dragover', (e) => {
+            this.headerContainer.addEventListener('dragover', e => {
                 e.preventDefault();
                 this.headerContainer.style.opacity = '0.7';
             });
@@ -130,7 +130,7 @@ class MainElement extends BaseTextElement {
                 this.headerContainer.style.opacity = '1';
             });
 
-            this.headerContainer.addEventListener('drop', (e) => {
+            this.headerContainer.addEventListener('drop', e => {
                 e.preventDefault();
                 this.headerContainer.style.opacity = '1';
                 const file = e.dataTransfer.files[0];
@@ -143,7 +143,7 @@ class MainElement extends BaseTextElement {
         const bannerSizeButton = this.shadowRoot.querySelector('#banner-size-button');
         bannerSizeButton.addEventListener('click', () => {
             // Cycle through sizes
-            switch(this.bannerSize) {
+            switch (this.bannerSize) {
                 case 'small':
                     this.bannerSize = 'big';
                     break;
@@ -172,7 +172,7 @@ class MainElement extends BaseTextElement {
     async processBackgroundFile(file) {
         if (this.loading) return;
         this.loading = true;
-        this.backgroundUploadButton.innerText = "Uploading...";
+        this.backgroundUploadButton.innerText = 'Uploading...';
 
         try {
             const blobUrl = URL.createObjectURL(file);
@@ -184,10 +184,10 @@ class MainElement extends BaseTextElement {
             URL.revokeObjectURL(blobUrl);
         } catch (error) {
             console.error('Failed to process background:', error);
-            this.backgroundUploadButton.innerText = "Upload failed";
+            this.backgroundUploadButton.innerText = 'Upload failed';
         } finally {
             this.loading = false;
-            this.backgroundUploadButton.innerText = "Add Cover";
+            this.backgroundUploadButton.innerText = 'Add Cover';
         }
     }
 
@@ -217,11 +217,7 @@ class MainElement extends BaseTextElement {
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
 
-                canvas.toBlob(
-                    (blob) => resolve(blob),
-                    fileType,
-                    0.70
-                );
+                canvas.toBlob(blob => resolve(blob), fileType, 0.7);
             };
             img.onerror = reject;
             img.src = src;
@@ -238,8 +234,8 @@ class MainElement extends BaseTextElement {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'Authorization': 'Bearer ' + user.token
-                }
+                    Authorization: 'Bearer ' + user.token,
+                },
             });
 
             if (!response.ok) throw new Error('Upload failed');
@@ -483,15 +479,23 @@ class MainElement extends BaseTextElement {
         `;
         const content = `
             <div class="header-container">
-                ${!window.wisk.editor.wiskSite ? `
+                ${
+                    !window.wisk.editor.wiskSite
+                        ? `
                     <input type="file" id="background-file" accept="image/*" />
-                ` : ''}
+                `
+                        : ''
+                }
                 <div class="header-content">
                     <div id="emoji">${this.emoji && this.emoji.trim() ? this.emoji : '<span class="add-emoji-text">add emoji</span>'}</div>
-                    ${!window.wisk.editor.wiskSite ? `
+                    ${
+                        !window.wisk.editor.wiskSite
+                            ? `
                         <button id="background-upload-button">Add Cover</button>
                         <button id="banner-size-button">Small Banner</button>
-                    ` : ''}
+                    `
+                            : ''
+                    }
                 </div>
             </div>
             <h1 id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></h1>
@@ -503,7 +507,7 @@ class MainElement extends BaseTextElement {
         return {
             html: `<h1>${this.emoji} ${this.editable.innerHTML}</h1>`,
             text: `${this.emoji} ${this.editable.innerText}`,
-            markdown: `# ${this.emoji} ${this.editable.innerText}`
+            markdown: `# ${this.emoji} ${this.editable.innerText}`,
         };
     }
 
@@ -532,4 +536,4 @@ class MainElement extends BaseTextElement {
     }
 }
 
-customElements.define("main-element", MainElement);
+customElements.define('main-element', MainElement);

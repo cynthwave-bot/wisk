@@ -1,6 +1,6 @@
 // template image dims: 1800x900 at 50% zoom
 //                 and:  430x932 at 75% zoom
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class TemplateDialog extends LitElement {
     static styles = css`
@@ -15,9 +15,9 @@ class TemplateDialog extends LitElement {
         }
 
         ul {
-           list-style-position: inside;
+            list-style-position: inside;
         }
-        
+
         .dialog-overlay {
             position: fixed;
             top: 0;
@@ -264,20 +264,26 @@ class TemplateDialog extends LitElement {
             color: var(--fg-blue);
         }
 
-        *::-webkit-scrollbar { width: 15px; }
-        *::-webkit-scrollbar-track { background: var(--bg-1); }
-        *::-webkit-scrollbar-thumb { 
+        *::-webkit-scrollbar {
+            width: 15px;
+        }
+        *::-webkit-scrollbar-track {
+            background: var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb {
             background-color: var(--bg-3);
             border-radius: 20px;
             border: 4px solid var(--bg-1);
         }
-        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-1);
+        }
     `;
 
     static properties = {
         visible: { type: Boolean },
         templates: { type: Array },
-        selectedTemplate: { type: Object }
+        selectedTemplate: { type: Object },
     };
 
     constructor() {
@@ -326,92 +332,119 @@ class TemplateDialog extends LitElement {
 
     render() {
         return html`
-            <div class="dialog-overlay" style="display: ${this.visible ? "flex" : "none"}">
+            <div class="dialog-overlay" style="display: ${this.visible ? 'flex' : 'none'}">
                 <div class="dialog-content">
                     <button class="dialog-close" @click=${this.hide}>
                         <img src="/a7/forget/x.svg" alt="Close" style="filter: var(--themed-svg)" />
                     </button>
-                    
+
                     <div style="display: ${this.selectedTemplate ? 'none' : 'block'}">
                         <h2 class="dialog-title">Templates</h2>
                         <h3 class="section-title">Default Templates</h3>
-                        
+
                         <div class="templates-grid">
-                            ${this.templates.map(template => html`
-                                <div class="template-card" @click=${() => this.viewTemplate(template)}>
-                                    <div class="preview-container">
-                                        <div 
-                                            class="desktop-preview"
-                                            style="background-image: url(/a7/templates/${template.path}/desktop.png)"
-                                            alt="${template.name} desktop preview"
-                                        ></div>
-                                        <div
-                                            class="mobile-preview"
-                                            style="background-image: url(/a7/templates/${template.path}/phone.png)"
-                                            alt="${template.name} mobile preview"
-                                        ></div>
+                            ${this.templates.map(
+                                template => html`
+                                    <div class="template-card" @click=${() => this.viewTemplate(template)}>
+                                        <div class="preview-container">
+                                            <div
+                                                class="desktop-preview"
+                                                style="background-image: url(/a7/templates/${template.path}/desktop.png)"
+                                                alt="${template.name} desktop preview"
+                                            ></div>
+                                            <div
+                                                class="mobile-preview"
+                                                style="background-image: url(/a7/templates/${template.path}/phone.png)"
+                                                alt="${template.name} mobile preview"
+                                            ></div>
+                                        </div>
+                                        <div class="template-info">
+                                            <h3>${template.name}</h3>
+                                            <span class="template-by">By ${template.by}</span>
+                                        </div>
                                     </div>
-                                    <div class="template-info">
-                                        <h3>${template.name}</h3>
-                                        <span class="template-by">By ${template.by}</span>
-                                    </div>
-                                </div>
-                            `)}
+                                `
+                            )}
                         </div>
                     </div>
 
                     <div class="template-view ${this.selectedTemplate ? 'active' : ''}">
-                        ${this.selectedTemplate ? html`
-                            <div class="template-view-header">
-                                <button class="back-button" @click=${() => this.selectedTemplate = null}>
-                                    <img src="/a7/forget/back.svg" alt="Back" style="filter: var(--themed-svg)" />
-                                    Back
-                                </button>
-                                <button class="use-template-button" @click=${this.useTemplate}>
-                                    Use Template
-                                </button>
-                            </div>
-                            <div class="template-view-content">
-                                <div class="preview-large">
-                                    <div class="template-info-main">
-                                        <h1>${this.selectedTemplate.name}</h1>
-                                        <span class="template-by">By <a href="${this.selectedTemplate.link}" target="_blank">${this.selectedTemplate.by}</a></span>
-                                        <p>${this.selectedTemplate.description}</p>
-                                    </div>
-                                    <div class="lrg">
-                                        <img class="img-preview-large" src="/a7/templates/${this.selectedTemplate.path}/phone.png" @click=${() => this.makeImageFullScreen(`/a7/templates/${this.selectedTemplate.path}/phone.png`)} />
-                                        <img class="img-preview-large" src="/a7/templates/${this.selectedTemplate.path}/desktop.png" @click=${() => this.makeImageFullScreen(`/a7/templates/${this.selectedTemplate.path}/desktop.png`)} />
-                                        ${ this.selectedTemplate.images ? 
-                                            html`
-                                                ${this.selectedTemplate.images.map(image => html`
-                                                    <img class="img-preview-large" 
-                                                        src="/a7/templates/${this.selectedTemplate.path}/${image}" 
-                                                        @click=${() => this.makeImageFullScreen(`/a7/templates/${this.selectedTemplate.path}/${image}`)} />
-                                                `)}
-                                            ` 
-                                            : ''
-                                        }
-                                    </div>
+                        ${this.selectedTemplate
+                            ? html`
+                                  <div class="template-view-header">
+                                      <button class="back-button" @click=${() => (this.selectedTemplate = null)}>
+                                          <img src="/a7/forget/back.svg" alt="Back" style="filter: var(--themed-svg)" />
+                                          Back
+                                      </button>
+                                      <button class="use-template-button" @click=${this.useTemplate}>Use Template</button>
+                                  </div>
+                                  <div class="template-view-content">
+                                      <div class="preview-large">
+                                          <div class="template-info-main">
+                                              <h1>${this.selectedTemplate.name}</h1>
+                                              <span class="template-by"
+                                                  >By <a href="${this.selectedTemplate.link}" target="_blank">${this.selectedTemplate.by}</a></span
+                                              >
+                                              <p>${this.selectedTemplate.description}</p>
+                                          </div>
+                                          <div class="lrg">
+                                              <img
+                                                  class="img-preview-large"
+                                                  src="/a7/templates/${this.selectedTemplate.path}/phone.png"
+                                                  @click=${() => this.makeImageFullScreen(`/a7/templates/${this.selectedTemplate.path}/phone.png`)}
+                                              />
+                                              <img
+                                                  class="img-preview-large"
+                                                  src="/a7/templates/${this.selectedTemplate.path}/desktop.png"
+                                                  @click=${() => this.makeImageFullScreen(`/a7/templates/${this.selectedTemplate.path}/desktop.png`)}
+                                              />
+                                              ${this.selectedTemplate.images
+                                                  ? html`
+                                                        ${this.selectedTemplate.images.map(
+                                                            image => html`
+                                                                <img
+                                                                    class="img-preview-large"
+                                                                    src="/a7/templates/${this.selectedTemplate.path}/${image}"
+                                                                    @click=${() =>
+                                                                        this.makeImageFullScreen(
+                                                                            `/a7/templates/${this.selectedTemplate.path}/${image}`
+                                                                        )}
+                                                                />
+                                                            `
+                                                        )}
+                                                    `
+                                                  : ''}
+                                          </div>
 
-                                    <div>
-                                        <h3 style="margin-bottom: var(--gap-2)">Links</h3>
-                                        ${ this.selectedTemplate.links ? html`
-                                                <ul>
-                                                    ${this.selectedTemplate.links.map(link => html`
-                                                        <li><a href="${link.url}" target="_blank">${link.text}</a></li>
-                                                    `)}
-                                                </ul>
-                                            ` : ''
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        ` : ''}
+                                          <div>
+                                              <h3 style="margin-bottom: var(--gap-2)">Links</h3>
+                                              ${this.selectedTemplate.links
+                                                  ? html`
+                                                        <ul>
+                                                            ${this.selectedTemplate.links.map(
+                                                                link => html` <li><a href="${link.url}" target="_blank">${link.text}</a></li> `
+                                                            )}
+                                                        </ul>
+                                                    `
+                                                  : ''}
+                                          </div>
+                                      </div>
+                                  </div>
+                              `
+                            : ''}
                     </div>
                 </div>
             </div>
-                <div class="img-full" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; margin: auto; background: var(--bg-1); border-radius: var(--radius); border: 1px solid var(--border-1); z-index: 10001; align-items: center; justify-content: center; padding: calc(var(--padding-4)* 3);" @click=${() => this.shadowRoot.querySelector('.img-full').style.display = 'none'}>
-                <img src="" alt="Full Screen Image" style="max-width: 100%; max-height: 100%; cursor: pointer; border-radius: var(--radius-large); border: 1px solid var(--border-1)">
+            <div
+                class="img-full"
+                style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; margin: auto; background: var(--bg-1); border-radius: var(--radius); border: 1px solid var(--border-1); z-index: 10001; align-items: center; justify-content: center; padding: calc(var(--padding-4)* 3);"
+                @click=${() => (this.shadowRoot.querySelector('.img-full').style.display = 'none')}
+            >
+                <img
+                    src=""
+                    alt="Full Screen Image"
+                    style="max-width: 100%; max-height: 100%; cursor: pointer; border-radius: var(--radius-large); border: 1px solid var(--border-1)"
+                />
             </div>
         `;
     }
@@ -423,4 +456,4 @@ class TemplateDialog extends LitElement {
     }
 }
 
-customElements.define("template-dialog", TemplateDialog);
+customElements.define('template-dialog', TemplateDialog);

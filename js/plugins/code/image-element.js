@@ -9,15 +9,15 @@ class ImageElement extends BaseTextElement {
 
     connectedCallback() {
         super.connectedCallback();
-        this.imageElement = this.shadowRoot.querySelector("#img-editable");
-        this.fileInput = this.shadowRoot.querySelector("#file");
-        this.uploadArea = this.shadowRoot.querySelector(".upload-img");
-        this.uploadButton = this.shadowRoot.querySelector("#upload-button");
+        this.imageElement = this.shadowRoot.querySelector('#img-editable');
+        this.fileInput = this.shadowRoot.querySelector('#file');
+        this.uploadArea = this.shadowRoot.querySelector('.upload-img');
+        this.uploadButton = this.shadowRoot.querySelector('#upload-button');
         this.bindImageEvents();
     }
 
     setValue(path, value) {
-        if (path === "value.append") {
+        if (path === 'value.append') {
             this.editable.innerHTML += value.textContent;
         } else {
             this.editable.innerHTML = value.textContent;
@@ -31,7 +31,7 @@ class ImageElement extends BaseTextElement {
     getValue() {
         return {
             textContent: this.editable.innerHTML,
-            imageUrl: this.imageUrl
+            imageUrl: this.imageUrl,
         };
     }
 
@@ -46,8 +46,8 @@ class ImageElement extends BaseTextElement {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'Authorization': 'Bearer ' + user.token
-                }
+                    Authorization: 'Bearer ' + user.token,
+                },
             });
 
             if (!response.ok) {
@@ -76,7 +76,7 @@ class ImageElement extends BaseTextElement {
             return;
         }
 
-        this.shadowRoot.querySelector("#upload-button").innerText = "Uploading...";
+        this.shadowRoot.querySelector('#upload-button').innerText = 'Uploading...';
 
         try {
             const blobUrl = URL.createObjectURL(file);
@@ -88,10 +88,10 @@ class ImageElement extends BaseTextElement {
             URL.revokeObjectURL(blobUrl);
         } catch (error) {
             console.error('Failed to process image:', error);
-            this.shadowRoot.querySelector("#upload-button").innerText = "Upload failed";
+            this.shadowRoot.querySelector('#upload-button').innerText = 'Upload failed';
         } finally {
             this.loading = false;
-            this.shadowRoot.querySelector("#upload-button").innerText = "Upload Image";
+            this.shadowRoot.querySelector('#upload-button').innerText = 'Upload Image';
         }
     }
 
@@ -159,11 +159,7 @@ class ImageElement extends BaseTextElement {
                     currentCanvas = finalCanvas;
                 }
 
-                currentCanvas.toBlob(
-                    (blob) => resolve(blob),
-                    fileType,
-                    0.90
-                );
+                currentCanvas.toBlob(blob => resolve(blob), fileType, 0.9);
             };
 
             img.onerror = reject;
@@ -174,23 +170,23 @@ class ImageElement extends BaseTextElement {
     updateImage() {
         if (this.imageUrl) {
             this.imageElement.src = this.imageUrl;
-            this.imageElement.style.display = "block";
-            this.uploadArea.style.background = "none";
-            this.fileInput.style.display = "none";
-            this.uploadButton.style.display = "none";
+            this.imageElement.style.display = 'block';
+            this.uploadArea.style.background = 'none';
+            this.fileInput.style.display = 'none';
+            this.uploadButton.style.display = 'none';
         }
     }
 
     bindImageEvents() {
-        this.fileInput.addEventListener("change", this.onImageSelected.bind(this));
-        this.uploadArea.addEventListener("click", () => this.fileInput.click());
-        this.uploadButton.addEventListener("click", (e) => {
+        this.fileInput.addEventListener('change', this.onImageSelected.bind(this));
+        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadButton.addEventListener('click', e => {
             e.stopPropagation();
             this.fileInput.click();
         });
 
         // Handle drag and drop
-        this.uploadArea.addEventListener('dragover', (e) => {
+        this.uploadArea.addEventListener('dragover', e => {
             e.preventDefault();
             this.uploadArea.style.background = 'rgba(0, 123, 255, 0.1)';
         });
@@ -199,7 +195,7 @@ class ImageElement extends BaseTextElement {
             this.uploadArea.style.background = 'repeating-linear-gradient(-45deg, #ddd, #ddd 5px, white 5px, white 10px)';
         });
 
-        this.uploadArea.addEventListener('drop', (e) => {
+        this.uploadArea.addEventListener('drop', e => {
             e.preventDefault();
             this.uploadArea.style.background = 'repeating-linear-gradient(-45deg, #ddd, #ddd 5px, white 5px, white 10px)';
             const file = e.dataTransfer.files[0];
@@ -299,13 +295,17 @@ class ImageElement extends BaseTextElement {
 
         const content = `
             <div class="upload-img">
-                ${window.wisk.editor.wiskSite ? `
+                ${
+                    window.wisk.editor.wiskSite
+                        ? `
                     <img src="" id="img-editable" alt="Uploaded image" />
-                `:`
+                `
+                        : `
                     <input type="file" id="file" accept="image/*" />
                     <img src="" id="img-editable" alt="Uploaded image" />
                     <button id="upload-button">Upload Image</button>
-                `}
+                `
+                }
             </div>
             <p id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholderr"${this.placeholder}"></p>
             <div class="emoji-suggestions"></div>
@@ -320,9 +320,9 @@ class ImageElement extends BaseTextElement {
         return {
             html: `<img src="${imageUrl}" alt="${caption}"/><p>${caption}</p>`,
             text: caption,
-            markdown: `![${caption}](${imageUrl})${caption ? '\n\n' + caption : ''}`
+            markdown: `![${caption}](${imageUrl})${caption ? '\n\n' + caption : ''}`,
         };
     }
 }
 
-customElements.define("image-element", ImageElement);
+customElements.define('image-element', ImageElement);

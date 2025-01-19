@@ -1,6 +1,6 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
-var katexReady = new Promise((resolve) => {
+var katexReady = new Promise(resolve => {
     if (window.katex) {
         resolve();
         return;
@@ -127,7 +127,9 @@ class LatexElement extends LitElement {
             margin: calc(var(--padding-3) - 2px);
         }
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
         .suggestion-preview {
             margin: var(--padding-3) 0;
@@ -175,7 +177,7 @@ class LatexElement extends LitElement {
         _showCodeEditor: { type: Boolean, state: true },
         _isLoading: { type: Boolean, state: true },
         _aiSuggestion: { type: String, state: true },
-        _showAiSuggestion: { type: Boolean, state: true }
+        _showAiSuggestion: { type: Boolean, state: true },
     };
 
     constructor() {
@@ -193,7 +195,7 @@ class LatexElement extends LitElement {
 
     setValue(identifier, value) {
         if (!value || typeof value !== 'object') return;
-        
+
         if (value.latex !== undefined) {
             this._latex = value.latex;
             this.backup = value.latex;
@@ -212,10 +214,10 @@ class LatexElement extends LitElement {
 
     getTextContent() {
         return {
-            html: "",
-            text: "",
-            markdown: '$$\n' + this._latex + '\n$$'
-        }
+            html: '',
+            text: '',
+            markdown: '$$\n' + this._latex + '\n$$',
+        };
     }
 
     sendUpdates() {
@@ -231,10 +233,10 @@ class LatexElement extends LitElement {
             await katexReady;
             container.innerHTML = '';
             // Use AI suggestion for preview if it exists, otherwise use current latex
-            const latexToRender = (this._showAiSuggestion && this._aiSuggestion) ? this._aiSuggestion : this._latex;
+            const latexToRender = this._showAiSuggestion && this._aiSuggestion ? this._aiSuggestion : this._latex;
             window.katex.render(latexToRender, container, {
                 throwOnError: false,
-                displayMode: true
+                displayMode: true,
             });
             this.error = '';
         } catch (e) {
@@ -259,32 +261,32 @@ class LatexElement extends LitElement {
             this._isLoading = true;
             this.requestUpdate();
 
-            var user = await document.querySelector("auth-component").getUserInfo();
+            var user = await document.querySelector('auth-component').getUserInfo();
             var token = user.token;
 
             const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
-            
-            var response = await fetch("https://cloud.wisk.cc/v2/plugins/latex", {
-                method: "POST",
+
+            var response = await fetch('https://cloud.wisk.cc/v2/plugins/latex', {
+                method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     command: aiPrompt,
-                    latex: this._latex
+                    latex: this._latex,
                 }),
             });
 
             this._isLoading = false;
-            
+
             if (response.status !== 200) {
-                window.showToast("Error updating LaTeX", 5000);
+                window.showToast('Error updating LaTeX', 5000);
                 return;
             }
 
             var latexContent = await response.text();
-            
+
             let inCodeBlock = false;
             const lines = latexContent.split('\n');
             const contentLines = [];
@@ -305,16 +307,16 @@ class LatexElement extends LitElement {
             }
 
             latexContent = contentLines.join('\n');
-            
+
             // if ``` is still present, replace it with empty string
             latexContent = latexContent.replace(/```/g, '');
-            
+
             this._aiSuggestion = latexContent;
             this._showAiSuggestion = true;
             this.requestUpdate();
         } catch (error) {
             console.error('Error:', error);
-            window.showToast("Error updating LaTeX", 5000);
+            window.showToast('Error updating LaTeX', 5000);
             this._isLoading = false;
             this.requestUpdate();
         }
@@ -388,54 +390,58 @@ class LatexElement extends LitElement {
                 </button>
             </div>
 
-            ${this._showAiInput ? html`
-                <div class="dialog">
-                    <div class="ai-input-container">
-                        <textarea class="ai-input" placeholder="Ask AI for any changes ..." ?disabled=${this._isLoading || this._showAiSuggestion}></textarea>
-                        <div class="dialog-buttons">
-                            ${this._isLoading ? 
-                                html`<div class="loading-spinner"></div>` :
-                                this._showAiSuggestion ? html`
-                                    <button @click=${this.handleRejectAiChanges} class="button inner-buttons">
-                                        <img src="/a7/plugins/latex-element/discard.svg" alt="Discard" />
-                                        Discard
-                                    </button>
-                                    <button class="primary-button button inner-buttons" @click=${this.handleAcceptAiChanges}>
-                                        <img src="/a7/plugins/latex-element/accept.svg" alt="Accept" style="filter: var(--accent-svg);" />
-                                        Accept
-                                    </button>
-                                ` : html`
-                                    <button class="button" @click=${this.handleCancel}>Cancel</button>
-                                    <div style="flex: 1"></div>
-                                    <button class="button inner-buttons" @click=${this.handleShowCodeEditor}> 
-                                        <img src="/a7/plugins/latex-element/code.svg" alt="Code" />
-                                    </button>
-                                    <button class="button primary-button inner-buttons" @click=${this.handleAiUpdate}>
-                                        <img src="/a7/plugins/latex-element/up.svg" alt="AI"/>
-                                    </button>
-                                `
-                            }
-                        </div>
-                    </div>
-                </div>
-            ` : ''}
-
-            ${this._showCodeEditor ? html`
-                <div class="dialog">
-                    <textarea 
-                        class="code-editor" 
-                        .value=${this._latex} 
-                        @input=${this.updateLatex}
-                    ></textarea>
-                    <div class="dialog-buttons">
-                        <button class="button inner-buttons" @click=${this.handleReset}>Reset</button>
-                        <button class="button inner-buttons" @click=${this.handleCancel}>Cancel</button>
-                        <button class="button inner-buttons primary-button" @click=${this.handleSave}>Save</button>
-                    </div>
-                </div>
-            ` : ''}
+            ${this._showAiInput
+                ? html`
+                      <div class="dialog">
+                          <div class="ai-input-container">
+                              <textarea
+                                  class="ai-input"
+                                  placeholder="Ask AI for any changes ..."
+                                  ?disabled=${this._isLoading || this._showAiSuggestion}
+                              ></textarea>
+                              <div class="dialog-buttons">
+                                  ${this._isLoading
+                                      ? html`<div class="loading-spinner"></div>`
+                                      : this._showAiSuggestion
+                                        ? html`
+                                              <button @click=${this.handleRejectAiChanges} class="button inner-buttons">
+                                                  <img src="/a7/plugins/latex-element/discard.svg" alt="Discard" />
+                                                  Discard
+                                              </button>
+                                              <button class="primary-button button inner-buttons" @click=${this.handleAcceptAiChanges}>
+                                                  <img src="/a7/plugins/latex-element/accept.svg" alt="Accept" style="filter: var(--accent-svg);" />
+                                                  Accept
+                                              </button>
+                                          `
+                                        : html`
+                                              <button class="button" @click=${this.handleCancel}>Cancel</button>
+                                              <div style="flex: 1"></div>
+                                              <button class="button inner-buttons" @click=${this.handleShowCodeEditor}>
+                                                  <img src="/a7/plugins/latex-element/code.svg" alt="Code" />
+                                              </button>
+                                              <button class="button primary-button inner-buttons" @click=${this.handleAiUpdate}>
+                                                  <img src="/a7/plugins/latex-element/up.svg" alt="AI" />
+                                              </button>
+                                          `}
+                              </div>
+                          </div>
+                      </div>
+                  `
+                : ''}
+            ${this._showCodeEditor
+                ? html`
+                      <div class="dialog">
+                          <textarea class="code-editor" .value=${this._latex} @input=${this.updateLatex}></textarea>
+                          <div class="dialog-buttons">
+                              <button class="button inner-buttons" @click=${this.handleReset}>Reset</button>
+                              <button class="button inner-buttons" @click=${this.handleCancel}>Cancel</button>
+                              <button class="button inner-buttons primary-button" @click=${this.handleSave}>Save</button>
+                          </div>
+                      </div>
+                  `
+                : ''}
         `;
     }
 }
 
-customElements.define("latex-element", LatexElement);
+customElements.define('latex-element', LatexElement);

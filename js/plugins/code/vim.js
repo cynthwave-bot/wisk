@@ -6,7 +6,7 @@ class VimEditor {
         this.observers = new Set();
         this.lastAction = null;
         this.visualStart = null;
-        
+
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.init());
         } else {
@@ -37,7 +37,7 @@ class VimEditor {
 
         observer.observe(document.body, {
             childList: true,
-            subtree: true
+            subtree: true,
         });
 
         this.observers.add(observer);
@@ -45,11 +45,13 @@ class VimEditor {
 
     findEditableElements(root) {
         const elements = [];
-        
+
         // Function to process a single root element and its shadow DOM
-        const processRoot = (root) => {
+        const processRoot = root => {
             // Get direct elements in this root
-            const inputs = root.querySelectorAll('input[type="text"], input[type="password"], input[type="search"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], textarea, [contenteditable="true"]');
+            const inputs = root.querySelectorAll(
+                'input[type="text"], input[type="password"], input[type="search"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], textarea, [contenteditable="true"]'
+            );
             elements.push(...inputs);
 
             // Find and process all shadow roots
@@ -91,7 +93,7 @@ class VimEditor {
         if (element.dataset.vimEnabled) {
             return;
         }
-        
+
         element.dataset.vimEnabled = 'true';
 
         element.addEventListener('focus', () => {
@@ -106,7 +108,7 @@ class VimEditor {
             this.statusIndicator.style.display = 'none';
         });
 
-        element.addEventListener('keydown', (e) => {
+        element.addEventListener('keydown', e => {
             this.handleKeydown(e);
             this.updateStatus();
         });
@@ -122,9 +124,9 @@ class VimEditor {
 
     updateStatus() {
         const modeText = {
-            'normal': '-- NORMAL --',
-            'insert': '-- INSERT --',
-            'visual': '-- VISUAL --'
+            normal: '-- NORMAL --',
+            insert: '-- INSERT --',
+            visual: '-- VISUAL --',
         };
         this.statusIndicator.textContent = modeText[this.mode] || '';
     }
@@ -133,7 +135,7 @@ class VimEditor {
         if (!this.activeElement) return;
 
         const isContentEditable = this.activeElement.hasAttribute('contenteditable');
-        
+
         if (isContentEditable) {
             this.handleContentEditableKeydown(e);
         } else {
@@ -145,11 +147,11 @@ class VimEditor {
         const element = this.activeElement;
 
         if (this.mode === 'normal') {
-            switch(e.key) {
+            switch (e.key) {
                 case 'i':
                     this.mode = 'insert';
                     return;
-                
+
                 case 'a':
                     this.mode = 'insert';
                     const pos = element.selectionStart;
@@ -235,12 +237,12 @@ class VimEditor {
         const selection = window.getSelection();
 
         if (this.mode === 'normal') {
-            switch(e.key) {
+            switch (e.key) {
                 case 'i':
                     this.mode = 'insert';
                     e.preventDefault();
                     return;
-                    
+
                 case 'a':
                     this.mode = 'insert';
                     selection.modify('move', 'forward', 'character');
@@ -367,9 +369,8 @@ class VimEditor {
                     }
                     break;
             }
-
         } else if (this.mode === 'visual') {
-            switch(e.key) {
+            switch (e.key) {
                 case 'Escape':
                     this.mode = 'normal';
                     selection.collapseToEnd();
@@ -458,9 +459,8 @@ class VimEditor {
             delete element.dataset.vimEnabled;
         });
 
-        const shadowHosts = Array.from(document.querySelectorAll('*'))
-            .filter(el => el.shadowRoot);
-        
+        const shadowHosts = Array.from(document.querySelectorAll('*')).filter(el => el.shadowRoot);
+
         shadowHosts.forEach(host => {
             const editables = host.shadowRoot.querySelectorAll('[data-vim-enabled]');
             editables.forEach(editable => {

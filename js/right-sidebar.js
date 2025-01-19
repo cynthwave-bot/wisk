@@ -8,32 +8,32 @@ let rightSidebarWidth = parseInt(localStorage.getItem('rightSidebarWidth')) || D
 function initializeRightSidebarResize() {
     const sidebar = byQuery('.right-sidebar');
     if (!sidebar || window.innerWidth < 900) return;
-    
+
     // Only set position relative in desktop mode
     if (window.innerWidth >= 900) {
         sidebar.style.position = 'relative';
     }
-    
+
     // Create resize handle if it doesn't exist
     if (!sidebar.querySelector('.resize-handle')) {
         const handle = document.createElement('div');
         handle.className = 'resize-handle resize-handle-left';
-        
+
         let startX;
         let startWidth;
-        
+
         handle.addEventListener('mousedown', initResize);
-        
+
         function initResize(e) {
             if (window.innerWidth < 900) return;
             startX = e.clientX;
             startWidth = parseInt(getComputedStyle(sidebar).width, 10);
-            
+
             document.addEventListener('mousemove', resize);
             document.addEventListener('mouseup', stopResize);
             document.body.classList.add('sidebar-resizing');
         }
-        
+
         function resize(e) {
             if (window.innerWidth < 900) return;
             const diff = startX - e.clientX;
@@ -43,13 +43,13 @@ function initializeRightSidebarResize() {
             localStorage.setItem('rightSidebarWidth', newWidth);
             window.dispatchEvent(new Event('resize'));
         }
-        
+
         function stopResize() {
             document.removeEventListener('mousemove', resize);
             document.removeEventListener('mouseup', stopResize);
             document.body.classList.remove('sidebar-resizing');
         }
-        
+
         sidebar.appendChild(handle);
     }
 }
@@ -59,7 +59,7 @@ function showRightSidebar(component, title) {
     byQuery('.right-sidebar-title').innerText = title;
     byQuery('.right-sidebar-body').innerHTML = `<${component}></${component}>`;
     sidebar.classList.remove('right-sidebar-hidden');
-    
+
     if (window.innerWidth >= 900) {
         sidebar.style.width = `${rightSidebarWidth}px`;
         sidebar.style.position = 'relative';
@@ -68,7 +68,7 @@ function showRightSidebar(component, title) {
         sidebar.style.position = 'fixed';
         sidebar.style.removeProperty('width');
     }
-    
+
     if (byQuery(component).opened) byQuery(component).opened();
     window.dispatchEvent(new Event('resize'));
 }
@@ -86,7 +86,7 @@ function toggleRightSidebarNew(component, title) {
     const sidebar = byQuery('.right-sidebar');
     const titleElement = byQuery('.right-sidebar-title');
     const allComponents = byQuery('.right-sidebar-body').querySelectorAll('[data-plugin-component]');
-    
+
     if (sidebar.classList.contains('right-sidebar-hidden')) {
         if (byQuery(component).opened) byQuery(component).opened();
         titleElement.innerText = title;
@@ -94,7 +94,7 @@ function toggleRightSidebarNew(component, title) {
             comp.style.display = comp.tagName.toLowerCase() === component.toLowerCase() ? '' : 'none';
         });
         sidebar.classList.remove('right-sidebar-hidden');
-        
+
         if (window.innerWidth >= 900) {
             sidebar.style.width = `${rightSidebarWidth}px`;
             sidebar.style.position = 'relative';
@@ -124,7 +124,7 @@ function toggleRightSidebarNew(component, title) {
 window.addEventListener('resize', () => {
     const sidebar = byQuery('.right-sidebar');
     if (!sidebar) return;
-    
+
     if (window.innerWidth >= 900) {
         sidebar.style.position = 'relative';
         if (!sidebar.classList.contains('right-sidebar-hidden')) {

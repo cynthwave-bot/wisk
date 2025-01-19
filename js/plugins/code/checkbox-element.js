@@ -4,36 +4,36 @@ class CheckboxElement extends BaseTextElement {
         this.indent = 0;
         this.checked = false;
         this.render();
-        
-        this.checkbox = this.shadowRoot.querySelector("#checkbox");
+
+        this.checkbox = this.shadowRoot.querySelector('#checkbox');
         this.updateIndent();
         this.updateCheckbox();
-        
+
         this.updatePlaceholder();
     }
 
     connectedCallback() {
         super.connectedCallback();
-        this.checkbox = this.shadowRoot.querySelector("#checkbox");
+        this.checkbox = this.shadowRoot.querySelector('#checkbox');
         this.updateIndent();
         this.updateCheckbox();
         this.updatePlaceholder();
 
-        this.checkbox.addEventListener("change", this.onCheckboxChange.bind(this));
+        this.checkbox.addEventListener('change', this.onCheckboxChange.bind(this));
     }
 
     updatePlaceholder() {
         if (this.editable) {
             const isEmpty = !this.editable.innerHTML.trim();
             this.editable.classList.toggle('empty', isEmpty);
-            this.editable.dataset.placeholder = this.getAttribute("placeholder") || this.placeholder;
+            this.editable.dataset.placeholder = this.getAttribute('placeholder') || this.placeholder;
         }
     }
 
     updateIndent() {
         const indentWidth = 20;
         this.shadowRoot.querySelectorAll('.indent').forEach(el => el.remove());
-        const container = this.shadowRoot.querySelector("#list-outer");
+        const container = this.shadowRoot.querySelector('#list-outer');
         for (let i = 0; i < this.indent; i++) {
             const indentSpan = document.createElement('span');
             indentSpan.className = 'indent';
@@ -56,10 +56,10 @@ class CheckboxElement extends BaseTextElement {
 
     getValue() {
         return {
-            textContent: this.editable?.innerHTML || "",
+            textContent: this.editable?.innerHTML || '',
             indent: this.indent,
             checked: this.checked,
-            references: this.references || []
+            references: this.references || [],
         };
     }
 
@@ -68,7 +68,7 @@ class CheckboxElement extends BaseTextElement {
             return;
         }
 
-        if (path === "value.append") {
+        if (path === 'value.append') {
             this.editable.innerHTML += value.textContent;
             if (value.references && value.references.length) {
                 this.references = this.references.concat(value.references);
@@ -79,7 +79,7 @@ class CheckboxElement extends BaseTextElement {
             this.checked = value.checked || false;
             this.references = value.references || [];
         }
-        
+
         this.updateIndent();
         this.updateCheckbox();
     }
@@ -88,35 +88,35 @@ class CheckboxElement extends BaseTextElement {
         event.preventDefault();
         const selection = this.shadowRoot.getSelection();
         const range = selection.getRangeAt(0);
-        
+
         const beforeRange = document.createRange();
         beforeRange.setStart(this.editable, 0);
         beforeRange.setEnd(range.startContainer, range.startOffset);
-        
+
         const afterRange = document.createRange();
         afterRange.setStart(range.endContainer, range.endOffset);
         afterRange.setEnd(this.editable, this.editable.childNodes.length);
-        
+
         const beforeContainer = document.createElement('div');
         const afterContainer = document.createElement('div');
-        
+
         beforeContainer.appendChild(beforeRange.cloneContents());
         afterContainer.appendChild(afterRange.cloneContents());
-        
+
         this.editable.innerHTML = beforeContainer.innerHTML;
         this.sendUpdates();
 
         if (this.editable.innerText.trim().length === 0) {
-            window.wisk.editor.changeBlockType(this.id, { textContent: afterContainer.innerHTML }, "text-element");
+            window.wisk.editor.changeBlockType(this.id, { textContent: afterContainer.innerHTML }, 'text-element');
         } else {
             window.wisk.editor.createNewBlock(
-                this.id, 
-                "checkbox-element", 
-                { 
+                this.id,
+                'checkbox-element',
+                {
                     textContent: afterContainer.innerHTML,
                     indent: this.indent,
-                    checked: false 
-                }, 
+                    checked: false,
+                },
                 { x: 0 }
             );
         }
@@ -137,8 +137,11 @@ class CheckboxElement extends BaseTextElement {
                     const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
                     if (prevComponentDetail.textual) {
                         const len = prevDomElement.getTextContent().text.length;
-                        window.wisk.editor.updateBlock(prevElement.id, "value.append", {textContent: this.editable.innerHTML, references: this.references});
-                        window.wisk.editor.focusBlock(prevElement.id, {x: len});
+                        window.wisk.editor.updateBlock(prevElement.id, 'value.append', {
+                            textContent: this.editable.innerHTML,
+                            references: this.references,
+                        });
+                        window.wisk.editor.focusBlock(prevElement.id, { x: len });
                     }
                     window.wisk.editor.deleteBlock(this.id);
                 }
@@ -153,12 +156,12 @@ class CheckboxElement extends BaseTextElement {
             this.updateIndent();
             this.sendUpdates();
         } else {
-            document.execCommand("insertText", false, "    ");
+            document.execCommand('insertText', false, '    ');
         }
     }
 
     handleBeforeInput(event) {
-        if (event.inputType === 'insertText' && event.data === '/' && this.editable.innerText.trim() === "") {
+        if (event.inputType === 'insertText' && event.data === '/' && this.editable.innerText.trim() === '') {
             event.preventDefault();
             window.wisk.editor.showSelector(this.id);
         } else if (event.inputType === 'insertText' && event.data === ' ' && this.getFocus() === 0) {
@@ -286,9 +289,9 @@ class CheckboxElement extends BaseTextElement {
         return {
             html: this.editable.innerHTML,
             text: this.editable.innerText,
-            markdown: markdown
-        }
+            markdown: markdown,
+        };
     }
 }
 
-customElements.define("checkbox-element", CheckboxElement);
+customElements.define('checkbox-element', CheckboxElement);

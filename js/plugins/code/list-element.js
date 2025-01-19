@@ -3,22 +3,22 @@ class ListElement extends BaseTextElement {
         super();
         this.indent = 0;
         this.render();
-        
-        this.dotElement = this.shadowRoot.querySelector("#dot");
+
+        this.dotElement = this.shadowRoot.querySelector('#dot');
         this.updateIndent();
     }
 
     connectedCallback() {
         super.connectedCallback();
-        this.dotElement = this.shadowRoot.querySelector("#dot");
+        this.dotElement = this.shadowRoot.querySelector('#dot');
         this.updateIndent();
     }
 
     getValue() {
         return {
-            textContent: this.editable?.innerHTML || "",
+            textContent: this.editable?.innerHTML || '',
             indent: this.indent,
-            references: this.references || []
+            references: this.references || [],
         };
     }
 
@@ -27,7 +27,7 @@ class ListElement extends BaseTextElement {
             return;
         }
 
-        if (path === "value.append") {
+        if (path === 'value.append') {
             this.editable.innerHTML += value.textContent;
             if (value.references && value.references.length) {
                 this.references = this.references.concat(value.references);
@@ -45,12 +45,12 @@ class ListElement extends BaseTextElement {
         const dotWidth = 20;
         if (this.dotElement && this.editable) {
             this.dotElement.style.left = `${this.indent * indentWidth}px`;
-            this.editable.style.paddingLeft = `${(this.indent * indentWidth) + dotWidth}px`;
+            this.editable.style.paddingLeft = `${this.indent * indentWidth + dotWidth}px`;
         }
     }
 
     handleBeforeInput(event) {
-        if (event.inputType === 'insertText' && event.data === '/' && this.editable.innerText.trim() === "") {
+        if (event.inputType === 'insertText' && event.data === '/' && this.editable.innerText.trim() === '') {
             event.preventDefault();
             window.wisk.editor.showSelector(this.id);
         } else if (event.inputType === 'insertText' && event.data === ' ' && this.getFocus() === 0) {
@@ -65,34 +65,34 @@ class ListElement extends BaseTextElement {
         event.preventDefault();
         const selection = this.shadowRoot.getSelection();
         const range = selection.getRangeAt(0);
-        
+
         const beforeRange = document.createRange();
         beforeRange.setStart(this.editable, 0);
         beforeRange.setEnd(range.startContainer, range.startOffset);
-        
+
         const afterRange = document.createRange();
         afterRange.setStart(range.endContainer, range.endOffset);
         afterRange.setEnd(this.editable, this.editable.childNodes.length);
-        
+
         const beforeContainer = document.createElement('div');
         const afterContainer = document.createElement('div');
-        
+
         beforeContainer.appendChild(beforeRange.cloneContents());
         afterContainer.appendChild(afterRange.cloneContents());
-        
+
         this.editable.innerHTML = beforeContainer.innerHTML;
         this.sendUpdates();
 
         if (this.editable.innerText.trim().length === 0) {
-            window.wisk.editor.changeBlockType(this.id, { textContent: afterContainer.innerHTML }, "text-element");
+            window.wisk.editor.changeBlockType(this.id, { textContent: afterContainer.innerHTML }, 'text-element');
         } else {
             window.wisk.editor.createNewBlock(
-                this.id, 
-                "list-element", 
-                { 
+                this.id,
+                'list-element',
+                {
                     textContent: afterContainer.innerHTML,
-                    indent: this.indent
-                }, 
+                    indent: this.indent,
+                },
                 { x: 0 }
             );
         }
@@ -113,8 +113,11 @@ class ListElement extends BaseTextElement {
                     const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
                     if (prevComponentDetail.textual) {
                         const len = prevDomElement.getTextContent().text.length;
-                        window.wisk.editor.updateBlock(prevElement.id, "value.append", {textContent: this.editable.innerHTML, references: this.references});
-                        window.wisk.editor.focusBlock(prevElement.id, {x: len});
+                        window.wisk.editor.updateBlock(prevElement.id, 'value.append', {
+                            textContent: this.editable.innerHTML,
+                            references: this.references,
+                        });
+                        window.wisk.editor.focusBlock(prevElement.id, { x: len });
                     }
                     window.wisk.editor.deleteBlock(this.id);
                 }
@@ -129,7 +132,7 @@ class ListElement extends BaseTextElement {
             this.updateIndent();
             this.sendUpdates();
         } else {
-            document.execCommand("insertText", false, "    ");
+            document.execCommand('insertText', false, '    ');
         }
     }
 
@@ -236,9 +239,9 @@ class ListElement extends BaseTextElement {
         return {
             html: this.editable.innerHTML,
             text: this.editable.innerText,
-            markdown: markdown
-        }
+            markdown: markdown,
+        };
     }
 }
 
-customElements.define("list-element", ListElement);
+customElements.define('list-element', ListElement);

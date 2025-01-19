@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class CiteElement extends LitElement {
     static styles = css`
@@ -36,14 +36,14 @@ class CiteElement extends LitElement {
             display: block;
         }
     `;
-    
+
     static properties = {
         referenceId: { type: String, reflect: true, attribute: 'reference-id' },
         citation: { type: String, reflect: true },
         _showDialog: { type: Boolean, state: true },
-        _formattedCitation: { type: String, state: true }
+        _formattedCitation: { type: String, state: true },
     };
-    
+
     constructor() {
         super();
         this.referenceId = '';
@@ -52,14 +52,14 @@ class CiteElement extends LitElement {
         this._formattedCitation = '';
         this._hideTimeout = null;
     }
-    
+
     connectedCallback() {
         super.connectedCallback();
         this.addEventListener('click', this._handleClick);
         this.addEventListener('mouseenter', this._handleMouseEnter);
         this.addEventListener('mouseleave', this._handleMouseLeave);
     }
-    
+
     disconnectedCallback() {
         super.disconnectedCallback();
         this.removeEventListener('click', this._handleClick);
@@ -69,19 +69,19 @@ class CiteElement extends LitElement {
             clearTimeout(this._hideTimeout);
         }
     }
-    
+
     _handleClick() {
         const citationsManager = document.querySelector('manage-citations');
         if (citationsManager && this.referenceId) {
             citationsManager.highlight(this.referenceId);
         }
     }
-    
+
     async _handleMouseEnter() {
         if (this._hideTimeout) {
             clearTimeout(this._hideTimeout);
         }
-        
+
         const citationsManager = document.querySelector('manage-citations');
         if (citationsManager && this.referenceId) {
             this._formattedCitation = await citationsManager.getFormattedCitation(this.referenceId);
@@ -89,28 +89,30 @@ class CiteElement extends LitElement {
             this.requestUpdate();
         }
     }
-    
+
     _handleMouseLeave() {
         this._hideTimeout = setTimeout(() => {
             this._showDialog = false;
             this.requestUpdate();
         }, 200); // Small delay to prevent flickering when moving between citation and dialog
     }
-    
+
     render() {
         return html`
             ${this.citation}
-            <div class="hover-dialog ${this._showDialog ? 'visible' : ''}"
-                 @mouseenter=${() => {
-                     if (this._hideTimeout) {
-                         clearTimeout(this._hideTimeout);
-                     }
-                 }}
-                 @mouseleave=${this._handleMouseLeave}>
+            <div
+                class="hover-dialog ${this._showDialog ? 'visible' : ''}"
+                @mouseenter=${() => {
+                    if (this._hideTimeout) {
+                        clearTimeout(this._hideTimeout);
+                    }
+                }}
+                @mouseleave=${this._handleMouseLeave}
+            >
                 ${this._formattedCitation}
             </div>
         `;
     }
 }
 
-customElements.define("cite-element", CiteElement);
+customElements.define('cite-element', CiteElement);

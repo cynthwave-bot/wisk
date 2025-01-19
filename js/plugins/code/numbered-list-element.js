@@ -5,14 +5,14 @@ class NumberedListElement extends BaseTextElement {
         this.number = 1;
         this.render();
 
-        this.numberElement = this.shadowRoot.querySelector("#number");
+        this.numberElement = this.shadowRoot.querySelector('#number');
         this.updateIndent();
         this.updateNumber();
     }
 
     connectedCallback() {
         super.connectedCallback();
-        this.numberElement = this.shadowRoot.querySelector("#number");
+        this.numberElement = this.shadowRoot.querySelector('#number');
         this.updateIndent();
         this.updateNumber();
     }
@@ -20,15 +20,15 @@ class NumberedListElement extends BaseTextElement {
     getNumberStyle(num, level) {
         const styles = [
             // Level 0: 1, 2, 3...
-            (n) => n,
+            n => n,
             // Level 1: i, ii, iii...
-            (n) => this.toRoman(n).toLowerCase(),
+            n => this.toRoman(n).toLowerCase(),
             // Level 2: a, b, c...
-            (n) => String.fromCharCode(96 + n),
+            n => String.fromCharCode(96 + n),
             // Level 3: 1, 2, 3... (repeat)
-            (n) => n,
+            n => n,
             // Level 4: i, ii, iii... (repeat)
-            (n) => this.toRoman(n).toLowerCase()
+            n => this.toRoman(n).toLowerCase(),
         ];
 
         return styles[level % styles.length](num);
@@ -49,7 +49,7 @@ class NumberedListElement extends BaseTextElement {
             { value: 9, symbol: 'IX' },
             { value: 5, symbol: 'V' },
             { value: 4, symbol: 'IV' },
-            { value: 1, symbol: 'I' }
+            { value: 1, symbol: 'I' },
         ];
 
         let result = '';
@@ -64,10 +64,10 @@ class NumberedListElement extends BaseTextElement {
 
     getValue() {
         return {
-            textContent: this.editable?.innerHTML || "",
+            textContent: this.editable?.innerHTML || '',
             indent: this.indent,
             number: this.number,
-            references: this.references || []
+            references: this.references || [],
         };
     }
 
@@ -76,7 +76,7 @@ class NumberedListElement extends BaseTextElement {
             return;
         }
 
-        if (path === "value.append") {
+        if (path === 'value.append') {
             this.editable.innerHTML += value.textContent;
             if (value.references && value.references.length) {
                 this.references = this.references.concat(value.references);
@@ -87,7 +87,7 @@ class NumberedListElement extends BaseTextElement {
             this.number = value.number || 1;
             this.references = value.references || [];
         }
-        
+
         this.updateIndent();
         this.updateNumber();
     }
@@ -97,7 +97,7 @@ class NumberedListElement extends BaseTextElement {
         const numberWidth = 24;
         if (this.numberElement && this.editable) {
             this.numberElement.style.left = `${this.indent * indentWidth}px`;
-            this.editable.style.paddingLeft = `${(this.indent * indentWidth) + numberWidth + 8}px`;
+            this.editable.style.paddingLeft = `${this.indent * indentWidth + numberWidth + 8}px`;
             this.updateNumber(); // Update number style when indent changes
         }
     }
@@ -110,7 +110,7 @@ class NumberedListElement extends BaseTextElement {
     }
 
     handleBeforeInput(event) {
-        if (event.inputType === 'insertText' && event.data === '/' && this.editable.innerText.trim() === "") {
+        if (event.inputType === 'insertText' && event.data === '/' && this.editable.innerText.trim() === '') {
             event.preventDefault();
             window.wisk.editor.showSelector(this.id);
         } else if (event.inputType === 'insertText' && event.data === ' ' && this.getFocus() === 0) {
@@ -125,35 +125,35 @@ class NumberedListElement extends BaseTextElement {
         event.preventDefault();
         const selection = this.shadowRoot.getSelection();
         const range = selection.getRangeAt(0);
-        
+
         const beforeRange = document.createRange();
         beforeRange.setStart(this.editable, 0);
         beforeRange.setEnd(range.startContainer, range.startOffset);
-        
+
         const afterRange = document.createRange();
         afterRange.setStart(range.endContainer, range.endOffset);
         afterRange.setEnd(this.editable, this.editable.childNodes.length);
-        
+
         const beforeContainer = document.createElement('div');
         const afterContainer = document.createElement('div');
-        
+
         beforeContainer.appendChild(beforeRange.cloneContents());
         afterContainer.appendChild(afterRange.cloneContents());
-        
+
         this.editable.innerHTML = beforeContainer.innerHTML;
         this.sendUpdates();
 
         if (this.editable.innerText.trim().length === 0) {
-            window.wisk.editor.changeBlockType(this.id, { textContent: afterContainer.innerHTML }, "text-element");
+            window.wisk.editor.changeBlockType(this.id, { textContent: afterContainer.innerHTML }, 'text-element');
         } else {
             window.wisk.editor.createNewBlock(
-                this.id, 
-                "numbered-list-element", 
-                { 
+                this.id,
+                'numbered-list-element',
+                {
                     textContent: afterContainer.innerHTML,
                     indent: this.indent,
-                    number: this.number + 1
-                }, 
+                    number: this.number + 1,
+                },
                 { x: 0 }
             );
         }
@@ -174,8 +174,11 @@ class NumberedListElement extends BaseTextElement {
                     const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
                     if (prevComponentDetail.textual) {
                         const len = prevDomElement.getTextContent().text.length;
-                        window.wisk.editor.updateBlock(prevElement.id, "value.append", {textContent: this.editable.innerHTML, references: this.references});
-                        window.wisk.editor.focusBlock(prevElement.id, {x: len});
+                        window.wisk.editor.updateBlock(prevElement.id, 'value.append', {
+                            textContent: this.editable.innerHTML,
+                            references: this.references,
+                        });
+                        window.wisk.editor.focusBlock(prevElement.id, { x: len });
                     }
                     window.wisk.editor.deleteBlock(this.id);
                 }
@@ -190,7 +193,7 @@ class NumberedListElement extends BaseTextElement {
             this.updateIndent();
             this.sendUpdates();
         } else {
-            document.execCommand("insertText", false, "    ");
+            document.execCommand('insertText', false, '    ');
         }
     }
 
@@ -298,9 +301,9 @@ class NumberedListElement extends BaseTextElement {
         return {
             html: this.editable.innerHTML,
             text: this.editable.innerText,
-            markdown: markdown
-        }
+            markdown: markdown,
+        };
     }
 }
 
-customElements.define("numbered-list-element", NumberedListElement);
+customElements.define('numbered-list-element', NumberedListElement);

@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class CursorCustomizer extends LitElement {
     static styles = css`
@@ -34,25 +34,25 @@ class CursorCustomizer extends LitElement {
     `;
 
     static properties = {
-        selectedTheme: { type: String }
+        selectedTheme: { type: String },
     };
 
     cursors = [
-        { 
-            name: "simple pixel", 
-            arrow: "/a7/plugins/cursor/simple-pixel/arrow.png", 
-            hand: "/a7/plugins/cursor/simple-pixel/hand.png"
+        {
+            name: 'simple pixel',
+            arrow: '/a7/plugins/cursor/simple-pixel/arrow.png',
+            hand: '/a7/plugins/cursor/simple-pixel/hand.png',
         },
-        { 
-            name: "offensive pixel", 
-            arrow: "/a7/plugins/cursor/offensive-pixel/arrow.png", 
-            hand: "/a7/plugins/cursor/offensive-pixel/hand.png"
+        {
+            name: 'offensive pixel',
+            arrow: '/a7/plugins/cursor/offensive-pixel/arrow.png',
+            hand: '/a7/plugins/cursor/offensive-pixel/hand.png',
         },
-        { 
-            name: "christmas",
-            arrow: "/a7/plugins/cursor/christmas/arrow.png",
-            hand: "/a7/plugins/cursor/simple-pixel/hand.png"
-        }
+        {
+            name: 'christmas',
+            arrow: '/a7/plugins/cursor/christmas/arrow.png',
+            hand: '/a7/plugins/cursor/simple-pixel/hand.png',
+        },
     ];
 
     constructor() {
@@ -60,7 +60,7 @@ class CursorCustomizer extends LitElement {
         this.selectedTheme = '';
         this.styleSheet = document.createElement('style');
         document.head.appendChild(this.styleSheet);
-        
+
         // Create styles for shadow roots
         this.shadowStyleSheet = document.createElement('style');
         this.shadowStyleSheet.setAttribute('data-cursor-styles', '');
@@ -70,7 +70,7 @@ class CursorCustomizer extends LitElement {
         super.disconnectedCallback();
         this.styleSheet.remove();
         document.body.style.cursor = 'default';
-        
+
         // Remove styles from all shadow roots
         document.querySelectorAll('*').forEach(el => {
             if (el.shadowRoot) {
@@ -94,9 +94,9 @@ class CursorCustomizer extends LitElement {
         });
 
         // Observer for new shadow roots
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                mutation.addedNodes.forEach((node) => {
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                mutation.addedNodes.forEach(node => {
                     if (node.nodeType === Node.ELEMENT_NODE) {
                         if (node.shadowRoot) {
                             let style = node.shadowRoot.querySelector('[data-cursor-styles]');
@@ -113,7 +113,7 @@ class CursorCustomizer extends LitElement {
 
         observer.observe(document.body, {
             childList: true,
-            subtree: true
+            subtree: true,
         });
     }
 
@@ -153,12 +153,9 @@ class CursorCustomizer extends LitElement {
             <div class="container">
                 <div class="option">
                     Cursor Theme
-                    <select @change=${(e) => this.selectedTheme = e.target.value} 
-                            .value=${this.selectedTheme}>
+                    <select @change=${e => (this.selectedTheme = e.target.value)} .value=${this.selectedTheme}>
                         <option value="">Default</option>
-                        ${this.cursors.map(theme => html`
-                            <option value=${theme.name}>${theme.name}</option>
-                        `)}
+                        ${this.cursors.map(theme => html` <option value=${theme.name}>${theme.name}</option> `)}
                     </select>
                 </div>
             </div>
@@ -166,4 +163,4 @@ class CursorCustomizer extends LitElement {
     }
 }
 
-customElements.define("cursor-customizer", CursorCustomizer);
+customElements.define('cursor-customizer', CursorCustomizer);

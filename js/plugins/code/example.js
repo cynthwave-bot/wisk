@@ -1,23 +1,21 @@
 class SomeElement extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });
+        this.attachShadow({ mode: 'open' });
         this.render();
     }
 
-    setValue(value) {
-    }
+    setValue(value) {}
 
     getValue() {
-        return { };
+        return {};
     }
 
     getCurrentIndex() {
         return 0;
     }
 
-    focusOnIndex(index) {
-    }
+    focusOnIndex(index) {}
 
     render() {
         const innerHTML = `
@@ -35,4 +33,4 @@ class SomeElement extends HTMLElement {
     }
 }
 
-customElements.define("some-element", SomeElement);
+customElements.define('some-element', SomeElement);

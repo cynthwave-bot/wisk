@@ -1,15 +1,15 @@
 class SelectorElement extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });
+        this.attachShadow({ mode: 'open' });
         this.render();
-        this.elementId = "";
+        this.elementId = '';
     }
 
     connectedCallback() {
-        this.shadowRoot.querySelector("#selector-input").addEventListener("keydown", this.handleInput.bind(this));
-        this.shadowRoot.querySelector("#selector-input").addEventListener("keyup", this.handleInput.bind(this));
-        this.shadowRoot.querySelector("#selector-bg").addEventListener("click", this.hide.bind(this));
+        this.shadowRoot.querySelector('#selector-input').addEventListener('keydown', this.handleInput.bind(this));
+        this.shadowRoot.querySelector('#selector-input').addEventListener('keyup', this.handleInput.bind(this));
+        this.shadowRoot.querySelector('#selector-bg').addEventListener('click', this.hide.bind(this));
     }
 
     levenshteinDistance(a, b) {
@@ -28,11 +28,7 @@ class SelectorElement extends HTMLElement {
                 if (b.charAt(i - 1) === a.charAt(j - 1)) {
                     matrix[i][j] = matrix[i - 1][j - 1];
                 } else {
-                    matrix[i][j] = Math.min(
-                        matrix[i - 1][j - 1] + 1,
-                        matrix[i][j - 1] + 1,
-                        matrix[i - 1][j] + 1
-                    );
+                    matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1);
                 }
             }
         }
@@ -62,8 +58,8 @@ class SelectorElement extends HTMLElement {
         var elementData = window.wisk.editor.getElement(this.elementId);
         var callingDetail = window.wisk.plugins.getPluginDetail(elementData.component);
 
-        var dataPluginId = btn.getAttribute("data-plugin-id");
-        var dataContentId = btn.getAttribute("data-content-id");
+        var dataPluginId = btn.getAttribute('data-plugin-id');
+        var dataContentId = btn.getAttribute('data-content-id');
         var newDetail = window.wisk.plugins.pluginData.list[dataPluginId].contents[dataContentId];
 
         window.wisk.editor.changeBlockType(this.elementId, element.getValue(), newDetail.component);
@@ -82,12 +78,12 @@ class SelectorElement extends HTMLElement {
             return;
         }
 
-        if (e.type === "keyup" && (e.keyCode == 13 || e.keyCode == 38 || e.keyCode == 40)) {
+        if (e.type === 'keyup' && (e.keyCode == 13 || e.keyCode == 38 || e.keyCode == 40)) {
             return;
         }
 
         if (e.keyCode === 13) {
-            const focusedButton = this.shadowRoot.querySelector(".selector-button-focused");
+            const focusedButton = this.shadowRoot.querySelector('.selector-button-focused');
             if (focusedButton) {
                 e.preventDefault();
                 this.selectButton(focusedButton);
@@ -96,25 +92,25 @@ class SelectorElement extends HTMLElement {
         }
 
         if (e.keyCode === 38 || e.keyCode === 40) {
-            const buttons = this.shadowRoot.querySelectorAll(".selector-button");
-            let focusedButton = this.shadowRoot.querySelector(".selector-button-focused");
+            const buttons = this.shadowRoot.querySelectorAll('.selector-button');
+            let focusedButton = this.shadowRoot.querySelector('.selector-button-focused');
             if (focusedButton) {
-                focusedButton.classList.remove("selector-button-focused");
+                focusedButton.classList.remove('selector-button-focused');
                 if (e.keyCode === 38) {
                     focusedButton = focusedButton.previousElementSibling || buttons[buttons.length - 1];
                 } else {
                     focusedButton = focusedButton.nextElementSibling || buttons[0];
                 }
-                focusedButton.classList.add("selector-button-focused");
+                focusedButton.classList.add('selector-button-focused');
             } else {
-                buttons[0].classList.add("selector-button-focused");
+                buttons[0].classList.add('selector-button-focused');
             }
 
             // also scroll the buttons
             focusedButton.scrollIntoView({
-                behavior: "smooth",
-                block: "nearest",
-                inline: "nearest",
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'nearest',
             });
             return;
         }
@@ -123,18 +119,16 @@ class SelectorElement extends HTMLElement {
     }
 
     renderButtons(query) {
-        const buttonsContainer = this.shadowRoot.querySelector(".buttons");
-        buttonsContainer.innerHTML = "";
+        const buttonsContainer = this.shadowRoot.querySelector('.buttons');
+        buttonsContainer.innerHTML = '';
 
         for (let key in window.wisk.plugins.pluginData.list) {
-
             if (wisk.plugins.pluginData.list[key].hide) {
                 continue;
             }
 
             for (let i = 0; i < window.wisk.plugins.pluginData.list[key].contents.length; i++) {
-                if (window.wisk.plugins.pluginData.list[key].contents[i].category === "component") {
-
+                if (window.wisk.plugins.pluginData.list[key].contents[i].category === 'component') {
                     // check if it is loaded
                     if (!window.wisk.plugins.loadedPlugins.includes(window.wisk.plugins.pluginData.list[key].contents[i].component)) {
                         continue;
@@ -146,28 +140,28 @@ class SelectorElement extends HTMLElement {
                         continue;
                     }
 
-                    const button = document.createElement("button");
-                    button.classList.add("selector-button");
-                    button.classList.add("font-1");
-                    button.setAttribute("data-plugin-id", key);
-                    button.setAttribute("data-content-id", i);
-                    button.setAttribute("data-title", title);
+                    const button = document.createElement('button');
+                    button.classList.add('selector-button');
+                    button.classList.add('font-1');
+                    button.setAttribute('data-plugin-id', key);
+                    button.setAttribute('data-content-id', i);
+                    button.setAttribute('data-title', title);
 
-                    const img = document.createElement("img");
-                    img.classList.add("plugin-icon");
-                    img.src = SERVER + window.wisk.plugins.pluginData["icon-path"] + window.wisk.plugins.pluginData.list[key].contents[i].icon;
+                    const img = document.createElement('img');
+                    img.classList.add('plugin-icon');
+                    img.src = SERVER + window.wisk.plugins.pluginData['icon-path'] + window.wisk.plugins.pluginData.list[key].contents[i].icon;
 
-                    const p = document.createElement("p");
+                    const p = document.createElement('p');
                     p.innerText = title;
 
                     button.appendChild(img);
                     button.appendChild(p);
 
-                    button.addEventListener("click", () => {
+                    button.addEventListener('click', () => {
                         this.selectButton(button);
                     });
 
-                    button.addEventListener("mouseover", () => {
+                    button.addEventListener('mouseover', () => {
                         this.focusOnButton(button);
                     });
 
@@ -175,32 +169,32 @@ class SelectorElement extends HTMLElement {
                 }
             }
         }
-        const firstButton = this.shadowRoot.querySelector(".selector-button");
+        const firstButton = this.shadowRoot.querySelector('.selector-button');
         if (firstButton) {
-            firstButton.classList.add("selector-button-focused");
+            firstButton.classList.add('selector-button-focused');
         }
     }
 
     focusOnButton(button) {
-        const buttons = this.shadowRoot.querySelectorAll(".selector-button");
-        buttons.forEach((btn) => {
-            btn.classList.remove("selector-button-focused");
+        const buttons = this.shadowRoot.querySelectorAll('.selector-button');
+        buttons.forEach(btn => {
+            btn.classList.remove('selector-button-focused');
         });
-        button.classList.add("selector-button-focused");
+        button.classList.add('selector-button-focused');
     }
 
     show(elementId) {
         this.elementId = elementId;
-        this.shadowRoot.querySelector("#selector-input").value = "";
-        this.shadowRoot.querySelector("#selector").classList.remove("displayNone");
-        this.shadowRoot.querySelector("#selector-bg").classList.remove("displayNone");
-        this.shadowRoot.querySelector("#selector-input").focus();
-        this.renderButtons("");
+        this.shadowRoot.querySelector('#selector-input').value = '';
+        this.shadowRoot.querySelector('#selector').classList.remove('displayNone');
+        this.shadowRoot.querySelector('#selector-bg').classList.remove('displayNone');
+        this.shadowRoot.querySelector('#selector-input').focus();
+        this.renderButtons('');
     }
 
     hide() {
-        this.shadowRoot.querySelector("#selector").classList.add("displayNone");
-        this.shadowRoot.querySelector("#selector-bg").classList.add("displayNone");
+        this.shadowRoot.querySelector('#selector').classList.add('displayNone');
+        this.shadowRoot.querySelector('#selector-bg').classList.add('displayNone');
     }
 
     render() {
@@ -325,4 +319,4 @@ class SelectorElement extends HTMLElement {
     }
 }
 
-customElements.define("selector-element", SelectorElement);
+customElements.define('selector-element', SelectorElement);

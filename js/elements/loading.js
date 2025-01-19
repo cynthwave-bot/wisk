@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class CyLoading extends LitElement {
     static styles = css`
@@ -39,23 +39,23 @@ class CyLoading extends LitElement {
 
     constructor() {
         super();
-        this.width = "20px";
-        this.thickness = "4px";
+        this.width = '20px';
+        this.thickness = '4px';
         this.dark = false;
     }
 
     updated(changedProperties) {
-        if (changedProperties.has("width")) {
-            this.style.setProperty("--loader-width", this.width);
+        if (changedProperties.has('width')) {
+            this.style.setProperty('--loader-width', this.width);
         }
-        if (changedProperties.has("thickness")) {
-            this.style.setProperty("--loader-thickness", this.thickness);
+        if (changedProperties.has('thickness')) {
+            this.style.setProperty('--loader-thickness', this.thickness);
         }
     }
 
     render() {
-        return html` <div class="loader ${this.dark ? "dark" : ""}"></div> `;
+        return html` <div class="loader ${this.dark ? 'dark' : ''}"></div> `;
     }
 }
 
-customElements.define("cy-loading", CyLoading);
+customElements.define('cy-loading', CyLoading);

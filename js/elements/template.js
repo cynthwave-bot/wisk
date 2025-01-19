@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class TemplateElement extends LitElement {
     static styles = css`
@@ -23,4 +23,4 @@ class TemplateElement extends LitElement {
     }
 }
 
-customElements.define("template-element", TemplateElement);
+customElements.define('template-element', TemplateElement);

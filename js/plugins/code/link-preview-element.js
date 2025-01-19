@@ -1,8 +1,8 @@
 class LinkElement extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });
-        this.link = "wisk.cc";
+        this.attachShadow({ mode: 'open' });
+        this.link = 'wisk.cc';
         this.metadata = null;
         this.render();
         this.isVirtualKeyboard = this.checkIfVirtualKeyboard();
@@ -14,12 +14,12 @@ class LinkElement extends HTMLElement {
     }
 
     connectedCallback() {
-        this.editable = this.shadowRoot.querySelector("#editable");
+        this.editable = this.shadowRoot.querySelector('#editable');
         this.bindEvents();
     }
 
     setValue(path, value) {
-        if (path === "value.append") {
+        if (path === 'value.append') {
             this.editable.innerText += value.textContent;
         } else {
             this.editable.innerText = value.textContent;
@@ -36,18 +36,18 @@ class LinkElement extends HTMLElement {
     getValue() {
         return {
             textContent: this.editable.innerText,
-            metadata: this.metadata
+            metadata: this.metadata,
         };
     }
 
     updatePreviewWithMetadata(metadata) {
-        const titleElement = this.shadowRoot.querySelector(".link-preview-title");
-        const descElement = this.shadowRoot.querySelector(".link-preview-description");
-        const imageElement = this.shadowRoot.querySelector(".link-preview-image");
-        const metaElement = this.shadowRoot.querySelector(".link-preview-meta");
+        const titleElement = this.shadowRoot.querySelector('.link-preview-title');
+        const descElement = this.shadowRoot.querySelector('.link-preview-description');
+        const imageElement = this.shadowRoot.querySelector('.link-preview-image');
+        const metaElement = this.shadowRoot.querySelector('.link-preview-meta');
 
-        titleElement.textContent = metadata.title || "No title available";
-        
+        titleElement.textContent = metadata.title || 'No title available';
+
         if (metadata.description) {
             descElement.textContent = metadata.description;
             descElement.style.display = 'block';
@@ -58,7 +58,7 @@ class LinkElement extends HTMLElement {
         if (metadata.favicon) {
             imageElement.src = metadata.favicon;
             imageElement.onerror = () => {
-                imageElement.src = "https://via.placeholder.com/16";
+                imageElement.src = 'https://via.placeholder.com/16';
             };
         }
 
@@ -69,7 +69,7 @@ class LinkElement extends HTMLElement {
             const date = new Date(metadata.publishDate);
             metaInfo.push(date.toLocaleDateString());
         }
-        
+
         if (metaInfo.length > 0) {
             metaElement.textContent = metaInfo.join(' • ');
             metaElement.style.display = 'block';
@@ -96,7 +96,7 @@ class LinkElement extends HTMLElement {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ url })
+                body: JSON.stringify({ url }),
             });
 
             if (!response.ok) {
@@ -104,7 +104,7 @@ class LinkElement extends HTMLElement {
             }
 
             const metadata = await response.json();
-            
+
             if (metadata.error) {
                 throw new Error(metadata.error);
             }
@@ -112,7 +112,6 @@ class LinkElement extends HTMLElement {
             this.metadata = metadata;
             this.updatePreviewWithMetadata(metadata);
             this.sendUpdates();
-
         } catch (error) {
             console.error('Error fetching metadata:', error);
             this.showErrorState();
@@ -121,39 +120,39 @@ class LinkElement extends HTMLElement {
     }
 
     resetPreview() {
-        const titleElement = this.shadowRoot.querySelector(".link-preview-title");
-        const descElement = this.shadowRoot.querySelector(".link-preview-description");
-        const imageElement = this.shadowRoot.querySelector(".link-preview-image");
-        const metaElement = this.shadowRoot.querySelector(".link-preview-meta");
+        const titleElement = this.shadowRoot.querySelector('.link-preview-title');
+        const descElement = this.shadowRoot.querySelector('.link-preview-description');
+        const imageElement = this.shadowRoot.querySelector('.link-preview-image');
+        const metaElement = this.shadowRoot.querySelector('.link-preview-meta');
 
-        titleElement.textContent = "Enter a URL to preview";
+        titleElement.textContent = 'Enter a URL to preview';
         descElement.style.display = 'none';
-        imageElement.src = "https://via.placeholder.com/16";
+        imageElement.src = 'https://via.placeholder.com/16';
         metaElement.style.display = 'none';
         this.metadata = null;
     }
 
     showLoadingState() {
-        const titleElement = this.shadowRoot.querySelector(".link-preview-title");
-        const descElement = this.shadowRoot.querySelector(".link-preview-description");
-        const imageElement = this.shadowRoot.querySelector(".link-preview-image");
-        const metaElement = this.shadowRoot.querySelector(".link-preview-meta");
+        const titleElement = this.shadowRoot.querySelector('.link-preview-title');
+        const descElement = this.shadowRoot.querySelector('.link-preview-description');
+        const imageElement = this.shadowRoot.querySelector('.link-preview-image');
+        const metaElement = this.shadowRoot.querySelector('.link-preview-meta');
 
-        titleElement.textContent = "Loading...";
+        titleElement.textContent = 'Loading...';
         descElement.style.display = 'none';
-        imageElement.src = "https://via.placeholder.com/16";
+        imageElement.src = 'https://via.placeholder.com/16';
         metaElement.style.display = 'none';
     }
 
     showErrorState() {
-        const titleElement = this.shadowRoot.querySelector(".link-preview-title");
-        const descElement = this.shadowRoot.querySelector(".link-preview-description");
-        const imageElement = this.shadowRoot.querySelector(".link-preview-image");
-        const metaElement = this.shadowRoot.querySelector(".link-preview-meta");
+        const titleElement = this.shadowRoot.querySelector('.link-preview-title');
+        const descElement = this.shadowRoot.querySelector('.link-preview-description');
+        const imageElement = this.shadowRoot.querySelector('.link-preview-image');
+        const metaElement = this.shadowRoot.querySelector('.link-preview-meta');
 
-        titleElement.textContent = "Unable to load preview";
+        titleElement.textContent = 'Unable to load preview';
         descElement.style.display = 'none';
-        imageElement.src = "https://via.placeholder.com/16";
+        imageElement.src = 'https://via.placeholder.com/16';
         metaElement.style.display = 'none';
     }
 
@@ -162,8 +161,8 @@ class LinkElement extends HTMLElement {
             Enter: () => this.handleEnterKey(event),
             Backspace: () => this.handleBackspace(event),
             Tab: () => this.handleTab(event),
-            ArrowLeft: () => this.handleArrowKey(event, "next-up", 0),
-            ArrowRight: () => this.handleArrowKey(event, "next-down", this.editable.innerText.length),
+            ArrowLeft: () => this.handleArrowKey(event, 'next-up', 0),
+            ArrowRight: () => this.handleArrowKey(event, 'next-down', this.editable.innerText.length),
         };
 
         const handler = keyHandlers[event.key];
@@ -173,7 +172,7 @@ class LinkElement extends HTMLElement {
     handleEnterKey(event) {
         if (!this.isVirtualKeyboard) {
             event.preventDefault();
-            window.wisk.editor.createNewBlock(this.id, "text-element", { textContent: "" }, { x: 0 });
+            window.wisk.editor.createNewBlock(this.id, 'text-element', { textContent: '' }, { x: 0 });
             return true;
         }
         return false;
@@ -197,7 +196,7 @@ class LinkElement extends HTMLElement {
         const currentOffset = this.getCurrentOffset();
         if (currentOffset === targetOffset) {
             event.preventDefault();
-            if (direction === "next-up") {
+            if (direction === 'next-up') {
                 var prevElement = window.wisk.editor.prevElement(this.id);
                 if (prevElement != null) {
                     const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
@@ -205,7 +204,7 @@ class LinkElement extends HTMLElement {
                         window.wisk.editor.focusBlock(prevElement.id, { x: prevElement.value.textContent.length });
                     }
                 }
-            } else if (direction === "next-down") {
+            } else if (direction === 'next-down') {
                 var nextElement = window.wisk.editor.nextElement(this.id);
                 if (nextElement != null) {
                     const nextComponentDetail = window.wisk.plugins.getPluginDetail(nextElement.component);
@@ -229,11 +228,11 @@ class LinkElement extends HTMLElement {
         if (this.handleSpecialKeys(event)) {
             return;
         }
-        
+
         if (this.link !== text) {
             this.metadata = null;
         }
-        
+
         this.link = text;
         this.sendUpdates();
 
@@ -350,19 +349,19 @@ class LinkElement extends HTMLElement {
     }
 
     bindEvents() {
-        const eventType = this.isVirtualKeyboard ? "input" : "keyup";
+        const eventType = this.isVirtualKeyboard ? 'input' : 'keyup';
         this.editable.addEventListener(eventType, this.onValueUpdated.bind(this));
-        this.editable.addEventListener("focus", () => {
-            if (this.editable.innerText.trim() === "") {
-                this.editable.classList.add("empty");
+        this.editable.addEventListener('focus', () => {
+            if (this.editable.innerText.trim() === '') {
+                this.editable.classList.add('empty');
             }
         });
 
-        this.shadowRoot.querySelector(".open").addEventListener("click", () => {
+        this.shadowRoot.querySelector('.open').addEventListener('click', () => {
             const url = this.link;
-            window.open("https://" + url, "_blank");
+            window.open('https://' + url, '_blank');
         });
     }
 }
 
-customElements.define("link-preview-element", LinkElement);
+customElements.define('link-preview-element', LinkElement);

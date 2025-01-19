@@ -1,14 +1,14 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 // Global promise for Pyodide initialization
-var pyodideReady = new Promise((resolve) => {
+var pyodideReady = new Promise(resolve => {
     if (window.pyodide) {
         resolve(window.pyodide);
         return;
     }
     if (!document.querySelector('script[src*="pyodide"]')) {
         const pyodideScript = document.createElement('script');
-        pyodideScript.src = "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js";
+        pyodideScript.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js';
         pyodideScript.onload = async () => {
             window.pyodide = await loadPyodide();
             resolve(window.pyodide);
@@ -203,7 +203,7 @@ class PyInterpreter extends LitElement {
         this.code = 'print("Hello, World!")';
         this.history = [];
         this.showDialog = false;
-        this.packageName = "";
+        this.packageName = '';
         this.isInitializing = true;
         this.importedPackages = [];
         this.pendingHistory = [];
@@ -212,19 +212,19 @@ class PyInterpreter extends LitElement {
     handleTabKey(e) {
         if (e.key === 'Tab') {
             e.preventDefault();
-            
+
             const textarea = e.target;
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
-            
+
             // Insert 4 spaces at cursor position
             const spaces = '    ';
             const newValue = textarea.value.substring(0, start) + spaces + textarea.value.substring(end);
-            
+
             // Update the textarea value
             textarea.value = newValue;
             this.code = newValue;
-            
+
             // Move cursor after the inserted spaces
             textarea.selectionStart = textarea.selectionEnd = start + 4;
         }
@@ -236,37 +236,37 @@ class PyInterpreter extends LitElement {
     }
 
     async initializePyodide() {
-        this.addToHistory("Initializing Pyodide...", "output");
-        
+        this.addToHistory('Initializing Pyodide...', 'output');
+
         try {
             const pyodide = await pyodideReady;
             this.pyodide = pyodide;
             this.isInitializing = false;
-            this.addToHistory("Pyodide initialized and ready!", "output");
-            
+            this.addToHistory('Pyodide initialized and ready!', 'output');
+
             // Process any pending imports and history
             await this.processPendingImports();
             await this.processPendingHistory();
         } catch (error) {
-            this.addToHistory(`Error initializing Pyodide: ${error}`, "error");
+            this.addToHistory(`Error initializing Pyodide: ${error}`, 'error');
             this.isInitializing = false;
         }
-        
+
         this.requestUpdate();
     }
 
     async processPendingImports() {
         if (this.importedPackages.length === 0) return;
 
-        await this.pyodide.loadPackage("micropip");
-        const micropip = this.pyodide.pyimport("micropip");
-        
+        await this.pyodide.loadPackage('micropip');
+        const micropip = this.pyodide.pyimport('micropip');
+
         for (const pkg of this.importedPackages) {
             try {
                 await micropip.install(pkg);
-                this.addToHistory(`Imported package: ${pkg}`, "output");
+                this.addToHistory(`Imported package: ${pkg}`, 'output');
             } catch (error) {
-                this.addToHistory(`Error importing ${pkg}: ${error}`, "error");
+                this.addToHistory(`Error importing ${pkg}: ${error}`, 'error');
             }
         }
     }
@@ -275,8 +275,8 @@ class PyInterpreter extends LitElement {
         if (this.pendingHistory.length === 0) return;
 
         for (const item of this.pendingHistory) {
-            if (item.type === "input") {
-                this.addToHistory(item.content, "input");
+            if (item.type === 'input') {
+                this.addToHistory(item.content, 'input');
                 await this.executePythonCode(item.content);
             }
         }
@@ -287,14 +287,14 @@ class PyInterpreter extends LitElement {
         this.history = [...this.history, { content, type }];
         this.requestUpdate();
         this.updateComplete.then(() => {
-            const history = this.shadowRoot.getElementById("history");
+            const history = this.shadowRoot.getElementById('history');
             if (history) history.scrollTop = history.scrollHeight;
         });
     }
 
     async executePythonCode(code) {
         if (!this.pyodide) {
-            this.addToHistory("Pyodide is not initialized yet", "error");
+            this.addToHistory('Pyodide is not initialized yet', 'error');
             return;
         }
 
@@ -306,19 +306,19 @@ class PyInterpreter extends LitElement {
             `);
 
             const result = this.pyodide.runPython(code);
-            const stdout = this.pyodide.runPython("sys.stdout.getvalue()");
+            const stdout = this.pyodide.runPython('sys.stdout.getvalue()');
 
             if (stdout) {
-                this.addToHistory(stdout.trim(), "output");
+                this.addToHistory(stdout.trim(), 'output');
             }
 
             if (result !== undefined && result !== null) {
-                this.addToHistory(`Return value: ${result}`, "output");
+                this.addToHistory(`Return value: ${result}`, 'output');
             }
 
-            this.pyodide.runPython("sys.stdout = sys.__stdout__");
+            this.pyodide.runPython('sys.stdout = sys.__stdout__');
         } catch (error) {
-            this.addToHistory(`${error}`, "error");
+            this.addToHistory(`${error}`, 'error');
         }
     }
 
@@ -327,13 +327,13 @@ class PyInterpreter extends LitElement {
 
         if (value.code !== undefined) this.code = value.code;
         if (value.importedPackages !== undefined) this.importedPackages = value.importedPackages;
-        
+
         if (value.history !== undefined) {
             if (this.pyodide) {
                 this.history = [];
                 for (const item of value.history) {
-                    if (item.type === "input") {
-                        this.addToHistory(item.content, "input");
+                    if (item.type === 'input') {
+                        this.addToHistory(item.content, 'input');
                         await this.executePythonCode(item.content);
                     }
                 }
@@ -355,37 +355,37 @@ class PyInterpreter extends LitElement {
 
     async importPackage() {
         if (!this.pyodide) {
-            this.addToHistory("Pyodide is not initialized yet", "error");
+            this.addToHistory('Pyodide is not initialized yet', 'error');
             return;
         }
 
         const packageName = this.packageName.trim();
         if (!packageName) {
-            this.addToHistory("Please enter a package name", "error");
+            this.addToHistory('Please enter a package name', 'error');
             return;
         }
 
         if (this.importedPackages.includes(packageName)) {
-            this.addToHistory(`Package ${packageName} is already imported`, "output");
+            this.addToHistory(`Package ${packageName} is already imported`, 'output');
             this.showDialog = false;
             return;
         }
 
         try {
-            await this.pyodide.loadPackage("micropip");
-            const micropip = this.pyodide.pyimport("micropip");
+            await this.pyodide.loadPackage('micropip');
+            const micropip = this.pyodide.pyimport('micropip');
             await micropip.install(packageName);
-            
+
             this.importedPackages.push(packageName);
-            this.addToHistory(`Successfully imported ${packageName}`, "output");
+            this.addToHistory(`Successfully imported ${packageName}`, 'output');
             this.showDialog = false;
-            this.packageName = "";
-            
+            this.packageName = '';
+
             if (window.wisk?.editor?.justUpdates) {
                 window.wisk.editor.justUpdates(this.id);
             }
         } catch (error) {
-            this.addToHistory(`Error importing ${packageName}: ${error}`, "error");
+            this.addToHistory(`Error importing ${packageName}: ${error}`, 'error');
         }
 
         this.requestUpdate();
@@ -395,85 +395,114 @@ class PyInterpreter extends LitElement {
         if (!this.code.trim()) return;
 
         if (!this.pyodide) {
-            this.addToHistory("Pyodide is not initialized yet", "error");
+            this.addToHistory('Pyodide is not initialized yet', 'error');
             return;
         }
 
-        this.addToHistory(this.code, "input");
+        this.addToHistory(this.code, 'input');
         await this.executePythonCode(this.code);
-        
-        this.code = "";
+
+        this.code = '';
         if (window.wisk?.editor?.justUpdates) {
             window.wisk.editor.justUpdates(this.id);
         }
-        
-        const textarea = this.shadowRoot.querySelector("textarea");
-        if (textarea) textarea.value = "";
-        
+
+        const textarea = this.shadowRoot.querySelector('textarea');
+        if (textarea) textarea.value = '';
+
         this.requestUpdate();
     }
 
     render() {
         return html`
             <div id="history">
-                ${this.history.map(item => html`
-                    <div class="history-item ${item.type}">
-                        <pre>${item.content}</pre>
-                    </div>
-                `)}
+                ${this.history.map(
+                    item => html`
+                        <div class="history-item ${item.type}">
+                            <pre>${item.content}</pre>
+                        </div>
+                    `
+                )}
                 <div style="padding: var(--padding-w1); display: flex; justify-content: center; gap: 10px">
-                    <button class="btn" @click=${() => {
-                        this.history = [];
-                        this.requestUpdate();
-                        if (window.wisk?.editor?.justUpdates) {
-                            window.wisk.editor.justUpdates(this.id);
-                        }
-                    }} style="${window.wisk.editor.wiskSite? 'display: none;' : ''}">Clear History</button>
-                    <button class="btn" @click=${() => {
-                        this.showDialog = true;
-                        this.requestUpdate();
-                    }} style="${window.wisk.editor.wiskSite? 'display: none;' : ''}">Import Package</button>
+                    <button
+                        class="btn"
+                        @click=${() => {
+                            this.history = [];
+                            this.requestUpdate();
+                            if (window.wisk?.editor?.justUpdates) {
+                                window.wisk.editor.justUpdates(this.id);
+                            }
+                        }}
+                        style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}"
+                    >
+                        Clear History
+                    </button>
+                    <button
+                        class="btn"
+                        @click=${() => {
+                            this.showDialog = true;
+                            this.requestUpdate();
+                        }}
+                        style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}"
+                    >
+                        Import Package
+                    </button>
                 </div>
             </div>
             <div class="uwu" style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}">
-                <textarea 
-                    placeholder="print('hello world')" 
-                    rows="2" 
-                    @input=${(e) => (this.code = e.target.value)}
+                <textarea
+                    placeholder="print('hello world')"
+                    rows="2"
+                    @input=${e => (this.code = e.target.value)}
                     @keydown=${this.handleTabKey}
                     .value=${this.code}
                     spellcheck="false"
                 ></textarea>
-                <button id="run" @click=${this.evaluatePython} ?disabled=${this.isInitializing} style="${window.wisk.editor.wiskSite? 'display: none;' : ''}">
-                    ${this.isInitializing ? "Initializing..." : "Run"}
+                <button
+                    id="run"
+                    @click=${this.evaluatePython}
+                    ?disabled=${this.isInitializing}
+                    style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}"
+                >
+                    ${this.isInitializing ? 'Initializing...' : 'Run'}
                 </button>
             </div>
-            ${this.showDialog ? html`
-                <div class="dialog-backdrop" @click=${() => {
-                    this.showDialog = false;
-                    this.requestUpdate();
-                }}></div>
-                <div class="dialog">
-                    <h3>Import Package</h3>
-                    <input 
-                        placeholder="Enter package name" 
-                        @input=${(e) => {
-                            this.packageName = e.target.value;
-                            this.requestUpdate();
-                        }}
-                        .value=${this.packageName}
-                    />
-                    <div style="display: flex; gap: var(--gap-3); justify-content: flex-end;">
-                        <button id="cancel" @click=${() => {
-                            this.showDialog = false;
-                            this.requestUpdate();
-                        }}>Cancel</button>
-                        <button id="import" @click=${this.importPackage}>Import</button>
-                    </div>
-                </div>
-            ` : ""}
+            ${this.showDialog
+                ? html`
+                      <div
+                          class="dialog-backdrop"
+                          @click=${() => {
+                              this.showDialog = false;
+                              this.requestUpdate();
+                          }}
+                      ></div>
+                      <div class="dialog">
+                          <h3>Import Package</h3>
+                          <input
+                              placeholder="Enter package name"
+                              @input=${e => {
+                                  this.packageName = e.target.value;
+                                  this.requestUpdate();
+                              }}
+                              .value=${this.packageName}
+                          />
+                          <div style="display: flex; gap: var(--gap-3); justify-content: flex-end;">
+                              <button
+                                  id="cancel"
+                                  @click=${() => {
+                                      this.showDialog = false;
+                                      this.requestUpdate();
+                                  }}
+                              >
+                                  Cancel
+                              </button>
+                              <button id="import" @click=${this.importPackage}>Import</button>
+                          </div>
+                      </div>
+                  `
+                : ''}
         `;
     }
 }
 
-customElements.define("py-interpreter", PyInterpreter);
+customElements.define('py-interpreter', PyInterpreter);

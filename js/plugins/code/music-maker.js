@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class MusicMaker extends LitElement {
     static styles = css`
@@ -98,7 +98,7 @@ class MusicMaker extends LitElement {
             flex: 1;
             position: relative;
         }
-        input[type="range"] {
+        input[type='range'] {
             -webkit-appearance: none;
             width: 100%;
             height: 6px;
@@ -106,7 +106,7 @@ class MusicMaker extends LitElement {
             border-radius: 3px;
             outline: none;
         }
-        input[type="range"]::-webkit-slider-thumb {
+        input[type='range']::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 16px;
             height: 16px;
@@ -116,7 +116,7 @@ class MusicMaker extends LitElement {
             border: 2px solid var(--border-1);
             transition: all 0.2s ease;
         }
-        input[type="range"]::-webkit-slider-thumb:hover {
+        input[type='range']::-webkit-slider-thumb:hover {
             background: var(--text-2);
         }
         .value-display {
@@ -132,7 +132,7 @@ class MusicMaker extends LitElement {
         playing: { type: Boolean },
         currentStep: { type: Number },
         tempo: { type: Number },
-        stepCount: { type: Number }
+        stepCount: { type: Number },
     };
 
     constructor() {
@@ -141,7 +141,7 @@ class MusicMaker extends LitElement {
             { name: 'Kick', pattern: new Array(16).fill(false) },
             { name: 'Snare', pattern: new Array(16).fill(false) },
             { name: 'Hi-hat', pattern: new Array(16).fill(false) },
-            { name: 'Clap', pattern: new Array(16).fill(false) }
+            { name: 'Clap', pattern: new Array(16).fill(false) },
         ];
         this.playing = false;
         this.currentStep = 0;
@@ -155,9 +155,10 @@ class MusicMaker extends LitElement {
         // Update each track's pattern array
         this.tracks = this.tracks.map(track => ({
             ...track,
-            pattern: track.pattern.length < newStepCount 
-                ? [...track.pattern, ...new Array(newStepCount - track.pattern.length).fill(false)]
-                : track.pattern.slice(0, newStepCount)
+            pattern:
+                track.pattern.length < newStepCount
+                    ? [...track.pattern, ...new Array(newStepCount - track.pattern.length).fill(false)]
+                    : track.pattern.slice(0, newStepCount),
         }));
         this.stepCount = newStepCount;
         this.sendUpdates();
@@ -178,10 +179,10 @@ class MusicMaker extends LitElement {
     async initializeSounds() {
         // Simple oscillator-based sounds
         this.sounds = {
-            'Kick': await this.createKickSound(),
-            'Snare': await this.createSnareSound(),
+            Kick: await this.createKickSound(),
+            Snare: await this.createSnareSound(),
             'Hi-hat': await this.createHihatSound(),
-            'Clap': await this.createClapSound()
+            Clap: await this.createClapSound(),
         };
     }
 
@@ -239,16 +240,16 @@ class MusicMaker extends LitElement {
         if (sound) {
             const oscillator = this.audioContext.createOscillator();
             const gainNode = this.audioContext.createGain();
-            
+
             oscillator.frequency.value = sound.oscillator.frequency.value;
             oscillator.type = sound.oscillator.type;
             oscillator.connect(gainNode);
             gainNode.connect(this.audioContext.destination);
-            
+
             oscillator.start();
             gainNode.gain.setValueAtTime(0.5, this.audioContext.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-            
+
             setTimeout(() => {
                 oscillator.stop();
                 oscillator.disconnect();
@@ -270,17 +271,17 @@ class MusicMaker extends LitElement {
         if (this.audioContext.state === 'suspended') {
             this.audioContext.resume();
         }
-        
+
         this.playing = true;
-        const stepTime = (60000 / this.tempo) / 4;
-        
+        const stepTime = 60000 / this.tempo / 4;
+
         this.intervalId = setInterval(() => {
             this.tracks.forEach((track, trackIndex) => {
                 if (track.pattern[this.currentStep]) {
                     this.playSound(track.name);
                 }
             });
-            
+
             this.currentStep = (this.currentStep + 1) % this.stepCount;
             this.requestUpdate();
         }, stepTime);
@@ -332,7 +333,7 @@ class MusicMaker extends LitElement {
         return {
             tracks: this.tracks,
             tempo: this.tempo,
-            stepCount: this.stepCount
+            stepCount: this.stepCount,
         };
     }
 
@@ -347,16 +348,12 @@ class MusicMaker extends LitElement {
     render() {
         return html`
             <div class="controls">
-                <button @click="${this.togglePlaying}" class="${this.playing ? 'playing' : ''}"> ${this.playing ? 'Stop' : 'Play'} </button>
-                
+                <button @click="${this.togglePlaying}" class="${this.playing ? 'playing' : ''}">${this.playing ? 'Stop' : 'Play'}</button>
+
                 <div class="slider-control">
                     <label>Tempo</label>
                     <div class="slider-wrapper">
-                        <input type="range" 
-                               min="60" 
-                               max="200" 
-                               .value="${this.tempo}"
-                               @input="${this.handleTempoChange}" />
+                        <input type="range" min="60" max="200" .value="${this.tempo}" @input="${this.handleTempoChange}" />
                     </div>
                     <div class="value-display">${this.tempo} BPM</div>
                 </div>
@@ -364,33 +361,37 @@ class MusicMaker extends LitElement {
                 <div class="slider-control">
                     <label>Steps</label>
                     <div class="slider-wrapper">
-                        <input type="range" 
-                               min="4" 
-                               max="32" 
-                               step="4"
-                               .value="${this.stepCount}"
-                               @input="${this.handleStepCountChange}" />
+                        <input type="range" min="4" max="32" step="4" .value="${this.stepCount}" @input="${this.handleStepCountChange}" />
                     </div>
                     <div class="value-display">${this.stepCount}</div>
                 </div>
             </div>
-            
+
             <div class="sequencer-container">
-                ${this.tracks.map((track, trackIndex) => html`
-                    <div class="track-row">
-                        <div class="track-label">${track.name}</div>
-                        <div class="track-steps">
-                            ${track.pattern.slice(0, this.stepCount).map((active, stepIndex) => html`
-                                <div class="step ${active ? 'active' : ''} ${this.currentStep === stepIndex && this.playing ? 'playing' : ''}"
-                                     @click="${() => this.toggleStep(trackIndex, stepIndex)}">
-                                </div>
-                            `)}
+                ${this.tracks.map(
+                    (track, trackIndex) => html`
+                        <div class="track-row">
+                            <div class="track-label">${track.name}</div>
+                            <div class="track-steps">
+                                ${track.pattern
+                                    .slice(0, this.stepCount)
+                                    .map(
+                                        (active, stepIndex) => html`
+                                            <div
+                                                class="step ${active ? 'active' : ''} ${this.currentStep === stepIndex && this.playing
+                                                    ? 'playing'
+                                                    : ''}"
+                                                @click="${() => this.toggleStep(trackIndex, stepIndex)}"
+                                            ></div>
+                                        `
+                                    )}
+                            </div>
                         </div>
-                    </div>
-                `)}
+                    `
+                )}
             </div>
         `;
     }
 }
 
-customElements.define("music-maker", MusicMaker);
+customElements.define('music-maker', MusicMaker);

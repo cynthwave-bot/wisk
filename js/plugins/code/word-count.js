@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class WorkdCount extends LitElement {
     static styles = css`
@@ -25,14 +25,26 @@ class WorkdCount extends LitElement {
             color: var(--text-1);
         }
 
-        *::-webkit-scrollbar { width: 15px; }
-        *::-webkit-scrollbar-track { background: var(--bg-1); }
-        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
-        ::placeholder { color: var(--text-2); }
+        *::-webkit-scrollbar {
+            width: 15px;
+        }
+        *::-webkit-scrollbar-track {
+            background: var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--bg-3);
+            border-radius: 20px;
+            border: 4px solid var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-1);
+        }
+        ::placeholder {
+            color: var(--text-2);
+        }
     `;
 
-    static properties = { };
+    static properties = {};
 
     constructor() {
         super();
@@ -73,7 +85,7 @@ class WorkdCount extends LitElement {
         for (const element of elements) {
             var e = document.getElementById(element.id);
             if (e.getTextContent) {
-                characters += e.getTextContent().text.replace(/\s/g, "").length;
+                characters += e.getTextContent().text.replace(/\s/g, '').length;
             }
         }
         return characters;
@@ -86,12 +98,12 @@ class WorkdCount extends LitElement {
     render() {
         return html`
             <div class="x">
-                <div> Words <span> ${this.countWords(window.wisk.editor.elements)} </span> </div>
-                <div> Characters <span> ${this.countCharacters(window.wisk.editor.elements)} </span> </div>
-                <div> Characters (excluding spaces) <span> ${this.countCharactersExcludingSpaces(window.wisk.editor.elements)} </span> </div>
+                <div>Words <span> ${this.countWords(window.wisk.editor.elements)} </span></div>
+                <div>Characters <span> ${this.countCharacters(window.wisk.editor.elements)} </span></div>
+                <div>Characters (excluding spaces) <span> ${this.countCharactersExcludingSpaces(window.wisk.editor.elements)} </span></div>
             </div>
         `;
     }
 }
 
-customElements.define("word-count", WorkdCount);
+customElements.define('word-count', WorkdCount);

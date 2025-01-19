@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class TableOfContents extends LitElement {
     static styles = css`
@@ -8,7 +8,7 @@ class TableOfContents extends LitElement {
             margin: 0;
             padding: 0;
         }
-        
+
         :host {
             display: block;
             background: var(--bg-1);
@@ -48,27 +48,27 @@ class TableOfContents extends LitElement {
             background: var(--accent-bg);
         }
 
-        .level-heading1-element { 
+        .level-heading1-element {
             font-weight: 600;
             color: var(--text-1);
         }
 
-        .level-heading2-element { 
+        .level-heading2-element {
             margin-left: var(--padding-4);
             font-size: 0.9em;
         }
 
-        .level-heading3-element { 
+        .level-heading3-element {
             margin-left: calc(var(--padding-4) * 2);
             font-size: 0.85em;
         }
 
-        .level-heading4-element { 
+        .level-heading4-element {
             margin-left: calc(var(--padding-4) * 3);
             font-size: 0.85em;
         }
 
-        .level-heading5-element { 
+        .level-heading5-element {
             margin-left: calc(var(--padding-4) * 4);
             font-size: 0.85em;
         }
@@ -82,7 +82,7 @@ class TableOfContents extends LitElement {
     `;
 
     static properties = {
-        activeId: { type: String }
+        activeId: { type: String },
     };
 
     constructor() {
@@ -112,7 +112,7 @@ class TableOfContents extends LitElement {
 
     setupIntersectionObserver() {
         this.intersectionObserver = new IntersectionObserver(
-            (entries) => {
+            entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         this.activeId = entry.target.id;
@@ -122,7 +122,7 @@ class TableOfContents extends LitElement {
             },
             {
                 rootMargin: '-10% 0% -85% 0%',
-                threshold: 0
+                threshold: 0,
             }
         );
 
@@ -171,7 +171,7 @@ class TableOfContents extends LitElement {
             id: element.id,
             text,
             level,
-            component: element.component
+            component: element.component,
         };
     }
 
@@ -179,37 +179,37 @@ class TableOfContents extends LitElement {
         e.preventDefault();
         const element = document.getElementById(id);
         if (element) {
-            element.scrollIntoView({ 
+            element.scrollIntoView({
                 behavior: 'smooth',
-                block: 'start'
+                block: 'start',
             });
             this.activeId = id;
         }
     }
 
     render() {
-        const tocItems = wisk.editor.elements
-            .map(element => this.createTocItem(element))
-            .filter(item => item !== null);
+        const tocItems = wisk.editor.elements.map(element => this.createTocItem(element)).filter(item => item !== null);
 
         return html`
             <div class="toc-container">
                 <ul class="toc-list">
-                    ${tocItems.map(item => html`
-                        <li class="toc-item level-${item.component}">
-                            <a 
-                                class="toc-link ${this.activeId === item.id ? 'active' : ''}"
-                                href="#${item.id}"
-                                @click=${(e) => this.scrollToElement(item.id, e)}
-                            >
-                                ${item.text}
-                            </a>
-                        </li>
-                    `)}
+                    ${tocItems.map(
+                        item => html`
+                            <li class="toc-item level-${item.component}">
+                                <a
+                                    class="toc-link ${this.activeId === item.id ? 'active' : ''}"
+                                    href="#${item.id}"
+                                    @click=${e => this.scrollToElement(item.id, e)}
+                                >
+                                    ${item.text}
+                                </a>
+                            </li>
+                        `
+                    )}
                 </ul>
             </div>
         `;
     }
 }
 
-customElements.define("table-of-contents", TableOfContents);
+customElements.define('table-of-contents', TableOfContents);

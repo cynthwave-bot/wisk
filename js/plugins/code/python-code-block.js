@@ -1,14 +1,14 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 // Global promise for Pyodide initialization
-var pyodideReady = new Promise((resolve) => {
+var pyodideReady = new Promise(resolve => {
     if (window.pyodide) {
         resolve(window.pyodide);
         return;
     }
     if (!document.querySelector('script[src*="pyodide"]')) {
         const pyodideScript = document.createElement('script');
-        pyodideScript.src = "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js";
+        pyodideScript.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js';
         pyodideScript.onload = async () => {
             window.pyodide = await loadPyodide();
             resolve(window.pyodide);
@@ -150,7 +150,7 @@ class PythonCodeBlock extends LitElement {
         this.packageName = '';
         this.isInitializing = false;
         this.importedPackages = [];
-        
+
         this.initializePyodide();
     }
 
@@ -173,14 +173,14 @@ class PythonCodeBlock extends LitElement {
 
     async importPackage() {
         if (!this.pyodide) {
-            this.output = "Pyodide is not initialized yet";
+            this.output = 'Pyodide is not initialized yet';
             this.outputType = 'error';
             return;
         }
 
         const packageName = this.packageName.trim();
         if (!packageName) {
-            this.output = "Please enter a package name";
+            this.output = 'Please enter a package name';
             this.outputType = 'error';
             return;
         }
@@ -193,16 +193,16 @@ class PythonCodeBlock extends LitElement {
         }
 
         try {
-            await this.pyodide.loadPackage("micropip");
-            const micropip = this.pyodide.pyimport("micropip");
+            await this.pyodide.loadPackage('micropip');
+            const micropip = this.pyodide.pyimport('micropip');
             await micropip.install(packageName);
-            
+
             this.importedPackages = [...this.importedPackages, packageName];
             this.output = `Successfully imported ${packageName}`;
             this.outputType = 'success';
             this.showDialog = false;
-            this.packageName = "";
-            
+            this.packageName = '';
+
             if (window.wisk?.editor?.justUpdates) {
                 window.wisk.editor.justUpdates(this.id);
             }
@@ -223,7 +223,7 @@ class PythonCodeBlock extends LitElement {
 
     async executeCode() {
         if (!this.pyodide) {
-            this.output = "Pyodide is not initialized yet";
+            this.output = 'Pyodide is not initialized yet';
             this.outputType = 'error';
             return;
         }
@@ -236,33 +236,33 @@ class PythonCodeBlock extends LitElement {
             `);
 
             const result = this.pyodide.runPython(this.code);
-            const stdout = this.pyodide.runPython("sys.stdout.getvalue()");
-            
+            const stdout = this.pyodide.runPython('sys.stdout.getvalue()');
+
             this.output = stdout || (result !== undefined ? `Return value: ${result}` : '');
             this.outputType = 'success';
 
-            this.pyodide.runPython("sys.stdout = sys.__stdout__");
+            this.pyodide.runPython('sys.stdout = sys.__stdout__');
         } catch (error) {
             this.output = `${error}`;
             this.outputType = 'error';
         }
-        
+
         this.requestUpdate();
     }
 
     async setValue(identifier, value) {
         if (!value || typeof value !== 'object') return;
-        
+
         const shouldExecute = value.code !== this.code;
-        
+
         if (value.code !== undefined) this.code = value.code;
         if (value.importedPackages !== undefined) {
             this.importedPackages = value.importedPackages;
             if (this.pyodide) {
                 for (const pkg of value.importedPackages) {
                     try {
-                        await this.pyodide.loadPackage("micropip");
-                        const micropip = this.pyodide.pyimport("micropip");
+                        await this.pyodide.loadPackage('micropip');
+                        const micropip = this.pyodide.pyimport('micropip');
                         await micropip.install(pkg);
                     } catch (error) {
                         console.error(`Error reimporting package ${pkg}:`, error);
@@ -270,9 +270,9 @@ class PythonCodeBlock extends LitElement {
                 }
             }
         }
-        
+
         this.requestUpdate();
-        
+
         if (shouldExecute && this.code) {
             await new Promise(resolve => setTimeout(resolve, 100));
             await this.executeCode();
@@ -297,7 +297,7 @@ class PythonCodeBlock extends LitElement {
             textarea.value = newValue;
             this.code = newValue;
             textarea.selectionStart = textarea.selectionEnd = start + 4;
-            
+
             if (window.wisk?.editor?.justUpdates) {
                 window.wisk.editor.justUpdates(this.id);
             }
@@ -308,14 +308,22 @@ class PythonCodeBlock extends LitElement {
         return html`
             <div class="op">
                 <div class="controls">
-                    <button class="btn" @click=${() => { this.showDialog = true; this.requestUpdate(); }}>Import Package</button>
+                    <button
+                        class="btn"
+                        @click=${() => {
+                            this.showDialog = true;
+                            this.requestUpdate();
+                        }}
+                    >
+                        Import Package
+                    </button>
                     <div style="flex: 1;"></div>
                     <button class="btn btnx" @click=${this.executeCode}>
                         <img src="/a7/plugins/nightwave-plaza/play.svg" style="width: 26px; height: 26px; filter: var(--themed-svg);" alt="Run" />
                     </button>
                 </div>
 
-                <textarea 
+                <textarea
                     @input=${this.handleCodeChange}
                     @keydown=${this.handleTabKey}
                     .value=${this.code}
@@ -326,32 +334,42 @@ class PythonCodeBlock extends LitElement {
                 <div class="output ${this.output ? 'has-content' : ''} ${this.outputType}">${this.output}</div>
             </div>
 
-            ${this.showDialog ? html`
-                <div class="dialog-backdrop" @click=${() => {
-                    this.showDialog = false;
-                    this.requestUpdate();
-                }}></div>
-                <div class="dialog">
-                    <h3>Import Package</h3>
-                    <input 
-                        placeholder="Enter package name" 
-                        @input=${(e) => {
-                            this.packageName = e.target.value;
-                            this.requestUpdate();
-                        }}
-                        .value=${this.packageName}
-                    />
-                    <div style="display: flex; gap: var(--gap-3); justify-content: flex-end;">
-                        <button class="btn" @click=${() => {
-                            this.showDialog = false;
-                            this.requestUpdate();
-                        }}>Cancel</button>
-                        <button class="btn" @click=${this.importPackage}>Import</button>
-                    </div>
-                </div>
-            ` : ""}
+            ${this.showDialog
+                ? html`
+                      <div
+                          class="dialog-backdrop"
+                          @click=${() => {
+                              this.showDialog = false;
+                              this.requestUpdate();
+                          }}
+                      ></div>
+                      <div class="dialog">
+                          <h3>Import Package</h3>
+                          <input
+                              placeholder="Enter package name"
+                              @input=${e => {
+                                  this.packageName = e.target.value;
+                                  this.requestUpdate();
+                              }}
+                              .value=${this.packageName}
+                          />
+                          <div style="display: flex; gap: var(--gap-3); justify-content: flex-end;">
+                              <button
+                                  class="btn"
+                                  @click=${() => {
+                                      this.showDialog = false;
+                                      this.requestUpdate();
+                                  }}
+                              >
+                                  Cancel
+                              </button>
+                              <button class="btn" @click=${this.importPackage}>Import</button>
+                          </div>
+                      </div>
+                  `
+                : ''}
         `;
     }
 }
 
-customElements.define("python-code-block", PythonCodeBlock);
+customElements.define('python-code-block', PythonCodeBlock);

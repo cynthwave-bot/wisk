@@ -38,7 +38,7 @@
     transition: opacity 0.5s;
     font-size: 16px;
     font-weight: 600;
-    filter: drop-shadow(0 10px 10px rgba(0,0,0, 0.3));
+    filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.3));
     font-family: var(--font);
 }
 
@@ -47,6 +47,11 @@
 }
 
 @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; visibility: hidden; }
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
 }

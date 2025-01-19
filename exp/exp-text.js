@@ -1,18 +1,18 @@
 class ExpText extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({ mode: 'open' });
         this.content = [
             { t: 'Hello, World!', p: 'b' },
             { t: 'This is a custom element ', p: 'i' },
             { t: 'and custom events ', p: 'n' },
             { t: 'with shadow DOM ', p: 'u' },
             { t: 'and custom events ', p: 'l', u: 'https://developer.mozilla.org/' },
-            { t: 'and custom events ', p: 'n' }
+            { t: 'and custom events ', p: 'n' },
         ];
         this.render();
-        this.shadowRoot.addEventListener('mouseup', (event) => this.handleSelection(event));
-        this.shadowRoot.addEventListener('input', (event) => this.handleEdit(event));
+        this.shadowRoot.addEventListener('mouseup', event => this.handleSelection(event));
+        this.shadowRoot.addEventListener('input', event => this.handleEdit(event));
     }
 
     render() {
@@ -52,23 +52,25 @@ class ExpText extends HTMLElement {
         `;
 
         this.styleBox = this.shadowRoot.getElementById('styleBox');
-        this.styleBox.addEventListener('click', (event) => this.applyStyle(event));
+        this.styleBox.addEventListener('click', event => this.applyStyle(event));
     }
 
     renderContent() {
-        return this.content.map(item => {
-            if (item.p === 'b') {
-                return `<span class="span-b">${item.t}</span>`;
-            } else if (item.p === 'i') {
-                return `<span class="span-i">${item.t}</span>`;
-            } else if (item.p === 'u') {
-                return `<span class="span-u">${item.t}</span>`;
-            } else if (item.p === 'l' && item.u) {
-                return `<a href="${item.u}" class="span-l">${item.t}</a>`;
-            } else {
-                return item.t;
-            }
-        }).join('');
+        return this.content
+            .map(item => {
+                if (item.p === 'b') {
+                    return `<span class="span-b">${item.t}</span>`;
+                } else if (item.p === 'i') {
+                    return `<span class="span-i">${item.t}</span>`;
+                } else if (item.p === 'u') {
+                    return `<span class="span-u">${item.t}</span>`;
+                } else if (item.p === 'l' && item.u) {
+                    return `<a href="${item.u}" class="span-l">${item.t}</a>`;
+                } else {
+                    return item.t;
+                }
+            })
+            .join('');
     }
 
     handleSelection(event) {
@@ -93,7 +95,7 @@ class ExpText extends HTMLElement {
                 const selectedText = range.toString();
                 const startContainer = range.startContainer;
                 const startOffset = range.startOffset;
-                
+
                 // Find the index in the content array
                 let currentLength = 0;
                 let targetIndex = -1;
@@ -108,10 +110,12 @@ class ExpText extends HTMLElement {
                 if (targetIndex !== -1) {
                     const item = this.content[targetIndex];
                     const splitIndex = startOffset - currentLength;
-                    
+
                     // Split the content item if necessary
                     if (splitIndex > 0 && splitIndex < item.t.length) {
-                        this.content.splice(targetIndex, 1,
+                        this.content.splice(
+                            targetIndex,
+                            1,
                             { t: item.t.slice(0, splitIndex), p: item.p },
                             { t: selectedText, p: style },
                             { t: item.t.slice(splitIndex + selectedText.length), p: item.p }
@@ -136,11 +140,13 @@ class ExpText extends HTMLElement {
                     this.styleBox.style.display = 'none';
 
                     // Dispatch update event
-                    this.dispatchEvent(new CustomEvent('text-update', {
-                        bubbles: true,
-                        composed: true,
-                        detail: { text: this.shadowRoot.getElementById('content').innerHTML }
-                    }));
+                    this.dispatchEvent(
+                        new CustomEvent('text-update', {
+                            bubbles: true,
+                            composed: true,
+                            detail: { text: this.shadowRoot.getElementById('content').innerHTML },
+                        })
+                    );
                 }
             }
         }
@@ -155,7 +161,7 @@ class ExpText extends HTMLElement {
         const updateEvent = new CustomEvent('text-update', {
             bubbles: true,
             composed: true,
-            detail: { text: editedHtml }
+            detail: { text: editedHtml },
         });
         this.dispatchEvent(updateEvent);
     }
@@ -165,7 +171,7 @@ class ExpText extends HTMLElement {
         tempDiv.innerHTML = html;
         const parsedContent = [];
 
-        const parseNode = (node) => {
+        const parseNode = node => {
             if (node.nodeType === Node.TEXT_NODE) {
                 parsedContent.push({ t: node.textContent, p: 'n' });
             } else if (node.nodeType === Node.ELEMENT_NODE) {

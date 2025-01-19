@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class KeystrokeSound extends LitElement {
     static styles = css`
@@ -27,7 +27,7 @@ class KeystrokeSound extends LitElement {
     `;
 
     static properties = {
-        soundType: { type: String }
+        soundType: { type: String },
     };
 
     constructor() {
@@ -52,21 +52,19 @@ class KeystrokeSound extends LitElement {
 
         // Create deeper reverb for wooden body with enhanced bass
         const reverbLength = 0.4; // Slightly longer reverb for bass
-        const reverbBuffer = this.audioContext.createBuffer(
-            2,
-            this.audioContext.sampleRate * reverbLength,
-            this.audioContext.sampleRate
-        );
+        const reverbBuffer = this.audioContext.createBuffer(2, this.audioContext.sampleRate * reverbLength, this.audioContext.sampleRate);
 
         for (let channel = 0; channel < 2; channel++) {
             const channelData = reverbBuffer.getChannelData(channel);
             for (let i = 0; i < reverbBuffer.length; i++) {
                 const progress = i / reverbBuffer.length;
                 // Enhanced wooden case resonance with more bass
-                channelData[i] = (Math.random() * 2 - 1) * 
+                channelData[i] =
+                    (Math.random() * 2 - 1) *
                     Math.exp(-6 * progress) * // Slower decay for more bass
-                    (1 - progress) * 
-                    (1 + Math.sin(progress * 100) + // Lower frequency resonance
+                    (1 - progress) *
+                    (1 +
+                        Math.sin(progress * 100) + // Lower frequency resonance
                         Math.sin(progress * 50) * 0.5); // Additional sub-bass resonance
             }
         }
@@ -79,10 +77,7 @@ class KeystrokeSound extends LitElement {
         const slideData = slideBuffer.getChannelData(0);
         for (let i = 0; i < slideBuffer.length; i++) {
             const progress = i / slideBuffer.length;
-            slideData[i] = (
-                (Math.random() * 2 - 1) * 0.3 * (1 - progress) +
-                Math.sin(progress * 1000) * 0.1 * (1 - progress)
-            );
+            slideData[i] = (Math.random() * 2 - 1) * 0.3 * (1 - progress) + Math.sin(progress * 1000) * 0.1 * (1 - progress);
         }
 
         // 2. Type bar mechanism sound with added weight
@@ -90,11 +85,10 @@ class KeystrokeSound extends LitElement {
         const mechanismData = mechanismBuffer.getChannelData(0);
         for (let i = 0; i < mechanismBuffer.length; i++) {
             const progress = i / mechanismBuffer.length;
-            mechanismData[i] = (
+            mechanismData[i] =
                 Math.sin(i * 0.5) * 0.3 * (1 - progress) + // Spring vibration
                 Math.sin(i * 0.2) * 0.2 * (1 - progress) + // Added low frequency component
-                (Math.random() * 2 - 1) * 0.4 * Math.exp(-10 * progress)
-            );
+                (Math.random() * 2 - 1) * 0.4 * Math.exp(-10 * progress);
         }
 
         // 3. Impact sound with enhanced bass response
@@ -102,12 +96,11 @@ class KeystrokeSound extends LitElement {
         const impactData = impactBuffer.getChannelData(0);
         for (let i = 0; i < impactBuffer.length; i++) {
             const progress = i / impactBuffer.length;
-            impactData[i] = (
+            impactData[i] =
                 (Math.random() * 2 - 1) * 0.7 * Math.exp(-30 * progress) + // Sharp impact
                 Math.sin(i * 0.1) * 0.5 * Math.exp(-6 * progress) + // Enhanced low wooden resonance
                 Math.sin(i * 0.05) * 0.3 * Math.exp(-4 * progress) + // New sub-bass thump
-                Math.sin(i * 0.3) * 0.2 * Math.exp(-15 * progress) // Metal ring
-            );
+                Math.sin(i * 0.3) * 0.2 * Math.exp(-15 * progress); // Metal ring
         }
 
         // Create and connect sources
@@ -186,7 +179,7 @@ class KeystrokeSound extends LitElement {
 
     createMeowSound() {
         const time = this.audioContext.currentTime;
-        const duration = 0.8;  // Extended duration
+        const duration = 0.8; // Extended duration
 
         // Create oscillator bank for vocal cords
         const fundamentalOsc = this.audioContext.createOscillator();
@@ -219,16 +212,16 @@ class KeystrokeSound extends LitElement {
         harmonic2.type = 'sine';
 
         // Frequency envelope for distinct M-E-O-W shape
-        const mFreq = 200;   // Low for 'M'
-        const eFreq = 600;   // Higher for 'E'
-        const oFreq = 400;   // Mid for 'O'
-        const wFreq = 300;   // Lower for 'W'
+        const mFreq = 200; // Low for 'M'
+        const eFreq = 600; // Higher for 'E'
+        const oFreq = 400; // Mid for 'O'
+        const wFreq = 300; // Lower for 'W'
 
         // Main pitch envelope with distinct sections
-        fundamentalOsc.frequency.setValueAtTime(mFreq, time);  // M
+        fundamentalOsc.frequency.setValueAtTime(mFreq, time); // M
         fundamentalOsc.frequency.linearRampToValueAtTime(mFreq, time + 0.1);
-        fundamentalOsc.frequency.linearRampToValueAtTime(eFreq, time + 0.25);  // E
-        fundamentalOsc.frequency.linearRampToValueAtTime(oFreq, time + 0.5);   // O
+        fundamentalOsc.frequency.linearRampToValueAtTime(eFreq, time + 0.25); // E
+        fundamentalOsc.frequency.linearRampToValueAtTime(oFreq, time + 0.5); // O
         fundamentalOsc.frequency.linearRampToValueAtTime(wFreq, time + duration); // W
 
         // Harmonics follow with appropriate ratios
@@ -297,8 +290,8 @@ class KeystrokeSound extends LitElement {
             // Crossfade between formants
             gain.gain.setValueAtTime(i === 0 ? 1 : 0, time);
             if (i > 0) {
-                gain.gain.linearRampToValueAtTime(1, time + (i * 0.2));
-                if (i < 3) gain.gain.linearRampToValueAtTime(0, time + ((i + 1) * 0.2));
+                gain.gain.linearRampToValueAtTime(1, time + i * 0.2);
+                if (i < 3) gain.gain.linearRampToValueAtTime(0, time + (i + 1) * 0.2);
             }
         });
 
@@ -323,17 +316,17 @@ class KeystrokeSound extends LitElement {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(100, this.audioContext.currentTime);
         osc.frequency.exponentialRampToValueAtTime(800, this.audioContext.currentTime + 0.1);
-        
+
         filter.type = 'lowpass';
         filter.frequency.setValueAtTime(1000, this.audioContext.currentTime);
-        
+
         gain.gain.setValueAtTime(0.1, this.audioContext.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-        
+
         osc.connect(filter);
         filter.connect(gain);
         gain.connect(this.audioContext.destination);
-        
+
         osc.start();
         osc.stop(this.audioContext.currentTime + 0.1);
     }
@@ -341,18 +334,18 @@ class KeystrokeSound extends LitElement {
     createChirpSound() {
         const osc = this.audioContext.createOscillator();
         const gain = this.audioContext.createGain();
-        
+
         osc.type = 'sine';
         osc.frequency.setValueAtTime(2000, this.audioContext.currentTime);
         osc.frequency.exponentialRampToValueAtTime(4000, this.audioContext.currentTime + 0.05);
         osc.frequency.exponentialRampToValueAtTime(2000, this.audioContext.currentTime + 0.1);
-        
+
         gain.gain.setValueAtTime(0.05, this.audioContext.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-        
+
         osc.connect(gain);
         gain.connect(this.audioContext.destination);
-        
+
         osc.start();
         osc.stop(this.audioContext.currentTime + 0.1);
     }
@@ -360,23 +353,23 @@ class KeystrokeSound extends LitElement {
     createClickSound() {
         const osc = this.audioContext.createOscillator();
         const gain = this.audioContext.createGain();
-        
+
         osc.type = 'square';
         osc.frequency.setValueAtTime(2000, this.audioContext.currentTime);
-        
+
         gain.gain.setValueAtTime(0.05, this.audioContext.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.02);
-        
+
         osc.connect(gain);
         gain.connect(this.audioContext.destination);
-        
+
         osc.start();
         osc.stop(this.audioContext.currentTime + 0.02);
     }
 
     handleKeyPress(e) {
         if (!this.audioContext || this.soundType === 'none') return;
-        
+
         if (e.key.length === 1 || e.key === 'Enter' || e.key === 'Backspace' || e.key === 'Space') {
             switch (this.soundType) {
                 case 'typewriter':
@@ -411,10 +404,7 @@ class KeystrokeSound extends LitElement {
     render() {
         return html`
             <div class="sound-container">
-                <select 
-                    @change=${(e) => this.soundType = e.target.value}
-                    .value=${this.soundType}
-                >
+                <select @change=${e => (this.soundType = e.target.value)} .value=${this.soundType}>
                     <option value="none">No Sound</option>
                     <option value="typewriter">Typewriter</option>
                     <option value="meow">Cat Meow</option>
@@ -427,4 +417,4 @@ class KeystrokeSound extends LitElement {
     }
 }
 
-customElements.define("keystroke-sound", KeystrokeSound);
+customElements.define('keystroke-sound', KeystrokeSound);

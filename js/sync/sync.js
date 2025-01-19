@@ -3,41 +3,41 @@ let socket;
 let firstMsg = true;
 
 async function sync() {
-    window.wisk.utils.showLoading("Syncing with server...");
-    console.log("PAGE", window.wisk.editor.pageId);
-    
+    window.wisk.utils.showLoading('Syncing with server...');
+    console.log('PAGE', window.wisk.editor.pageId);
+
     var pages = await window.wisk.db.getAllKeys();
     // upload all offline pages and update their IDs
     var offlinePages = [];
     for (var i = 0; i < pages.length; i++) {
-        if (pages[i].startsWith("of-")) {
+        if (pages[i].startsWith('of-')) {
             var offlinePage = await window.wisk.db.getItem(pages[i]);
             offlinePages.push(offlinePage);
         }
     }
 
-    console.log("Offline pages:", offlinePages);
+    console.log('Offline pages:', offlinePages);
 }
 
 function initializeWebSocket() {
     return new Promise((resolve, reject) => {
         socket = new WebSocket('wss://cloud.wisk.cc/v1/live');
-        
-        socket.addEventListener('open', (event) => {
+
+        socket.addEventListener('open', event => {
             console.log('Connected to WebSocket server');
             resolve();
         });
 
-        socket.addEventListener('message', (event) => {
+        socket.addEventListener('message', event => {
             handleIncomingMessage(event.data);
         });
 
-        socket.addEventListener('error', (event) => {
+        socket.addEventListener('error', event => {
             alert('Connection with server failed. Click OK to reload the page.');
             location.reload();
         });
 
-        socket.addEventListener('close', (event) => {
+        socket.addEventListener('close', event => {
             alert('Connection with server closed. Click OK to reload the page.');
             location.reload();
         });
@@ -64,14 +64,16 @@ function stopMessageLoop(intervalId) {
 
 async function sendAuth() {
     var user = await document.querySelector('auth-component').getUserInfo();
-    sendMessage(JSON.stringify({
-        id: window.wisk.editor.pageId,
-        token: user.token
-    }));
+    sendMessage(
+        JSON.stringify({
+            id: window.wisk.editor.pageId,
+            token: user.token,
+        })
+    );
 }
 
 async function live() {
-    console.log("PAGE LIVE", window.wisk.editor.pageId);
+    console.log('PAGE LIVE', window.wisk.editor.pageId);
 
     if (window.wisk.editor.wiskSite) {
         // TODO
@@ -82,9 +84,9 @@ async function live() {
         var fetchOptions = {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
-        }
+        };
 
         var response = await fetch(fetchUrl, fetchOptions);
 
@@ -97,7 +99,6 @@ async function live() {
         initEditor(data);
         return;
     }
-
 
     try {
         await initializeWebSocket();
@@ -117,11 +118,13 @@ function saveUpdates(changes, allElements, newDeletedElements) {
     // });
 
     // send to server
-    sendMessage(JSON.stringify({
-        changes: changes,
-        allElements: allElements,
-        newDeletedElements: newDeletedElements
-    }));
+    sendMessage(
+        JSON.stringify({
+            changes: changes,
+            allElements: allElements,
+            newDeletedElements: newDeletedElements,
+        })
+    );
 }
 
 function handleIncomingMessage(message) {

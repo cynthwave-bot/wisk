@@ -1,6 +1,16 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js';
+import {
+    getAuth,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    sendEmailVerification,
+    sendPasswordResetEmail,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js';
 
 class AuthComponent extends LitElement {
     static styles = css`
@@ -121,28 +131,28 @@ class AuthComponent extends LitElement {
 
     constructor() {
         super();
-        this.email = "";
-        this.password = "";
+        this.email = '';
+        this.password = '';
         this.loading = false;
-        this.error = "";
-        this.success = "";
-        this.mode = "signin";
+        this.error = '';
+        this.success = '';
+        this.mode = 'signin';
         this.visible = false;
         this.user = null;
         this.wiskSite = false;
 
-        if (window.location.hostname.endsWith("wisk.site")) {
+        if (window.location.hostname.endsWith('wisk.site')) {
             this.wiskSite = true;
             return;
         }
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAdMU0HRiJMV6GX8eX7JKbi3_088siSbdM",
-            authDomain: "wisk-cc.firebaseapp.com",
-            projectId: "wisk-cc",
-            storageBucket: "wisk-cc.appspot.com",
-            messagingSenderId: "701150484146",
-            appId: "1:701150484146:web:3853862a323eda4ff39bab"
+            apiKey: 'AIzaSyAdMU0HRiJMV6GX8eX7JKbi3_088siSbdM',
+            authDomain: 'wisk-cc.firebaseapp.com',
+            projectId: 'wisk-cc',
+            storageBucket: 'wisk-cc.appspot.com',
+            messagingSenderId: '701150484146',
+            appId: '1:701150484146:web:3853862a323eda4ff39bab',
         };
 
         this.firstReload = true;
@@ -175,10 +185,10 @@ class AuthComponent extends LitElement {
     async getUserInfo() {
         if (this.wiskSite) {
             return {
-                token: "wisk-site",
-                uuid: "wisk-site",
-                email: "wisk-site"
-            }
+                token: 'wisk-site',
+                uuid: 'wisk-site',
+                email: 'wisk-site',
+            };
         }
 
         const user = this.auth.currentUser;
@@ -187,7 +197,7 @@ class AuthComponent extends LitElement {
             return {
                 token: token,
                 uuid: user.uid,
-                email: user.email
+                email: user.email,
             };
         }
         return null;
@@ -209,12 +219,11 @@ class AuthComponent extends LitElement {
 
                         ${this.user && this.user.emailVerified ? this.renderUserInfo() : this.renderForm()}
 
-                        <div class="error" style="display: ${this.error ? "block" : "none"}">${this.error}</div>
+                        <div class="error" style="display: ${this.error ? 'block' : 'none'}">${this.error}</div>
 
-                        <div class="success" style="display: ${this.success ? "block" : "none"}">${this.success}</div>
+                        <div class="success" style="display: ${this.success ? 'block' : 'none'}">${this.success}</div>
 
-                        ${this.renderLinks()}
-                        ${this.renderSocialLogin()}
+                        ${this.renderLinks()} ${this.renderSocialLogin()}
                     </div>
                 </div>
             </div>
@@ -226,9 +235,16 @@ class AuthComponent extends LitElement {
             <div class="user-info">
                 <p>Signed in as: ${this.user.email} ✓ Verified</p>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <button @click=${async () => { await this.reloadUser(); }} style="display: none">Reload User</button>
+                    <button
+                        @click=${async () => {
+                            await this.reloadUser();
+                        }}
+                        style="display: none"
+                    >
+                        Reload User
+                    </button>
                     <button @click=${this.logOut}>Log Out</button>
-                    <button @click=${() => window.location.href = "/"} style="display: none">Go to Dashboard</button>
+                    <button @click=${() => (window.location.href = '/')} style="display: none">Go to Dashboard</button>
                 </div>
             </div>
         `;
@@ -236,22 +252,47 @@ class AuthComponent extends LitElement {
 
     renderForm() {
         switch (this.mode) {
-            case "signin":
-            case "signup":
+            case 'signin':
+            case 'signup':
                 return html`
-                    <input type="email" id="txtEmail" placeholder="Email" .value=${this.email} @input=${this.handleEmailInput} ?disabled=${this.loading} />
-                    <input type="password" id="txtPassword" placeholder="Password" .value=${this.password} @input=${this.handlePasswordInput} ?disabled=${this.loading} />
-                    <button @click=${this.mode === "signin" ? this.logInAccount : this.signUpAccount} ?disabled=${this.loading}>${this.loading ? "Loading..." : this.mode === "signin" ? "Sign In" : "Sign Up"}</button>
+                    <input
+                        type="email"
+                        id="txtEmail"
+                        placeholder="Email"
+                        .value=${this.email}
+                        @input=${this.handleEmailInput}
+                        ?disabled=${this.loading}
+                    />
+                    <input
+                        type="password"
+                        id="txtPassword"
+                        placeholder="Password"
+                        .value=${this.password}
+                        @input=${this.handlePasswordInput}
+                        ?disabled=${this.loading}
+                    />
+                    <button @click=${this.mode === 'signin' ? this.logInAccount : this.signUpAccount} ?disabled=${this.loading}>
+                        ${this.loading ? 'Loading...' : this.mode === 'signin' ? 'Sign In' : 'Sign Up'}
+                    </button>
                 `;
-            case "reset":
+            case 'reset':
                 return html`
-                    <input type="email" id="txtEmail" placeholder="Email" .value=${this.email} @input=${this.handleEmailInput} ?disabled=${this.loading} />
-                    <button @click=${this.resetPassword} ?disabled=${this.loading}>${this.loading ? "Loading..." : "Reset Password"}</button>
+                    <input
+                        type="email"
+                        id="txtEmail"
+                        placeholder="Email"
+                        .value=${this.email}
+                        @input=${this.handleEmailInput}
+                        ?disabled=${this.loading}
+                    />
+                    <button @click=${this.resetPassword} ?disabled=${this.loading}>${this.loading ? 'Loading...' : 'Reset Password'}</button>
                 `;
-            case "verify":
+            case 'verify':
                 return html`
                     <p class="message">Please check your email for a verification link.</p>
-                    <button @click=${this.resendVerificationEmail} ?disabled=${this.loading}>${this.loading ? "Loading..." : "Resend Verification Email"}</button>
+                    <button @click=${this.resendVerificationEmail} ?disabled=${this.loading}>
+                        ${this.loading ? 'Loading...' : 'Resend Verification Email'}
+                    </button>
                 `;
         }
     }
@@ -262,20 +303,23 @@ class AuthComponent extends LitElement {
         }
 
         switch (this.mode) {
-            case "signin":
+            case 'signin':
                 return html`
                     <div id="linkx">
-                        Don't have an account? <a href="#" @click=${() => this.setMode("signup")} class="underline">Sign Up</a> <br/> <br/>
-                        <a href="#" @click=${() => this.setMode("reset")} class="underline">Forgot Password?</a>
+                        Don't have an account? <a href="#" @click=${() => this.setMode('signup')} class="underline">Sign Up</a> <br />
+                        <br />
+                        <a href="#" @click=${() => this.setMode('reset')} class="underline">Forgot Password?</a>
                     </div>
                 `;
-            case "signup":
-                return html` <div id="linkx">Already have an account? <a href="#" @click=${() => this.setMode("signin")} class="underline">Sign In</a></div> `;
-            case "reset":
-            case "verify":
+            case 'signup':
+                return html`
+                    <div id="linkx">Already have an account? <a href="#" @click=${() => this.setMode('signin')} class="underline">Sign In</a></div>
+                `;
+            case 'reset':
+            case 'verify':
                 return html`
                     <div id="linkx">
-                        <a href="#" @click=${() => this.setMode("signin")} class="underline">Back to Sign In</a>
+                        <a href="#" @click=${() => this.setMode('signin')} class="underline">Back to Sign In</a>
                     </div>
                 `;
         }
@@ -285,13 +329,13 @@ class AuthComponent extends LitElement {
         if (this.user && this.user.emailVerified) {
             return html``;
         }
-        if (this.mode === "signin" || this.mode === "signup") {
+        if (this.mode === 'signin' || this.mode === 'signup') {
             return html`
                 <div></div>
                 <div></div>
                 <div class="social">
                     <button id="btnGoogle" @click=${this.loginWithGoogle}>
-                        ${this.mode === "signin" ? "Sign in" : "Sign up"} with
+                        ${this.mode === 'signin' ? 'Sign in' : 'Sign up'} with
                         <img src="/a7/forget/google-logo.png" alt="Google" style="filter: invert(1); width: 20px;" />
                     </button>
                 </div>
@@ -302,21 +346,21 @@ class AuthComponent extends LitElement {
 
     getModeTitle() {
         switch (this.mode) {
-            case "signin":
-                return "Sign In";
-            case "signup":
-                return "Sign Up";
-            case "reset":
-                return "Reset Password";
-            case "verify":
-                return "Verify Email";
+            case 'signin':
+                return 'Sign In';
+            case 'signup':
+                return 'Sign Up';
+            case 'reset':
+                return 'Reset Password';
+            case 'verify':
+                return 'Verify Email';
         }
     }
 
     setMode(mode) {
         this.mode = mode;
-        this.error = "";
-        this.success = "";
+        this.error = '';
+        this.success = '';
     }
 
     handleEmailInput(e) {
@@ -342,8 +386,8 @@ class AuthComponent extends LitElement {
         window.tryingIn = true;
 
         this.loading = true;
-        this.error = "";
-        this.success = "";
+        this.error = '';
+        this.success = '';
 
         try {
             await signInWithEmailAndPassword(this.auth, this.email, this.password);
@@ -358,27 +402,27 @@ class AuthComponent extends LitElement {
     async logOut() {
         try {
             await signOut(this.auth);
-            window.location.href = "/";
+            window.location.href = '/';
 
             this.user = null;
-            this.setMode("signin");
-            console.log("> logged out");
+            this.setMode('signin');
+            console.log('> logged out');
         } catch (error) {
-            this.error = "Error logging out: " + error.message;
+            this.error = 'Error logging out: ' + error.message;
         }
     }
 
     async signUpAccount() {
         window.tryingIn = true;
         this.loading = true;
-        this.error = "";
-        this.success = "";
+        this.error = '';
+        this.success = '';
 
         try {
             const userCredential = await createUserWithEmailAndPassword(this.auth, this.email, this.password);
             await sendEmailVerification(userCredential.user);
-            this.success = "Account created successfully. Please check your email for verification.";
-            this.setMode("verify");
+            this.success = 'Account created successfully. Please check your email for verification.';
+            this.setMode('verify');
         } catch (error) {
             this.error = error.message;
         } finally {
@@ -388,12 +432,12 @@ class AuthComponent extends LitElement {
 
     async resetPassword() {
         this.loading = true;
-        this.error = "";
-        this.success = "";
+        this.error = '';
+        this.success = '';
 
         try {
             await sendPasswordResetEmail(this.auth, this.email);
-            this.success = "Password reset email sent. Please check your inbox.";
+            this.success = 'Password reset email sent. Please check your inbox.';
         } catch (error) {
             this.error = error.message;
         } finally {
@@ -403,15 +447,15 @@ class AuthComponent extends LitElement {
 
     async resendVerificationEmail() {
         this.loading = true;
-        this.error = "";
-        this.success = "";
+        this.error = '';
+        this.success = '';
 
         try {
             if (this.auth.currentUser) {
                 await sendEmailVerification(this.auth.currentUser);
-                this.success = "Verification email resent. Please check your inbox.";
+                this.success = 'Verification email resent. Please check your inbox.';
             } else {
-                this.error = "No user is currently signed in.";
+                this.error = 'No user is currently signed in.';
             }
         } catch (error) {
             this.error = error.message;
@@ -448,17 +492,16 @@ class AuthComponent extends LitElement {
         if (user) {
             console.log(`AUTH:: logged in`);
             if (user.emailVerified) {
-
                 const tokenResult = await user.getIdTokenResult();
                 const tokenEmailVerified = tokenResult.claims.email_verified || false;
                 if (user.emailVerified && !tokenEmailVerified) {
                     await this.reloadUser();
                 }
 
-                this.setMode("loggedin");
-                
+                this.setMode('loggedin');
+
                 if (window.tryingIn) {
-                    window.location.href = "/";
+                    window.location.href = '/';
                 }
 
                 if (window.onSignIn) {
@@ -467,11 +510,11 @@ class AuthComponent extends LitElement {
                     console.log(`AUTH:: onSignIn not defined`);
                 }
             } else {
-                this.setMode("verify");
+                this.setMode('verify');
             }
         } else {
             console.log(`AUTH:: logged out`);
-            this.setMode("signin");
+            this.setMode('signin');
             if (window.onSignOut) {
                 window.onSignOut();
             } else {
@@ -482,4 +525,4 @@ class AuthComponent extends LitElement {
     }
 }
 
-customElements.define("auth-component", AuthComponent);
+customElements.define('auth-component', AuthComponent);

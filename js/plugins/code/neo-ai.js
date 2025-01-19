@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class NeoAI extends LitElement {
     static styles = css`
@@ -11,7 +11,8 @@ class NeoAI extends LitElement {
         }
         :host {
         }
-        .i-container, .c-container {
+        .i-container,
+        .c-container {
             display: none;
             position: fixed;
             width: 100%;
@@ -38,7 +39,6 @@ class NeoAI extends LitElement {
                 bottom: 0;
             }
         }
-
 
         .logo {
             background-color: var(--accent-bg);
@@ -70,13 +70,15 @@ class NeoAI extends LitElement {
         .active {
             display: flex;
         }
-        .i-header, .c-header {
+        .i-header,
+        .c-header {
             display: flex;
             justify-content: flex-end;
             padding: var(--padding-4);
             align-items: center;
         }
-        .i-content, .c-content {
+        .i-content,
+        .c-content {
             display: flex;
             flex-direction: column;
             flex: 1;
@@ -99,13 +101,15 @@ class NeoAI extends LitElement {
             display: flex;
             align-items: center;
         }
-        .i-buttons, .c-buttons {
+        .i-buttons,
+        .c-buttons {
             display: flex;
             flex-direction: column;
             padding-top: var(--padding-2);
             padding-bottom: var(--padding-3);
         }
-        .i-action-button, .c-action-button {
+        .i-action-button,
+        .c-action-button {
             display: flex;
             padding: var(--padding-w2);
             border: none;
@@ -117,18 +121,22 @@ class NeoAI extends LitElement {
             opacity: 0.8;
             color: var(--text-1);
         }
-        .i-action-button:hover, .c-action-button:hover {
+        .i-action-button:hover,
+        .c-action-button:hover {
             opacity: 1;
             color: var(--accent-text);
             background-color: var(--accent-bg);
         }
-        .i-action-icon, .c-action-icon {
+        .i-action-icon,
+        .c-action-icon {
             filter: var(--themed-svg);
         }
-        .i-action-button:hover .i-action-icon, .c-action-button:hover .c-action-icon {
+        .i-action-button:hover .i-action-icon,
+        .c-action-button:hover .c-action-icon {
             filter: var(--accent-svg);
         }
-        .i-input, .c-input {
+        .i-input,
+        .c-input {
             display: flex;
             justify-content: center;
             padding: var(--padding-w2);
@@ -136,7 +144,8 @@ class NeoAI extends LitElement {
             border-radius: 100px;
             border: 2px solid var(--border-1);
         }
-        .i-inp, .c-inp {
+        .i-inp,
+        .c-inp {
             flex: 1;
             padding: var(--padding-2);
             border: none;
@@ -146,7 +155,8 @@ class NeoAI extends LitElement {
             flex: 1;
             color: var(--text-1);
         }
-        .i-btn, .c-btn {
+        .i-btn,
+        .c-btn {
             padding: var(--padding-2);
             border: none;
             outline: none;
@@ -157,21 +167,26 @@ class NeoAI extends LitElement {
             justify-content: center;
             align-items: center;
         }
-        .i-btn img, .c-btn img {
+        .i-btn img,
+        .c-btn img {
             filter: var(--themed-svg);
         }
-        .i-btn:hover, .c-btn:hover {
+        .i-btn:hover,
+        .c-btn:hover {
         }
 
-        .i-input:has(.i-inp:focus), .c-input:has(.c-inp:focus) {
+        .i-input:has(.i-inp:focus),
+        .c-input:has(.c-inp:focus) {
             border: 2px solid var(--accent-text);
             background-color: var(--accent-bg);
         }
 
-        .i-input:has(.i-inp:focus) .i-btn, .c-input:has(.c-inp:focus) .c-btn {
+        .i-input:has(.i-inp:focus) .i-btn,
+        .c-input:has(.c-inp:focus) .c-btn {
             filter: var(--accent-svg);
         }
-        .close, .expand {
+        .close,
+        .expand {
             padding: var(--padding-2);
             border: none;
             outline: none;
@@ -182,10 +197,12 @@ class NeoAI extends LitElement {
             align-items: center;
             opacity: 0.5;
         }
-        .close img, .expand img {
+        .close img,
+        .expand img {
             filter: var(--themed-svg);
         }
-        .close:hover, .expand:hover {
+        .close:hover,
+        .expand:hover {
             opacity: 1;
         }
         .message-container {
@@ -251,18 +268,31 @@ class NeoAI extends LitElement {
             align-self: flex-end;
         }
 
-        *::-webkit-scrollbar { width: 15px; }
-        *::-webkit-scrollbar-track { background: var(--bg-1); }
-        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+        *::-webkit-scrollbar {
+            width: 15px;
+        }
+        *::-webkit-scrollbar-track {
+            background: var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--bg-3);
+            border-radius: 20px;
+            border: 4px solid var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-1);
+        }
 
-        ::-webkit-input-placeholder { color: var(--text-2); }
+        ::-webkit-input-placeholder {
+            color: var(--text-2);
+        }
 
         @media (max-width: 500px) {
             .message-container {
                 padding: 0;
             }
-            .i-container, .c-container {
+            .i-container,
+            .c-container {
                 bottom: var(--padding-4);
                 right: var(--padding-4);
                 max-width: calc(100% - var(--padding-4) * 2);
@@ -284,8 +314,8 @@ class NeoAI extends LitElement {
             display: flex;
             flex-direction: row-reverse;
             position: fixed;
-            bottom: calc(var(--padding-4)* 2 + 69px); /* nice */
-            right: calc(var(--padding-4)* 2);
+            bottom: calc(var(--padding-4) * 2 + 69px); /* nice */
+            right: calc(var(--padding-4) * 2);
             background-color: var(--bg-3);
             padding: var(--padding-3);
             border-radius: var(--radius-large);
@@ -312,10 +342,12 @@ class NeoAI extends LitElement {
         }
 
         @keyframes borderFlicker {
-            0%, 96.77% {
+            0%,
+            96.77% {
                 filter: invert(0);
             }
-            97%, 100% {
+            97%,
+            100% {
                 filter: invert(1);
             }
         }
@@ -362,7 +394,6 @@ class NeoAI extends LitElement {
                 transform: translateY(0);
             }
         }
-
     `;
 
     static properties = {
@@ -373,34 +404,31 @@ class NeoAI extends LitElement {
         showLogoBubble: { type: Boolean },
     };
 
-
-
-
     constructor() {
         super();
         this.expanded = false;
 
-        this.selectedElementId = "";
-        this.selectedText = "";
+        this.selectedElementId = '';
+        this.selectedText = '';
 
-        this.view = "logo";
-        this.path = "/a7/plugins/neo-ai/"; // add .svg to the end of the path
+        this.view = 'logo';
+        this.path = '/a7/plugins/neo-ai/'; // add .svg to the end of the path
         this.iContent = [
-            {  "category": "Talk", "image": "summarize", "text": "Summarize", "text-2": "this page", "arg": "summarize" },
-            {  "category": "Talk", "image": "ask", "text": "Ask about", "text-2": "this page", "arg": "ask-about" },
-            {  "category": "Talk", "image": "translate", "text": "Translate page", "text-2": "", "arg": "translate" },
-            {  "category": "More", "image": "more", "text": "What can Neo do?", "text-2": "", "arg": "more" },
-            {  "category": "More", "image": "help", "text": "Help", "text-2": "", "arg": "help" },
-            {  "category": "More", "image": "support", "text": "Get support", "text-2": "", "arg": "support" },
+            { category: 'Talk', image: 'summarize', text: 'Summarize', 'text-2': 'this page', arg: 'summarize' },
+            { category: 'Talk', image: 'ask', text: 'Ask about', 'text-2': 'this page', arg: 'ask-about' },
+            { category: 'Talk', image: 'translate', text: 'Translate page', 'text-2': '', arg: 'translate' },
+            { category: 'More', image: 'more', text: 'What can Neo do?', 'text-2': '', arg: 'more' },
+            { category: 'More', image: 'help', text: 'Help', 'text-2': '', arg: 'help' },
+            { category: 'More', image: 'support', text: 'Get support', 'text-2': '', arg: 'support' },
         ];
         this.messages = {
             chat: [
-                { from: "bot", text: "Hello! I am Neo. How can I help you today?", type: "text" },
-                { from: "user", text: "Summarize this page", type: "text" },
-                { from: "bot", text: "Reading the page...", type: "info" },
-                { from: "bot", text: "Sure! Here is the summary of this page...", type: "text" },
+                { from: 'bot', text: 'Hello! I am Neo. How can I help you today?', type: 'text' },
+                { from: 'user', text: 'Summarize this page', type: 'text' },
+                { from: 'bot', text: 'Reading the page...', type: 'info' },
+                { from: 'bot', text: 'Sure! Here is the summary of this page...', type: 'text' },
             ],
-        }
+        };
         this.showLogoBubble = true;
     }
 
@@ -418,12 +446,12 @@ class NeoAI extends LitElement {
     }
 
     expandDialog() {
-        this.view = "i-container";
+        this.view = 'i-container';
     }
-    
+
     sendClicked() {
-        console.log("Send clicked", this.shadowRoot.querySelector(".i-inp").value);
-        this.setView("c-container");
+        console.log('Send clicked', this.shadowRoot.querySelector('.i-inp').value);
+        this.setView('c-container');
     }
 
     closeLogoBubble() {
@@ -432,14 +460,14 @@ class NeoAI extends LitElement {
 
     async addUserMessage(message) {
         if (!message.trim()) return;
-        
-        this.messages.chat.push({ from: "user", text: message, type: "text" });
-        this.shadowRoot.querySelector(".c-inp").value = "";
-        
-        await this.requestUpdate()
 
-        const container = this.shadowRoot.querySelector(".c-content");
-        const messageContainer = this.shadowRoot.querySelector(".message-container");
+        this.messages.chat.push({ from: 'user', text: message, type: 'text' });
+        this.shadowRoot.querySelector('.c-inp').value = '';
+
+        await this.requestUpdate();
+
+        const container = this.shadowRoot.querySelector('.c-content');
+        const messageContainer = this.shadowRoot.querySelector('.message-container');
         if (container && messageContainer) {
             container.scrollTop = messageContainer.scrollHeight;
         }
@@ -455,108 +483,124 @@ class NeoAI extends LitElement {
         }
 
         return html`
-            ${this.showLogoBubble && this.view === 'logo' ? html`
-                <div class="logo-bubble">
-                    <div class="logo-bubble-header">
-                        <button class="logo-bubble-close" @click=${() => this.closeLogoBubble()}>
-                            <img src="${this.path}close.svg" draggable="false" />
-                        </button>
-                    </div>
-                    <div class="logo-bubble-content" @click=${() => this.setView("i-container")}>
-                        Hello! I'm Neo. How can I help you?
-                    </div>
-                </div>
-            ` : ''}
+            ${this.showLogoBubble && this.view === 'logo'
+                ? html`
+                      <div class="logo-bubble">
+                          <div class="logo-bubble-header">
+                              <button class="logo-bubble-close" @click=${() => this.closeLogoBubble()}>
+                                  <img src="${this.path}close.svg" draggable="false" />
+                              </button>
+                          </div>
+                          <div class="logo-bubble-content" @click=${() => this.setView('i-container')}>Hello! I'm Neo. How can I help you?</div>
+                      </div>
+                  `
+                : ''}
 
-
-            <button class="logo ${this.view === 'logo' ? 'active' : ''}" @click=${() => this.setView("i-container")}>
+            <button class="logo ${this.view === 'logo' ? 'active' : ''}" @click=${() => this.setView('i-container')}>
                 <img src="/a7/plugins/neo-ai/ai.svg" style="filter: var(--themed-svg);" draggable="false" />
             </button>
 
             <div class="logo-footer" style="display: none;">
                 <div class="logo-input">
                     <input type="text" placeholder="Ask anything or give a command..." />
-                    <button> Attach </button>
-                    <button> Send </button>
+                    <button>Attach</button>
+                    <button>Send</button>
                 </div>
             </div>
 
             <div class="i-container ${this.view === 'i-container' ? 'active' : ''} ${this.expanded ? 'expanded-container' : ''}">
                 <div class="i-header">
-                    <button class="expand" @click=${() => this.expandClicked()}> <img src="${this.path}${this.expanded ? 'collapse' : 'expand'}.svg" draggable="false" /> </button>
-                    <button class="close" @click=${() => this.setView("logo")}> <img src="${this.path}close.svg" draggable="false" /> </button>
+                    <button class="expand" @click=${() => this.expandClicked()}>
+                        <img src="${this.path}${this.expanded ? 'collapse' : 'expand'}.svg" draggable="false" />
+                    </button>
+                    <button class="close" @click=${() => this.setView('logo')}><img src="${this.path}close.svg" draggable="false" /></button>
                 </div>
                 <div class="i-content">
                     <div style="display: flex; flex-direction: column; gap: var(--gap-2); padding: var(--padding-4);">
                         <div style="width: 52px; border-radius: 100px; height: 52px; background-color: var(--text-1);"></div>
-                        <p class="text">
-                            Hello! I am Neo. How can I help you today?
-                        </p>
+                        <p class="text">Hello! I am Neo. How can I help you today?</p>
                     </div>
 
-                    ${[...new Set(this.iContent.map(item => item.category))].map(category => html`
-                        <div class="i-category">
-                            <div class="i-hx">${category.charAt(0).toUpperCase() + category.slice(1)}</div>
-                            <div class="i-buttons">
-                                ${this.iContent
-                                    .filter(item => item.category === category)
-                                    .map(item => html`
-                                        <button @click=${() => this.runArg(item.arg)} class="i-action-button">
-                                            <img src="${this.path}${item.image}.svg" draggable="false" class="i-action-icon" />
-                                            <span class="i-action-text">${item.text}</span>
-                                        </button>
-                                    `)
-                                }
+                    ${[...new Set(this.iContent.map(item => item.category))].map(
+                        category => html`
+                            <div class="i-category">
+                                <div class="i-hx">${category.charAt(0).toUpperCase() + category.slice(1)}</div>
+                                <div class="i-buttons">
+                                    ${this.iContent
+                                        .filter(item => item.category === category)
+                                        .map(
+                                            item => html`
+                                                <button @click=${() => this.runArg(item.arg)} class="i-action-button">
+                                                    <img src="${this.path}${item.image}.svg" draggable="false" class="i-action-icon" />
+                                                    <span class="i-action-text">${item.text}</span>
+                                                </button>
+                                            `
+                                        )}
+                                </div>
                             </div>
-                        </div>
-                    `)}
-
+                        `
+                    )}
                 </div>
                 <div class="i-footer">
                     <div class="i-input">
                         <input class="i-inp" type="text" placeholder="Ask anything or give a command..." />
-                        <button class="i-btn" style="display: none"> Attach </button>
-                        <button class="i-btn"> <img src="${this.path}up.svg" draggable="false" @click=${() => this.sendClicked()} /> </button>
+                        <button class="i-btn" style="display: none">Attach</button>
+                        <button class="i-btn"><img src="${this.path}up.svg" draggable="false" @click=${() => this.sendClicked()} /></button>
                     </div>
                 </div>
             </div>
 
             <div class="c-container ${this.view === 'c-container' ? 'active' : ''} ${this.expanded ? 'expanded-container' : ''}">
                 <div class="c-header">
-                    <p class="c-hx"><span style="color: var(--text-1); height: 24px; width: 24px; display: inline-block; background-color: var(--text-1); border-radius: 100px; margin-right: var(--gap-2);"></span> Neo</p>
-                    <button class="expand" @click=${() => this.expandClicked()}> <img src="${this.path}${this.expanded ? 'collapse' : 'expand'}.svg" draggable="false" /> </button>
-                    <button class="close" @click=${() => this.setView("logo")}> <img src="${this.path}close.svg" draggable="false" /> </button>
+                    <p class="c-hx">
+                        <span
+                            style="color: var(--text-1); height: 24px; width: 24px; display: inline-block; background-color: var(--text-1); border-radius: 100px; margin-right: var(--gap-2);"
+                        ></span>
+                        Neo
+                    </p>
+                    <button class="expand" @click=${() => this.expandClicked()}>
+                        <img src="${this.path}${this.expanded ? 'collapse' : 'expand'}.svg" draggable="false" />
+                    </button>
+                    <button class="close" @click=${() => this.setView('logo')}><img src="${this.path}close.svg" draggable="false" /></button>
                 </div>
                 <div class="c-content">
                     <div class="message-container">
-                        ${this.messages.chat.map(message => html`
-                            <div class="message ${message.from} ${message.type}">
-                                
-                                ${message.from === 'bot' 
-                                    ? html`<div class="message-avatar">
-                                               <img src="${this.path}ai.svg" style="filter: var(--themed-svg); width: 24px; height: 24px;" draggable="false" />
-                                           </div>
-                                    ` : html``
-                                }
-                                
-                                <div class="message-content">
-                                    <div class="message-bubble">
-                                        ${message.text}
+                        ${this.messages.chat.map(
+                            message => html`
+                                <div class="message ${message.from} ${message.type}">
+                                    ${message.from === 'bot'
+                                        ? html`<div class="message-avatar">
+                                              <img
+                                                  src="${this.path}ai.svg"
+                                                  style="filter: var(--themed-svg); width: 24px; height: 24px;"
+                                                  draggable="false"
+                                              />
+                                          </div> `
+                                        : html``}
+
+                                    <div class="message-content">
+                                        <div class="message-bubble">${message.text}</div>
                                     </div>
                                 </div>
-                            </div>
-                        `)}
+                            `
+                        )}
                     </div>
-
                 </div>
                 <div class="c-footer">
                     <div class="c-input">
-                        <input class="c-inp" type="text" 
-                            placeholder="Ask anything or give a command..." @keyup=${e => e.key === "Enter" ? this.addUserMessage(e.target.value) : null} />
-                        <button class="c-btn" style="display: none"> Attach </button>
-                        <button class="c-btn"> 
-                            <img src="${this.path}up.svg" draggable="false" 
-                                @click=${async () => this.addUserMessage(this.shadowRoot.querySelector(".c-inp").value)} /> 
+                        <input
+                            class="c-inp"
+                            type="text"
+                            placeholder="Ask anything or give a command..."
+                            @keyup=${e => (e.key === 'Enter' ? this.addUserMessage(e.target.value) : null)}
+                        />
+                        <button class="c-btn" style="display: none">Attach</button>
+                        <button class="c-btn">
+                            <img
+                                src="${this.path}up.svg"
+                                draggable="false"
+                                @click=${async () => this.addUserMessage(this.shadowRoot.querySelector('.c-inp').value)}
+                            />
                         </button>
                     </div>
                 </div>
@@ -565,6 +609,6 @@ class NeoAI extends LitElement {
     }
 }
 
-customElements.define("neo-ai", NeoAI);
+customElements.define('neo-ai', NeoAI);
 
-document.querySelector(".editor").appendChild(document.createElement("neo-ai"));
+document.querySelector('.editor').appendChild(document.createElement('neo-ai'));

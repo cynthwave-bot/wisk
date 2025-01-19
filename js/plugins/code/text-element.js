@@ -84,4 +84,4 @@ class TextElement extends BaseTextElement {
     }
 }
 
-customElements.define("text-element", TextElement);
+customElements.define('text-element', TextElement);

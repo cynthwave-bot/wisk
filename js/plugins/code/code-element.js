@@ -1,7 +1,7 @@
 class CodeElement extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });
+        this.attachShadow({ mode: 'open' });
         this.render();
         this.isVirtualKeyboard = this.checkIfVirtualKeyboard();
     }
@@ -12,12 +12,12 @@ class CodeElement extends HTMLElement {
     }
 
     connectedCallback() {
-        this.editable = this.shadowRoot.querySelector("#editable");
+        this.editable = this.shadowRoot.querySelector('#editable');
         this.bindEvents();
     }
 
     setValue(path, value) {
-        if (path == "value.append") {
+        if (path == 'value.append') {
             this.editable.innerText += value.textContent;
         } else {
             this.editable.innerText = value.textContent;
@@ -31,7 +31,7 @@ class CodeElement extends HTMLElement {
     }
 
     focus(identifier) {
-        if (typeof identifier.x != "number") {
+        if (typeof identifier.x != 'number') {
             identifier.x = 0;
         }
 
@@ -56,14 +56,14 @@ class CodeElement extends HTMLElement {
         try {
             const sel = this.shadowRoot.getSelection();
             if (!sel.rangeCount) {
-                throw new Error("No ranges selected.");
+                throw new Error('No ranges selected.');
             }
 
             const range = sel.getRangeAt(0).cloneRange();
             range.setStart(this.editable, 0);
             return range.toString().length;
         } catch (error) {
-            console.error("Failed to get caret position: ", error);
+            console.error('Failed to get caret position: ', error);
             return -1;
         }
     }
@@ -80,21 +80,20 @@ class CodeElement extends HTMLElement {
         return {
             html: this.editable.innerHTML,
             text: this.editable.innerText,
-            markdown: "```\n" + this.editable.innerText + "\n```",
-        }
+            markdown: '```\n' + this.editable.innerText + '\n```',
+        };
     }
-
 
     handleSpecialKeys(event) {
         const keyHandlers = {
             Enter: () => this.handleEnterKey(event),
-            "/": () => this.handleForwardSlash(event),
+            '/': () => this.handleForwardSlash(event),
             Backspace: () => this.handleBackspace(event),
             Tab: () => this.handleTab(event),
-            ArrowLeft: () => this.handleArrowKey(event, "next-up", 0),
-            ArrowRight: () => this.handleArrowKey(event, "next-down", this.editable.innerText.length),
-            ArrowUp: () => this.handleVerticalArrow(event, "next-up"),
-            ArrowDown: () => this.handleVerticalArrow(event, "next-down"),
+            ArrowLeft: () => this.handleArrowKey(event, 'next-up', 0),
+            ArrowRight: () => this.handleArrowKey(event, 'next-down', this.editable.innerText.length),
+            ArrowUp: () => this.handleVerticalArrow(event, 'next-up'),
+            ArrowDown: () => this.handleVerticalArrow(event, 'next-down'),
         };
 
         const handler = keyHandlers[event.key];
@@ -105,18 +104,18 @@ class CodeElement extends HTMLElement {
         if (!this.isVirtualKeyboard) {
             event.preventDefault();
             // get current line where the cursor is
-            var line = this.editable.innerText.substring(0, this.getFocus()).split("\n").pop();
+            var line = this.editable.innerText.substring(0, this.getFocus()).split('\n').pop();
             var spaces = line.match(/^\s*/)[0];
 
             // TODO handle empty lines
 
             // calculate current indentation
-            var indent = "";
+            var indent = '';
             for (let i = 0; i < spaces.length; i++) {
-                indent += " ";
+                indent += ' ';
             }
 
-            document.execCommand("insertText", false, "\n" + indent);
+            document.execCommand('insertText', false, '\n' + indent);
             return true;
         }
         return false;
@@ -152,7 +151,7 @@ class CodeElement extends HTMLElement {
 
             if (prevComponentDetail.textual) {
                 var len = prevElement.value.textContent.length;
-                window.wisk.editor.updateBlock(prevElement.id, "value.append", { textContent: this.editable.innerText });
+                window.wisk.editor.updateBlock(prevElement.id, 'value.append', { textContent: this.editable.innerText });
                 window.wisk.editor.focusBlock(prevElement.id, { x: len });
             }
 
@@ -164,7 +163,7 @@ class CodeElement extends HTMLElement {
 
     handleTab(event) {
         event.preventDefault();
-        document.execCommand("insertText", false, "    ");
+        document.execCommand('insertText', false, '    ');
         window.wisk.editor.justUpdates(this.id);
         return true;
     }
@@ -175,7 +174,7 @@ class CodeElement extends HTMLElement {
         if (pos === targetOffset) {
             event.preventDefault();
 
-            if (direction === "next-up") {
+            if (direction === 'next-up') {
                 var prevElement = window.wisk.editor.prevElement(this.id);
                 if (prevElement == null) {
                     return true;
@@ -187,7 +186,7 @@ class CodeElement extends HTMLElement {
                 }
             }
 
-            if (direction === "next-down") {
+            if (direction === 'next-down') {
                 var nextElement = window.wisk.editor.nextElement(this.id);
                 if (nextElement == null) {
                     return true;
@@ -209,7 +208,7 @@ class CodeElement extends HTMLElement {
 
         setTimeout(() => {
             const pos2 = this.getFocus();
-            if (direction === "next-up" && pos2 === 0) {
+            if (direction === 'next-up' && pos2 === 0) {
                 var prevElement = window.wisk.editor.prevElement(this.id);
                 if (prevElement == null) {
                     return true;
@@ -221,7 +220,7 @@ class CodeElement extends HTMLElement {
                 }
             }
 
-            if (direction === "next-down" && pos2 === this.editable.innerText.length) {
+            if (direction === 'next-down' && pos2 === this.editable.innerText.length) {
                 var nextElement = window.wisk.editor.nextElement(this.id);
                 if (nextElement == null) {
                     return true;
@@ -274,14 +273,14 @@ class CodeElement extends HTMLElement {
     }
 
     bindEvents() {
-        const eventType = this.isVirtualKeyboard ? "input" : "keydown";
+        const eventType = this.isVirtualKeyboard ? 'input' : 'keydown';
         this.editable.addEventListener(eventType, this.onValueUpdated.bind(this));
-        this.editable.addEventListener("focus", () => {
-            if (this.editable.innerText.trim() === "") {
-                this.editable.classList.add("empty");
+        this.editable.addEventListener('focus', () => {
+            if (this.editable.innerText.trim() === '') {
+                this.editable.classList.add('empty');
             }
         });
     }
 }
 
-customElements.define("code-element", CodeElement);
+customElements.define('code-element', CodeElement);

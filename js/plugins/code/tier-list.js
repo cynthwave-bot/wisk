@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class TierList extends LitElement {
     static styles = css`
@@ -109,7 +109,7 @@ class TierList extends LitElement {
         .upload-wrapper:hover {
             background: var(--bg-3);
         }
-        input[type="file"] {
+        input[type='file'] {
             display: none;
         }
         .dragging {
@@ -127,7 +127,7 @@ class TierList extends LitElement {
 
     static properties = {
         images: { type: Array },
-        tiers: { type: Object }
+        tiers: { type: Object },
     };
 
     constructor() {
@@ -141,7 +141,7 @@ class TierList extends LitElement {
             C: [],
             D: [],
             E: [],
-            F: []
+            F: [],
         };
         this.tierBgColors = {
             S: 'rgb(255, 127, 127)',
@@ -150,7 +150,7 @@ class TierList extends LitElement {
             C: '#FFFF7F',
             D: 'rgb(191, 255, 127)',
             E: 'rgb(127, 255, 127)',
-            F: 'rgb(127, 255, 255)'
+            F: 'rgb(127, 255, 255)',
         };
         this.draggedImage = null;
     }
@@ -222,7 +222,7 @@ class TierList extends LitElement {
     handleDrop(e) {
         e.preventDefault();
         const dropTarget = e.target.closest('.tier-content') || e.target.closest('.image-pool');
-        
+
         if (dropTarget && this.draggedImage) {
             const imageData = this.draggedImage.src;
             const targetTier = dropTarget.dataset.tier;
@@ -235,7 +235,7 @@ class TierList extends LitElement {
             if (targetTier) {
                 this.tiers = {
                     ...this.tiers,
-                    [targetTier]: [...this.tiers[targetTier], imageData]
+                    [targetTier]: [...this.tiers[targetTier], imageData],
                 };
             } else {
                 this.images = [...this.images, imageData];
@@ -260,13 +260,13 @@ class TierList extends LitElement {
 
     async processImage(file) {
         const reader = new FileReader();
-        reader.onload = async (e) => {
+        reader.onload = async e => {
             const img = new Image();
             img.onload = () => {
                 const canvas = document.createElement('canvas');
                 let width = img.width;
                 let height = img.height;
-                
+
                 if (width > height) {
                     if (width > 80) {
                         height = Math.round(height * (80 / width));
@@ -278,12 +278,12 @@ class TierList extends LitElement {
                         height = 80;
                     }
                 }
-                
+
                 canvas.width = width;
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
-                
+
                 const resizedImage = canvas.toDataURL(file.type);
                 this.images = [...this.images, resizedImage];
                 this.requestUpdate();
@@ -307,7 +307,7 @@ class TierList extends LitElement {
     getValue() {
         return {
             images: this.images,
-            tiers: this.tiers
+            tiers: this.tiers,
         };
     }
 
@@ -320,36 +320,45 @@ class TierList extends LitElement {
     render() {
         return html`
             <input type="file" accept="image/*" multiple @change="${this.handleFileSelect}" />
-            
+
             <div class="tier-container">
-                ${this.tierOrder.map(tier => html`
-                    <div class="tier-row">
-                        <div class="tier-label" style="background: ${this.tierBgColors[tier]}">${tier}</div>
-                        <div class="tier-content" data-tier="${tier}" @dragover="${this.handleDragOver}" @dragleave="${this.handleDragLeave}"
-                            @drop="${this.handleDrop}" >
-                            ${this.tiers[tier].map(image => html`
-                                <img src="${image}" class="tier-image" draggable="true" @dragstart="${this.handleDragStart}" />
-                            `)}
+                ${this.tierOrder.map(
+                    tier => html`
+                        <div class="tier-row">
+                            <div class="tier-label" style="background: ${this.tierBgColors[tier]}">${tier}</div>
+                            <div
+                                class="tier-content"
+                                data-tier="${tier}"
+                                @dragover="${this.handleDragOver}"
+                                @dragleave="${this.handleDragLeave}"
+                                @drop="${this.handleDrop}"
+                            >
+                                ${this.tiers[tier].map(
+                                    image => html` <img src="${image}" class="tier-image" draggable="true" @dragstart="${this.handleDragStart}" /> `
+                                )}
+                            </div>
                         </div>
-                    </div>
-                `)}
+                    `
+                )}
             </div>
-            
-            <div class="image-pool" @dragover="${this.handleDragOver}" @dragleave="${this.handleDragLeave}" @drop="${this.handleDrop}" >
+
+            <div class="image-pool" @dragover="${this.handleDragOver}" @dragleave="${this.handleDragLeave}" @drop="${this.handleDrop}">
                 <div class="upload-wrapper" @click="${() => this.shadowRoot.querySelector('input[type="file"]').click()}">
                     <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
-                ${this.images.map(image => html`
-                    <div class="image-wrapper">
-                        <img src="${image}" class="tier-image" draggable="true" @dragstart="${this.handleDragStart}" >
-                        <button class="delete-button" @click="${() => this.deleteImage(image)}" title="Delete image" >×</button>
-                    </div>
-                `)}
+                ${this.images.map(
+                    image => html`
+                        <div class="image-wrapper">
+                            <img src="${image}" class="tier-image" draggable="true" @dragstart="${this.handleDragStart}" />
+                            <button class="delete-button" @click="${() => this.deleteImage(image)}" title="Delete image">×</button>
+                        </div>
+                    `
+                )}
             </div>
         `;
     }
 }
 
-customElements.define("tier-list", TierList);
+customElements.define('tier-list', TierList);

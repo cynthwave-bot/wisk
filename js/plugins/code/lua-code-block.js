@@ -1,14 +1,14 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 // Global promise for Fengari initialization
-var fengariReady = new Promise((resolve) => {
+var fengariReady = new Promise(resolve => {
     if (window.fengari) {
         resolve(window.fengari);
         return;
     }
     if (!document.querySelector('script[src*="fengari"]')) {
         const fengariScript = document.createElement('script');
-        fengariScript.src = "https://cdn.jsdelivr.net/npm/fengari-web@0.1.4/dist/fengari-web.min.js";
+        fengariScript.src = 'https://cdn.jsdelivr.net/npm/fengari-web@0.1.4/dist/fengari-web.min.js';
         fengariScript.onload = () => {
             resolve(window.fengari);
         };
@@ -103,7 +103,7 @@ class LuaCodeBlock extends LitElement {
         code: { type: String },
         output: { type: String },
         outputType: { type: String },
-        isInitializing: { type: Boolean }
+        isInitializing: { type: Boolean },
     };
 
     constructor() {
@@ -112,7 +112,7 @@ class LuaCodeBlock extends LitElement {
         this.output = '';
         this.outputType = '';
         this.isInitializing = false;
-        
+
         this.initializeFengari();
     }
 
@@ -120,7 +120,7 @@ class LuaCodeBlock extends LitElement {
         this.isInitializing = true;
         try {
             await fengariReady;
-            
+
             // Create new Lua state
             this.L = fengari.lauxlib.luaL_newstate();
             fengari.lualib.luaL_openlibs(this.L);
@@ -131,19 +131,23 @@ class LuaCodeBlock extends LitElement {
             };
 
             // Set up the print function in Lua
-            fengari.lua.lua_pushcclosure(this.L, (L) => {
-                const nargs = fengari.lua.lua_gettop(L);
-                const args = [];
-                for (let i = 1; i <= nargs; i++) {
-                    if (fengari.lua.lua_isstring(L, i)) {
-                        args.push(fengari.lua.lua_tojsstring(L, i));
-                    } else {
-                        args.push(fengari.lua.lua_tostring(L, i));
+            fengari.lua.lua_pushcclosure(
+                this.L,
+                L => {
+                    const nargs = fengari.lua.lua_gettop(L);
+                    const args = [];
+                    for (let i = 1; i <= nargs; i++) {
+                        if (fengari.lua.lua_isstring(L, i)) {
+                            args.push(fengari.lua.lua_tojsstring(L, i));
+                        } else {
+                            args.push(fengari.lua.lua_tostring(L, i));
+                        }
                     }
-                }
-                customPrint(...args);
-                return 0;
-            }, 0);
+                    customPrint(...args);
+                    return 0;
+                },
+                0
+            );
             fengari.lua.lua_setglobal(this.L, fengari.to_luastring('print'));
 
             this.isInitializing = false;
@@ -169,7 +173,7 @@ class LuaCodeBlock extends LitElement {
         if (window.wisk.editor.wiskSite) return;
 
         if (!this.L) {
-            this.output = "Lua runtime is not initialized yet";
+            this.output = 'Lua runtime is not initialized yet';
             this.outputType = 'error';
             return;
         }
@@ -178,7 +182,7 @@ class LuaCodeBlock extends LitElement {
         try {
             const luaCode = fengari.to_luastring(this.code);
             const status = fengari.lauxlib.luaL_dostring(this.L, luaCode);
-            
+
             if (status !== 0) {
                 // Get error message
                 const errorMsg = fengari.lua.lua_tojsstring(this.L, -1);
@@ -192,21 +196,21 @@ class LuaCodeBlock extends LitElement {
             this.output = `Error: ${error}`;
             this.outputType = 'error';
         }
-        
+
         this.requestUpdate();
     }
 
     setValue(identifier, value) {
         if (!value || typeof value !== 'object') return;
-        
+
         const shouldExecute = value.code !== this.code;
-        
+
         if (value.code !== undefined) {
             this.code = value.code;
         }
-        
+
         this.requestUpdate();
-        
+
         if (shouldExecute && this.code) {
             setTimeout(() => this.executeCode(), 100);
         }
@@ -214,7 +218,7 @@ class LuaCodeBlock extends LitElement {
 
     getValue() {
         return {
-            code: this.code
+            code: this.code,
         };
     }
 
@@ -229,7 +233,7 @@ class LuaCodeBlock extends LitElement {
             textarea.value = newValue;
             this.code = newValue;
             textarea.selectionStart = textarea.selectionEnd = start + 4;
-            
+
             if (window.wisk?.editor?.justUpdates) {
                 window.wisk.editor.justUpdates(this.id);
             }
@@ -239,14 +243,17 @@ class LuaCodeBlock extends LitElement {
     render() {
         return html`
             <div class="op">
-                <button class="btn btnx" @click=${() => {
+                <button
+                    class="btn btnx"
+                    @click=${() => {
                         if (window.wisk.editor.wiskSite) return;
                         this.executeCode();
-                }}>
+                    }}
+                >
                     <img src="/a7/plugins/nightwave-plaza/play.svg" style="width: 26px; height: 26px; filter: var(--themed-svg);" alt="Run" />
                 </button>
 
-                <textarea 
+                <textarea
                     @input=${this.handleCodeChange}
                     @keydown=${this.handleTabKey}
                     .value=${this.code}
@@ -261,4 +268,4 @@ class LuaCodeBlock extends LitElement {
     }
 }
 
-customElements.define("lua-code-block", LuaCodeBlock);
+customElements.define('lua-code-block', LuaCodeBlock);

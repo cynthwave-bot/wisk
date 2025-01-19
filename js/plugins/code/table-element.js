@@ -7,10 +7,10 @@
 class TableElement extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: "open" });
+        this.attachShadow({ mode: 'open' });
         this.tableContent = {
             headers: ['Column 1'],
-            rows: [['Empty']]
+            rows: [['Empty']],
         };
         this.render();
     }
@@ -26,7 +26,10 @@ class TableElement extends HTMLElement {
             console.warn('Invalid value provided to TableElement. Using default empty table.');
             this.tableContent = {
                 headers: ['Column 1', 'Column 2'],
-                rows: [ [ "", "" ], [ "", "" ] ]
+                rows: [
+                    ['', ''],
+                    ['', ''],
+                ],
             };
         }
         this.render();
@@ -139,11 +142,15 @@ class TableElement extends HTMLElement {
                     </tr>
                 </thead>
                 <tbody>
-                    ${rows.map((row, i) => `
+                    ${rows
+                        .map(
+                            (row, i) => `
                         <tr>
                             ${row.map((cell, j) => `<td contenteditable="${!window.wisk.editor.wiskSite}" data-row="${i}" data-col="${j}">${cell}</td>`).join('')}
                         </tr>
-                    `).join('')}
+                    `
+                        )
+                        .join('')}
                 </tbody>
             </table>
         `;
@@ -152,7 +159,7 @@ class TableElement extends HTMLElement {
     }
 
     bindEvents() {
-        this.shadowRoot.addEventListener('input', (event) => {
+        this.shadowRoot.addEventListener('input', event => {
             const cell = event.target.closest('th, td');
             if (cell) {
                 const rowIndex = parseInt(cell.dataset.row);
@@ -180,28 +187,20 @@ class TableElement extends HTMLElement {
             return Math.max(...columnCells.map(cell => (cell || '').toString().length));
         });
 
-        const headerRow = '| ' + headers.map((h, i) => 
-            (h || '').toString().padEnd(colWidths[i])
-        ).join(' | ') + ' |';
+        const headerRow = '| ' + headers.map((h, i) => (h || '').toString().padEnd(colWidths[i])).join(' | ') + ' |';
 
-        const separatorRow = '|' + colWidths.map(w => 
-            '-'.repeat(w + 2)
-        ).join('|') + '|';
+        const separatorRow = '|' + colWidths.map(w => '-'.repeat(w + 2)).join('|') + '|';
 
-        const dataRows = rows.map(row =>
-            '| ' + row.map((cell, i) => 
-                (cell || '').toString().padEnd(colWidths[i])
-            ).join(' | ') + ' |'
-        );
+        const dataRows = rows.map(row => '| ' + row.map((cell, i) => (cell || '').toString().padEnd(colWidths[i])).join(' | ') + ' |');
 
         const markdown = [headerRow, separatorRow, ...dataRows].join('\n');
 
         return {
             html: this.shadowRoot.querySelector('table').outerHTML,
             text: headers.join('\t') + '\n' + rows.map(row => row.join('\t')).join('\n'),
-            markdown: markdown
-        }
+            markdown: markdown,
+        };
     }
 }
 
-customElements.define("table-element", TableElement);
+customElements.define('table-element', TableElement);

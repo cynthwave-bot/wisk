@@ -5,16 +5,17 @@
 A plugin-based document editor built with vanilla JavaScript and Web Components. Works offline, syncs across devices, and supports real-time collaboration.
 
 ## Quick Links
+
 - **Try Wisk**: Start using Wisk immediately at [app.wisk.cc](https://app.wisk.cc)
 - **Documentation**: Full documentation available at [wisk.cc/docs](https://wisk.cc/docs)
 - **Website**: Visit [wisk.cc](https://wisk.cc) for more information
-
 
 ## Overview
 
 Wisk is an open-source document editor focusing on extensibility and performance. The frontend is built without frameworks or build tools, using modern Web APIs and standards.
 
 ### Core Functionality
+
 - 📝 Block-based editor with real-time rendering
 - 🎨 Customizable themes and styles
 - 🔌 Extensible plugin system
@@ -22,6 +23,7 @@ Wisk is an open-source document editor focusing on extensibility and performance
 - 📱 PWA support for mobile and desktop
 
 ### Cloud Features (with Wisk backend)
+
 - 🤝 Real-time collaboration
 - 🔄 Cross-device synchronization
 - 📚 Citation management
@@ -39,6 +41,7 @@ python -m http.server 8000
 ## Architecture
 
 The frontend is standalone and fully functional without external services. Key design principles:
+
 - Pure vanilla JavaScript (~25k lines)
 - Web Components using lit-element
 - IndexedDB for offline storage
@@ -59,4 +62,5 @@ Licensed under the Functional Source License (FSL), Version 1.1, with Apache Lic
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 
 ---
+
 Built with ❤️ by [Cynthwave](https://cynthwave.com) • Contact: hey@cynthwave.com

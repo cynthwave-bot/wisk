@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class JavaScriptCodeBlock extends LitElement {
     static styles = css`
@@ -77,7 +77,7 @@ class JavaScriptCodeBlock extends LitElement {
     static properties = {
         code: { type: String },
         output: { type: String },
-        outputType: { type: String }
+        outputType: { type: String },
     };
 
     constructor() {
@@ -98,7 +98,7 @@ class JavaScriptCodeBlock extends LitElement {
         try {
             const originalConsoleLog = console.log;
             let output = '';
-            
+
             console.log = (...args) => {
                 output += args.join(' ') + '\n';
             };
@@ -112,21 +112,21 @@ class JavaScriptCodeBlock extends LitElement {
             this.output = `${error}`;
             this.outputType = 'error';
         }
-        
+
         this.requestUpdate();
     }
 
     setValue(identifier, value) {
         if (!value || typeof value !== 'object') return;
-        
+
         const shouldExecute = value.code !== this.code;
-        
+
         if (value.code !== undefined) {
             this.code = value.code;
         }
-        
+
         this.requestUpdate();
-        
+
         if (shouldExecute && this.code) {
             setTimeout(() => this.executeCode(), 100);
         }
@@ -134,7 +134,7 @@ class JavaScriptCodeBlock extends LitElement {
 
     getValue() {
         return {
-            code: this.code
+            code: this.code,
         };
     }
 
@@ -149,7 +149,7 @@ class JavaScriptCodeBlock extends LitElement {
             textarea.value = newValue;
             this.code = newValue;
             textarea.selectionStart = textarea.selectionEnd = start + 4;
-            
+
             if (window.wisk?.editor?.justUpdates) {
                 window.wisk.editor.justUpdates(this.id);
             }
@@ -159,14 +159,17 @@ class JavaScriptCodeBlock extends LitElement {
     render() {
         return html`
             <div class="op">
-                <button class="btn btnx" @click=${() => {
+                <button
+                    class="btn btnx"
+                    @click=${() => {
                         if (window.wisk.editor.wiskSite) return;
                         this.executeCode();
-                }}>
+                    }}
+                >
                     <img src="/a7/plugins/nightwave-plaza/play.svg" style="width: 26px; height: 26px; filter: var(--themed-svg);" alt="Run" />
                 </button>
 
-                <textarea 
+                <textarea
                     @input=${this.handleCodeChange}
                     @keydown=${this.handleTabKey}
                     .value=${this.code}

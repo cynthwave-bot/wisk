@@ -1,6 +1,6 @@
-import { html, css, LitElement } from "/a7/cdn/lit-core-2.7.4.min.js";
+import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
-var mermaidReady = new Promise((resolve) => {
+var mermaidReady = new Promise(resolve => {
     if (window.mermaid) {
         resolve();
         return;
@@ -9,10 +9,10 @@ var mermaidReady = new Promise((resolve) => {
         const mermaidScript = document.createElement('script');
         mermaidScript.src = '/a7/cdn/mermaid-11.4.0.min.js';
         mermaidScript.onload = () => {
-            window.mermaid.initialize({ 
+            window.mermaid.initialize({
                 startOnLoad: false,
                 suppressErrors: true,
-                suppressErrorRendering: true
+                suppressErrorRendering: true,
             });
             resolve();
         };
@@ -128,7 +128,9 @@ class MermaidElement extends LitElement {
             opacity: 0.8;
         }
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
         .primary-button {
             background: transparent;
@@ -167,7 +169,7 @@ class MermaidElement extends LitElement {
         _showCodeEditor: { type: Boolean, state: true },
         _isLoading: { type: Boolean, state: true },
         _aiSuggestion: { type: String, state: true },
-        _showAiSuggestion: { type: Boolean, state: true }
+        _showAiSuggestion: { type: Boolean, state: true },
     };
 
     constructor() {
@@ -200,7 +202,7 @@ class MermaidElement extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         // add event listener to wisk-theme-changed
-        window.addEventListener('wisk-theme-changed', (e) => {
+        window.addEventListener('wisk-theme-changed', e => {
             this._theme = e.detail.theme;
             this.requestUpdate();
             this.renderMermaid();
@@ -209,7 +211,7 @@ class MermaidElement extends LitElement {
 
     getMermaidConfig() {
         if (!this._theme) return {};
-        
+
         return {
             theme: 'base',
             themeVariables: {
@@ -355,7 +357,7 @@ class MermaidElement extends LitElement {
                 mindmapLinkColor: this._theme['--bg-2'],
                 mindmapTitleBackgroundColor: this._theme['--bg-3'],
                 mindmapTitleTextColor: this._theme['--bg-1'],
-            }
+            },
         };
     }
 
@@ -364,32 +366,32 @@ class MermaidElement extends LitElement {
             this._isLoading = true;
             this.requestUpdate();
 
-            var user = await document.querySelector("auth-component").getUserInfo();
+            var user = await document.querySelector('auth-component').getUserInfo();
             var token = user.token;
-            
+
             const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
-            
-            var response = await fetch("https://cloud.wisk.cc/v2/plugins/mermaid", {
-                method: "POST",
+
+            var response = await fetch('https://cloud.wisk.cc/v2/plugins/mermaid', {
+                method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     command: aiPrompt,
-                    mermaid: this._mermaid
+                    mermaid: this._mermaid,
                 }),
             });
 
             this._isLoading = false;
-            
+
             if (response.status !== 200) {
-                window.showToast("Error updating diagram", 5000);
+                window.showToast('Error updating diagram', 5000);
                 return;
             }
 
             var mermaidContent = await response.text();
-            
+
             let inCodeBlock = false;
             const lines = mermaidContent.split('\n');
             const contentLines = [];
@@ -407,14 +409,14 @@ class MermaidElement extends LitElement {
 
             mermaidContent = contentLines.join('\n');
             mermaidContent = mermaidContent.replace(/```/g, '');
-            
+
             this._aiSuggestion = mermaidContent;
             this._showAiSuggestion = true;
             this.requestUpdate();
             this.renderMermaid();
         } catch (error) {
             console.error('Error:', error);
-            window.showToast("Error updating diagram", 5000);
+            window.showToast('Error updating diagram', 5000);
             this._isLoading = false;
             this.requestUpdate();
         }
@@ -454,17 +456,17 @@ class MermaidElement extends LitElement {
 
         try {
             await mermaidReady;
-            
+
             window.mermaid.initialize({
                 ...this.getMermaidConfig(),
                 startOnLoad: false,
                 suppressErrors: true,
-                suppressErrorRendering: true
+                suppressErrorRendering: true,
             });
-            
+
             const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
             const { svg } = await window.mermaid.render(id, this._showAiSuggestion ? this._aiSuggestion : this._mermaid);
-            
+
             container.innerHTML = svg;
             this.error = '';
         } catch (e) {
@@ -476,7 +478,7 @@ class MermaidElement extends LitElement {
 
     setValue(identifier, value) {
         if (!value || typeof value !== 'object') return;
-        
+
         if (value.mermaid !== undefined) {
             this._mermaid = value.mermaid;
             this.backup = value.mermaid;
@@ -488,16 +490,16 @@ class MermaidElement extends LitElement {
 
     getValue() {
         return {
-            mermaid: this._mermaid
+            mermaid: this._mermaid,
         };
     }
 
     getTextContent() {
         return {
-            html: "",
-            text: "",
-            markdown: '```mermaid\n' + this._mermaid + '\n```'
-        }
+            html: '',
+            text: '',
+            markdown: '```mermaid\n' + this._mermaid + '\n```',
+        };
     }
 
     sendUpdates() {
@@ -547,54 +549,58 @@ class MermaidElement extends LitElement {
                 </button>
             </div>
 
-            ${this._showAiInput ? html`
-                <div class="dialog">
-                    <div class="ai-input-container">
-                        <textarea class="ai-input" placeholder="Ask AI for any changes ..." ?disabled=${this._isLoading || this._showAiSuggestion}></textarea>
-                        <div class="dialog-buttons">
-                            ${this._isLoading ? 
-                                html`<div class="loading-spinner"></div>` :
-                                this._showAiSuggestion ? html`
-                                    <button @click=${this.handleRejectAiChanges} class="button inner-buttons">
-                                        <img src="/a7/plugins/latex-element/discard.svg" alt="Discard" />
-                                        Discard
-                                    </button>
-                                    <button class="primary-button button inner-buttons" @click=${this.handleAcceptAiChanges}>
-                                        <img src="/a7/plugins/latex-element/accept.svg" alt="Accept" style="filter: var(--accent-svg);" />
-                                        Accept
-                                    </button>
-                                ` : html`
-                                    <button class="button" @click=${this.handleCancel}>Cancel</button>
-                                    <div style="flex: 1"></div>
-                                    <button class="button inner-buttons" @click=${this.handleShowCodeEditor}>
-                                        <img src="/a7/plugins/latex-element/code.svg" alt="Code" />
-                                    </button>
-                                    <button class="button primary-button inner-buttons" @click=${this.handleAiUpdate}>
-                                        <img src="/a7/plugins/latex-element/up.svg" alt="AI"/>
-                                    </button>
-                                `
-                            }
-                        </div>
-                    </div>
-                </div>
-            ` : ''}
-
-            ${this._showCodeEditor ? html`
-                <div class="dialog">
-                    <textarea 
-                        class="code-editor" 
-                        .value=${this._mermaid} 
-                        @input=${this.updateMermaid}
-                    ></textarea>
-                    <div class="dialog-buttons">
-                        <button class="button inner-buttons" @click=${this.handleReset}>Reset</button>
-                        <button class="button inner-buttons" @click=${this.handleCancel}>Cancel</button>
-                        <button class="button inner-buttons primary-button" @click=${this.handleSave}>Save</button>
-                    </div>
-                </div>
-            ` : ''}
+            ${this._showAiInput
+                ? html`
+                      <div class="dialog">
+                          <div class="ai-input-container">
+                              <textarea
+                                  class="ai-input"
+                                  placeholder="Ask AI for any changes ..."
+                                  ?disabled=${this._isLoading || this._showAiSuggestion}
+                              ></textarea>
+                              <div class="dialog-buttons">
+                                  ${this._isLoading
+                                      ? html`<div class="loading-spinner"></div>`
+                                      : this._showAiSuggestion
+                                        ? html`
+                                              <button @click=${this.handleRejectAiChanges} class="button inner-buttons">
+                                                  <img src="/a7/plugins/latex-element/discard.svg" alt="Discard" />
+                                                  Discard
+                                              </button>
+                                              <button class="primary-button button inner-buttons" @click=${this.handleAcceptAiChanges}>
+                                                  <img src="/a7/plugins/latex-element/accept.svg" alt="Accept" style="filter: var(--accent-svg);" />
+                                                  Accept
+                                              </button>
+                                          `
+                                        : html`
+                                              <button class="button" @click=${this.handleCancel}>Cancel</button>
+                                              <div style="flex: 1"></div>
+                                              <button class="button inner-buttons" @click=${this.handleShowCodeEditor}>
+                                                  <img src="/a7/plugins/latex-element/code.svg" alt="Code" />
+                                              </button>
+                                              <button class="button primary-button inner-buttons" @click=${this.handleAiUpdate}>
+                                                  <img src="/a7/plugins/latex-element/up.svg" alt="AI" />
+                                              </button>
+                                          `}
+                              </div>
+                          </div>
+                      </div>
+                  `
+                : ''}
+            ${this._showCodeEditor
+                ? html`
+                      <div class="dialog">
+                          <textarea class="code-editor" .value=${this._mermaid} @input=${this.updateMermaid}></textarea>
+                          <div class="dialog-buttons">
+                              <button class="button inner-buttons" @click=${this.handleReset}>Reset</button>
+                              <button class="button inner-buttons" @click=${this.handleCancel}>Cancel</button>
+                              <button class="button inner-buttons primary-button" @click=${this.handleSave}>Save</button>
+                          </div>
+                      </div>
+                  `
+                : ''}
         `;
     }
 }
 
-customElements.define("mermaid-element", MermaidElement);
+customElements.define('mermaid-element', MermaidElement);
