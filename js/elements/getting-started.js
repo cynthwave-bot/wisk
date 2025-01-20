@@ -747,7 +747,7 @@ class GettingStarted extends LitElement {
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--gap-1); margin-top: var(--gap-3)"
                     >
-                        <button class="generate-button" ?disabled=${!this.selectedFile}>
+                        <button class="generate-button" ?disabled=${!this.selectedFile} @click=${this.importFile}>
                             <img src="/a7/forget/gs-import.svg" alt="Import" style="width: 22px; filter: var(--accent-svg)" />
                             Import
                         </button>
@@ -756,6 +756,30 @@ class GettingStarted extends LitElement {
                 </div>
             </div>
         `;
+    }
+
+    importFile() {
+        console.log('Importing file:', this.selectedFile);
+        var lines = [];
+        var reader = new FileReader();
+        reader.onload = e => {
+            const text = e.target.result;
+            lines = text.split('\n');
+            console.log('Lines:', lines);
+            for (let i = 0; i < lines.length; i++) {
+                console.log(i, '--', lines.length, 'Creating block:', lines[i]);
+                window.wisk.editor.createNewBlock(
+                    '',
+                    'text-element',
+                    {
+                        textContent: lines[i],
+                    },
+                    { x: 0 }
+                );
+            }
+        };
+
+        reader.readAsText(this.selectedFile);
     }
 
     render() {

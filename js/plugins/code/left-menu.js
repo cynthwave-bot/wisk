@@ -366,6 +366,9 @@ class LeftMenu extends LitElement {
         return html`
             <div class="outer" @click=${this.closeDropdown}>
                 <div class="vert-nav">
+                    <button class="vert-nav-button" @click=${() => (window.location.href = '/home')}>
+                        <img src="/a7/forget/home.svg" class="new-img" /> Home
+                    </button>
                     <button class="vert-nav-button" @click=${() => document.querySelector('neo-ai').expandDialog()}>
                         <img src="/a7/forget/spark.svg" class="new-img" /> Neo AI
                     </button>

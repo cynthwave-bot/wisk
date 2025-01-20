@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>New Wisk</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="/js/theme/variables.css" rel="stylesheet" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+        <link href="/home/style.css" rel="stylesheet" />
+        <link href="/global.css" rel="stylesheet" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+            rel="stylesheet"
+        />
+
+        <style>
+            .spinner {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                border: 3.5px solid var(--text-1);
+                animation:
+                    spinner-bulqg1 0.96s infinite linear alternate,
+                    spinner-oaa3wk 1.92s infinite linear;
+            }
+            @keyframes spinner-bulqg1 {
+                0% {
+                    clip-path: polygon(50% 50%, 0 0, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%);
+                }
+                12.5% {
+                    clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%);
+                }
+                25% {
+                    clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%);
+                }
+                50% {
+                    clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%);
+                }
+                62.5% {
+                    clip-path: polygon(50% 50%, 100% 0, 100% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%);
+                }
+                75% {
+                    clip-path: polygon(50% 50%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 50% 100%, 0% 100%);
+                }
+                100% {
+                    clip-path: polygon(50% 50%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 0% 100%);
+                }
+            }
+            @keyframes spinner-oaa3wk {
+                0% {
+                    transform: scaleY(1) rotate(0deg);
+                }
+                49.99% {
+                    transform: scaleY(1) rotate(135deg);
+                }
+                50% {
+                    transform: scaleY(-1) rotate(0deg);
+                }
+                100% {
+                    transform: scaleY(-1) rotate(-135deg);
+                }
+            }
+            .spr {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .spr p {
+                font-family: 'Inter', sans-serif;
+                font-size: 18px;
+                margin-left: 16px;
+            }
+            .loading-div {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1000;
+                gap: 20px;
+                display: none;
+            }
+            .backdrop {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: var(--bg-2);
+                opacity: 0.5;
+                z-index: 1000;
+            }
+            .u1 {
+                z-index: 1001;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: var(--gap-2);
+                padding: 40px;
+                background: var(--bg-1);
+                border-radius: var(--radius-large);
+                border: 1px solid var(--border-1);
+                filter: var(--drop-shadow);
+                max-width: 400px;
+                width: 90%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="spr loading-div">
+            <div class="backdrop"></div>
+            <div class="u1">
+                <div class="spinner"></div>
+                <div style="display: flex; gap: 5px; flex-direction: column">
+                    <p class="loading-text-bottom">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <nav id="nav">
+            <img
+                src="/a7/wisk-logo.svg"
+                alt="Wisk Logo"
+                class="plugin-icon"
+                style="width: 32px; cursor: pointer"
+                onclick="window.location.href = '/'"
+            />
+            <div class="nav-plugins"></div>
+        </nav>
+
+        <home-element id="home"></home-element>
+
+        <auth-component id="auth"></auth-component>
+
+        <script type="module" src="/js/elements/auth-component.js"></script>
+        <script type="module" src="/js/elements/home-element.js"></script>
+
+        <script>
+            window.onSignOut = function () {
+                // alert('You need to sign in to use this service. (for now, we are working on making it work without sign in)');
+                // window.location.href = '/';
+                window.showToast('You need to sign in', 5000);
+                document.querySelector('auth-component').show();
+            };
+            window.onSignIn = function () {
+                document.querySelector('#home').fetchFiles();
+            };
+        </script>
+    </body>
+</html>

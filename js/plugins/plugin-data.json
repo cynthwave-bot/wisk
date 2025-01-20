@@ -1074,6 +1074,28 @@
                     "width": "mini"
                 }
             ]
+        },
+
+        "mini-app": {
+            "name": "mini-app",
+            "title": "Mini Apps",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "mini-app.svg",
+            "tags": ["mini", "app", "apps", "plugin"],
+            "description": "Mini apps are small apps that can be loaded in the editor",
+            "contents": [
+                {
+                    "title": "Mini App",
+                    "icon": "mini-app.svg",
+                    "category": "component",
+                    "component": "mini-app",
+                    "nav": false,
+                    "textual": true,
+                    "loadAsModule": true,
+                    "width": "mini"
+                }
+            ]
         }
     }
 }

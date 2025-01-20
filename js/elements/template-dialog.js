@@ -78,6 +78,7 @@ class TemplateDialog extends LitElement {
             border-radius: var(--radius);
             border: 1px solid var(--border-1);
             background-size: cover;
+            transform: translateZ(0px); /* fix for pixalated image */
         }
 
         .mobile-preview {
@@ -90,6 +91,15 @@ class TemplateDialog extends LitElement {
             right: 25px;
             background-size: cover;
             top: 90px;
+            transform: translateZ(0px); /* fix for pixalated image */
+        }
+
+        .template-card:hover .desktop-preview {
+            rotate: -2deg;
+        }
+
+        .template-card:hover .mobile-preview {
+            rotate: 7deg;
         }
 
         .template-info h3 {

@@ -1659,7 +1659,7 @@ class EmojiSelector extends LitElement {
             { emoji: '🇮🇪', name: 'flag: Ireland', discordShortcut: 'flag_ie' },
             { emoji: '🇮🇱', name: 'flag: Israel', discordShortcut: 'flag_il' },
             { emoji: '🇮🇲', name: 'flag: Isle of Man', discordShortcut: 'flag_im' },
-            { emoji: '🇮🇳', name: 'flag: India', discordShortcut: 'flag_in' },
+            { emoji: '🇮🇳', name: 'flag: India (Vishwaguru)', discordShortcut: 'flag_in' },
             { emoji: '🇮🇴', name: 'flag: British Indian Ocean Territory', discordShortcut: 'flag_io' },
             { emoji: '🇮🇶', name: 'flag: Iraq', discordShortcut: 'flag_iq' },
             { emoji: '🇮🇷', name: 'flag: Iran', discordShortcut: 'flag_ir' },

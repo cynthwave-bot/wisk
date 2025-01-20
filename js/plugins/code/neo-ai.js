@@ -67,6 +67,40 @@ class NeoAI extends LitElement {
             transform: rotate(90deg) scale(1.1);
         }
 
+        .image-grid {
+            display: flex;
+            gap: var(--gap-2);
+            flex-wrap: wrap;
+        }
+
+        .image-grid-img {
+            border-radius: var(--radius);
+            width: 160px;
+            height: 120px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: relative;
+        }
+
+        .image-grid-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: var(--bg-2);
+            color: var(--text-1);
+            padding: var(--padding-w1);
+            border-radius: var(--radius-large);
+            cursor: pointer;
+            outline: none;
+            font-weight: 600;
+            border: 1px solid var(--border-1);
+        }
+
+        a {
+            color: var(--fg-blue);
+        }
+
         .active {
             display: flex;
         }
@@ -85,6 +119,13 @@ class NeoAI extends LitElement {
             overflow: auto;
             padding: var(--padding-4);
             gap: var(--gap-3);
+        }
+
+        .reference-link {
+            padding: var(--padding-w1);
+            border-radius: var(--radius);
+            background-color: var(--bg-blue);
+            text-decoration: none;
         }
 
         .i-hx {
@@ -232,6 +273,7 @@ class NeoAI extends LitElement {
             display: flex;
             justify-content: center;
             align-items: center;
+            display: none;
         }
 
         .message.user .message-avatar {
@@ -249,6 +291,9 @@ class NeoAI extends LitElement {
             padding: var(--padding-3);
             border-radius: var(--radius);
             color: var(--text-1);
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-3);
         }
 
         .message.user .message-bubble {
@@ -394,6 +439,15 @@ class NeoAI extends LitElement {
                 transform: translateY(0);
             }
         }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin: 0.25em 0;
+        }
     `;
 
     static properties = {
@@ -402,6 +456,7 @@ class NeoAI extends LitElement {
         selectedElementId: { type: String },
         selectedText: { type: String },
         showLogoBubble: { type: Boolean },
+        messages: { type: Array },
     };
 
     constructor() {
@@ -421,12 +476,35 @@ class NeoAI extends LitElement {
             { category: 'More', image: 'help', text: 'Help', 'text-2': '', arg: 'help' },
             { category: 'More', image: 'support', text: 'Get support', 'text-2': '', arg: 'support' },
         ];
+
+        // user messages are always text, bot messages can have different types:
+        // - text
+        //      should support markdown, can have references
+        // - status
+        //      should be displayed in a different way, smaller font, and have a color
+        // - results
+        //      can be images or text, should be displayed in a different way
         this.messages = {
             chat: [
                 { from: 'bot', text: 'Hello! I am Neo. How can I help you today?', type: 'text' },
                 { from: 'user', text: 'Summarize this page', type: 'text' },
-                { from: 'bot', text: 'Reading the page...', type: 'info' },
-                { from: 'bot', text: 'Sure! Here is the summary of this page...', type: 'text' },
+                { from: 'bot', text: 'Reading the page...', type: 'status', color: 'info' },
+                {
+                    from: 'bot',
+                    text: 'Sure! Here is the summary of this page...\n# Hello world\nLorem ipsum[1]',
+                    type: 'text',
+                    references: ['https://google.com'],
+                },
+                { from: 'user', text: 'Can you show me the images?', type: 'text' },
+                { from: 'bot', text: 'Reading the page...', type: 'status', color: 'info' },
+                // { from: 'bot', text: 'Sure! Here are the images from the page...', type: 'image-results', results: [
+                //     'https://picsum.photos/seed/34433/1600/1200', 'https://picsum.photos/seed/111/1600/1200', 'https://picsum.photos/seed/222/1600/1200'
+                // ] },
+                // { from: 'bot', text: 'Sure! Here are the results from the page...', type: 'text-results', results: [
+                //     { title: 'Title 1', description: 'Description 1', url: 'https://google.com' },
+                //     { title: 'Title 2', description: 'Description 2', url: 'https://google.com' },
+                //     { title: 'Title 3', description: 'Description 3', url: 'https://google.com' },
+                // ] },
             ],
         };
         this.showLogoBubble = true;
@@ -437,8 +515,154 @@ class NeoAI extends LitElement {
         this.selectedText = text;
     }
 
+    getStatusColor(color) {
+        switch (color) {
+            case 'info':
+                return { background: 'var(--bg-blue)', color: 'var(--fg-blue)' };
+            case 'success':
+                return { background: 'var(--bg-green)', color: 'var(--fg-green)' };
+            case 'error':
+                return { background: 'var(--bg-red)', color: 'var(--fg-red)' };
+            case 'warning':
+                return { background: 'var(--bg-yellow)', color: 'var(--fg-yellow)' };
+            default:
+                return { background: 'var(--bg-2)', color: 'var(--text-1)' };
+        }
+    }
+
+    renderMessageContent(message) {
+        switch (message.type) {
+            case 'text':
+                return html`
+                    <div class="message-bubble">${this.renderMarkdown(message.text)}</div>
+                    ${message.references ? this.renderReferences(message.references) : ''}
+                `;
+
+            case 'status':
+                const statusStyle = this.getStatusColor(message.color);
+                return html`
+                    <div class="message-bubble status" style="background-color: ${statusStyle.background}; color: ${statusStyle.color};">
+                        ${message.text}
+                    </div>
+                `;
+
+            case 'image-results':
+                return html`
+                    <div class="message-bubble">
+                        <div>${message.text}</div>
+                        <div class="image-grid">
+                            ${message.results.map(
+                                url => html`
+                                    <div class="image-grid-img" style="background-image:url(${url})" alt="Result">
+                                        <button class="image-grid-button" @click=${() => window.open(url, '_blank')}>Open</button>
+                                    </div>
+                                `
+                            )}
+                        </div>
+                    </div>
+                `;
+
+            case 'text-results':
+                return html`
+                    <div class="message-bubble">
+                        <div>${message.text}</div>
+                        <div class="results-list">
+                            ${message.results.map(
+                                result => html`
+                                    <div class="result-item">
+                                        <a href="${result.url}" target="_blank" rel="noopener noreferrer">
+                                            <h4>${result.title}</h4>
+                                            <p>${result.description}</p>
+                                        </a>
+                                    </div>
+                                `
+                            )}
+                        </div>
+                    </div>
+                `;
+
+            default:
+                return html`<div class="message-bubble">${message.text}</div>`;
+        }
+    }
+
+    // Helper method to render references
+    renderReferences(references) {
+        return html`
+            <div class="references">
+                ${references.map(
+                    (ref, index) => html` <a href="${ref}" target="_blank" rel="noopener noreferrer" class="reference-link">${index + 1}</a> ${ref} `
+                )}
+            </div>
+        `;
+    }
+
+    // Helper method to render markdown
+    renderMarkdown(text) {
+        const htmlx = marked.parse(text, { breaks: true });
+        return html`<div .innerHTML="${htmlx}"></div>`;
+    }
+
+    // Modified render method for the chat container
+    renderChatContainer() {
+        return html`
+            <div class="message-container">
+                ${this.messages.chat.map(
+                    message => html`
+                        <div class="message ${message.from} ${message.type}">
+                            ${message.from === 'bot'
+                                ? html`
+                                      <div class="message-avatar">
+                                          <img
+                                              src="${this.path}ai.svg"
+                                              style="filter: var(--themed-svg); width: 24px; height: 24px;"
+                                              draggable="false"
+                                          />
+                                      </div>
+                                  `
+                                : ''}
+                            <div class="message-content">${this.renderMessageContent(message)}</div>
+                        </div>
+                    `
+                )}
+            </div>
+        `;
+    }
+
     runArg(arg) {
         console.log(arg);
+
+        switch (arg) {
+            case '':
+                return;
+
+            case 'summarize':
+                this.shadowRoot.querySelector('.i-inp').value = 'Summarize this page';
+                this.shadowRoot.querySelector('.i-inp').focus();
+                break;
+
+            case 'ask-about':
+                this.shadowRoot.querySelector('.i-inp').value = 'So can you tell me about ...';
+                this.shadowRoot.querySelector('.i-inp').focus();
+                break;
+
+            case 'translate':
+                this.shadowRoot.querySelector('.i-inp').value = 'Translate this page to ...';
+                this.shadowRoot.querySelector('.i-inp').focus();
+                break;
+
+            case 'more':
+                window.open('https://wisk.cc/neo', '_blank');
+                break;
+
+            case 'help':
+                document.querySelector('help-dialog').show();
+                break;
+
+            case 'support':
+                window.open('https://discord.gg/YyqXEey4JS', '_blank');
+                break;
+        }
     }
 
     setView(view) {
@@ -478,6 +702,7 @@ class NeoAI extends LitElement {
     }
 
     render() {
+        return html``;
         if (wisk.editor.wiskSite) {
             return html``;
         }
@@ -563,29 +788,7 @@ class NeoAI extends LitElement {
                     </button>
                     <button class="close" @click=${() => this.setView('logo')}><img src="${this.path}close.svg" draggable="false" /></button>
                 </div>
-                <div class="c-content">
-                    <div class="message-container">
-                        ${this.messages.chat.map(
-                            message => html`
-                                <div class="message ${message.from} ${message.type}">
-                                    ${message.from === 'bot'
-                                        ? html`<div class="message-avatar">
-                                              <img
-                                                  src="${this.path}ai.svg"
-                                                  style="filter: var(--themed-svg); width: 24px; height: 24px;"
-                                                  draggable="false"
-                                              />
-                                          </div> `
-                                        : html``}
-
-                                    <div class="message-content">
-                                        <div class="message-bubble">${message.text}</div>
-                                    </div>
-                                </div>
-                            `
-                        )}
-                    </div>
-                </div>
+                <div class="c-content">${this.renderChatContainer()}</div>
                 <div class="c-footer">
                     <div class="c-input">
                         <input
