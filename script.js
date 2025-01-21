@@ -96,3 +96,13 @@ if (window.location.href.includes('.wisk.site/')) {
     live();
     document.querySelector('#menu-1').style.display = 'none';
 }
+
+const closeApp = () => fetch('http://localhost:3000/app-nav/close');
+const minimizeApp = () => fetch('http://localhost:3000/app-nav/minimize');
+const maximizeApp = () => fetch('http://localhost:3000/app-nav/maximize');
+
+// if url contains 55557 then .nav-app display flex
+// for desktop app
+if (window.location.href.includes('55557')) {
+    document.querySelector('.nav-app').style.display = 'flex';
+}

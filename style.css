@@ -34,6 +34,7 @@ body {
     width: 22px;
 }
 nav {
+    -webkit-app-region: drag;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -294,4 +295,33 @@ nav {
     flex-direction: column;
     justify-content: flex-end;
     gap: var(--gap-3);
+}
+
+.nav-app {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    order: 9999;
+    display: none;
+}
+
+.nav-app span {
+    display: block;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 99999;
+}
+
+.minimize {
+    background-color: var(--fg-yellow);
+}
+
+.maximize {
+    background-color: var(--fg-green);
+}
+
+.close {
+    background-color: var(--fg-red);
 }

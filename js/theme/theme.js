@@ -12,7 +12,16 @@ window.wisk.theme.setTheme = async function (themeName) {
     }
 
     console.log('Setting theme:', themeName, window.wisk.theme.themeObject);
-    let theme = window.wisk.theme.themeObject.themes.find(t => t.name === themeName) || {};
+    let theme = window.wisk.theme.themeObject.themes.find(t => t.name === themeName);
+
+    if (theme === undefined) {
+        console.error('Theme not found:', themeName);
+        console.error(
+            'Available themes:',
+            window.wisk.theme.themeObject.themes.map(t => t.name)
+        );
+        return;
+    }
 
     localStorage.setItem('webapp-theme', themeName);
 
