@@ -69,32 +69,6 @@ class HomeElement extends LitElement {
             gap: var(--gap-3);
         }
 
-        .file-card {
-            padding: var(--padding-4);
-            border-radius: var(--radius-large);
-            background: var(--bg-2);
-            cursor: pointer;
-            border: none;
-            display: flex;
-            flex-direction: column;
-            gap: var(--gap-2);
-            overflow: hidden;
-            text-decoration: none;
-        }
-
-        .file-card:hover {
-            background: var(--accent-bg);
-            color: var(--accent-text);
-        }
-
-        .file-card img {
-            filter: var(--themed-svg);
-        }
-
-        .file-card:hover img {
-            filter: var(--accent-svg);
-        }
-
         .templates-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -159,12 +133,86 @@ class HomeElement extends LitElement {
         *::-webkit-scrollbar-thumb:hover {
             background-color: var(--text-1);
         }
+
+        .show-more {
+            width: fit-content;
+            margin-left: auto;
+            background: var(--accent-bg);
+            color: var(--accent-text);
+            border: none;
+            padding: var(--padding-w2);
+            border-radius: var(--radius);
+            cursor: pointer;
+        }
+
+        .file-card {
+            padding: var(--padding-4);
+            border-radius: var(--radius-large);
+            background: var(--bg-2);
+            cursor: pointer;
+            border: none;
+            display: flex;
+            gap: var(--gap-2);
+            overflow: hidden;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .file-content {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--gap-2);
+            flex-grow: 1;
+            flex-direction: column;
+        }
+
+        .more-options {
+            opacity: 0;
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            width: 30px;
+            height: 30px;
+            padding: var(--padding-2);
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-card:hover .more-options {
+            opacity: 1;
+        }
+
+        .file-card:hover {
+            background: var(--accent-bg);
+        }
+
+        .file-card:hover .file-content {
+            color: var(--accent-text);
+        }
+
+        .more-options:hover {
+            background: var(--bg-3);
+        }
+
+        .file-card img {
+            filter: var(--themed-svg);
+        }
+
+        .file-card:hover img {
+            filter: var(--accent-svg);
+        }
     `;
 
     static properties = {
         files: { type: Array },
         filteredFiles: { type: Array },
         templates: { type: Array },
+        expandTemplates: { type: Boolean },
+        message: { type: String },
     };
 
     constructor() {
@@ -174,6 +222,8 @@ class HomeElement extends LitElement {
         this.templates = [];
         this.fetchTemplates();
         this.greet = this.getGreeting();
+        this.expandTemplates = false;
+        this.message = 'Loading...';
     }
 
     async fetchFiles() {
@@ -188,6 +238,7 @@ class HomeElement extends LitElement {
 
             if (!response.ok) {
                 throw new Error('Failed to fetch documents');
+                return;
             }
 
             const data = await response.json();
@@ -196,10 +247,71 @@ class HomeElement extends LitElement {
                 name: item.title,
             }));
             this.filteredFiles = [...this.files];
+
+            this.message = 'No files found';
+
             this.requestUpdate();
         } catch (error) {
             console.error('Error fetching documents:', error);
         }
+    }
+
+    async removeFile(id, event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const result = confirm('Are you sure you want to delete this page?');
+        if (!result) {
+            return;
+        }
+
+        try {
+            const auth = await document.getElementById('auth').getUserInfo();
+            const response = await fetch(`https://cloud.wisk.cc/v1/document?id=${id}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: 'Bearer ' + auth.token,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete document');
+            }
+
+            this.files = this.files.filter(item => item.id !== id);
+            this.filteredFiles = this.filteredFiles.filter(item => item.id !== id);
+            this.requestUpdate();
+
+            if (id === window.wisk?.editor?.pageId) {
+                window.location.href = '/';
+            }
+        } catch (error) {
+            console.error('Error deleting document:', error);
+        }
+    }
+
+    isEmoji(str) {
+        // Regular expression to match emoji at the start of string
+        const emojiRegex = /^[\p{Emoji}\u{1F3FB}-\u{1F3FF}\u{1F9B0}-\u{1F9B3}]/u;
+        return emojiRegex.test(str);
+    }
+
+    getFileDisplayInfo(fileName) {
+        if (this.isEmoji(fileName)) {
+            // Extract the first character (emoji) and the rest of the title
+            const emoji = fileName.match(/^./u)[0];
+            const titleWithoutEmoji = fileName.slice(emoji.length).trim();
+            return {
+                hasEmoji: true,
+                emoji: emoji,
+                displayName: titleWithoutEmoji,
+            };
+        }
+        return {
+            hasEmoji: false,
+            emoji: null,
+            displayName: fileName,
+        };
     }
 
     async fetchTemplates() {
@@ -272,7 +384,7 @@ class HomeElement extends LitElement {
                 <div class="section">
                     <h2 class="section-title">Create New</h2>
                     <div class="templates-grid">
-                        <div class="template-card" @click=${() => (window.location.href = '/?template=blank')}>
+                        <div class="template-card" @click=${() => (window.location.href = '/')}>
                             <div
                                 style="height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 12px; min-height: 120px"
                             >
@@ -281,24 +393,53 @@ class HomeElement extends LitElement {
                             </div>
                         </div>
 
-                        ${this.templates.map(
-                            template => html`
-                                <div class="template-card" @click=${() => this.useTemplate(template)}>
-                                    <div class="template-info">
-                                        <h3>${template.name}</h3>
-                                        <span class="template-by">By ${template.by}</span>
-                                    </div>
+                        ${this.templates.length > 0
+                            ? html`
+                                  <div class="template-card" @click=${() => this.useTemplate(this.templates[0])}>
+                                      <div class="template-info">
+                                          <h3>${this.templates[0].name}</h3>
+                                          <span class="template-by">By ${this.templates[0].by}</span>
+                                      </div>
 
-                                    <div class="preview-container">
-                                        <div
-                                            class="desktop-preview"
-                                            style="background-image: url(/a7/templates/${template.path}/desktop.png)"
-                                            alt="${template.name} preview"
-                                        ></div>
-                                    </div>
-                                </div>
-                            `
-                        )}
+                                      <div class="preview-container">
+                                          <div
+                                              class="desktop-preview"
+                                              style="background-image: url(/a7/templates/${this.templates[0].path}/desktop.png)"
+                                              alt="${this.templates[0].name} preview"
+                                          ></div>
+                                      </div>
+                                  </div>
+                              `
+                            : ''}
+                    </div>
+
+                    <button class="btn show-more" @click=${() => (this.expandTemplates = !this.expandTemplates)}>
+                        ${this.expandTemplates ? 'Hide' : 'Show'} more templates
+                    </button>
+
+                    <div class="templates-grid" style="display: ${this.expandTemplates ? 'grid' : 'none'}">
+                        ${this.expandTemplates
+                            ? html`
+                                  ${this.templates.map(
+                                      template => html`
+                                          <div class="template-card" @click=${() => this.useTemplate(template)}>
+                                              <div class="template-info">
+                                                  <h3>${template.name}</h3>
+                                                  <span class="template-by">By ${template.by}</span>
+                                              </div>
+
+                                              <div class="preview-container">
+                                                  <div
+                                                      class="desktop-preview"
+                                                      style="background-image: url(/a7/templates/${template.path}/desktop.png)"
+                                                      alt="${template.name} preview"
+                                                  ></div>
+                                              </div>
+                                          </div>
+                                      `
+                                  )}
+                              `
+                            : ''}
                     </div>
                 </div>
 
@@ -309,15 +450,23 @@ class HomeElement extends LitElement {
                         <input type="text" class="search-input" placeholder="Search files..." @input=${this.filterFiles} />
                     </div>
                     <div class="files-grid">
-                        ${this.filteredFiles.length === 0 ? html` <p>No files found</p> ` : ''}
-                        ${this.filteredFiles.map(
-                            file => html`
+                        ${this.filteredFiles.length === 0 ? html` <p>${this.message}</p> ` : ''}
+                        ${this.filteredFiles.map(file => {
+                            const fileInfo = this.getFileDisplayInfo(file.name);
+                            return html`
                                 <a href="/?id=${file.id}" class="file-card">
-                                    <img src="/a7/forget/page-1.svg" alt="File" style="width: 18px" />
-                                    ${file.name}
+                                    <div class="file-content">
+                                        ${fileInfo.hasEmoji
+                                            ? html`<span style="font-size: 18px">${fileInfo.emoji}</span>`
+                                            : html`<img src="/a7/forget/page-1.svg" alt="File" style="width: 18px" />`}
+                                        ${fileInfo.displayName}
+                                    </div>
+                                    <div class="more-options" @click=${e => this.removeFile(file.id, e)}>
+                                        <img src="/a7/forget/trash.svg" alt="More options" style="width: 18px" />
+                                    </div>
                                 </a>
-                            `
-                        )}
+                            `;
+                        })}
                     </div>
                 </div>
 

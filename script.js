@@ -24,7 +24,13 @@ function getURLParam(str) {
 }
 
 function setURLParam(id) {
+    // get template param from url
+    var template = getURLParam('template');
     window.history.replaceState({}, '', window.location.pathname + '?id=' + id);
+
+    if (template != null && template != '') {
+        wisk.editor.template = template;
+    }
 }
 
 async function initScript() {

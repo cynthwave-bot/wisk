@@ -351,6 +351,17 @@ async function initializeElements() {
     setTimeout(() => {
         document.getElementById(firstElement.id).setValue('', firstElement.value);
 
+        if (wisk.editor.template && wisk.editor.template !== '') {
+            fetch('/js/templates/storage/' + wisk.editor.template + '.json')
+                .then(response => response.json())
+                .then(data => {
+                    // set data
+                    setTimeout(() => {
+                        wisk.editor.useTemplate(data);
+                    }, 0);
+                });
+        }
+
         if (window.wisk.editor.elements.length === 1) {
             window.wisk.editor.focusBlock(firstElement.id, {
                 x: firstElement.value.textContent.length,
@@ -541,6 +552,12 @@ window.wisk.editor.useTemplate = async function (template) {
     await wisk.editor.addConfigChange([{ path: 'document.config.theme', values: { theme: template.theme } }]);
 
     window.wisk.editor.justUpdates();
+
+    // focus on the first element
+    setTimeout(() => {
+        const firstElement = window.wisk.editor.elements[0];
+        window.wisk.editor.focusBlock(firstElement.id, { x: firstElement.value.textContent.length });
+    }, 0);
 };
 
 // Event Handler Functions
