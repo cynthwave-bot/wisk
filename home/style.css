@@ -58,6 +58,7 @@ body {
     cursor: pointer;
     border-radius: 50%;
     z-index: 99999;
+    -webkit-app-region: no-drag;
 }
 
 .minimize {

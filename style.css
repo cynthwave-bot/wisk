@@ -62,6 +62,7 @@ nav {
     display: flex;
     align-items: center;
     justify-content: center;
+    -webkit-app-region: no-drag;
 }
 .nav-button:hover {
     background-color: var(--bg-3);
@@ -312,6 +313,7 @@ nav {
     cursor: pointer;
     border-radius: 50%;
     z-index: 99999;
+    -webkit-app-region: no-drag;
 }
 
 .minimize {
