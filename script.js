@@ -105,4 +105,9 @@ const maximizeApp = () => fetch('/app-nav/maximize');
 // for desktop app
 if (window.location.href.includes('55557')) {
     document.querySelector('.nav-app').style.display = 'flex';
+    document.querySelector('body').style.borderRadius = '20px';
+    document.querySelector('html').style.borderRadius = '20px';
+    document.querySelector('html').style.overflow = 'hidden';
+    document.querySelector('body').style.overflow = 'hidden';
+    document.querySelector('html').style.backgroundColor = 'transparent';
 }
