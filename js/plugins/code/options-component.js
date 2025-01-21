@@ -614,7 +614,7 @@ class OptionsComponent extends LitElement {
         const data = await response.json();
         if (data.updateAvailable) {
             wisk.utils.showToast('Update available, Click to update', 3000);
-            this.shadowRoot.querySelector('#update-available').style.display = 'block';
+            this.shadowRoot.querySelector('#update-available').style.display = 'flex';
             this.shadowRoot.querySelector('#check-update').style.display = 'none';
         }
     }
@@ -923,7 +923,7 @@ class OptionsComponent extends LitElement {
                         <button id="signOut" class="btn-danger" @click="${() => window.wisk.auth.logOut()}">Sign Out</button>
                     </div>
 
-                    <div class="options-section options-section--animated" id="check-update" style="display: ${window.location.href.includes('30007') ? 'block' : 'none'}">
+                    <div class="options-section options-section--animated" id="check-update" style="display: ${window.location.href.includes('30007') ? 'flex' : 'none'}">
                         <label>Check for Updates</label>
                         <button class="btn-primary" @click="${() => this.checkForUpdatesX()}">Check</button>
                     </div>
