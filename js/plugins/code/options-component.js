@@ -442,19 +442,19 @@ class OptionsComponent extends LitElement {
             font-weight: 600;
             padding: var(--padding-w2);
             cursor: pointer;
-            border: 1px solid transparent;
+            border: 2px solid transparent;
             border-radius: var(--radius);
             outline: none;
         }
         .btn-primary:hover {
             background-color: var(--bg-blue);
             color: var(--fg-blue);
-            border: 1px solid var(--fg-blue);
+            border: 2px solid var(--fg-blue);
         }
         .btn-danger:hover {
             background-color: var(--bg-red);
             color: var(--fg-red);
-            border: 1px solid var(--fg-red);
+            border: 2px solid var(--fg-red);
         }
         .options-select::-webkit-scrollbar {
             width: 15px;
@@ -606,6 +606,27 @@ class OptionsComponent extends LitElement {
 
     handleSearch(e) {
         this.searchTerm = e.target.value.toLowerCase();
+    }
+
+    // TODO: unhardcode the server url, also should have a better way to detect electron
+    async checkForUpdatesX() {
+        const response = await fetch('http://localhost:30007/app-nav/check-update');
+        const data = await response.json();
+        if (data.updateAvailable) {
+            wisk.utils.showToast('Update available, Click to update', 3000);
+            this.shadowRoot.querySelector('#update-available').style.display = 'block';
+            this.shadowRoot.querySelector('#check-update').style.display = 'none';
+        }
+    }
+
+    // fuckkkkkkkkkkk me performUpdate is a lit element method ig..... 
+    // so added X at the end, wasted a lot of time on this
+    async performUpdateX() {
+        const response = await fetch('http://localhost:30007/app-nav/update');
+        const data = await response.json();
+        if (data.success) {
+            alert('Update completed. Please restart the app.');
+        }
     }
 
     showPluginsManager() {
@@ -900,6 +921,16 @@ class OptionsComponent extends LitElement {
                     <div class="options-section options-section--animated">
                         <label>Sign Out</label>
                         <button id="signOut" class="btn-danger" @click="${() => window.wisk.auth.logOut()}">Sign Out</button>
+                    </div>
+
+                    <div class="options-section options-section--animated" id="check-update" style="display: ${window.location.href.includes('30007') ? 'block' : 'none'}">
+                        <label>Check for Updates</label>
+                        <button class="btn-primary" @click="${() => this.checkForUpdatesX()}">Check</button>
+                    </div>
+
+                    <div class="options-section options-section--animated" id="update-available" style="display: none">
+                        <label>Check for Updates</label>
+                        <button class="btn-primary" @click="${() => this.performUpdateX()}">Update</button>
                     </div>
 
                     <div class="plugins-toggle options-section" @click="${this.showAboutView}">
