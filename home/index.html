@@ -139,6 +139,12 @@
                 onclick="window.location.href = '/'"
             />
             <div class="nav-plugins"></div>
+
+            <div class="nav-app">
+                <span class="minimize" onclick="minimizeApp()"></span>
+                <span class="maximize" onclick="maximizeApp()"></span>
+                <span class="close" onclick="closeApp()"></span>
+            </div>
         </nav>
 
         <home-element id="home"></home-element>
@@ -160,6 +166,12 @@
             window.onSignIn = function () {
                 document.querySelector('#home').fetchFiles();
             };
+
+            // if url contains 55557 then .nav-app display flex
+            // for desktop app
+            if (window.location.href.includes('55557')) {
+                document.querySelector('.nav-app').style.display = 'flex';
+            }
         </script>
     </body>
 </html>

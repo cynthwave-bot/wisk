@@ -17,12 +17,12 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    border-bottom: 1px solid var(--border-1);
     display: flex;
     align-items: center;
-    padding: var(--padding-3) max(var(--padding-4), calc(50% - 600px + 20px));
+    padding: var(--padding-3) var(--padding-4);
     background: var(--bg-1);
     z-index: 100;
+    justify-content: space-between;
 }
 
 .plugin-icon {
@@ -42,4 +42,32 @@ body {
 }
 *::-webkit-scrollbar-thumb:hover {
     background-color: var(--text-1);
+}
+
+.nav-app {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    order: 9999;
+}
+
+.nav-app span {
+    display: block;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 99999;
+}
+
+.minimize {
+    background-color: var(--fg-yellow);
+}
+
+.maximize {
+    background-color: var(--fg-green);
+}
+
+.close {
+    background-color: var(--fg-red);
 }
