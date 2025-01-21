@@ -59,6 +59,7 @@ body {
     border-radius: 50%;
     z-index: 99999;
     -webkit-app-region: no-drag;
+    display: none;
 }
 
 .minimize {
