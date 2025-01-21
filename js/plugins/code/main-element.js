@@ -280,7 +280,6 @@ class MainElement extends BaseTextElement {
                 padding-top: 49px;
                 background-size: cover;
                 background-position: center;
-                border-radius: var(--radius);
                 transition: opacity 0.3s;
                 position: relative;
             }
@@ -309,6 +308,9 @@ class MainElement extends BaseTextElement {
             }
 
             @media (max-width: 1150px) {
+                .header-container {
+                    border-radius: var(--radius);
+                }
                 .has-background {
                     padding-top: 49px;
                 }
