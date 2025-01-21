@@ -1,9 +1,12 @@
+// TODO fix this messy code later
 var SERVER = 'http://localhost:8788';
 
 if (window.location.href.includes('ngrok')) {
     SERVER = window.location.href.split('.ngrok-free.app')[0] + '.ngrok-free.app';
 } else if (window.location.href.includes('wisk.cc')) {
     SERVER = 'https://app.wisk.cc';
+} if (window.location.href.includes('30009')) {
+    SERVER = 'http://localhost:30009';
 }
 
 if (window.location.href.includes('.wisk.site')) {
