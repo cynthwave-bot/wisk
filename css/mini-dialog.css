@@ -35,15 +35,6 @@
     transition: all 0.1s ease;
 }
 
-@starting-style {
-    .mini-dialog {
-        opacity: 0;
-    }
-    .mini-dialog-content {
-        opacity: 0;
-    }
-}
-
 @media (max-width: 900px) {
     .mini-dialog-content {
         top: 10%; /* i dont know why this is 10 and help-dialog/getting-started/template-dialog is 5 */

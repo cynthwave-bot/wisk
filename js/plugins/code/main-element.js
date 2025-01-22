@@ -287,6 +287,8 @@ class MainElement extends BaseTextElement {
                 .header-container {
                     margin-top: 59px;
                     padding-top: 29px;
+                    padding-left: 0;
+                    padding-right: 0;
                 }
             }
 
@@ -477,6 +479,12 @@ class MainElement extends BaseTextElement {
             *::-webkit-scrollbar-track { background: var(--bg-1); }
             *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
             *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+            @media (max-width: 1150px) {
+                #editable {
+                    padding-left: 0;
+                    padding-right: 0;
+            }
+            }
             </style>
         `;
         const content = `

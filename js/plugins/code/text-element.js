@@ -12,6 +12,7 @@ class TextElement extends BaseTextElement {
                 outline: none;
                 position: relative;
                 line-height: 1.5;
+                min-height: 1em;
             }
             #editable.empty:focus:before {
                 content: attr(data-placeholder);
