@@ -307,7 +307,7 @@ async function initEditor(doc) {
     for (const plugin of window.wisk.plugins.loadedPlugins) {
         var tempPlugin = window.wisk.plugins.getPluginGroupDetail(plugin);
         for (const content of tempPlugin.contents) {
-            if (content.identifier && doc.data.pluginData[content.identifier]) {
+            if (content.identifier && doc.data.pluginData[content.identifier] && document.getElementById(content.identifier)) {
                 document.getElementById(content.identifier).loadData(doc.data.pluginData[content.identifier]);
             }
         }
