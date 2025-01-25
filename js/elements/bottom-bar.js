@@ -35,6 +35,7 @@ class BottomBar extends LitElement {
             cursor: pointer;
             height: 100%;
             outline: none;
+            padding: var(--padding-2);
         }
 
         .bottom-bar button img {
@@ -53,11 +54,12 @@ class BottomBar extends LitElement {
 
     buttonClicked(arg) {
         switch (arg) {
-            case 'docs':
-                document.querySelector('neo-ai').hide();
-                break;
             case 'home':
-                window.location.href = '/home';
+                if (document.querySelector('neo-ai').viewVisible()) {
+                    document.querySelector('neo-ai').hide();
+                } else {
+                    window.location.href = '/home';
+                }
                 break;
             case 'sparkle':
                 document.querySelector('neo-ai').expandDialog();
@@ -74,7 +76,6 @@ class BottomBar extends LitElement {
     render() {
         return html`
             <div class="bottom-bar">
-                <button @click="${() => this.buttonClicked('docs')}"><img src="/a7/plugins/bottom-bar/docs.svg" alt="Docs" /></button>
                 <button @click="${() => this.buttonClicked('home')}"><img src="/a7/plugins/bottom-bar/home.svg" alt="Home" /></button>
                 <button @click="${() => this.buttonClicked('sparkle')}"><img src="/a7/plugins/bottom-bar/sparkle.svg" alt="Home" /></button>
                 <button @click="${() => this.buttonClicked('plus')}"><img src="/a7/plugins/bottom-bar/plus.svg" alt="Home" /></button>

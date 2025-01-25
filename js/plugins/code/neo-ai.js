@@ -574,6 +574,15 @@ class NeoAI extends LitElement {
             font-size: 13px;
             color: var(--text-2);
         }
+
+        @media (max-width: 768px) {
+            .settings-div {
+                padding: var(--padding-4);
+            }
+            .model-select {
+                flex-direction: column;
+            }
+        }
     `;
 
     static properties = {
@@ -946,6 +955,10 @@ class NeoAI extends LitElement {
 
     expandDialog() {
         this.view = 'i-container';
+    }
+
+    viewVisible() {
+        return this.view === 'i-container' || this.view === 'c-container';
     }
 
     sendClicked() {
