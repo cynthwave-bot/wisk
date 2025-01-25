@@ -59,7 +59,7 @@ const createBlockElement = (elementId, blockType) => {
 
 // Editor core functions
 window.wisk.editor.generateNewId = () =>
-    [...Array(15)].map(() => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random() * 52)]).join('');
+    [...Array(7)].map(() => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random() * 52)]).join('');
 
 window.wisk.editor.elements = [];
 

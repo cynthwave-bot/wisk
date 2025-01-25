@@ -653,7 +653,7 @@ class NeoAI extends LitElement {
         super();
         this.expanded = false;
         this.showSettings = false;
-        this.modelName = 'neo';
+        this.modelName = 'neo-large';
 
         this.selectedElementId = '';
         this.selectedText = '';
