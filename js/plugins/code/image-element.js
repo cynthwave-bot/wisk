@@ -880,65 +880,57 @@ class ImageElement extends BaseTextElement {
 
         const content = `
             <div class="upload-img empty">
-                ${
-                    window.wisk.editor.wiskSite
-                        ? `
-                        <img src="" id="img-editable" alt="Uploaded image" />
-                    `
-                        : `
-                        <input type="file" id="file" accept="image/*" />
-                        <div class="image-container">
-                            <div class="resize-handle left-handle"></div>
-                            <img src="" id="img-editable" alt="Uploaded image" />
-                            <div class="resize-handle right-handle"></div>
-                        </div>
-                        <button id="upload-button"><img src="/a7/plugins/image-element/upload.svg" width="30" height="30" style="filter: var(--themed-svg);">Upload Image</button>
-                        <button id="link-button"><img src="/a7/plugins/image-element/link.svg" width="30" height="30" style="filter: var(--themed-svg);">Link Image</button>
-                        <button id="search-gifs-btn"><img src="/a7/plugins/image-element/gif.svg" width="30" height="30" style="filter: var(--themed-svg);">Search GIFs</button>
-                        <button id="options-button" style="display: none;">
-                            <img src="/a7/forget/morex.svg" width="22" height="22" style="filter: var(--themed-svg);">
-                        </button>
-                        <!-- Modified options dialog -->
-                        <div id="options-dialog">
-                            <button class="dialog-option" id="change-image">Change Image</button>
-                            <button class="dialog-option" id="download-image">Download Image</button>
-                            <button class="dialog-option" id="search-gif">Search GIFs</button>
-                            <button class="dialog-option" id="add-link">Add Image URL</button>
-                            <button class="dialog-option" id="fullscreen">View Full Size</button>
-                            <div class="dialog-option border-toggle">
-                                <label for="border-toggle">Show Border</label>
-                                <input type="checkbox" id="border-toggle" />
-                            </div>
-                        </div>
-                        <!-- Add GIF search dialog -->
-                        <div id="gif-search-dialog" style="display: none;">
-                            <div class="gif-search-header">
-                                <input type="text" id="gif-search-input" placeholder="Search GIFs...">
-                                <button id="close-gif-search"><img src="/a7/forget/close.svg" alt="Close" width="20" height="20"></button>
-                            </div>
-                            <p style="text-align: end; color: var(--text-2); font-size: small;">Powered by Tenor</p>
-                            <div class="gif-results"></div>
-                        </div>
+                <input type="file" id="file" accept="image/*" />
+                <div class="image-container">
+                    <div class="resize-handle left-handle"></div>
+                    <img src="" id="img-editable" alt="Uploaded image" />
+                    <div class="resize-handle right-handle"></div>
+                </div>
+                <button id="upload-button"><img src="/a7/plugins/image-element/upload.svg" width="30" height="30" style="filter: var(--themed-svg);">Upload Image</button>
+                <button id="link-button"><img src="/a7/plugins/image-element/link.svg" width="30" height="30" style="filter: var(--themed-svg);">Link Image</button>
+                <button id="search-gifs-btn"><img src="/a7/plugins/image-element/gif.svg" width="30" height="30" style="filter: var(--themed-svg);">Search GIFs</button>
+                <button id="options-button" style="display: none;">
+                    <img src="/a7/forget/morex.svg" width="22" height="22" style="filter: var(--themed-svg);">
+                </button>
+                <!-- Modified options dialog -->
+                <div id="options-dialog">
+                    <button class="dialog-option" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''} id="change-image">Change Image</button>
+                    <button class="dialog-option" id="download-image">Download Image</button>
+                    <button class="dialog-option" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''} id="search-gif">Search GIFs</button>
+                    <button class="dialog-option" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''} id="add-link">Add Image URL</button>
+                    <button class="dialog-option" id="fullscreen">View Full Size</button>
+                    <div class="dialog-option border-toggle" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''}>
+                        <label for="border-toggle">Show Border</label>
+                        <input type="checkbox" id="border-toggle" />
+                    </div>
+                </div>
+                <!-- Add GIF search dialog -->
+                <div id="gif-search-dialog" style="display: none;">
+                    <div class="gif-search-header">
+                        <input type="text" id="gif-search-input" placeholder="Search GIFs...">
+                        <button id="close-gif-search"><img src="/a7/forget/close.svg" alt="Close" width="20" height="20"></button>
+                    </div>
+                    <p style="text-align: end; color: var(--text-2); font-size: small;">Powered by Tenor</p>
+                    <div class="gif-results"></div>
+                </div>
 
-                        <div id="link-dialog" style="display: none;" class="modal-dialog">
-                            <div class="link-dialog-content">
-                                <div class="link-dialog-header">
-                                    <h3>Add Image URL</h3>
-                                    <button id="close-link-dialog">
-                                        <img src="/a7/forget/close.svg" alt="Close" width="20" height="20">
-                                    </button>
-                                </div>
-                                <div class="link-dialog-body">
-                                    <input type="text" id="image-url-input" placeholder="Paste image URL here...">
-                                    <div class="link-dialog-buttons">
-                                        <button id="cancel-link" class="secondary-button">Cancel</button>
-                                        <button id="add-link" class="primary-button">Add Image</button>
-                                    </div>
-                                </div>
+                <div id="link-dialog" style="display: none;" class="modal-dialog">
+                    <div class="link-dialog-content">
+                        <div class="link-dialog-header">
+                            <h3>Add Image URL</h3>
+                            <button id="close-link-dialog">
+                                <img src="/a7/forget/close.svg" alt="Close" width="20" height="20">
+                            </button>
+                        </div>
+                        <div class="link-dialog-body">
+                            <input type="text" id="image-url-input" placeholder="Paste image URL here...">
+                            <div class="link-dialog-buttons">
+                                <button id="cancel-link" class="secondary-button">Cancel</button>
+                                <button id="add-link" class="primary-button">Add Image</button>
                             </div>
                         </div>
-                    `
-                }
+                    </div>
+                </div>
             </div>
             <p id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></p>
             <div class="emoji-suggestions"></div>
