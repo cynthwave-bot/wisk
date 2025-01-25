@@ -612,30 +612,28 @@ class NeoAI extends LitElement {
             }
         }
         .clear-chat {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: var(--padding-4);
-            }
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--padding-4);
+        }
 
-            .clear-chat button  {
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: var(--padding-2);
-                display: flex;
-                align-items: center;
-                border-radius: 100px;
-            }
+        .clear-chat button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--padding-2);
+            display: flex;
+            align-items: center;
+            border-radius: 100px;
+        }
 
-            .clear-chat button img {
-                width: 18px;
-                height: 18px;
-                filter: var(--themed-svg);
-            }
-
-                
+        .clear-chat button img {
+            width: 18px;
+            height: 18px;
+            filter: var(--themed-svg);
+        }
     `;
 
     static properties = {
@@ -1174,9 +1172,9 @@ class NeoAI extends LitElement {
                           </div>
 
                           <div class="clear-chat">
-                            <label for="">Clear chat</label>
-                            <button @click=${() => this.clearChat()}> <img src="${this.path}trash.svg" draggable="false" /></button>
-                        </div>
+                              <label for="">Clear chat</label>
+                              <button @click=${() => this.clearChat()}><img src="${this.path}trash.svg" draggable="false" /></button>
+                          </div>
                       </div>
                   `
                 : ''}
