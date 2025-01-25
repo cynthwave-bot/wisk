@@ -480,15 +480,15 @@ class NeoAI extends LitElement {
             transform: translate(-50%, -50%);
             width: 90%;
             height: 90%;
-            max-width: 500px;
-            max-height: 800px;
+            max-width: 870px;
+            max-height: 640px;
             background-color: var(--bg-1);
             display: flex;
             gap: var(--gap-2);
             align-items: flex-start;
             border-radius: var(--radius-large);
             border: 1px solid var(--border-1);
-            filter: var(--drop-shadow);
+            filter: var(--drop-shadow) var(--drop-shadow);
             z-index: 801;
             padding: var(--padding-4);
             flex-direction: column;
@@ -594,10 +594,21 @@ class NeoAI extends LitElement {
                 bottom: 50px;
                 transform: unset;
                 width: 100%;
+                border-top-left-radius: var(--radius-large);
+                border-top-right-radius: var(--radius-large);
+                border-top: 1px solid var(--border-1);
+                max-height: 80%;
+                transition: all 0.1s;
             }
             .model-select {
                 flex-direction: column;
                 gap: var(--gap-1);
+            }
+
+            @starting-style {
+                .settings-div {
+                    bottom: -200px;
+                }
             }
         }
         .clear-chat {
@@ -989,8 +1000,16 @@ class NeoAI extends LitElement {
     }
 
     clearChat() {
-        this.messages.chat = [{ from: 'bot', text: 'Hello! I am Neo. How can I help you today?', type: 'text' }];
-        this.requestUpdate();
+        if (this.messages.chat.length === 1) {
+            wisk.utils.showToast('Chat is already empty bru!', 6000);
+            setTimeout(() => {
+                wisk.utils.showToast('but ok, I will clear it for you :)', 6000);
+            }, 3000);
+        } else {
+            this.messages.chat = [{ from: 'bot', text: 'Hello! I am Neo. How can I help you today?', type: 'text' }];
+            wisk.utils.showToast('Chat cleared!', 6000);
+            this.requestUpdate();
+        }
     }
 
     setView(view) {

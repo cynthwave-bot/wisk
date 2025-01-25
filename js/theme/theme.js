@@ -32,6 +32,19 @@ window.wisk.theme.setTheme = async function (themeName) {
         }
     });
 
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+        ::selection {
+            background-color: var(--accent-text);
+            color: var(--accent-bg);
+        }
+        ::-moz-selection {
+            background-color: var(--accent-text);
+            color: var(--accent-bg);
+        }
+    `;
+    document.head.appendChild(styleSheet);
+
     const textColor = theme['--text-1'] || '#000000';
     const bgColor = theme['--bg-1'] || '#ffffff';
     const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');

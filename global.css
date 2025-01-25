@@ -31,7 +31,7 @@
     background-color: var(--text-1);
     color: var(--bg-1);
     padding: 16px;
-    text-align: center;
+    text-align: left;
     border-radius: var(--radius);
     margin-bottom: 10px;
     opacity: 1;
