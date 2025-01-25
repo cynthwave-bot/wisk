@@ -1,4 +1,4 @@
-![Wisk](/a7/screencap.png)
+![Wisk](https://wisk.cc/a7/forget/img.png)
 
 # Wisk
 
@@ -14,20 +14,26 @@ A plugin-based document editor built with vanilla JavaScript and Web Components.
 
 Wisk is an open-source document editor focusing on extensibility and performance. The frontend is built without frameworks or build tools, using modern Web APIs and standards.
 
+The frontend is open source and fully functional standalone, but requires Wisk backend services for advanced features like real-time collaboration, sync, citation management, and AI capabilities. The backend services are not open source and some features require a subscription to use.
+
 ### Core Functionality
 
-- 📝 Block-based editor with real-time rendering
-- 🎨 Customizable themes and styles
-- 🔌 Extensible plugin system
-- 💾 Offline-first with automatic saving
-- 📱 PWA support for mobile and desktop
+- Block-based editor with real-time rendering
+- Extensible plugin system
+- Customizable themes and styles
+- Offline-first with automatic saving
+- PWA support for mobile and desktop
+- Templates support for quick start
+- Citation Manager for academic writing
 
 ### Cloud Features (with Wisk backend)
 
-- 🤝 Real-time collaboration
-- 🔄 Cross-device synchronization
-- 📚 Citation management
-- 🤖 AI-powered assistance
+- AI assistance for writing
+- Real-time collaboration
+- Cross-device synchronization
+- One click citations
+- Publishing and sharing
+- Export to various formats (PDF, DOCX, etc.) with latex templates
 
 ## Quick Start
 
@@ -37,18 +43,6 @@ cd wisk
 python -m http.server 8000
 # Visit http://localhost:8000
 ```
-
-## Architecture
-
-The frontend is standalone and fully functional without external services. Key design principles:
-
-- Pure vanilla JavaScript (~25k lines)
-- Web Components using lit-element
-- IndexedDB for offline storage
-- Service Workers for PWA functionality
-- Zero build tooling required
-
-The frontend is open source and fully functional standalone, but requires Wisk backend services for advanced features like real-time collaboration, sync, citation management, and AI capabilities. The backend services are not open source and some features require a subscription to use.
 
 ## License
 
