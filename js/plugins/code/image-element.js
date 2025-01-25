@@ -17,6 +17,7 @@ class ImageElement extends BaseTextElement {
         this.fileInput = this.shadowRoot.querySelector('#file');
         this.uploadArea = this.shadowRoot.querySelector('.upload-img');
         this.uploadButton = this.shadowRoot.querySelector('#upload-button');
+        this.searchGifsButton = this.shadowRoot.querySelector('#search-gifs-btn');
         this.optionsButton = this.shadowRoot.querySelector('#options-button');
         this.optionsDialog = this.shadowRoot.querySelector('#options-dialog');
         this.bindImageEvents();
@@ -354,6 +355,7 @@ class ImageElement extends BaseTextElement {
             this.uploadArea.classList.add('has-image');
             this.fileInput.style.display = 'none';
             this.uploadButton.style.display = 'none';
+            this.searchGifsButton.style.display = 'none';
             this.optionsButton.style.display = 'block';
 
             const container = this.shadowRoot.querySelector('.image-container');
@@ -587,87 +589,88 @@ class ImageElement extends BaseTextElement {
                 width: auto;
                 height: auto;
             }
-#gif-search-dialog {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) translateZ(0px);
-    background: var(--bg-1);
-    border: 1px solid var(--border-1);
-    border-radius: var(--radius-large);
-    padding: var(--padding-4);
-    filter: var(--drop-shadow) var(--drop-shadow);
-    z-index: 1000;
-    width: 90%;
-    max-width: 600px;
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-3);
-}
 
-.gif-search-header {
-    display: flex;
-    gap: var(--gap-2);
-    align-items: stretch;
-}
+            #gif-search-dialog {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) translateZ(0px);
+                background: var(--bg-1);
+                border: 1px solid var(--border-1);
+                border-radius: var(--radius-large);
+                padding: var(--padding-4);
+                filter: var(--drop-shadow) var(--drop-shadow);
+                z-index: 1000;
+                width: 90%;
+                max-width: 600px;
+                max-height: 80vh;
+                display: flex;
+                flex-direction: column;
+                gap: var(--gap-3);
+            }
 
-#gif-search-input {
-    flex: 1;
-    padding: var(--padding-w2);
-    outline: none;
-    border: 1px solid var(--border-1);
-    border-radius: 100px;
-    background: var(--bg-2);
-    color: var(--text-1);
-}
+            .gif-search-header {
+                display: flex;
+                gap: var(--gap-2);
+                align-items: stretch;
+            }
 
-#close-gif-search {
-    background: none;
-    border: none;
-    border-radius: 100px;
-    color: var(--text-1);
-    font-size: 24px;
-    cursor: pointer;
-    padding: var(--padding-2);
-}
+            #gif-search-input {
+                flex: 1;
+                padding: var(--padding-w2);
+                outline: none;
+                border: 1px solid var(--border-1);
+                border-radius: 100px;
+                background: var(--bg-2);
+                color: var(--text-1);
+            }
 
-#close-gif-search:hover {
-    background: var(--bg-2);
-}
+            #close-gif-search {
+                background: none;
+                border: none;
+                border-radius: 100px;
+                color: var(--text-1);
+                font-size: 24px;
+                cursor: pointer;
+                padding: var(--padding-2);
+            }
+
+            #close-gif-search:hover {
+                background: var(--bg-2);
+            }
 
 
-#close-gif-search img {
-    width: 20px;
-    height: 20px;
-    filter: var(--themed-svg);
-}
+            #close-gif-search img {
+                width: 20px;
+                height: 20px;
+                filter: var(--themed-svg);
+            }
 
-.gif-results {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: var(--gap-2);
-    overflow-y: auto;
-    max-height: calc(80vh - 100px);
-    padding: var(--padding-2);
-}
+            .gif-results {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: var(--gap-2);
+                overflow-y: auto;
+                max-height: calc(80vh - 100px);
+                padding: var(--padding-2);
+            }
 
-.gif-item {
-    cursor: pointer;
-    border-radius: var(--radius);
-    overflow: hidden;
-    transition: transform 0.2s;
-}
+            .gif-item {
+                cursor: pointer;
+                border-radius: var(--radius);
+                overflow: hidden;
+                transition: transform 0.2s;
+            }
 
-.gif-item:hover {
-    transform: scale(1.05);
-}
+            .gif-item:hover {
+                transform: scale(1.05);
+            }
 
-.gif-item img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-}
+            .gif-item img {
+                width: 100%;
+                height: 150px;
+                object-fit: cover;
+            }
             </style>
         `;
 
@@ -706,6 +709,7 @@ class ImageElement extends BaseTextElement {
                         <input type="text" id="gif-search-input" placeholder="Search GIFs...">
                         <button id="close-gif-search"><img src="/a7/forget/close.svg" alt="Close" width="20" height="20"></button>
                     </div>
+                    <p style="text-align: end; color: var(--text-2); font-size: small;">Powered by Tenor</p>
                     <div class="gif-results"></div>
                 </div>
             `
