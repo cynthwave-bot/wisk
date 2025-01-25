@@ -143,10 +143,10 @@ class ImageElement extends BaseTextElement {
 
             gifElement.addEventListener('click', async () => {
                 try {
-                    const response = await fetch(gif.url);
-                    const blob = await response.blob();
-                    const file = new File([blob], 'gif.gif', { type: 'image/gif' });
-                    await this.processSelectedFile(file, true);
+                    this.imageUrl = gif.url;
+                    this.updateImage();
+                    this.sendUpdates();
+
                     this.shadowRoot.querySelector('#gif-search-dialog').style.display = 'none';
                 } catch (error) {
                     console.error('Error selecting GIF:', error);
