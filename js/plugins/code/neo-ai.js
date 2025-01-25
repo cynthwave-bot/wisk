@@ -1026,7 +1026,11 @@ class NeoAI extends LitElement {
     }
 
     expandDialog() {
-        this.view = 'i-container';
+        if (this.messages.chat.length > 1) {
+            this.setView('c-container');
+        } else {
+            this.setView('i-container');
+        }
     }
 
     viewVisible() {

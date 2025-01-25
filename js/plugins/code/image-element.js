@@ -190,13 +190,11 @@ class ImageElement extends BaseTextElement {
         const resultsContainer = this.shadowRoot.querySelector('.gif-results');
         resultsContainer.innerHTML = '';
 
-        // Check if we received the gifs array from the API response
         if (!gifs.gifs || !gifs.gifs.length) {
             resultsContainer.innerHTML = '<div style="color: var(--text-2); text-align: center; grid-column: 1/-1;">No GIFs found</div>';
             return;
         }
 
-        // Use gifs.gifs since the API returns an object with a gifs array
         gifs.gifs.forEach(gif => {
             const gifElement = document.createElement('div');
             gifElement.className = 'gif-item';
@@ -708,16 +706,34 @@ class ImageElement extends BaseTextElement {
                 filter: var(--drop-shadow) var(--drop-shadow);
                 z-index: 1000;
                 width: 90%;
+                height: 80%;
                 max-width: 600px;
                 max-height: 80vh;
                 display: flex;
                 flex-direction: column;
-                gap: var(--gap-3);
+                gap: var(--gap-2);
+            }
+
+            @media (max-width: 768px) {
+                #gif-search-dialog {
+                    top: 20%;
+                    left: 0;
+                    transform: unset;
+                    width: 100%;
+                    height: calc(80% - 50px);
+                    max-width: unset;
+                    max-height: unset;
+                    border-radius: 0;
+                    border-top-right-radius: var(--radius-large);
+                    border-top-left-radius: var(--radius-large);
+                    border: none;
+                    border-top: 1px solid var(--border-1);
+                }
             }
 
             .gif-search-header {
                 display: flex;
-                gap: var(--gap-2);
+                gap: var(--gap-1);
                 align-items: center;
             }
 
@@ -764,12 +780,10 @@ class ImageElement extends BaseTextElement {
             .gif-item {
                 cursor: pointer;
                 border-radius: var(--radius);
-                overflow: hidden;
                 transition: transform 0.2s;
             }
 
             .gif-item:hover {
-                transform: scale(1.05);
             }
 
             .gif-item img {
@@ -907,11 +921,12 @@ class ImageElement extends BaseTextElement {
                 <!-- Add GIF search dialog -->
                 <div id="gif-search-dialog" style="display: none;">
                     <div class="gif-search-header">
-                        <input type="text" id="gif-search-input" placeholder="Search GIFs...">
+                        <input type="text" id="gif-search-input" placeholder="Search GIFs..." autocomplete="off" />
                         <button id="close-gif-search"><img src="/a7/forget/close.svg" alt="Close" width="20" height="20"></button>
                     </div>
                     <p style="text-align: end; color: var(--text-2); font-size: small;">Powered by Tenor</p>
-                    <div class="gif-results"></div>
+                    <div class="gif-results">
+                    </div>
                 </div>
 
                 <div id="link-dialog" style="display: none;" class="modal-dialog">
