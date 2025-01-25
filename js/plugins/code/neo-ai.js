@@ -863,6 +863,14 @@ class NeoAI extends LitElement {
     }
 
     renderMessageContent(message) {
+
+        if (message.text === '<--Thinking-->') {
+            return html`<div class="message-bubble status" style="background-color: var(--bg-1); color: var(--text-2);">
+                <img src="${this.path}spin.svg" style="width: 44px; height: 44px; filter: var(--themed-svg);" />
+            </div>`;
+        }
+
+
         switch (message.type) {
             case 'text':
                 return html`
@@ -1056,7 +1064,7 @@ class NeoAI extends LitElement {
         const thinkingMsgIndex = this.messages.chat.length;
         this.messages.chat.push({
             from: 'bot',
-            text: 'Thinking...',
+            text: '<--Thinking-->',
             type: 'status',
             color: 'info',
         });
