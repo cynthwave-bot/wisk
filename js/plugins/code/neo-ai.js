@@ -484,7 +484,7 @@ class NeoAI extends LitElement {
             max-height: 800px;
             background-color: var(--bg-1);
             display: flex;
-            gap: var(--gap-3);
+            gap: var(--gap-2);
             align-items: flex-start;
             border-radius: var(--radius-large);
             border: 1px solid var(--border-1);
@@ -509,11 +509,18 @@ class NeoAI extends LitElement {
             display: flex;
             align-items: center;
             border-radius: 100px;
+            position: fixed;
+            right: 12px;
+            top: 12px;
+        }
+
+        .settings-close:hover {
+            background-color: var(--bg-3);
         }
 
         .settings-close img {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             filter: var(--themed-svg);
         }
         .model-select {
@@ -521,6 +528,8 @@ class NeoAI extends LitElement {
             gap: var(--gap-3);
             padding: var(--padding-4);
             border-radius: var(--radius);
+            width: 100%;
+            background: var(--bg-2);
         }
 
         .model-option {
@@ -577,12 +586,45 @@ class NeoAI extends LitElement {
 
         @media (max-width: 768px) {
             .settings-div {
-                padding: var(--padding-4);
+                top: unset;
+                left: unset;
+                height: calc(100% - 50px);
+                border-radius: 0;
+                border: none;
+                bottom: 50px;
+                transform: unset;
+                width: 100%;
             }
             .model-select {
                 flex-direction: column;
+                gap: var(--gap-1);
             }
         }
+        .clear-chat {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: var(--padding-4);
+            }
+
+            .clear-chat button  {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: var(--padding-2);
+                display: flex;
+                align-items: center;
+                border-radius: 100px;
+            }
+
+            .clear-chat button img {
+                width: 18px;
+                height: 18px;
+                filter: var(--themed-svg);
+            }
+
+                
     `;
 
     static properties = {
@@ -946,6 +988,11 @@ class NeoAI extends LitElement {
         }
     }
 
+    clearChat() {
+        this.messages.chat = [{ from: 'bot', text: 'Hello! I am Neo. How can I help you today?', type: 'text' }];
+        this.requestUpdate();
+    }
+
     setView(view) {
         if (view == 'i-container' && this.messages.chat.length > 1) {
             view = 'c-container';
@@ -958,7 +1005,7 @@ class NeoAI extends LitElement {
     }
 
     viewVisible() {
-        return this.view === 'i-container' || this.view === 'c-container';
+        return this.view === 'i-container' || this.view === 'c-container' || this.showSettings;
     }
 
     sendClicked() {
@@ -1046,6 +1093,7 @@ class NeoAI extends LitElement {
 
     hide() {
         this.view = 'logo';
+        this.showSettings = false;
     }
 
     expandClicked() {
@@ -1105,6 +1153,11 @@ class NeoAI extends LitElement {
                                   </div>
                               </div>
                           </div>
+
+                          <div class="clear-chat">
+                            <label for="">Clear chat</label>
+                            <button @click=${() => this.clearChat()}> <img src="${this.path}trash.svg" draggable="false" /></button>
+                        </div>
                       </div>
                   `
                 : ''}
