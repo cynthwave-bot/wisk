@@ -882,9 +882,9 @@ class ImageElement extends BaseTextElement {
             <div class="upload-img empty">
                 <input type="file" id="file" accept="image/*" />
                 <div class="image-container">
-                    <div class="resize-handle left-handle"></div>
+                    <div class="resize-handle left-handle" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''}></div>
                     <img src="" id="img-editable" alt="Uploaded image" />
-                    <div class="resize-handle right-handle"></div>
+                    <div class="resize-handle right-handle" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''}></div>
                 </div>
                 <button id="upload-button"><img src="/a7/plugins/image-element/upload.svg" width="30" height="30" style="filter: var(--themed-svg);">Upload Image</button>
                 <button id="link-button"><img src="/a7/plugins/image-element/link.svg" width="30" height="30" style="filter: var(--themed-svg);">Link Image</button>
