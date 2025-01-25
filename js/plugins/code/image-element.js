@@ -17,12 +17,73 @@ class ImageElement extends BaseTextElement {
         this.fileInput = this.shadowRoot.querySelector('#file');
         this.uploadArea = this.shadowRoot.querySelector('.upload-img');
         this.uploadButton = this.shadowRoot.querySelector('#upload-button');
+        this.linkButton = this.shadowRoot.querySelector('#link-button');
         this.searchGifsButton = this.shadowRoot.querySelector('#search-gifs-btn');
         this.optionsButton = this.shadowRoot.querySelector('#options-button');
         this.optionsDialog = this.shadowRoot.querySelector('#options-dialog');
         this.bindImageEvents();
         this.bindOptionEvents();
         this.bindResizeEvents();
+        this.bindLinkDialogEvents(); // Add this line
+    }
+
+    bindLinkDialogEvents() {
+        const linkDialog = this.shadowRoot.querySelector('#link-dialog');
+        const linkButton = this.shadowRoot.querySelector('#link-button');
+        const closeLinkDialog = this.shadowRoot.querySelector('#close-link-dialog');
+        const cancelLink = this.shadowRoot.querySelector('#cancel-link');
+        const addLink = this.shadowRoot.querySelector('#add-link');
+        const imageUrlInput = this.shadowRoot.querySelector('#image-url-input');
+
+        const closeDialog = () => {
+            linkDialog.style.display = 'none';
+            imageUrlInput.value = '';
+        };
+
+        linkButton?.addEventListener('click', () => {
+            linkDialog.style.display = 'flex';
+            imageUrlInput.focus();
+        });
+
+        closeLinkDialog?.addEventListener('click', closeDialog);
+        cancelLink?.addEventListener('click', closeDialog);
+
+        // Close dialog when clicking outside
+        linkDialog?.addEventListener('click', e => {
+            if (e.target === linkDialog) {
+                closeDialog();
+            }
+        });
+
+        addLink?.addEventListener('click', async () => {
+            const url = imageUrlInput.value.trim();
+            if (url) {
+                try {
+                    // Test if the URL is valid
+                    const testImage = new Image();
+                    testImage.onload = () => {
+                        this.imageUrl = url;
+                        this.updateImage();
+                        this.sendUpdates();
+                        closeDialog();
+                    };
+                    testImage.onerror = () => {
+                        alert('Invalid image URL. Please check the URL and try again.');
+                    };
+                    testImage.src = url;
+                } catch (error) {
+                    console.error('Error loading image:', error);
+                    alert('Failed to load image. Please check the URL and try again.');
+                }
+            }
+        });
+
+        // Handle Enter key in input
+        imageUrlInput?.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                addLink.click();
+            }
+        });
     }
 
     bindResizeEvents() {
@@ -162,6 +223,8 @@ class ImageElement extends BaseTextElement {
         const optionsDialog = this.shadowRoot.querySelector('#options-dialog');
         const changeImageBtn = this.shadowRoot.querySelector('#change-image');
         const searchGifBtn = this.shadowRoot.querySelector('#search-gif');
+        const addLinkBtn = this.shadowRoot.querySelector('#add-link');
+        const linkImageBtn = this.shadowRoot.querySelector('#link-button');
         const searchGifBtn2 = this.shadowRoot.querySelector('#search-gifs-btn');
         const fullscreenBtn = this.shadowRoot.querySelector('#fullscreen');
         const borderToggle = this.shadowRoot.querySelector('#border-toggle');
@@ -214,6 +277,11 @@ class ImageElement extends BaseTextElement {
             gifSearchDialog.style.display = 'flex';
             optionsDialog.style.display = 'none';
             gifSearchInput?.focus();
+        });
+
+        addLinkBtn?.addEventListener('click', () => {
+            this.shadowRoot.querySelector('#link-dialog').style.display = 'flex';
+            optionsDialog.style.display = 'none';
         });
 
         searchGifBtn2?.addEventListener('click', () => {
@@ -356,6 +424,7 @@ class ImageElement extends BaseTextElement {
             this.fileInput.style.display = 'none';
             this.uploadButton.style.display = 'none';
             this.searchGifsButton.style.display = 'none';
+            this.linkButton.style.display = 'none';
             this.optionsButton.style.display = 'block';
 
             const container = this.shadowRoot.querySelector('.image-container');
@@ -423,12 +492,12 @@ class ImageElement extends BaseTextElement {
             .upload-img.empty {
                 padding: var(--padding-4);
                 border: 2px dashed var(--border-1);
+                flex-wrap: wrap;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                flex-direction: column;
+                flex-direction: row;
                 gap: 10px;
-                background: var(--bg-2);
                 cursor: pointer;
             }
             .upload-img.has-image {
@@ -502,13 +571,20 @@ class ImageElement extends BaseTextElement {
             #file {
                 display: none;
             }
-            #upload-button, #search-gifs-btn {
-                padding: var(--padding-w2);
+            #upload-button, #search-gifs-btn, #link-button {
+                display: flex;
+                flex-direction: column;
+                gap: var(--gap-1);
+                padding: var(--padding-3);
                 background-color: var(--bg-1);
                 color: var(--text-1);
                 border: 1px solid var(--border-1);
                 border-radius: var(--radius);
                 cursor: pointer;
+                flex: 1;
+            }
+            #upload-button:hover, #search-gifs-btn:hover, #link-button:hover {
+                background-color: var(--bg-2);
             }
             img {
                 max-width: 100%;
@@ -612,7 +688,7 @@ class ImageElement extends BaseTextElement {
             .gif-search-header {
                 display: flex;
                 gap: var(--gap-2);
-                align-items: stretch;
+                align-items: center;
             }
 
             #gif-search-input {
@@ -671,6 +747,104 @@ class ImageElement extends BaseTextElement {
                 height: 150px;
                 object-fit: cover;
             }
+
+            .image-container:has(img[src=""]), .image-container:has(img:not([src])), img[src=""], img:not([src]) {
+                display: none;
+            }
+
+            .modal-dialog {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+
+            .link-dialog-content {
+                background: var(--bg-1);
+                border: 1px solid var(--border-1);
+                border-radius: var(--radius-large);
+                padding: var(--padding-4);
+                width: 90%;
+                max-width: 500px;
+            }
+
+            .link-dialog-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: var(--padding-4);
+            }
+
+            .link-dialog-header h3 {
+                margin: 0;
+                color: var(--text-1);
+            }
+
+            .link-dialog-header button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: var(--padding-2);
+                border-radius: 100px;
+            }
+
+            .link-dialog-header button:hover {
+                background: var(--bg-2);
+            }
+
+            .link-dialog-body {
+                display: flex;
+                flex-direction: column;
+                gap: var(--gap-3);
+            }
+
+            #image-url-input {
+                width: 100%;
+                padding: var(--padding-3);
+                border: 1px solid var(--border-1);
+                border-radius: var(--radius);
+                outline: none;
+                background: var(--bg-2);
+                color: var(--text-1);
+            }
+
+            .link-dialog-buttons {
+                display: flex;
+                justify-content: flex-end;
+                gap: var(--gap-2);
+            }
+
+            .secondary-button, .primary-button {
+                padding: var(--padding-2) var(--padding-4);
+                border-radius: var(--radius);
+                cursor: pointer;
+                border: 1px solid var(--border-1);
+            }
+
+            .secondary-button {
+                background: var(--bg-2);
+                color: var(--text-1);
+            }
+
+            .primary-button {
+                background: var(--accent-bg);
+                color: var(--accent-text);
+                border: none;
+            }
+
+            .secondary-button:hover {
+                background: var(--bg-3);
+            }
+
+            .primary-button:hover {
+                opacity: 0.9;
+            }
             </style>
         `;
 
@@ -688,8 +862,9 @@ class ImageElement extends BaseTextElement {
                     <img src="" id="img-editable" alt="Uploaded image" />
                     <div class="resize-handle right-handle"></div>
                 </div>
-                <button id="upload-button">Upload Image</button>
-                <button id="search-gifs-btn">Search GIFs</button>
+                <button id="upload-button"><img src="/a7/plugins/image-element/upload.svg" width="30" height="30" style="filter: var(--themed-svg);">Upload Image</button>
+                <button id="link-button"><img src="/a7/plugins/image-element/link.svg" width="30" height="30" style="filter: var(--themed-svg);">Link Image</button>
+                <button id="search-gifs-btn"><img src="/a7/plugins/image-element/gif.svg" width="30" height="30" style="filter: var(--themed-svg);">Search GIFs</button>
                 <button id="options-button" style="display: none;">
                     <img src="/a7/forget/morex.svg" width="22" height="22" style="filter: var(--themed-svg);">
                 </button>
@@ -697,6 +872,7 @@ class ImageElement extends BaseTextElement {
                 <div id="options-dialog">
                     <button class="dialog-option" id="change-image">Change Image</button>
                     <button class="dialog-option" id="search-gif">Search GIFs</button>
+                    <button class="dialog-option" id="add-link">Add Image URL</button>
                     <button class="dialog-option" id="fullscreen">View Full Size</button>
                     <div class="dialog-option border-toggle">
                         <label for="border-toggle">Show Border</label>
@@ -711,6 +887,24 @@ class ImageElement extends BaseTextElement {
                     </div>
                     <p style="text-align: end; color: var(--text-2); font-size: small;">Powered by Tenor</p>
                     <div class="gif-results"></div>
+                </div>
+
+                <div id="link-dialog" style="display: none;" class="modal-dialog">
+                    <div class="link-dialog-content">
+                        <div class="link-dialog-header">
+                            <h3>Add Image URL</h3>
+                            <button id="close-link-dialog">
+                                <img src="/a7/forget/close.svg" alt="Close" width="20" height="20">
+                            </button>
+                        </div>
+                        <div class="link-dialog-body">
+                            <input type="text" id="image-url-input" placeholder="Paste image URL here...">
+                            <div class="link-dialog-buttons">
+                                <button id="cancel-link" class="secondary-button">Cancel</button>
+                                <button id="add-link" class="primary-button">Add Image</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `
         }
