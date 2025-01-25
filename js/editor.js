@@ -126,13 +126,18 @@ window.wisk.editor.createRemoteBlock = function (elementId, blockType, value, re
     }, 0);
 };
 
-window.wisk.editor.createNewBlock = function (elementId, blockType, value, focusIdentifier, rec) {
+window.wisk.editor.createNewBlock = function (elementId, blockType, value, focusIdentifier, rec, animate) {
     const { id, blockElement } = this.createBlockBase(elementId, blockType, value, null, false);
 
     setTimeout(() => {
-        window.wisk.editor.updateBlock(id, '', value, rec);
-        window.wisk.editor.focusBlock(id, focusIdentifier);
+        if (animate) {
+            document.getElementById(id).setTextContent({ text: value.textContent });
+        } else {
+            window.wisk.editor.updateBlock(id, '', value, rec);
+            window.wisk.editor.focusBlock(id, focusIdentifier);
+        }
     }, 0);
+    return id;
 };
 
 window.wisk.editor.handleChanges = async function (updateObject) {

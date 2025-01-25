@@ -619,7 +619,7 @@ class OptionsComponent extends LitElement {
         }
     }
 
-    // fuckkkkkkkkkkk me performUpdate is a lit element method ig..... 
+    // fuckkkkkkkkkkk me performUpdate is a lit element method ig.....
     // so added X at the end, wasted a lot of time on this
     async performUpdateX() {
         const response = await fetch('http://localhost:30007/app-nav/update');

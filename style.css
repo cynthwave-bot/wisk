@@ -328,3 +328,9 @@ nav {
 .close {
     background-color: var(--fg-red);
 }
+
+@media (max-width: 768px) {
+    .options-button {
+        display: none;
+    }
+}

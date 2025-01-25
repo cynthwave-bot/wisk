@@ -21,14 +21,13 @@ class NeoAI extends LitElement {
             max-height: min(800px, calc(100% - calc(var(--padding-4) * 8)));
             bottom: calc(var(--padding-4) * 2);
             right: calc(var(--padding-4) * 2);
-            z-index: 1000;
+            z-index: 800;
             background-color: var(--bg-1);
             border-radius: var(--radius-large);
             filter: var(--drop-shadow);
             border: 1px solid var(--border-1);
             flex-direction: column;
             overflow: hidden;
-            z-index: 1000;
             transition: all 0.3s;
         }
 
@@ -65,6 +64,11 @@ class NeoAI extends LitElement {
         }
         .logo:hover {
             transform: rotate(90deg) scale(1.1);
+        }
+
+        ul,
+        ol {
+            list-style-position: inside; /* I hate that ive to do this */
         }
 
         .image-grid {
@@ -227,7 +231,8 @@ class NeoAI extends LitElement {
             filter: var(--accent-svg);
         }
         .close,
-        .expand {
+        .expand,
+        .settings {
             padding: var(--padding-2);
             border: none;
             outline: none;
@@ -239,18 +244,19 @@ class NeoAI extends LitElement {
             opacity: 0.5;
         }
         .close img,
-        .expand img {
+        .expand img,
+        .settings img {
             filter: var(--themed-svg);
         }
         .close:hover,
-        .expand:hover {
+        .expand:hover,
+        .settings:hover {
             opacity: 1;
         }
         .message-container {
             display: flex;
             flex-direction: column;
             gap: var(--gap-3);
-            padding: var(--padding-4);
             font-size: 15px;
         }
 
@@ -332,7 +338,7 @@ class NeoAI extends LitElement {
             color: var(--text-2);
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 768px) {
             .message-container {
                 padding: 0;
             }
@@ -367,7 +373,7 @@ class NeoAI extends LitElement {
             border: 3px solid var(--bg-3);
             filter: var(--drop-shadow);
             animation: 0.3s ease-in-out 0s 1 normal none running fadeIn;
-            z-index: 999;
+            z-index: 800;
             color: white;
             align-items: center;
             animation: borderFlicker 62s infinite;
@@ -448,6 +454,126 @@ class NeoAI extends LitElement {
         h6 {
             margin: 0.25em 0;
         }
+
+        @media (max-width: 768px) {
+            .logo,
+            .logo-bubble,
+            .expand,
+            .close {
+                display: none;
+            }
+            .i-container,
+            .c-container {
+                max-width: 100%;
+                width: 100%;
+                max-height: calc(100% - 50px);
+                right: 0;
+                border-radius: 0;
+                border: none;
+                bottom: 50px;
+            }
+        }
+        .settings-div {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 90%;
+            max-width: 500px;
+            max-height: 800px;
+            background-color: var(--bg-1);
+            display: flex;
+            gap: var(--gap-3);
+            align-items: flex-start;
+            border-radius: var(--radius-large);
+            border: 1px solid var(--border-1);
+            filter: var(--drop-shadow);
+            z-index: 801;
+            padding: var(--padding-4);
+            flex-direction: column;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .settings-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--padding-2);
+            display: flex;
+            align-items: center;
+            border-radius: 100px;
+        }
+
+        .settings-close img {
+            width: 18px;
+            height: 18px;
+            filter: var(--themed-svg);
+        }
+        .model-select {
+            display: flex;
+            gap: var(--gap-3);
+            padding: var(--padding-4);
+            border-radius: var(--radius);
+        }
+
+        .model-option {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: var(--gap-1);
+            padding: var(--padding-3);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .model-option:hover {
+            background-color: var(--bg-2);
+        }
+
+        .model-option.selected {
+            background-color: var(--accent-bg);
+            border: 1px solid var(--accent-text);
+        }
+
+        .model-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .model-icon img {
+            width: 32px;
+            height: 32px;
+            filter: var(--themed-svg);
+        }
+
+        .model-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-1);
+        }
+
+        .model-name {
+            font-weight: 600;
+            color: var(--text-1);
+        }
+
+        .model-description {
+            font-size: 13px;
+            color: var(--text-2);
+        }
     `;
 
     static properties = {
@@ -457,11 +583,15 @@ class NeoAI extends LitElement {
         selectedText: { type: String },
         showLogoBubble: { type: Boolean },
         messages: { type: Array },
+        showSettings: { type: Boolean },
+        modelName: { type: String },
     };
 
     constructor() {
         super();
         this.expanded = false;
+        this.showSettings = false;
+        this.modelName = 'neo';
 
         this.selectedElementId = '';
         this.selectedText = '';
@@ -485,29 +615,171 @@ class NeoAI extends LitElement {
         // - results
         //      can be images or text, should be displayed in a different way
         this.messages = {
-            chat: [
-                { from: 'bot', text: 'Hello! I am Neo. How can I help you today?', type: 'text' },
-                { from: 'user', text: 'Summarize this page', type: 'text' },
-                { from: 'bot', text: 'Reading the page...', type: 'status', color: 'info' },
-                {
-                    from: 'bot',
-                    text: 'Sure! Here is the summary of this page...\n# Hello world\nLorem ipsum[1]',
-                    type: 'text',
-                    references: ['https://google.com'],
-                },
-                { from: 'user', text: 'Can you show me the images?', type: 'text' },
-                { from: 'bot', text: 'Reading the page...', type: 'status', color: 'info' },
-                // { from: 'bot', text: 'Sure! Here are the images from the page...', type: 'image-results', results: [
-                //     'https://picsum.photos/seed/34433/1600/1200', 'https://picsum.photos/seed/111/1600/1200', 'https://picsum.photos/seed/222/1600/1200'
-                // ] },
-                // { from: 'bot', text: 'Sure! Here are the results from the page...', type: 'text-results', results: [
-                //     { title: 'Title 1', description: 'Description 1', url: 'https://google.com' },
-                //     { title: 'Title 2', description: 'Description 2', url: 'https://google.com' },
-                //     { title: 'Title 3', description: 'Description 3', url: 'https://google.com' },
-                // ] },
-            ],
+            chat: [{ from: 'bot', text: 'Hello! I am Neo. How can I help you today?', type: 'text' }],
         };
         this.showLogoBubble = true;
+
+        this.allowedElements = [
+            'main-element',
+            'text-element',
+            'code-element',
+            'list-element',
+            'heading1-element',
+            'heading2-element',
+            'heading3-element',
+            'heading4-element',
+            'heading5-element',
+            'numbered-list-element',
+            'checkbox-element',
+            'quote-element',
+            'callout-element',
+            'divider-element',
+            'table-element',
+        ];
+    }
+
+    async callNeoAPI(query) {
+        try {
+            const auth = await document.getElementById('auth').getUserInfo();
+
+            // Prepare conversation history
+            const conversation = this.messages.chat.map(msg => ({
+                content: msg.text,
+                by: msg.from === 'bot' ? 'assistant' : 'user',
+            }));
+            conversation.pop();
+
+            // Process document elements
+            const doc = JSON.parse(JSON.stringify(wisk.editor.elements));
+            const allowedDocs = doc.filter(d => this.allowedElements.includes(d.component));
+
+            // Get text content for each element
+            const processedDocs = await Promise.all(
+                allowedDocs.map(async doc => {
+                    const element = document.querySelector(`#${doc.id}`);
+                    return {
+                        id: doc.id,
+                        type: doc.component,
+                        content: element.getTextContent().text,
+                    };
+                })
+            );
+
+            // Prepare API request
+            const docStr = JSON.stringify(processedDocs).replace(/"/g, "'");
+            const response = await fetch('https://cloud.wisk.cc/v2/neo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${auth.token}`,
+                },
+                body: JSON.stringify({
+                    conversation,
+                    document: docStr,
+                    model: this.modelName,
+                }),
+            });
+
+            if (!response.ok) throw new Error(`API call failed: ${response.status}`);
+            const data = await response.json();
+            if (!data.content) return null;
+
+            // Preprocess lines to handle createBlock ordering
+            let lines = data.content.split('\n');
+
+            // Group createBlock commands by afterId
+            const createBlockGroups = {};
+            lines.forEach((line, index) => {
+                if (line.startsWith('createBlock:')) {
+                    const [_, params] = line.split(':');
+                    const [__, afterId] = params.split(',');
+                    const trimmedAfterId = afterId.trim();
+                    if (!createBlockGroups[trimmedAfterId]) {
+                        createBlockGroups[trimmedAfterId] = [];
+                    }
+                    createBlockGroups[trimmedAfterId].push(index);
+                }
+            });
+
+            // Reverse order of createBlock commands with same afterId
+            Object.values(createBlockGroups).forEach(indices => {
+                if (indices.length > 1) {
+                    // Get the lines at these indices
+                    const createBlockLines = indices.map(i => lines[i]);
+                    // Put them back in reverse order
+                    indices.forEach((lineIndex, i) => {
+                        lines[lineIndex] = createBlockLines[createBlockLines.length - 1 - i];
+                    });
+                }
+            });
+
+            // Process commands
+            const displayText = [];
+            for (const line of lines) {
+                if (!line.trim()) continue;
+
+                const [command, ...rest] = line.split(':');
+                const params = rest.join(':').trim();
+
+                switch (command.trim()) {
+                    case 'deleteBlock':
+                        const deleteId = params.trim();
+                        if (deleteId) {
+                            window.wisk.editor.deleteBlock(deleteId);
+                        }
+                        break;
+
+                    case 'createBlock':
+                        const [blockType, afterId, ...valueArr] = params.split(',');
+                        if (blockType && afterId) {
+                            const value = valueArr
+                                .join(',')
+                                .trim()
+                                .replace(/^["'](.*)["']$/, '$1');
+
+                            var newId = window.wisk.editor.createNewBlock(
+                                afterId.trim(),
+                                blockType.trim(),
+                                { textContent: value },
+                                { x: 0 },
+                                undefined,
+                                true
+                            );
+                        }
+                        break;
+
+                    case 'editBlock':
+                        const [editId, ...editValueArr] = params.split(',');
+                        if (editId) {
+                            const value = editValueArr
+                                .join(',')
+                                .trim()
+                                .replace(/^["'](.*)["']$/, '$1');
+
+                            const element = document.querySelector(`#${editId.trim()}`);
+                            if (element) {
+                                element.setTextContent({ text: value });
+                            }
+                        }
+                        break;
+
+                    default:
+                        displayText.push(line);
+                }
+            }
+
+            return displayText.length
+                ? [
+                      {
+                          type: 'text',
+                          value: displayText.join('\n').trim(),
+                      },
+                  ]
+                : null;
+        } catch (error) {
+            console.error('Error calling Neo API:', error, error.stack);
+            return null;
+        }
     }
 
     setSelection(elementId, text) {
@@ -666,6 +938,9 @@ class NeoAI extends LitElement {
     }
 
     setView(view) {
+        if (view == 'i-container' && this.messages.chat.length > 1) {
+            view = 'c-container';
+        }
         this.view = view;
     }
 
@@ -674,7 +949,14 @@ class NeoAI extends LitElement {
     }
 
     sendClicked() {
-        console.log('Send clicked', this.shadowRoot.querySelector('.i-inp').value);
+        if (this.view === 'i-container') {
+            if (!this.shadowRoot.querySelector('.i-inp').value.trim()) {
+                wisk.utils.showToast('Oh no! You forgot to type something!', 3000);
+                return;
+            }
+            const message = this.shadowRoot.querySelector('.i-inp').value;
+            this.addUserMessage(message);
+        }
         this.setView('c-container');
     }
 
@@ -685,16 +967,72 @@ class NeoAI extends LitElement {
     async addUserMessage(message) {
         if (!message.trim()) return;
 
-        this.messages.chat.push({ from: 'user', text: message, type: 'text' });
+        // Add user message
+        this.messages.chat.push({
+            from: 'user',
+            text: message,
+            type: 'text',
+        });
         this.shadowRoot.querySelector('.c-inp').value = '';
 
-        await this.requestUpdate();
+        // Add "thinking" message
+        const thinkingMsgIndex = this.messages.chat.length;
+        this.messages.chat.push({
+            from: 'bot',
+            text: 'Thinking...',
+            type: 'status',
+            color: 'info',
+        });
 
+        await this.requestUpdate();
+        this.scrollToBottom();
+
+        // Call API
+        const response = await this.callNeoAPI(message);
+
+        // Remove thinking message
+        this.messages.chat.splice(thinkingMsgIndex, 1);
+
+        // Add bot responses
+        if (response) {
+            for (const content of response) {
+                if (content.type === 'text') {
+                    this.messages.chat.push({
+                        from: 'bot',
+                        text: content.value,
+                        type: 'text',
+                    });
+                } else if (content.type === 'action') {
+                    this.messages.chat.push({
+                        from: 'bot',
+                        text: `Function Call: ${JSON.stringify({ name: content.name, args: content.args }, null, 2)}`,
+                        type: 'text',
+                    });
+                }
+            }
+        } else {
+            this.messages.chat.push({
+                from: 'bot',
+                text: 'Sorry, I encountered an error. Please try again.',
+                type: 'status',
+                color: 'error',
+            });
+        }
+
+        await this.requestUpdate();
+        this.scrollToBottom();
+    }
+
+    scrollToBottom() {
         const container = this.shadowRoot.querySelector('.c-content');
         const messageContainer = this.shadowRoot.querySelector('.message-container');
         if (container && messageContainer) {
             container.scrollTop = messageContainer.scrollHeight;
         }
+    }
+
+    hide() {
+        this.view = 'logo';
     }
 
     expandClicked() {
@@ -707,6 +1045,56 @@ class NeoAI extends LitElement {
         }
 
         return html`
+            ${this.showSettings
+                ? html`
+                      <div class="settings-div">
+                          <div class="settings-header">
+                              <h1>Settings</h1>
+                              <button @click=${() => (this.showSettings = false)} class="settings-close">
+                                  <img src="${this.path}close.svg" draggable="false" />
+                              </button>
+                          </div>
+
+                          <div class="model-select">
+                              <div
+                                  class="model-option ${this.modelName === 'neo-swift' ? 'selected' : ''}"
+                                  @click=${() => (this.modelName = 'neo-swift')}
+                              >
+                                  <div class="model-icon">
+                                      <img src="${this.path}smol.svg" draggable="false" />
+                                  </div>
+                                  <div class="model-info">
+                                      <div class="model-name">Neo Swift</div>
+                                      <div class="model-description">Fastest model, great for quick tasks</div>
+                                  </div>
+                              </div>
+
+                              <div class="model-option ${this.modelName === 'neo' ? 'selected' : ''}" @click=${() => (this.modelName = 'neo')}>
+                                  <div class="model-icon">
+                                      <img src="${this.path}sparkle.svg" draggable="false" />
+                                  </div>
+                                  <div class="model-info">
+                                      <div class="model-name">Neo</div>
+                                      <div class="model-description">Excellent balance of speed and capability</div>
+                                  </div>
+                              </div>
+
+                              <div
+                                  class="model-option ${this.modelName === 'neo-large' ? 'selected' : ''}"
+                                  @click=${() => (this.modelName = 'neo-large')}
+                              >
+                                  <div class="model-icon">
+                                      <img src="${this.path}chonk.svg" draggable="false" />
+                                  </div>
+                                  <div class="model-info">
+                                      <div class="model-name">Neo Large</div>
+                                      <div class="model-description">Most powerful model, best for complex tasks</div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  `
+                : ''}
             ${this.showLogoBubble && this.view === 'logo'
                 ? html`
                       <div class="logo-bubble">
@@ -736,6 +1124,9 @@ class NeoAI extends LitElement {
                 <div class="i-header">
                     <button class="expand" @click=${() => this.expandClicked()}>
                         <img src="${this.path}${this.expanded ? 'collapse' : 'expand'}.svg" draggable="false" />
+                    </button>
+                    <button class="settings" @click=${() => (this.showSettings = true)}>
+                        <img src="${this.path}settings.svg" draggable="false" />
                     </button>
                     <button class="close" @click=${() => this.setView('logo')}><img src="${this.path}close.svg" draggable="false" /></button>
                 </div>
@@ -767,7 +1158,12 @@ class NeoAI extends LitElement {
                 </div>
                 <div class="i-footer">
                     <div class="i-input">
-                        <input class="i-inp" type="text" placeholder="Ask anything or give a command..." />
+                        <input
+                            class="i-inp"
+                            type="text"
+                            placeholder="Ask anything or give a command..."
+                            @keyup=${e => (e.key === 'Enter' ? this.sendClicked() : null)}
+                        />
                         <button class="i-btn" style="display: none">Attach</button>
                         <button class="i-btn"><img src="${this.path}up.svg" draggable="false" @click=${() => this.sendClicked()} /></button>
                     </div>
@@ -784,6 +1180,9 @@ class NeoAI extends LitElement {
                     </p>
                     <button class="expand" @click=${() => this.expandClicked()}>
                         <img src="${this.path}${this.expanded ? 'collapse' : 'expand'}.svg" draggable="false" />
+                    </button>
+                    <button class="settings" @click=${() => (this.showSettings = true)}>
+                        <img src="${this.path}settings.svg" draggable="false" />
                     </button>
                     <button class="close" @click=${() => this.setView('logo')}><img src="${this.path}close.svg" draggable="false" /></button>
                 </div>

@@ -556,6 +556,39 @@ class BaseTextElement extends HTMLElement {
         };
     }
 
+    setTextContent(content) {
+        const newText = content.text;
+        const editable = this.editable;
+        const currentText = editable.innerText;
+        let cutIndex = currentText.length;
+
+        const cutText = () => {
+            if (cutIndex > 0) {
+                editable.innerHTML = currentText.slice(0, cutIndex - 1);
+                this.updatePlaceholder();
+                cutIndex--;
+                setTimeout(cutText, 10);
+            } else {
+                typeText();
+            }
+        };
+
+        let typeIndex = 0;
+
+        const typeText = () => {
+            if (typeIndex < newText.length) {
+                editable.innerHTML += newText[typeIndex];
+                typeIndex++;
+                setTimeout(typeText, 10);
+            } else {
+                this.updatePlaceholder();
+                this.sendUpdates();
+            }
+        };
+
+        cutText();
+    }
+
     render() {
         const style = `
             <style>

@@ -152,6 +152,7 @@ function addToNavBar(content, inx) {
 
     if (content.title == 'Options') {
         inx = 999;
+        button.classList.add('options-button');
     }
     button.style.order = inx;
 
