@@ -13,7 +13,10 @@ class ImageElement extends BaseTextElement {
         this.fileInput = this.shadowRoot.querySelector('#file');
         this.uploadArea = this.shadowRoot.querySelector('.upload-img');
         this.uploadButton = this.shadowRoot.querySelector('#upload-button');
+        this.optionsButton = this.shadowRoot.querySelector('#options-button');
+        this.optionsDialog = this.shadowRoot.querySelector('#options-dialog');
         this.bindImageEvents();
+        this.bindOptionEvents();
     }
 
     setValue(path, value) {
@@ -25,6 +28,14 @@ class ImageElement extends BaseTextElement {
                 this.imageUrl = value.imageUrl;
                 this.updateImage();
             }
+            if (value.showBorder !== undefined) {
+                const borderToggle = this.shadowRoot.querySelector('#border-toggle');
+                if (borderToggle) {
+                    borderToggle.checked = value.showBorder;
+                    const img = this.shadowRoot.querySelector('#img-editable');
+                    img.style.border = value.showBorder ? '1px solid var(--border-1)' : 'none';
+                }
+            }
         }
     }
 
@@ -32,6 +43,7 @@ class ImageElement extends BaseTextElement {
         return {
             textContent: this.editable.innerHTML,
             imageUrl: this.imageUrl,
+            showBorder: this.shadowRoot.querySelector('#border-toggle')?.checked || false,
         };
     }
 
@@ -60,6 +72,47 @@ class ImageElement extends BaseTextElement {
             console.error('Upload error:', error);
             throw error;
         }
+    }
+
+    bindOptionEvents() {
+        const optionsButton = this.shadowRoot.querySelector('#options-button');
+        const optionsDialog = this.shadowRoot.querySelector('#options-dialog');
+        const changeImageBtn = this.shadowRoot.querySelector('#change-image');
+        const fullscreenBtn = this.shadowRoot.querySelector('#fullscreen');
+        const borderToggle = this.shadowRoot.querySelector('#border-toggle');
+        
+        optionsButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            optionsDialog.style.display = optionsDialog.style.display != 'flex' ? 'flex' : 'none';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!optionsDialog.contains(e.target) && e.target !== optionsButton) {
+                optionsDialog.style.display = 'none';
+            }
+        });
+
+        changeImageBtn.addEventListener('click', () => {
+            this.fileInput.click();
+            optionsDialog.style.display = 'none';
+        });
+
+        fullscreenBtn.addEventListener('click', () => {
+            if (this.imageUrl) {
+                window.open(this.imageUrl, '_blank');
+            }
+            optionsDialog.style.display = 'none';
+        });
+
+        borderToggle.addEventListener('change', (e) => {
+            const img = this.shadowRoot.querySelector('#img-editable');
+            if (e.target.checked) {
+                img.style.border = '1px solid var(--border-1)';
+            } else {
+                img.style.border = 'none';
+            }
+            this.sendUpdates();
+        });
     }
 
     onImageSelected(event) {
@@ -171,15 +224,20 @@ class ImageElement extends BaseTextElement {
         if (this.imageUrl) {
             this.imageElement.src = this.imageUrl;
             this.imageElement.style.display = 'block';
-            this.uploadArea.style.background = 'none';
+            this.uploadArea.classList.remove('empty');
+            this.uploadArea.classList.add('has-image');
             this.fileInput.style.display = 'none';
             this.uploadButton.style.display = 'none';
+            this.optionsButton.style.display = 'block';
+        } else {
+            this.uploadArea.classList.add('empty');
+            this.uploadArea.classList.remove('has-image');
+            this.optionsButton.style.display = 'none';
         }
     }
 
     bindImageEvents() {
         this.fileInput.addEventListener('change', this.onImageSelected.bind(this));
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
         this.uploadButton.addEventListener('click', e => {
             e.stopPropagation();
             this.fileInput.click();
@@ -192,12 +250,16 @@ class ImageElement extends BaseTextElement {
         });
 
         this.uploadArea.addEventListener('dragleave', () => {
-            this.uploadArea.style.background = 'repeating-linear-gradient(-45deg, #ddd, #ddd 5px, white 5px, white 10px)';
+            if (!this.imageUrl) {
+                this.uploadArea.style.background = 'var(--bg-2)';
+            }
         });
 
         this.uploadArea.addEventListener('drop', e => {
             e.preventDefault();
-            this.uploadArea.style.background = 'repeating-linear-gradient(-45deg, #ddd, #ddd 5px, white 5px, white 10px)';
+            if (!this.imageUrl) {
+                this.uploadArea.style.background = 'var(--bg-2)';
+            }
             const file = e.dataTransfer.files[0];
             if (file && file.type.startsWith('image/')) {
                 this.processSelectedFile(file);
@@ -215,25 +277,89 @@ class ImageElement extends BaseTextElement {
                 font-family: var(--font);
             }
             .upload-img {
-                padding: 20px 0;
                 width: 100%;
+                position: relative;
+                border-radius: var(--radius);
+                min-height: 100px;
+            }
+            .upload-img.empty {
+                padding: var(--padding-4);
+                border: 2px dashed var(--border-1);
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 flex-direction: column;
                 gap: 10px;
-                background: repeating-linear-gradient(-45deg, var(--bg-1), var(--bg-1) 5px, var(--bg-3) 5px, var(--bg-3) 10px);
+                background: var(--bg-2);
+                cursor: pointer;
+            }
+            .upload-img.has-image {
+                padding: 0;
+                border: none;
+            }
+            .upload-img.has-image:hover #options-button {
+                opacity: 1;
+            }
+            #options-button {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: var(--bg-1);
+                border: 1px solid var(--border-1);
+                border-radius: 100px;
+                padding: var(--padding-2);
+                cursor: pointer;
+                opacity: 0;
+                transition: opacity 0.2s;
+                z-index: 2;
+            }
+            #options-dialog {
+                position: absolute;
+                top: 50px;
+                right: 10px;
+                background: var(--bg-1);
+                border: 1px solid var(--border-1);
+                border-radius: var(--radius-large);
+                padding: var(--padding-3);
+                box-shadow: var(--drop-shadow);
+                z-index: 3;
+                display: none;
+                flex-direction: column;
+                gap: var(--gap-1);
+            }
+            .dialog-option {
+                padding: var(--padding-w1);
+                display: block;
+                width: 100%;
+                text-align: left;
+                background: none;
+                border: none;
                 border-radius: var(--radius);
                 cursor: pointer;
-                position: relative;
+                color: var(--text-1);
+            }
+            .dialog-option:hover {
+                background: var(--bg-2);
+            }
+            .border-toggle {
+                display: flex;
+                align-items: center;
+                font-size: smaller;
+            }
+            .border-toggle input[type="checkbox"] {
+                margin: 0;
+            }
+            .border-toggle label {
+                cursor: pointer;
+                padding-right: var(--gap-2);
             }
             #editable {
                 outline: none;
-                text-align: center;
                 color: var(--text-2);
                 font-size: 14px;
                 text-align: left;
                 line-height: 1.5;
+                margin-top: var(--padding-3);
             }
             #file {
                 display: none;
@@ -249,6 +375,7 @@ class ImageElement extends BaseTextElement {
             img {
                 max-width: 100%;
                 border-radius: var(--radius);
+                display: block;
             }
             .emoji-suggestions {
                 position: absolute;
@@ -294,7 +421,7 @@ class ImageElement extends BaseTextElement {
         `;
 
         const content = `
-            <div class="upload-img">
+            <div class="upload-img empty">
                 ${
                     window.wisk.editor.wiskSite
                         ? `
@@ -302,12 +429,23 @@ class ImageElement extends BaseTextElement {
                 `
                         : `
                     <input type="file" id="file" accept="image/*" />
-                    <img src="" id="img-editable" alt="Uploaded image" />
+                    <img src="" id="img-editable" alt="Uploaded image" style="display: none;" />
                     <button id="upload-button">Upload Image</button>
+                    <button id="options-button" style="display: none;">
+                        <img src="/a7/forget/morex.svg" width="22" height="22" style="filter: var(--themed-svg);">
+                    </button>
+                    <div id="options-dialog">
+                        <button class="dialog-option" id="change-image">Change Image</button>
+                        <button class="dialog-option" id="fullscreen">View Full Size</button>
+                        <div class="dialog-option border-toggle">
+                            <label for="border-toggle">Show Border</label>
+                            <input type="checkbox" id="border-toggle" />
+                        </div>
+                    </div>
                 `
                 }
             </div>
-            <p id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholderr"${this.placeholder}"></p>
+            <p id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></p>
             <div class="emoji-suggestions"></div>
         `;
         this.shadowRoot.innerHTML = style + content;
