@@ -188,10 +188,17 @@ class ExportComponent extends LitElement {
                     elm.value.indent = valueContent.indent;
                 }
                 if (element.component === 'checkbox-element') {
-                    elm.value.language = valueContent.checked;
+                    elm.value.checked = valueContent.checked;
                 }
                 if (element.component === 'image-element') {
                     elm.value.url = valueContent.imageUrl;
+                }
+                if (element.component === 'latex-element') {
+                    elm.value.latexCode = valueContent.latex;
+                }
+
+                if (element.component === 'mermaid-element') {
+                    elm.value.svgContent = await e.getSvgString();
                 }
                 elms.push(elm);
             }

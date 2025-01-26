@@ -539,6 +539,97 @@ class MermaidElement extends LitElement {
         }
     }
 
+    async getSvgString() {
+        try {
+            await mermaidReady;
+
+            // Initialize mermaid with current config
+            window.mermaid.initialize({
+                ...this.getMermaidConfig(),
+                startOnLoad: false,
+                suppressErrors: true,
+                suppressErrorRendering: true,
+            });
+
+            // Generate unique ID for rendering
+            const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+
+            // Render and get SVG
+            const { svg } = await window.mermaid.render(id, this._mermaid);
+
+            // Create a temporary div to parse the SVG string
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = svg;
+
+            // Get the SVG element
+            const svgElement = tempDiv.querySelector('svg');
+
+            if (!svgElement) {
+                throw new Error('No SVG element found');
+            }
+
+            // Get all style rules from style elements
+            const styleRules = {};
+            const styleElements = svgElement.querySelectorAll('style');
+            styleElements.forEach(style => {
+                // Parse CSS text into rules
+                const cssText = style.textContent;
+                const matches = cssText.match(/\.[\w-]+\s*{[^}]+}/g) || [];
+                matches.forEach(match => {
+                    const [selector, rules] = match.split('{');
+                    styleRules[selector.trim()] = rules.replace('}', '').trim();
+                });
+            });
+
+            // Apply styles to elements and clean up
+            const allElements = svgElement.getElementsByTagName('*');
+            for (const element of allElements) {
+                // Get element's classes
+                const classes = element.getAttribute('class');
+                if (classes) {
+                    // Combine existing inline styles with class styles
+                    let inlineStyles = element.getAttribute('style') || '';
+                    classes.split(' ').forEach(className => {
+                        const classSelector = '.' + className;
+                        if (styleRules[classSelector]) {
+                            inlineStyles += styleRules[classSelector];
+                        }
+                    });
+
+                    // Set combined styles and remove class
+                    if (inlineStyles) {
+                        element.setAttribute('style', inlineStyles);
+                    }
+                    element.removeAttribute('class');
+                }
+
+                // Remove any aria attributes
+                Array.from(element.attributes)
+                    .filter(attr => attr.name.startsWith('aria-'))
+                    .forEach(attr => element.removeAttribute(attr.name));
+            }
+
+            // Remove the original style elements since styles are now inlined
+            styleElements.forEach(style => style.remove());
+
+            // Clean up unnecessary attributes from the root SVG
+            svgElement.removeAttribute('class');
+
+            // Get the clean SVG string
+            const cleanSvg = svgElement.outerHTML
+                .replace(/(\r\n|\n|\r|\t)/gm, '') // Remove newlines and tabs
+                .replace(/>\s+</g, '><') // Remove whitespace between tags
+                .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+                .replace(/ xlink:title="[^"]*"/g, '') // Remove xlink:title attributes
+                .replace(/xmlns:xlink="[^"]*"/g, ''); // Remove xmlns:xlink if present
+
+            return cleanSvg;
+        } catch (e) {
+            console.error('Error generating SVG string:', e);
+            throw new Error(`Failed to generate SVG string: ${e.message}`);
+        }
+    }
+
     render() {
         return html`
             <div class="mermaid-container">
