@@ -676,6 +676,25 @@ class HomeElement extends LitElement {
                                   </div>
                               `
                             : ''}
+
+                        ${this.templates.length > 1
+                            ? html`
+                                  <div class="template-card mobhide" @click=${() => this.useTemplate(this.templates[1])}>
+                                      <div class="template-info">
+                                          <h3>${this.templates[1].name}</h3>
+                                          <span class="template-by">By ${this.templates[1].by}</span>
+                                      </div>
+
+                                      <div class="preview-container">
+                                          <div
+                                              class="desktop-preview"
+                                              style="background-image: url(/a7/templates/${this.templates[1].path}/desktop.png)"
+                                              alt="${this.templates[1].name} preview"
+                                          ></div>
+                                      </div>
+                                  </div>
+                              `
+                            : ''}
                     </div>
 
                     <button class="btn show-more" @click=${() => (this.expandTemplates = !this.expandTemplates)}>
