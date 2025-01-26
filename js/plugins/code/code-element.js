@@ -1,286 +1,259 @@
 class CodeElement extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-        this.render();
-        this.isVirtualKeyboard = this.checkIfVirtualKeyboard();
-    }
+   constructor() {
+       super();
+       this.attachShadow({ mode: 'open' });
+       this.render();
+       this.valueBuffer = null;
+       this.supportedLanguages = {
+           'javascript': 'JavaScript',
+           'python': 'Python', 
+           'typescript': 'TypeScript',
+           'java': 'Java',
+           'go': 'Go',
+           'cpp': 'C++',
+           'csharp': 'C#',
+           'php': 'PHP',
+           'ruby': 'Ruby',
+           'swift': 'Swift',
+           'kotlin': 'Kotlin',
+           'sql': 'SQL',
+           'html': 'HTML',
+           'css': 'CSS',
+           'markdown': 'Markdown'
+       };
+   }
 
-    checkIfVirtualKeyboard() {
-        // TODO: Implement a better way to detect virtual keyboard
-        return false;
-    }
+   async connectedCallback() {
+       await this.initializeCodeMirror();
+       this.initializeLanguageSelector();
+   }
 
-    connectedCallback() {
-        this.editable = this.shadowRoot.querySelector('#editable');
-        this.bindEvents();
-    }
+   async initializeCodeMirror() {
+       await import('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js');
+       
+       const modes = [
+           'javascript', 'xml', 'css', 'python', 'clike', 'markdown',
+           'go', 'sql', 'php', 'ruby', 'swift'
+       ];
+       
+       await Promise.all(modes.map(mode => 
+           import(`https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/${mode}/${mode}.min.js`)
+       ));
+
+       await Promise.all([
+           import('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js'),
+           import('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js'),
+           import('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closetag.min.js'),
+           import('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/comment/comment.min.js'),
+           import('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/foldcode.min.js'),
+           import('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/brace-fold.min.js')
+       ]);
+
+       const editorContainer = this.shadowRoot.querySelector('#editor');
+       
+       this.editor = CodeMirror(editorContainer, {
+           lineNumbers: false,
+           theme: 'custom',
+           mode: 'javascript',
+           lineWrapping: true,
+           indentUnit: 4,
+           tabSize: 4,
+           scrollbarStyle: null,
+           viewportMargin: Infinity,
+           autoCloseBrackets: true,
+           matchBrackets: true,
+           autoCloseTags: true,
+           foldGutter: true,
+           gutters: ["CodeMirror-foldgutter"],
+           extraKeys: {
+               "Tab": (cm) => cm.execCommand("indentMore"),
+               "Shift-Tab": (cm) => cm.execCommand("indentLess"),
+               "Ctrl-/": "toggleComment",
+               "Cmd-/": "toggleComment",
+               "Ctrl-J": "toMatchingTag",
+               "Ctrl-Space": "autocomplete"
+           }
+       });
+
+       this.editor.on('change', () => {
+           this.sendUpdates();
+       });
+
+       if (this.valueBuffer) {
+           this.setValue(null, this.valueBuffer);
+           this.valueBuffer = null;
+       }
+   }
+
+   initializeLanguageSelector() {
+       const select = this.shadowRoot.querySelector('#language-select');
+       select.value = 'javascript';
+       Object.entries(this.supportedLanguages).forEach(([value, label]) => {
+           const option = document.createElement('option');
+           option.value = value;
+           option.textContent = label;
+           select.appendChild(option);
+       });
+       
+       select.addEventListener('change', (e) => {
+           const mode = this.getModeForLanguage(e.target.value);
+           this.editor.setOption('mode', mode);
+           this.sendUpdates();
+       });
+   }
+
+   getModeForLanguage(lang) {
+       const modeMap = {
+           javascript: 'javascript',
+           typescript: 'javascript',
+           java: 'text/x-java',
+           cpp: 'text/x-c++src',
+           csharp: 'text/x-csharp',
+           python: 'python',
+           go: 'go',
+           php: 'php',
+           ruby: 'ruby',
+           swift: 'swift',
+           kotlin: 'text/x-kotlin',
+           sql: 'sql',
+           html: 'xml',
+           css: 'css',
+           markdown: 'markdown'
+       };
+       return modeMap[lang] || lang;
+   }
 
     setValue(path, value) {
-        if (path == 'value.append') {
-            this.editable.innerText += value.textContent;
-        } else {
-            this.editable.innerText = value.textContent;
-        }
-    }
-
-    getValue() {
-        return {
-            textContent: this.editable.innerText,
-        };
-    }
-
-    focus(identifier) {
-        if (typeof identifier.x != 'number') {
-            identifier.x = 0;
-        }
-
-        const textLength = this.editable.innerText.length;
-        identifier.x = Math.max(0, Math.min(identifier.x, textLength));
-
-        if (textLength === 0) {
-            this.editable.focus();
+        if (!this.editor) {
+            this.valueBuffer = value;
             return;
         }
-
-        const selection = this.shadowRoot.getSelection();
-        const range = document.createRange();
-        const node = this.editable.childNodes[0] || this.editable;
-        range.setStart(node, identifier.x);
-        range.setEnd(node, identifier.x);
-        selection.removeAllRanges();
-        selection.addRange(range);
+        const content = value.textContent || '';
+        this.editor.setValue(content);
+        const mode = this.getModeForLanguage(value.language);
+        this.editor.setOption('mode', mode);
+        this.shadowRoot.querySelector('#language-select').value = value.language;
     }
 
-    getFocus() {
-        try {
-            const sel = this.shadowRoot.getSelection();
-            if (!sel.rangeCount) {
-                throw new Error('No ranges selected.');
+   getValue() {
+       if (!this.editor) return this.valueBuffer;
+       return {
+           textContent: this.editor.getValue(),
+           language: this.shadowRoot.querySelector('#language-select').value
+       };
+   }
+
+   getTextContent() {
+       if (!this.editor) return { html: '', text: '', markdown: '' };
+       const code = this.editor.getValue();
+       const lang = this.shadowRoot.querySelector('#language-select').value;
+       
+       return {
+           html: `<pre><code class="language-${lang}">${code}</code></pre>`,
+           text: code,
+           markdown: '```' + lang + '\n' + code + '\n```'
+       };
+   }
+
+   focus() {
+       if (this.editor) {
+           this.editor.focus();
+       }
+   }
+
+   sendUpdates() {
+       setTimeout(() => {
+           window.wisk?.editor?.justUpdates(this.id);
+       }, 0);
+   }
+
+   render() {
+       const style = `
+           <style>
+           @import url('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css');
+           
+           :host {
+               display: block;
+               position: relative;
+           }
+           
+           select {
+               font-family: var(--font-mono);
+               padding: var(--padding-w1);
+               border: 1px solid var(--border-1);
+               border-radius: var(--radius);
+               background: var(--bg-2);
+               color: var(--text-1);
+               cursor: pointer;
+               position: absolute;
+               top: var(--padding-2);
+               right: var(--padding-2);
+               z-index: 1;
+               outline: none;
+           }
+           
+           select:focus {
+               outline: none;
+               border-color: var(--accent-text);
+           }
+           
+           .CodeMirror {
+               height: auto;
+               font-family: var(--font-mono);
+               background: var(--bg-1);
+               color: var(--text-1);
+               border: 1px solid var(--border-1);
+               border-radius: 0 0 var(--radius) var(--radius);
+               padding: var(--padding-2);
+               caret-color: var(--text-1);
+           }
+           
+           .cm-matchingbracket {
+               background-color: var(--bg-green);
+               color: var(--fg-green) !important;
+           }
+           
+           .cm-nonmatchingbracket {
+               background-color: var(--bg-red);
+               color: var(--fg-red) !important;
+           }
+           
+           .CodeMirror-selected {
+               background-color: var(--accent-bg) !important;
+           }
+           
+           .cm-keyword { color: var(--fg-purple); }
+           .cm-def { color: var(--fg-blue); }
+           .cm-variable { color: var(--text-1); }
+           .cm-operator { color: var(--fg-red); }
+           .cm-number { color: var(--fg-orange); }
+           .cm-string { color: var(--fg-green); }
+           .cm-comment { color: var(--text-2); }
+           .cm-property { color: var(--fg-cyan); }
+           
+           ::-webkit-scrollbar { width: 15px; }
+           ::-webkit-scrollbar-track { background: var(--bg-1); }
+           ::-webkit-scrollbar-thumb { 
+               background-color: var(--bg-3);
+               border-radius: 20px;
+               border: 4px solid var(--bg-1);
+           }
+           ::-webkit-scrollbar-thumb:hover {
+               background-color: var(--text-1);
+           }
+           .CodeMirror-gutters {
+               display: none;
+           }
+            .CodeMirror-cursor {
+                border-left: 1px solid var(--text-1);
             }
-
-            const range = sel.getRangeAt(0).cloneRange();
-            range.setStart(this.editable, 0);
-            return range.toString().length;
-        } catch (error) {
-            console.error('Failed to get caret position: ', error);
-            return -1;
-        }
-    }
-
-    onValueUpdated(event) {
-        const text = this.editable.innerText;
-        if (this.handleSpecialKeys(event)) {
-            return;
-        }
-        this.sendUpdates();
-    }
-
-    getTextContent() {
-        return {
-            html: this.editable.innerHTML,
-            text: this.editable.innerText,
-            markdown: '```\n' + this.editable.innerText + '\n```',
-        };
-    }
-
-    handleSpecialKeys(event) {
-        const keyHandlers = {
-            Enter: () => this.handleEnterKey(event),
-            '/': () => this.handleForwardSlash(event),
-            Backspace: () => this.handleBackspace(event),
-            Tab: () => this.handleTab(event),
-            ArrowLeft: () => this.handleArrowKey(event, 'next-up', 0),
-            ArrowRight: () => this.handleArrowKey(event, 'next-down', this.editable.innerText.length),
-            ArrowUp: () => this.handleVerticalArrow(event, 'next-up'),
-            ArrowDown: () => this.handleVerticalArrow(event, 'next-down'),
-        };
-
-        const handler = keyHandlers[event.key];
-        return handler ? handler() : false;
-    }
-
-    handleEnterKey(event) {
-        if (!this.isVirtualKeyboard) {
-            event.preventDefault();
-            // get current line where the cursor is
-            var line = this.editable.innerText.substring(0, this.getFocus()).split('\n').pop();
-            var spaces = line.match(/^\s*/)[0];
-
-            // TODO handle empty lines
-
-            // calculate current indentation
-            var indent = '';
-            for (let i = 0; i < spaces.length; i++) {
-                indent += ' ';
-            }
-
-            document.execCommand('insertText', false, '\n' + indent);
-            return true;
-        }
-        return false;
-    }
-
-    handleForwardSlash(event) {
-        if (!event.shiftKey && !this.isVirtualKeyboard) {
-            event.preventDefault();
-            window.wisk.editor.showSelector(this.id);
-            return true;
-        }
-        return false;
-    }
-
-    handleBackspace(event) {
-        if (this.getFocus() === 0) {
-            event.preventDefault();
-
-            var prevElement;
-
-            for (let i = 0; i < window.wisk.editor.elements.length; i++) {
-                if (window.wisk.editor.elements[i].id === this.id) {
-                    if (i === 0) {
-                        return true;
-                    }
-
-                    prevElement = window.wisk.editor.elements[i - 1];
-                    break;
-                }
-            }
-
-            var prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
-
-            if (prevComponentDetail.textual) {
-                var len = prevElement.value.textContent.length;
-                window.wisk.editor.updateBlock(prevElement.id, 'value.append', { textContent: this.editable.innerText });
-                window.wisk.editor.focusBlock(prevElement.id, { x: len });
-            }
-
-            window.wisk.editor.deleteBlock(this.id);
-            return true;
-        }
-        return false;
-    }
-
-    handleTab(event) {
-        event.preventDefault();
-        document.execCommand('insertText', false, '    ');
-        window.wisk.editor.justUpdates(this.id);
-        return true;
-    }
-
-    handleArrowKey(event, direction, targetOffset) {
-        // TODO add realtime updates for friends focus
-        const pos = this.getFocus();
-        if (pos === targetOffset) {
-            event.preventDefault();
-
-            if (direction === 'next-up') {
-                var prevElement = window.wisk.editor.prevElement(this.id);
-                if (prevElement == null) {
-                    return true;
-                }
-
-                const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
-                if (prevComponentDetail.textual) {
-                    window.wisk.editor.focusBlock(prevElement.id, { x: prevElement.value.textContent.length });
-                }
-            }
-
-            if (direction === 'next-down') {
-                var nextElement = window.wisk.editor.nextElement(this.id);
-                if (nextElement == null) {
-                    return true;
-                }
-
-                const nextComponentDetail = window.wisk.plugins.getPluginDetail(nextElement.component);
-                if (nextComponentDetail.textual) {
-                    window.wisk.editor.focusBlock(nextElement.id, { x: 0 });
-                }
-            }
-
-            return true;
-        }
-        return false;
-    }
-
-    handleVerticalArrow(event, direction) {
-        const pos = this.getFocus();
-
-        setTimeout(() => {
-            const pos2 = this.getFocus();
-            if (direction === 'next-up' && pos2 === 0) {
-                var prevElement = window.wisk.editor.prevElement(this.id);
-                if (prevElement == null) {
-                    return true;
-                }
-
-                const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
-                if (prevComponentDetail.textual) {
-                    window.wisk.editor.focusBlock(prevElement.id, { x: pos });
-                }
-            }
-
-            if (direction === 'next-down' && pos2 === this.editable.innerText.length) {
-                var nextElement = window.wisk.editor.nextElement(this.id);
-                if (nextElement == null) {
-                    return true;
-                }
-
-                const nextComponentDetail = window.wisk.plugins.getPluginDetail(nextElement.component);
-                if (nextComponentDetail.textual) {
-                    window.wisk.editor.focusBlock(nextElement.id, { x: pos });
-                }
-            }
-        }, 0);
-
-        return true;
-    }
-
-    sendUpdates() {
-        setTimeout(() => {
-            window.wisk.editor.justUpdates(this.id);
-        }, 0);
-    }
-
-    render() {
-        const style = `
-            <style>
-            * {
-                box-sizing: border-box;
-                padding: 0;
-                margin: 0;
-                font-family: var(--font-mono);
-            }
-            #editable {
-                outline: none;
-                position: relative;
-                line-height: 1.5;
-                padding: var(--padding-4);
-                border: 1px solid var(--border-1);
-                background: var(--bg-2);
-                color: var(--text-1);
-                border-radius: var(--radius);
-                overflow: auto;
-            }
-            *::-webkit-scrollbar { width: 15px; }
-            *::-webkit-scrollbar-track { background: var(--bg-1); }
-            *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-            *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
-            </style>
-        `;
-        const content = `<pre id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" ></pre>`;
-        this.shadowRoot.innerHTML = style + content;
-    }
-
-    bindEvents() {
-        const eventType = this.isVirtualKeyboard ? 'input' : 'keydown';
-        this.editable.addEventListener(eventType, this.onValueUpdated.bind(this));
-        this.editable.addEventListener('focus', () => {
-            if (this.editable.innerText.trim() === '') {
-                this.editable.classList.add('empty');
-            }
-        });
-    }
+           </style>
+           <select id="language-select"></select>
+           <div id="editor"></div>
+       `;
+       
+       this.shadowRoot.innerHTML = style;
+   }
 }
 
 customElements.define('code-element', CodeElement);

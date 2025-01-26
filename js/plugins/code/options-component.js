@@ -906,9 +906,23 @@ class OptionsComponent extends LitElement {
                         </div>
                     </div>
 
-                    <div class="plugins-toggle-nohover options-section">
-                        <label>Copy Template Configurations</label>
-                        <button class="toggle-switch btn-primary devops" @click="${() => this.copyTemplateConfigurations()}">Copy</button>
+                    <div style="flex: 1; display: flex; flex-direction: column; overflow: auto">
+                        <div class="plugins-toggle-nohover options-section">
+                            <label>Copy Template Configurations</label>
+                            <button class="toggle-switch btn-primary devops" @click="${() => this.copyTemplateConfigurations()}">Copy</button>
+                        </div>
+
+                        <div class="plugins-toggle-nohover options-section" style="flex-direction: column; gap: var(--gap-2); align-items: stretch">
+                            <div style="display: flex; flex-direction: row; gap: var(--gap-2); align-items: center; justify-content: space-between;">
+                                <label>Add Theme Object</label>
+                                <button class="toggle-switch btn-primary devops" 
+                                    @click="${() => wisk.theme.addTheme(this.shadowRoot.querySelector('#theme-tx').value)}"> Apply
+                                </button>
+                            </div>
+                            
+                            <textarea class="options-select" id="theme-tx" placeholder="Enter theme object here" 
+                                style="height: 200px; resize: none; font-family: var(--font-mono)"></textarea>
+                        </div>
                     </div>
                 </div>
 

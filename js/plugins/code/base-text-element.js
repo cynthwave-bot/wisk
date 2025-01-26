@@ -451,7 +451,6 @@ class BaseTextElement extends HTMLElement {
     }
 
     handleMarkdown(event) {
-        console.log('Markdown handling', this.editable.innerText, event.key);
         if (this.editable.innerText == '``' && event.key == '`') {
             console.log('Changing to code element');
             wisk.editor.changeBlockType(this.id, { textContent: '' }, 'code-element');
@@ -1140,11 +1139,12 @@ class BaseTextElement extends HTMLElement {
     }
 
     handleVerticalArrow(event, direction) {
-        console.log('Vertical arrow key pressed');
+        console.log('Vertical arrow key pressed', direction);
         const pos = this.getFocus();
         setTimeout(() => {
             const newPos = this.getFocus();
             if ((direction === 'next-up' && newPos === 0) || (direction === 'next-down' && newPos === this.editable.innerText.length)) {
+                console.log('Moving to adjacent element');
                 const adjacentElement = direction === 'next-up' ? window.wisk.editor.prevElement(this.id) : window.wisk.editor.nextElement(this.id);
 
                 if (adjacentElement) {

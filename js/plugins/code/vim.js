@@ -79,13 +79,14 @@ class VimEditor {
         this.statusIndicator.style.border = '1px solid var(--border-1)';
         this.statusIndicator.style.color = 'var(--text-1)';
         this.statusIndicator.style.borderRadius = 'var(--radius)';
-        this.statusIndicator.style.padding = 'var(--padding-w3)';
+        this.statusIndicator.style.padding = 'var(--padding-w2)';
         this.statusIndicator.style.fontFamily = 'monospace';
-        this.statusIndicator.style.fontSize = '12px';
+        this.statusIndicator.style.fontSize = '14px';
         this.statusIndicator.style.zIndex = '10000';
         this.statusIndicator.style.display = 'none';
         this.statusIndicator.style.bottom = 'var(--padding-3)';
         this.statusIndicator.style.left = 'var(--padding-3)';
+        this.statusIndicator.style.fontWeight = 'bold';
         document.body.appendChild(this.statusIndicator);
     }
 
@@ -123,12 +124,32 @@ class VimEditor {
     }
 
     updateStatus() {
-        const modeText = {
-            normal: '-- NORMAL --',
-            insert: '-- INSERT --',
-            visual: '-- VISUAL --',
+        const modeStyles = {
+            normal: {
+                text: '-- NORMAL --',
+                bg: 'var(--bg-blue)',
+                color: 'var(--fg-blue)',
+                border: 'var(--fg-blue)'
+            },
+            insert: {
+                text: '-- INSERT --',
+                bg: 'var(--bg-green)',
+                color: 'var(--fg-green)',
+                border: 'var(--fg-green)'
+            },
+            visual: {
+                text: '-- VISUAL --',
+                bg: 'var(--bg-purple)',
+                color: 'var(--fg-purple)',
+                border: 'var(--fg-purple)'
+            }
         };
-        this.statusIndicator.textContent = modeText[this.mode] || '';
+
+        const style = modeStyles[this.mode];
+        this.statusIndicator.textContent = style.text;
+        this.statusIndicator.style.backgroundColor = style.bg;
+        this.statusIndicator.style.color = style.color;
+        this.statusIndicator.style.border = `2px solid ${style.border}`;
     }
 
     handleKeydown(e) {
@@ -270,17 +291,26 @@ class VimEditor {
                     selection.modify('move', 'forward', 'character');
                     e.preventDefault();
                     return;
-
                 case 'k':
                     selection.modify('move', 'backward', 'line');
+                    this.activeElement.dispatchEvent(new KeyboardEvent('keydown', { 
+                        key: 'ArrowUp',
+                        keyCode: 38,
+                        bubbles: true,
+                        composed: true
+                    }));
                     e.preventDefault();
                     return;
-
                 case 'j':
                     selection.modify('move', 'forward', 'line');
+                    this.activeElement.dispatchEvent(new KeyboardEvent('keydown', { 
+                        key: 'ArrowDown', 
+                        keyCode: 40,
+                        bubbles: true,
+                        composed: true
+                    }));
                     e.preventDefault();
                     return;
-
                 case 'w':
                     selection.modify('move', 'forward', 'word');
                     e.preventDefault();
@@ -350,6 +380,17 @@ class VimEditor {
                     selection.modify('extend', 'forward', 'lineboundary');
                     document.execCommand('delete', false);
                     this.mode = 'insert';
+                    e.preventDefault();
+                    return;
+
+                case 'y':
+                    document.execCommand('copy', false);
+                    selection.collapseToStart();
+                    e.preventDefault();
+                    return;
+
+                case 'p':
+                    document.execCommand('paste', false);
                     e.preventDefault();
                     return;
 
@@ -433,6 +474,18 @@ class VimEditor {
                     document.execCommand('copy', false);
                     this.mode = 'normal';
                     selection.collapseToStart();
+                    e.preventDefault();
+                    return;
+
+                case 'p':
+                    document.execCommand('paste', false);
+                    e.preventDefault();
+                    return;
+                
+                case 'c':
+                    document.execCommand('copy', false);
+                    document.execCommand('delete', false);
+                    this.mode = 'insert';
                     e.preventDefault();
                     return;
             }

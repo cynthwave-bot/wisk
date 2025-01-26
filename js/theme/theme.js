@@ -58,6 +58,57 @@ window.wisk.theme.setTheme = async function (themeName) {
     window.dispatchEvent(event);
 };
 
+window.wisk.theme.addTheme = function(themeData) {
+    try {
+        themeData = JSON.parse(themeData);
+    } catch (error) {
+        wisk.utils.showToast('so youve started giving me invalid jsons now? smh', 3000);
+        return false;
+    }
+
+    if (!themeData || typeof themeData !== 'object') {
+        console.error('Invalid theme data: Theme must be an object');
+        wisk.utils.showToast('Invalid theme data: Theme must be an object', 3000);
+        return false;
+    }
+
+    if (!themeData.name || typeof themeData.name !== 'string') {
+        console.error('Invalid theme data: Theme must have a name property');
+        wisk.utils.showToast('Invalid theme data: Theme must have a name property', 3000);
+        return false;
+    }
+
+    if (window.wisk.theme.themeObject.themes.some(theme => theme.name === themeData.name)) {
+        console.error('Theme with name "' + themeData.name + '" already exists');
+        wisk.utils.showToast('Theme with name "' + themeData.name + '" already exists', 3000);
+        return false;
+    }
+
+    const lightTheme = window.wisk.theme.themeObject.themes.find(t => t.name === 'Light');
+    const requiredVariables = Object.keys(lightTheme).filter(key => key.startsWith('--'));
+    const missingVariables = requiredVariables.filter(variable => !(variable in themeData));
+    if (missingVariables.length > 0) {
+        console.error('Missing required CSS variables:', missingVariables);
+        wisk.utils.showToast('Missing required CSS variables', 3000);
+        return false;
+    }
+
+    window.wisk.theme.themeObject.themes.push(themeData);
+
+    window.wisk.editor.registerCommand(
+        themeData.name,
+        '',
+        'Theme',
+        () => window.wisk.theme.setTheme(themeData.name),
+        ''
+    );
+
+    console.log('Theme "' + themeData.name + '" added successfully');
+    window.wisk.theme.setTheme(themeData.name);
+
+    return true;
+}
+
 window.wisk.theme.getTheme = function () {
     return localStorage.getItem('webapp-theme');
 };
