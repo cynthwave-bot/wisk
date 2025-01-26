@@ -676,7 +676,7 @@ class OptionsComponent extends LitElement {
     }
 
     render() {
-        const filteredPlugins = this.plugins.filter(
+        var filteredPlugins = this.plugins.filter(
             plugin =>
                 plugin.title.toLowerCase().includes(this.searchTerm) ||
                 plugin.description.toLowerCase().includes(this.searchTerm) ||
@@ -684,6 +684,9 @@ class OptionsComponent extends LitElement {
                 plugin.author.toLowerCase().includes(this.searchTerm) ||
                 plugin.contents.some(content => content.experimental && 'experimental'.includes(this.searchTerm))
         );
+
+        // if plugin.hide is true, don't show it
+        filteredPlugins = filteredPlugins.filter(plugin => !plugin.hide);
 
         const urlRegex = /(https?:\/\/[^\s]+)/g;
         var parts = [];

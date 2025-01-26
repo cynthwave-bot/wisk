@@ -1081,6 +1081,7 @@
             "title": "Mini Apps",
             "author": "Wisk Team",
             "contact": "https://wisk.cc",
+            "hide": true,
             "icon": "mini-app.svg",
             "tags": ["mini", "app", "apps", "plugin"],
             "description": "Mini apps are small apps that can be loaded in the editor",
@@ -1094,6 +1095,28 @@
                     "textual": true,
                     "loadAsModule": true,
                     "width": "mini"
+                }
+            ]
+        },
+
+        "document-graph": {
+            "name": "document-graph",
+            "title": "Document Graph",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "document-graph.svg",
+            "tags": ["document", "graph", "tree", "hierarchy"],
+            "description": "Document graph is a plugin that creates a graph of the document",
+            "hide": true,
+            "contents": [
+                {
+                    "title": "Document Graph",
+                    "icon": "document-graph-2.svg",
+                    "category": "right-sidebar",
+                    "component": "document-graph",
+                    "nav": true,
+                    "textual": false,
+                    "loadAsModule": true
                 }
             ]
         }

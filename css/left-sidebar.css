@@ -99,6 +99,7 @@
 .left-sidebar-body {
     overflow: auto;
     height: 100%;
+    position: relative;
 }
 
 .left-sidebar-header {

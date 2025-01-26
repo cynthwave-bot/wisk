@@ -38,7 +38,7 @@ The frontend is open source and fully functional standalone, but requires Wisk b
 ## Quick Start
 
 ```bash
-git clone https://github.com/yourusername/wisk.git
+git clone https://github.com/cynthwave/wisk.git
 cd wisk
 python -m http.server 8000
 # Visit http://localhost:8000
