@@ -129,20 +129,20 @@ class VimEditor {
                 text: '-- NORMAL --',
                 bg: 'var(--bg-blue)',
                 color: 'var(--fg-blue)',
-                border: 'var(--fg-blue)'
+                border: 'var(--fg-blue)',
             },
             insert: {
                 text: '-- INSERT --',
                 bg: 'var(--bg-green)',
                 color: 'var(--fg-green)',
-                border: 'var(--fg-green)'
+                border: 'var(--fg-green)',
             },
             visual: {
                 text: '-- VISUAL --',
                 bg: 'var(--bg-purple)',
                 color: 'var(--fg-purple)',
-                border: 'var(--fg-purple)'
-            }
+                border: 'var(--fg-purple)',
+            },
         };
 
         const style = modeStyles[this.mode];
@@ -293,22 +293,26 @@ class VimEditor {
                     return;
                 case 'k':
                     selection.modify('move', 'backward', 'line');
-                    this.activeElement.dispatchEvent(new KeyboardEvent('keydown', { 
-                        key: 'ArrowUp',
-                        keyCode: 38,
-                        bubbles: true,
-                        composed: true
-                    }));
+                    this.activeElement.dispatchEvent(
+                        new KeyboardEvent('keydown', {
+                            key: 'ArrowUp',
+                            keyCode: 38,
+                            bubbles: true,
+                            composed: true,
+                        })
+                    );
                     e.preventDefault();
                     return;
                 case 'j':
                     selection.modify('move', 'forward', 'line');
-                    this.activeElement.dispatchEvent(new KeyboardEvent('keydown', { 
-                        key: 'ArrowDown', 
-                        keyCode: 40,
-                        bubbles: true,
-                        composed: true
-                    }));
+                    this.activeElement.dispatchEvent(
+                        new KeyboardEvent('keydown', {
+                            key: 'ArrowDown',
+                            keyCode: 40,
+                            bubbles: true,
+                            composed: true,
+                        })
+                    );
                     e.preventDefault();
                     return;
                 case 'w':
@@ -481,7 +485,7 @@ class VimEditor {
                     document.execCommand('paste', false);
                     e.preventDefault();
                     return;
-                
+
                 case 'c':
                     document.execCommand('copy', false);
                     document.execCommand('delete', false);

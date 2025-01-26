@@ -58,7 +58,7 @@ window.wisk.theme.setTheme = async function (themeName) {
     window.dispatchEvent(event);
 };
 
-window.wisk.theme.addTheme = function(themeData) {
+window.wisk.theme.addTheme = function (themeData) {
     try {
         themeData = JSON.parse(themeData);
     } catch (error) {
@@ -95,19 +95,13 @@ window.wisk.theme.addTheme = function(themeData) {
 
     window.wisk.theme.themeObject.themes.push(themeData);
 
-    window.wisk.editor.registerCommand(
-        themeData.name,
-        '',
-        'Theme',
-        () => window.wisk.theme.setTheme(themeData.name),
-        ''
-    );
+    window.wisk.editor.registerCommand(themeData.name, '', 'Theme', () => window.wisk.theme.setTheme(themeData.name), '');
 
     console.log('Theme "' + themeData.name + '" added successfully');
     window.wisk.theme.setTheme(themeData.name);
 
     return true;
-}
+};
 
 window.wisk.theme.getTheme = function () {
     return localStorage.getItem('webapp-theme');

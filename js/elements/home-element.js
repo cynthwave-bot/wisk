@@ -676,7 +676,6 @@ class HomeElement extends LitElement {
                                   </div>
                               `
                             : ''}
-
                         ${this.templates.length > 1
                             ? html`
                                   <div class="template-card mobhide" @click=${() => this.useTemplate(this.templates[1])}>

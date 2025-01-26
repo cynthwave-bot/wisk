@@ -398,43 +398,13 @@
             "component": "table-element",
             "value": {
                 "tableContent": {
-                    "headers": [
-                        "Date ",
-                        "Category",
-                        "Expense Details",
-                        "Amount"
-                    ],
+                    "headers": ["Date ", "Category", "Expense Details", "Amount"],
                     "rows": [
-                        [
-                            "[Date]",
-                            "Transportation",
-                            "[Details]",
-                            "[Cost]"
-                        ],
-                        [
-                            "[Date]",
-                            "Accommodation",
-                            "[Details]",
-                            "[Cost]"
-                        ],
-                        [
-                            "[Date]",
-                            "Food",
-                            "[Details]",
-                            "[Cost]"
-                        ],
-                        [
-                            "[Date]",
-                            "Activities",
-                            "[Details]",
-                            "[Cost]"
-                        ],
-                        [
-                            "Total",
-                            "",
-                            "",
-                            ""
-                        ]
+                        ["[Date]", "Transportation", "[Details]", "[Cost]"],
+                        ["[Date]", "Accommodation", "[Details]", "[Cost]"],
+                        ["[Date]", "Food", "[Details]", "[Cost]"],
+                        ["[Date]", "Activities", "[Details]", "[Cost]"],
+                        ["Total", "", "", ""]
                     ]
                 }
             }

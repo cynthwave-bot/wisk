@@ -69,7 +69,7 @@ class ExportComponent extends LitElement {
             gap: var(--gap-2);
             padding: var(--padding-2);
         }
-        
+
         .template-option {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
@@ -124,7 +124,7 @@ class ExportComponent extends LitElement {
     `;
 
     static properties = {
-        selectedTemplate: { type: String }
+        selectedTemplate: { type: String },
     };
 
     constructor() {
@@ -175,12 +175,16 @@ class ExportComponent extends LitElement {
                     type: element.component,
                     value: {
                         text: textContent.html,
-                    }
-                }
+                    },
+                };
                 if (element.component === 'image-element') {
                     elm.value.url = textContent.url;
                 }
-                if (element.component === 'list-element' || element.component === 'numbered-list-element' || element.component === 'checkbox-element') {
+                if (
+                    element.component === 'list-element' ||
+                    element.component === 'numbered-list-element' ||
+                    element.component === 'checkbox-element'
+                ) {
                     elm.value.indent = valueContent.indent;
                 }
                 if (element.component === 'checkbox-element') {
@@ -252,23 +256,28 @@ class ExportComponent extends LitElement {
             <div class="option-section" style="flex-direction: column; align-items: normal; gap: var(--gap-3);">
                 <label>Templates</label>
                 <div class="template-grid">
-                    ${templates.map(template => html`
-                        <div 
-                            class="template-option ${this.selectedTemplate === template.id ? 'selected' : ''}"
-                            @click=${() => this.selectTemplate(template.id)}
-                        >
-                            <div class="template-preview">
-                                <img src="/a7/export-templates/smol/${template.id}.jpg" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
-                                <button class="view-btn" @click=${() => window.open(`/a7/export-templates/${template.id}.jpg`)}>
-                                    <img src="/a7/forget/open1.svg" style="width: 20px; height: 20px;" />
-                                </button>
+                    ${templates.map(
+                        template => html`
+                            <div
+                                class="template-option ${this.selectedTemplate === template.id ? 'selected' : ''}"
+                                @click=${() => this.selectTemplate(template.id)}
+                            >
+                                <div class="template-preview">
+                                    <img
+                                        src="/a7/export-templates/smol/${template.id}.jpg"
+                                        style="width: 100%; height: 100%; object-fit: cover;"
+                                        loading="lazy"
+                                    />
+                                    <button class="view-btn" @click=${() => window.open(`/a7/export-templates/${template.id}.jpg`)}>
+                                        <img src="/a7/forget/open1.svg" style="width: 20px; height: 20px;" />
+                                    </button>
+                                </div>
 
+                                <strong>${template.name}</strong>
+                                <small style="color: var(--text-2)">${template.description}</small>
                             </div>
-
-                            <strong>${template.name}</strong>
-                            <small style="color: var(--text-2)">${template.description}</small>
-                        </div>
-                    `)}
+                        `
+                    )}
                 </div>
             </div>
         `;
