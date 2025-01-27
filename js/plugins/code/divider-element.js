@@ -4,21 +4,15 @@ class DividerElement extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         this.render();
     }
-
-    setValue(value) {}
-
+    setValue(pr, value) {}
     getValue() {
         return {};
     }
-
     getCurrentIndex() {
         return 0;
     }
-
     focusOnIndex(index) {}
-
     focus(identifier) {}
-
     getTextContent() {
         return {
             html: '',
@@ -26,10 +20,8 @@ class DividerElement extends HTMLElement {
             markdown: '---',
         };
     }
-
     render() {
-        const innerHTML = `
-            <style>
+        const innerHTML = `<style>
             * {
                 box-sizing: border-box;
                 padding: 0;
@@ -46,7 +38,6 @@ class DividerElement extends HTMLElement {
                 <div style="width: 100%; height: 1px; background-color: var(--border-1);"></div>
             </div>
         `;
-
         this.shadowRoot.innerHTML = innerHTML;
     }
 }

@@ -598,9 +598,7 @@ class OptionsComponent extends LitElement {
 
     loadPlugins() {
         if (wisk.plugins.pluginData && wisk.plugins.pluginData.list) {
-            this.plugins = Object.values(wisk.plugins.pluginData.list).filter(
-                plugin => !wisk.plugins.defaultPlugins.includes(plugin.name)
-            );
+            this.plugins = Object.values(wisk.plugins.pluginData.list).filter(plugin => !wisk.plugins.defaultPlugins.includes(plugin.name));
         }
     }
 

@@ -1119,6 +1119,28 @@
                     "loadAsModule": true
                 }
             ]
+        },
+
+        "super-divider": {
+            "name": "super-divider",
+            "title": "Super Divider",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "scribble.svg",
+            "tags": ["divider", "separator", "line"],
+            "description": "Divider just got super",
+            "contents": [
+                {
+                    "title": "Divider",
+                    "icon": "scribble.svg",
+                    "category": "component",
+                    "component": "super-divider",
+                    "nav": false,
+                    "textual": false,
+                    "loadAsModule": false,
+                    "width": "mini"
+                }
+            ]
         }
     }
 }

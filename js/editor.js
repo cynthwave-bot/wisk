@@ -92,10 +92,7 @@ wisk.editor.savePluginData = async function (identifier, data) {
 
 wisk.editor.createBlockBase = function (elementId, blockType, value, remoteId, isRemote = false) {
     if (elementId === '') {
-        elementId =
-            wisk.editor.elements.length > 1
-                ? wisk.editor.elements[wisk.editor.elements.length - 1].id
-                : wisk.editor.elements[0].id;
+        elementId = wisk.editor.elements.length > 1 ? wisk.editor.elements[wisk.editor.elements.length - 1].id : wisk.editor.elements[0].id;
     }
 
     const id = isRemote ? remoteId : wisk.editor.generateNewId();
@@ -302,9 +299,7 @@ async function initEditor(doc) {
     }
 
     await Promise.all(
-        doc.data.config.plugins
-            .filter(plugin => !wisk.plugins.loadedPlugins.includes(plugin))
-            .map(plugin => wisk.plugins.loadPlugin(plugin))
+        doc.data.config.plugins.filter(plugin => !wisk.plugins.loadedPlugins.includes(plugin)).map(plugin => wisk.plugins.loadPlugin(plugin))
     );
 
     // once plugins are loaded we load the data of plugins using their identifiers
