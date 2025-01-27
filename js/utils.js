@@ -1,4 +1,4 @@
-window.wisk.utils.showToast = function (message, duration) {
+wisk.utils.showToast = function (message, duration) {
     if (!duration) duration = 3000;
 
     console.log('Showing toast:', message, 'for', duration, 'ms');
@@ -23,13 +23,13 @@ window.wisk.utils.showToast = function (message, duration) {
     }, duration);
 };
 
-window.wisk.utils.showInfo = function (message) {
+wisk.utils.showInfo = function (message) {
     // TODO move to a dialog
     console.log('Showing info:', message);
-    window.wisk.utils.showToast(message, 3000);
+    wisk.utils.showToast(message, 3000);
 };
 
-window.wisk.utils.showLoading = function (message) {
+wisk.utils.showLoading = function (message) {
     console.log('Showing loading:', message);
     let loadingDiv = document.querySelector('.loading-div');
     if (!loadingDiv) {
@@ -52,7 +52,7 @@ window.wisk.utils.showLoading = function (message) {
     loadingDiv.style.display = 'flex';
 };
 
-window.wisk.utils.hideLoading = function () {
+wisk.utils.hideLoading = function () {
     console.log('Hiding loading');
     let loadingDiv = document.querySelector('.loading-div');
     if (loadingDiv) {

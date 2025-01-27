@@ -89,8 +89,8 @@ class JavaScriptCodeBlock extends LitElement {
 
     handleCodeChange(e) {
         this.code = e.target.value;
-        if (window.wisk?.editor?.justUpdates) {
-            window.wisk.editor.justUpdates(this.id);
+        if (wisk?.editor?.justUpdates) {
+            wisk.editor.justUpdates(this.id);
         }
     }
 
@@ -150,8 +150,8 @@ class JavaScriptCodeBlock extends LitElement {
             this.code = newValue;
             textarea.selectionStart = textarea.selectionEnd = start + 4;
 
-            if (window.wisk?.editor?.justUpdates) {
-                window.wisk.editor.justUpdates(this.id);
+            if (wisk?.editor?.justUpdates) {
+                wisk.editor.justUpdates(this.id);
             }
         }
     }
@@ -162,7 +162,7 @@ class JavaScriptCodeBlock extends LitElement {
                 <button
                     class="btn btnx"
                     @click=${() => {
-                        if (window.wisk.editor.wiskSite) return;
+                        if (wisk.editor.wiskSite) return;
                         this.executeCode();
                     }}
                 >
@@ -175,7 +175,7 @@ class JavaScriptCodeBlock extends LitElement {
                     .value=${this.code}
                     spellcheck="false"
                     placeholder="console.log('Hello, World!')"
-                    ${window.wisk.editor.wiskSite ? 'readonly' : ''}
+                    ${wisk.editor.wiskSite ? 'readonly' : ''}
                 ></textarea>
 
                 <div class="output ${this.output ? 'has-content' : ''} ${this.outputType}">${this.output}</div>

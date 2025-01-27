@@ -84,7 +84,7 @@ class Heading1Element extends BaseTextElement {
             </style>
         `;
         const content = `
-            <h1 id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></h1>
+            <h1 id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></h1>
             <div class="emoji-suggestions"></div>
         `;
         this.shadowRoot.innerHTML = style + content;

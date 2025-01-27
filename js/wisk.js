@@ -1,22 +1,24 @@
-window.wisk = window.wisk || {};
+globalThis.wisk = globalThis.wisk || {};
 
-window.wisk.auth = document.querySelector('auth-component');
+const wisk = globalThis.wisk;
+wisk.auth = document.querySelector('auth-component');
 
-window.wisk.plugins = {
+wisk.plugins = {
     defaultPlugins: [],
     loadedPlugins: [],
     pluginData: {},
     loadPlugin: function (plugin) {},
     references: [],
 };
-window.wisk.db = {
+
+wisk.db = {
     getItem: function (pageId) {},
     setItem: function (pageId, value) {},
     removeItem: function (pageId) {},
     getAllItems: function () {},
 };
 
-window.wisk.theme = {
+wisk.theme = {
     themeObject: { themes: [] },
     setTheme: function (theme) {},
     getTheme: function () {},
@@ -24,7 +26,7 @@ window.wisk.theme = {
     getThemeData: function (theme) {},
 };
 
-window.wisk.editor = {
+wisk.editor = {
     showSelector: function (elementId) {},
     generateNewId: function () {},
     pageId: '',
@@ -41,13 +43,13 @@ window.wisk.editor = {
     registerCommand: function (name, description, category, callback, shortcut) {},
 };
 
-window.wisk.utils = {
+wisk.utils = {
     showToast: function (message, duration) {},
     showInfo: function (message) {},
     showLoading: function (message) {},
     hideLoading: function () {},
 };
 
-if (window.location.href.includes('.wisk.site')) {
-    window.wisk.editor.wiskSite = true;
+if (location.href.includes('.wisk.site')) {
+    wisk.editor.wiskSite = true;
 }

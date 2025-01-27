@@ -181,7 +181,7 @@ class MermaidElement extends LitElement {
         this.backup = this._mermaid;
         this.error = '';
         this._showDialog = false;
-        this._theme = window.wisk.theme.getThemeData(window.wisk.theme.getTheme());
+        this._theme = wisk.theme.getThemeData(wisk.theme.getTheme());
         this._showAiInput = false;
         this._showCodeEditor = false;
         this._isLoading = false;
@@ -504,7 +504,7 @@ class MermaidElement extends LitElement {
 
     sendUpdates() {
         setTimeout(() => {
-            window.wisk.editor.justUpdates(this.id);
+            wisk.editor.justUpdates(this.id);
         }, 0);
     }
 
@@ -635,7 +635,7 @@ class MermaidElement extends LitElement {
             <div class="mermaid-container">
                 <div class="mermaid-display"></div>
                 ${this.error ? html`<div class="error">${this.error}</div>` : ''}
-                <button class="button edit-button" style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}" @click=${this.handleEdit}>
+                <button class="button edit-button" style="${wisk.editor.wiskSite ? 'display: none;' : ''}" @click=${this.handleEdit}>
                     <img src="/a7/plugins/latex-element/pencil.svg" alt="Edit" style="filter: var(--themed-svg);" />
                 </button>
             </div>

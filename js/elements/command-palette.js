@@ -387,4 +387,4 @@ function showCommandPalette() {
 //registerCommand("Replace", "Replaces a string", "Edit", () => console.log("Replacing..."), "Ctrl+H");
 //registerCommand("Command Palette", "Opens the command palette", "View", showCommandPalette, "Ctrl+K");
 
-window.wisk.editor.registerCommand = registerCommand;
+wisk.editor.registerCommand = registerCommand;

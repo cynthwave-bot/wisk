@@ -203,8 +203,8 @@ class PythonCodeBlock extends LitElement {
             this.showDialog = false;
             this.packageName = '';
 
-            if (window.wisk?.editor?.justUpdates) {
-                window.wisk.editor.justUpdates(this.id);
+            if (wisk?.editor?.justUpdates) {
+                wisk.editor.justUpdates(this.id);
             }
         } catch (error) {
             this.output = `Error importing ${packageName}: ${error}`;
@@ -216,8 +216,8 @@ class PythonCodeBlock extends LitElement {
 
     handleCodeChange(e) {
         this.code = e.target.value;
-        if (window.wisk?.editor?.justUpdates) {
-            window.wisk.editor.justUpdates(this.id);
+        if (wisk?.editor?.justUpdates) {
+            wisk.editor.justUpdates(this.id);
         }
     }
 
@@ -298,8 +298,8 @@ class PythonCodeBlock extends LitElement {
             this.code = newValue;
             textarea.selectionStart = textarea.selectionEnd = start + 4;
 
-            if (window.wisk?.editor?.justUpdates) {
-                window.wisk.editor.justUpdates(this.id);
+            if (wisk?.editor?.justUpdates) {
+                wisk.editor.justUpdates(this.id);
             }
         }
     }
