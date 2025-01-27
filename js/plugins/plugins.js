@@ -29,7 +29,6 @@ wisk.plugins = {
         'neo-ai',
         'manage-citations',
         'share-manager',
-        'export-manager',
         'general-chat',
         'more',
         'left-menu',

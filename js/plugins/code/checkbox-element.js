@@ -185,8 +185,9 @@ class CheckboxElement extends BaseTextElement {
                 outline: none;
                 flex: 1;
                 line-height: 1.5;
-                position: relative; /* Added for placeholder positioning */
-                min-height: 24px; /* Added to ensure consistent height */
+                position: relative;
+                min-height: 24px;
+                transition: opacity 0.2s ease;
             }
             #list-outer {
                 width: 100%;
@@ -194,20 +195,46 @@ class CheckboxElement extends BaseTextElement {
                 display: flex;
                 flex-direction: row;
                 gap: 8px;
-                align-items: flex-start; /* Changed from center to flex-start */
-                position: relative; /* Added for positioning context */
+                align-items: flex-start;
+                position: relative;
             }
             .indent {
                 width: 20px;
             }
             #checkbox {
-                display: inline-block;
-                vertical-align: top; /* Changed from middle to top */
-                height: 16px;
-                width: 16px;
-                accent-color: var(--fg-blue);
-                background-color: var(--bg-1);
-                margin-top: 4px; /* Added to align with text */
+                appearance: none;
+                -webkit-appearance: none;
+                width: 18px;
+                height: 18px;
+                border: 2px solid var(--text-2);
+                border-radius: var(--radius);
+                background: var(--accent-bg);
+                cursor: pointer;
+                position: relative;
+                margin-top: 3px;
+                transition: all 0.2s ease;
+            }
+            #checkbox:checked {
+                background: var(--accent-text);
+                border-color: var(--accent-text);
+            }
+            #checkbox:checked:after {
+                content: '';
+                position: absolute;
+                left: 5px;
+                top: 2px;
+                width: 4px;
+                height: 8px;
+                border: solid var(--accent-bg);
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+            }
+            #checkbox:checked ~ #editable {
+                text-decoration: line-through;
+                opacity: 0.6;
+            }
+            #checkbox:hover {
+                border-color: var(--accent-text);
             }
             a {
                 color: var(--fg-blue);
@@ -267,15 +294,21 @@ class CheckboxElement extends BaseTextElement {
             }
             *::-webkit-scrollbar { width: 15px; }
             *::-webkit-scrollbar-track { background: var(--bg-1); }
-            *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-            *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+            *::-webkit-scrollbar-thumb { 
+                background-color: var(--bg-3);
+                border-radius: 20px;
+                border: 4px solid var(--bg-1);
+            }
+            *::-webkit-scrollbar-thumb:hover {
+                background-color: var(--text-1);
+            }
             </style>
         `;
         const content = `
             <div id="list-outer">
                 <input type="checkbox" id="checkbox" name="checkbox" value="checkbox" ${wisk.editor.wiskSite ? 'onclick="return false"' : ''} />
                 <div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a task...'}"></div>
-                </div><div class="emoji-suggestions"></div>
+                <div class="emoji-suggestions"></div>
             </div>
         `;
         this.shadowRoot.innerHTML = style + content;

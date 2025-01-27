@@ -28,35 +28,15 @@
             "title": "Share",
             "author": "Wisk Team",
             "contact": "https://wisk.cc",
-            "icon": "access-manager.svg",
-            "tags": ["access", "permissions", "security", "privacy", "share"],
+            "icon": "share.svg",
+            "tags": ["access", "permissions", "security", "privacy", "share", "export", "download", "data"],
             "description": "Manage your sharing settings",
             "contents": [
                 {
                     "title": "Share",
-                    "icon": "access-manager.svg",
+                    "icon": "share.svg",
                     "category": "mini-dialog",
                     "component": "share-component",
-                    "nav": true,
-                    "loadAsModule": true
-                }
-            ]
-        },
-
-        "export-manager": {
-            "name": "export-manager",
-            "title": "Export",
-            "author": "Wisk Team",
-            "contact": "https://wisk.cc",
-            "icon": "export-manager.svg",
-            "tags": ["export", "download", "data"],
-            "description": "Export data",
-            "contents": [
-                {
-                    "title": "Export",
-                    "icon": "export-manager.svg",
-                    "category": "mini-dialog",
-                    "component": "export-component",
                     "nav": true,
                     "loadAsModule": true
                 }
