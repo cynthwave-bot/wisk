@@ -478,7 +478,7 @@ class OptionsComponent extends LitElement {
 
         .themes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 10px;
             overflow: auto;
         }
@@ -650,9 +650,9 @@ class OptionsComponent extends LitElement {
 
     installButtonClicked() {
         if (this.isPluginInstalled(this.selectedPlugin.name)) {
-            this.handlePluginUninstall(this.selectedPlugin)
+            this.handlePluginUninstall(this.selectedPlugin);
         } else {
-            this.handlePluginInstall(this.selectedPlugin)
+            this.handlePluginInstall(this.selectedPlugin);
         }
     }
 
@@ -667,9 +667,11 @@ class OptionsComponent extends LitElement {
         var pluginContents = wisk.plugins.pluginData.list[plugin.name].contents;
         console.log(pluginContents);
         for (const element in wisk.editor.elements) {
-            if (pluginContents.some(content => content.component.includes(element.component))) {
-                wisk.utils.showToast('Plugin is currently being used, please remove the block first', 3000);
-                return;
+            for (const content in pluginContents) {
+                if (wisk.editor.elements[element].component == pluginContents[content].component) {
+                    wisk.utils.showToast('Plugin is currently being used, please remove the block first', 3000);
+                    return;
+                }
             }
         }
 
@@ -825,9 +827,7 @@ class OptionsComponent extends LitElement {
                                       </div>
                                       <div style="flex: 1"></div>
                                       <div style="padding: var(--padding-3); display: flex; align-items: center; justify-content: center;">
-                                          <button
-                                              class="toggle-switch btn-primary"
-                                              @click="${this.installButtonClicked}">
+                                          <button class="toggle-switch btn-primary" @click="${this.installButtonClicked}">
                                               ${this.isPluginInstalled(this.selectedPlugin.name) ? 'Uninstall' : 'Install'}
                                           </button>
                                       </div>
@@ -912,7 +912,9 @@ class OptionsComponent extends LitElement {
                                           : ''}
 
                                       <div class="tags-div">
-                                          ${this.selectedPlugin.tags.map(tag => html`<span class="tags-div-inner" @click="${() => this.tagClicked(tag)}">#${tag}</span>`)}
+                                          ${this.selectedPlugin.tags.map(
+                                              tag => html`<span class="tags-div-inner" @click="${() => this.tagClicked(tag)}">#${tag}</span>`
+                                          )}
                                       </div>
 
                                       <p>
@@ -1029,6 +1031,23 @@ class OptionsComponent extends LitElement {
                                             "
                                             >
                                                 Aa
+                                                <span style="display: inline-flex;">
+                                                    <span
+                                                        style="display: inline-block; height: 10px; width: 10px; background-color: ${theme[
+                                                            '--fg-red'
+                                                        ]}"
+                                                    ></span>
+                                                    <span
+                                                        style="display: inline-block; height: 10px; width: 10px; background-color: ${theme[
+                                                            '--fg-green'
+                                                        ]}"
+                                                    ></span>
+                                                    <span
+                                                        style="display: inline-block; height: 10px; width: 10px; background-color: ${theme[
+                                                            '--fg-blue'
+                                                        ]}"
+                                                    ></span
+                                                ></span>
                                             </h1>
                                             <span
                                                 style="

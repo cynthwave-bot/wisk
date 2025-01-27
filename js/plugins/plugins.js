@@ -28,8 +28,8 @@ wisk.plugins = {
         // other elements
         'neo-ai',
         'manage-citations',
-        'share-manager',
         'general-chat',
+        'share-manager',
         'more',
         'left-menu',
     ],

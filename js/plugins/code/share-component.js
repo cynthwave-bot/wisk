@@ -32,7 +32,9 @@ class ShareComponent extends LitElement {
             color: var(--text-1);
             opacity: 1;
             transform: translateY(0px);
-            transition: opacity 0.3s, transform 0.3s;
+            transition:
+                opacity 0.3s,
+                transform 0.3s;
             gap: var(--gap-3);
             overflow: auto;
             height: 100%;
@@ -192,10 +194,20 @@ class ShareComponent extends LitElement {
         .view-btn:hover {
             opacity: 1;
         }
-        *::-webkit-scrollbar { width: 15px; }
-        *::-webkit-scrollbar-track { background: var(--bg-1); }
-        *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-        *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+        *::-webkit-scrollbar {
+            width: 15px;
+        }
+        *::-webkit-scrollbar-track {
+            background: var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--bg-3);
+            border-radius: 20px;
+            border: 4px solid var(--bg-1);
+        }
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-1);
+        }
     `;
 
     static properties = {
@@ -490,7 +502,8 @@ class ShareComponent extends LitElement {
             <div class="option-section">
                 <div
                     class="od"
-                    style="display: flex; flex-direction: column; gap: var(--gap-3); background-color: transparent; padding: 0; border: none; box-shadow: none;">
+                    style="display: flex; flex-direction: column; gap: var(--gap-3); background-color: transparent; padding: 0; border: none; box-shadow: none;"
+                >
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div style="display: flex; gap: var(--gap-1); flex-direction: column">
                             <div>${this.isPublished ? 'Published' : 'Not published'}</div>
@@ -520,31 +533,16 @@ class ShareComponent extends LitElement {
         return html`
             <div style="height: 100%; overflow: hidden;">
                 <div class="tabs">
-                    <div 
-                        class="tab ${this.activeTab === 'share' ? 'active' : ''}" 
-                        @click=${() => (this.activeTab = 'share')}
-                    >
-                        Share
-                    </div>
-                    <div 
-                        class="tab ${this.activeTab === 'publish' ? 'active' : ''}" 
-                        @click=${() => (this.activeTab = 'publish')}
-                    >
-                        Publish
-                    </div>
-                    <div 
-                        class="tab ${this.activeTab === 'download' ? 'active' : ''}" 
-                        @click=${() => (this.activeTab = 'download')}
-                    >
-                        Download
-                    </div>
+                    <div class="tab ${this.activeTab === 'share' ? 'active' : ''}" @click=${() => (this.activeTab = 'share')}>Share</div>
+                    <div class="tab ${this.activeTab === 'publish' ? 'active' : ''}" @click=${() => (this.activeTab = 'publish')}>Publish</div>
+                    <div class="tab ${this.activeTab === 'download' ? 'active' : ''}" @click=${() => (this.activeTab = 'download')}>Download</div>
                 </div>
 
                 ${this.activeTab === 'share'
                     ? this.renderShareTab()
                     : this.activeTab === 'publish'
-                        ? this.renderPublishTab()
-                        : this.renderDownloadTab()}
+                      ? this.renderPublishTab()
+                      : this.renderDownloadTab()}
             </div>
         `;
     }

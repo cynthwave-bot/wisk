@@ -3,7 +3,7 @@ class EmacsEditor {
         this.activeElement = null;
         this.statusIndicator = null;
         this.observers = new Set();
-        this.killRing = [];  // For kill/yank operations
+        this.killRing = []; // For kill/yank operations
         this.isControlPressed = false;
         this.isMetaPressed = false;
         this.markActive = false;
@@ -109,7 +109,8 @@ class EmacsEditor {
         element.addEventListener('keydown', e => {
             if (e.key === 'Control') {
                 this.isControlPressed = true;
-            } else if (e.key === 'Alt') {  // Alt key serves as Meta in web
+            } else if (e.key === 'Alt') {
+                // Alt key serves as Meta in web
                 this.isMetaPressed = true;
             }
             this.handleKeydown(e);
@@ -137,7 +138,7 @@ class EmacsEditor {
         if (!this.activeElement) return;
 
         const isContentEditable = this.activeElement.hasAttribute('contenteditable');
-        
+
         if (isContentEditable) {
             this.handleContentEditableKeydown(e);
         } else {
@@ -147,68 +148,68 @@ class EmacsEditor {
 
     handleInputKeydown(e) {
         const element = this.activeElement;
-        
+
         // Common Emacs key bindings
         if (this.isControlPressed) {
             switch (e.key) {
-                case 'f':  // Move forward
+                case 'f': // Move forward
                     if (element.selectionStart < element.value.length) {
                         element.setSelectionRange(element.selectionStart + 1, element.selectionStart + 1);
                     }
                     e.preventDefault();
                     return;
 
-                case 'b':  // Move backward
+                case 'b': // Move backward
                     if (element.selectionStart > 0) {
                         element.setSelectionRange(element.selectionStart - 1, element.selectionStart - 1);
                     }
                     e.preventDefault();
                     return;
 
-                case 'n':  // Next line
+                case 'n': // Next line
                     selection.modify('move', 'backward', 'line');
                     this.activeElement.dispatchEvent(
                         new KeyboardEvent('keydown', {
                             key: 'ArrowDown',
                             keyCode: 40,
                             composed: true,
-                            bubbles: true
+                            bubbles: true,
                         })
                     );
                     e.preventDefault();
                     return;
 
-                case 'p':  // Previous line
+                case 'p': // Previous line
                     selection.modify('move', 'forward', 'line');
                     this.activeElement.dispatchEvent(
                         new KeyboardEvent('keydown', {
                             key: 'ArrowUp',
                             keyCode: 38,
                             composed: true,
-                            bubbles: true
+                            bubbles: true,
                         })
                     );
                     e.preventDefault();
                     return;
 
-                case 'a':  // Beginning of line
+                case 'a': // Beginning of line
                     element.setSelectionRange(0, 0);
                     e.preventDefault();
                     return;
 
-                case 'e':  // End of line
+                case 'e': // End of line
                     element.setSelectionRange(element.value.length, element.value.length);
                     e.preventDefault();
                     return;
 
-                case 'd':  // Delete forward
+                case 'd': // Delete forward
                     const start = element.selectionStart;
                     element.value = element.value.slice(0, start) + element.value.slice(start + 1);
                     element.setSelectionRange(start, start);
                     e.preventDefault();
                     return;
 
-                case 'k':  // Kill to end of line
+                case 'k': // Kill to end of line
                     const killStart = element.selectionStart;
                     const killEnd = element.value.length;
                     const killedText = element.value.slice(killStart, killEnd);
@@ -217,7 +218,7 @@ class EmacsEditor {
                     e.preventDefault();
                     return;
 
-                case 'y':  // Yank
+                case 'y': // Yank
                     if (this.killRing.length > 0) {
                         const pos = element.selectionStart;
                         const text = this.killRing[this.killRing.length - 1];
@@ -227,7 +228,7 @@ class EmacsEditor {
                     e.preventDefault();
                     return;
 
-                case ' ':  // Set mark
+                case ' ': // Set mark
                     this.markActive = !this.markActive;
                     e.preventDefault();
                     return;
@@ -237,7 +238,7 @@ class EmacsEditor {
         // Meta (Alt) key bindings
         if (this.isMetaPressed) {
             switch (e.key) {
-                case 'f':  // Move forward by word
+                case 'f': // Move forward by word
                     const wordMatch = element.value.slice(element.selectionStart).match(/\W+\w|^$/);
                     if (wordMatch) {
                         const newPos = element.selectionStart + wordMatch.index + wordMatch[0].length;
@@ -246,7 +247,7 @@ class EmacsEditor {
                     e.preventDefault();
                     return;
 
-                case 'b':  // Move backward by word
+                case 'b': // Move backward by word
                     const beforeCursor = element.value.slice(0, element.selectionStart);
                     const prevWordMatch = beforeCursor.match(/\w+\W*$/);
                     if (prevWordMatch) {
@@ -261,45 +262,45 @@ class EmacsEditor {
 
     handleContentEditableKeydown(e) {
         const selection = window.getSelection();
-        
+
         if (this.isControlPressed) {
             switch (e.key) {
-                case 'f':  // Forward character
+                case 'f': // Forward character
                     selection.modify('move', 'forward', 'character');
                     e.preventDefault();
                     return;
 
-                case 'b':  // Backward character
+                case 'b': // Backward character
                     selection.modify('move', 'backward', 'character');
                     e.preventDefault();
                     return;
 
-                case 'n':  // Next line
+                case 'n': // Next line
                     selection.modify('move', 'forward', 'line');
                     e.preventDefault();
                     return;
 
-                case 'p':  // Previous line
+                case 'p': // Previous line
                     selection.modify('move', 'backward', 'line');
                     e.preventDefault();
                     return;
 
-                case 'a':  // Beginning of line
+                case 'a': // Beginning of line
                     selection.modify('move', 'backward', 'lineboundary');
                     e.preventDefault();
                     return;
 
-                case 'e':  // End of line
+                case 'e': // End of line
                     selection.modify('move', 'forward', 'lineboundary');
                     e.preventDefault();
                     return;
 
-                case 'd':  // Delete forward
+                case 'd': // Delete forward
                     document.execCommand('delete', false);
                     e.preventDefault();
                     return;
 
-                case 'k':  // Kill to end of line
+                case 'k': // Kill to end of line
                     selection.modify('extend', 'forward', 'lineboundary');
                     const killedText = selection.toString();
                     this.killRing.push(killedText);
@@ -307,7 +308,7 @@ class EmacsEditor {
                     e.preventDefault();
                     return;
 
-                case 'y':  // Yank
+                case 'y': // Yank
                     if (this.killRing.length > 0) {
                         const text = this.killRing[this.killRing.length - 1];
                         document.execCommand('insertText', false, text);
@@ -315,7 +316,7 @@ class EmacsEditor {
                     e.preventDefault();
                     return;
 
-                case ' ':  // Set mark
+                case ' ': // Set mark
                     this.markActive = !this.markActive;
                     if (!this.markActive) {
                         selection.collapseToStart();
@@ -323,7 +324,7 @@ class EmacsEditor {
                     e.preventDefault();
                     return;
 
-                case 'w':  // Kill region when mark is active
+                case 'w': // Kill region when mark is active
                     if (this.markActive) {
                         const killedText = selection.toString();
                         this.killRing.push(killedText);
@@ -337,12 +338,12 @@ class EmacsEditor {
 
         if (this.isMetaPressed) {
             switch (e.key) {
-                case 'f':  // Forward word
+                case 'f': // Forward word
                     selection.modify('move', 'forward', 'word');
                     e.preventDefault();
                     return;
 
-                case 'b':  // Backward word
+                case 'b': // Backward word
                     selection.modify('move', 'backward', 'word');
                     e.preventDefault();
                     return;
