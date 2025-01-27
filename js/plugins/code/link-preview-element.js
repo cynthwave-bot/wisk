@@ -172,7 +172,7 @@ class LinkElement extends HTMLElement {
     handleEnterKey(event) {
         if (!this.isVirtualKeyboard) {
             event.preventDefault();
-            window.wisk.editor.createNewBlock(this.id, 'text-element', { textContent: '' }, { x: 0 });
+            wisk.editor.createNewBlock(this.id, 'text-element', { textContent: '' }, { x: 0 });
             return true;
         }
         return false;
@@ -181,7 +181,7 @@ class LinkElement extends HTMLElement {
     handleBackspace(event) {
         if (this.editable.innerText.length === 0) {
             event.preventDefault();
-            window.wisk.editor.deleteBlock(this.id);
+            wisk.editor.deleteBlock(this.id);
             return true;
         }
         return false;
@@ -197,19 +197,19 @@ class LinkElement extends HTMLElement {
         if (currentOffset === targetOffset) {
             event.preventDefault();
             if (direction === 'next-up') {
-                var prevElement = window.wisk.editor.prevElement(this.id);
+                var prevElement = wisk.editor.prevElement(this.id);
                 if (prevElement != null) {
-                    const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
+                    const prevComponentDetail = wisk.plugins.getPluginDetail(prevElement.component);
                     if (prevComponentDetail.textual) {
-                        window.wisk.editor.focusBlock(prevElement.id, { x: prevElement.value.textContent.length });
+                        wisk.editor.focusBlock(prevElement.id, { x: prevElement.value.textContent.length });
                     }
                 }
             } else if (direction === 'next-down') {
-                var nextElement = window.wisk.editor.nextElement(this.id);
+                var nextElement = wisk.editor.nextElement(this.id);
                 if (nextElement != null) {
-                    const nextComponentDetail = window.wisk.plugins.getPluginDetail(nextElement.component);
+                    const nextComponentDetail = wisk.plugins.getPluginDetail(nextElement.component);
                     if (nextComponentDetail.textual) {
-                        window.wisk.editor.focusBlock(nextElement.id, { x: 0 });
+                        wisk.editor.focusBlock(nextElement.id, { x: 0 });
                     }
                 }
             }
@@ -246,7 +246,7 @@ class LinkElement extends HTMLElement {
 
     sendUpdates() {
         setTimeout(() => {
-            window.wisk.editor.justUpdates(this.id);
+            wisk.editor.justUpdates(this.id);
         }, 0);
     }
 
@@ -338,7 +338,7 @@ class LinkElement extends HTMLElement {
                         <img class="link-preview-image" src="https://via.placeholder.com/16" alt="Site Icon">
                         <div style="flex: 1; display: flex;">
                             <div class="link">https://</div>
-                            <div class="link" id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false">${this.link}</div>
+                            <div class="link" id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false">${this.link}</div>
                         </div>
                         <button class="open">Open</button>
                     </div>

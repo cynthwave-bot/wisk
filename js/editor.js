@@ -33,7 +33,7 @@ const createFullWidthWrapper = (elementId, block, imageContainer) => {
     wrapper.classList.add('full-width-wrapper');
     wrapper.appendChild(block);
 
-    if (!window.wisk.editor.wiskSite) {
+    if (!wisk.editor.wiskSite) {
         wrapper.appendChild(imageContainer);
     }
     return wrapper;
@@ -44,7 +44,7 @@ const createBlockContainer = (elementId, blockType) => {
     container.id = `div-${elementId}`;
     container.classList.add('rndr');
 
-    if (window.wisk.plugins.getPluginDetail(blockType).width === 'max') {
+    if (wisk.plugins.getPluginDetail(blockType).width === 'max') {
         container.classList.add('rndr-full-width');
     }
 
@@ -58,15 +58,15 @@ const createBlockElement = (elementId, blockType) => {
 };
 
 // Editor core functions
-window.wisk.editor.generateNewId = () =>
+wisk.editor.generateNewId = () =>
     [...Array(7)].map(() => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random() * 52)]).join('');
 
-window.wisk.editor.elements = [];
+wisk.editor.elements = [];
 
-window.wisk.editor.addConfigChange = async function (arr) {
+wisk.editor.addConfigChange = async function (arr) {
     await saveUpdates(
         arr,
-        window.wisk.editor.elements.map(e => e.id),
+        wisk.editor.elements.map(e => e.id),
         []
     );
 
@@ -76,11 +76,11 @@ window.wisk.editor.addConfigChange = async function (arr) {
     configChanges = [];
 };
 
-window.wisk.editor.savePluginData = async function (identifier, data) {
+wisk.editor.savePluginData = async function (identifier, data) {
     var arr = [{ path: 'document.plugin.' + identifier, values: { data: data } }];
     await saveUpdates(
         arr,
-        window.wisk.editor.elements.map(e => e.id),
+        wisk.editor.elements.map(e => e.id),
         []
     );
 
@@ -90,15 +90,15 @@ window.wisk.editor.savePluginData = async function (identifier, data) {
     configChanges = [];
 };
 
-window.wisk.editor.createBlockBase = function (elementId, blockType, value, remoteId, isRemote = false) {
+wisk.editor.createBlockBase = function (elementId, blockType, value, remoteId, isRemote = false) {
     if (elementId === '') {
         elementId =
-            window.wisk.editor.elements.length > 1
-                ? window.wisk.editor.elements[window.wisk.editor.elements.length - 1].id
-                : window.wisk.editor.elements[0].id;
+            wisk.editor.elements.length > 1
+                ? wisk.editor.elements[wisk.editor.elements.length - 1].id
+                : wisk.editor.elements[0].id;
     }
 
-    const id = isRemote ? remoteId : window.wisk.editor.generateNewId();
+    const id = isRemote ? remoteId : wisk.editor.generateNewId();
     const obj = { value, id, component: blockType };
 
     const prevElement = document.getElementById(`div-${elementId}`);
@@ -112,35 +112,35 @@ window.wisk.editor.createBlockBase = function (elementId, blockType, value, remo
     container.appendChild(fullWidthWrapper);
     document.getElementById('editor').insertBefore(container, prevElement.nextSibling);
 
-    const elementIndex = window.wisk.editor.elements.findIndex(e => e.id === elementId);
-    window.wisk.editor.elements.splice(elementIndex + 1, 0, obj);
+    const elementIndex = wisk.editor.elements.findIndex(e => e.id === elementId);
+    wisk.editor.elements.splice(elementIndex + 1, 0, obj);
 
     return { id, blockElement };
 };
 
-window.wisk.editor.createRemoteBlock = function (elementId, blockType, value, remoteId) {
+wisk.editor.createRemoteBlock = function (elementId, blockType, value, remoteId) {
     const { id, blockElement } = this.createBlockBase(elementId, blockType, value, remoteId, true);
 
     setTimeout(() => {
-        window.wisk.editor.updateBlock(id, '', value, 'uwu');
+        wisk.editor.updateBlock(id, '', value, 'uwu');
     }, 0);
 };
 
-window.wisk.editor.createNewBlock = function (elementId, blockType, value, focusIdentifier, rec, animate) {
+wisk.editor.createNewBlock = function (elementId, blockType, value, focusIdentifier, rec, animate) {
     const { id, blockElement } = this.createBlockBase(elementId, blockType, value, null, false);
 
     setTimeout(() => {
         if (animate) {
             document.getElementById(id).setTextContent({ text: value.textContent });
         } else {
-            window.wisk.editor.updateBlock(id, '', value, rec);
-            window.wisk.editor.focusBlock(id, focusIdentifier);
+            wisk.editor.updateBlock(id, '', value, rec);
+            wisk.editor.focusBlock(id, focusIdentifier);
         }
     }, 0);
     return id;
 };
 
-window.wisk.editor.handleChanges = async function (updateObject) {
+wisk.editor.handleChanges = async function (updateObject) {
     // Handle case where updateObject might be undefined or null
     if (!updateObject) return;
 
@@ -160,22 +160,22 @@ window.wisk.editor.handleChanges = async function (updateObject) {
         }
         if (change.path.startsWith('document.config.access')) {
             if (change.path.includes('public')) {
-                window.wisk.editor.data.config.public = change.values.public;
+                wisk.editor.data.config.public = change.values.public;
             }
             if (change.path.includes('add')) {
-                window.wisk.editor.data.config.access.push(change.values.email);
+                wisk.editor.data.config.access.push(change.values.email);
             }
             if (change.path.includes('remove')) {
-                window.wisk.editor.data.config.access = window.wisk.editor.data.config.access.filter(a => a !== change.values.email);
+                wisk.editor.data.config.access = wisk.editor.data.config.access.filter(a => a !== change.values.email);
             }
         }
         if (change.path.startsWith('document.config.plugins')) {
             if (change.path.includes('add')) {
-                window.wisk.plugins.loadPlugin(change.values.plugin);
+                wisk.plugins.loadPlugin(change.values.plugin);
             }
         }
         if (change.path.startsWith('document.config.theme')) {
-            window.wisk.theme.setTheme(change.values.theme);
+            wisk.theme.setTheme(change.values.theme);
         }
         if (change.path.startsWith('document.plugin')) {
             if (change.values.data) {
@@ -193,14 +193,14 @@ window.wisk.editor.handleChanges = async function (updateObject) {
 const handleElementChange = async (updatedElement, allElements) => {
     if (!updatedElement) return;
 
-    const existingElement = window.wisk.editor.elements.find(e => e.id === updatedElement.id);
+    const existingElement = wisk.editor.elements.find(e => e.id === updatedElement.id);
     const domElement = document.getElementById(updatedElement.id);
 
     if (!existingElement || !domElement) {
         const currentIndex = allElements.indexOf(updatedElement.id);
         const prevElementId = currentIndex > 0 ? allElements[currentIndex - 1] : '';
 
-        window.wisk.editor.createRemoteBlock(prevElementId, updatedElement.component, updatedElement.value, updatedElement.id);
+        wisk.editor.createRemoteBlock(prevElementId, updatedElement.component, updatedElement.value, updatedElement.id);
     } else {
         updateExistingElement(existingElement, updatedElement, domElement, 'uwu');
     }
@@ -214,9 +214,9 @@ const updateExistingElement = (existingElement, updatedElement, domElement, rec)
     });
 
     if (domElement.tagName.toLowerCase() !== updatedElement.component) {
-        const prevElement = window.wisk.editor.prevElement(updatedElement.id);
+        const prevElement = wisk.editor.prevElement(updatedElement.id);
         if (prevElement) {
-            window.wisk.editor.changeBlockType(updatedElement.id, updatedElement.value, updatedElement.component, rec);
+            wisk.editor.changeBlockType(updatedElement.id, updatedElement.value, updatedElement.component, rec);
         }
     } else {
         setTimeout(() => {
@@ -234,7 +234,7 @@ const handleElementDeletions = async newDeletedElements => {
             const element = document.getElementById(`div-${deletedId}`);
             if (element) {
                 document.getElementById('editor').removeChild(element);
-                window.wisk.editor.elements = window.wisk.editor.elements.filter(e => e.id !== deletedId);
+                wisk.editor.elements = wisk.editor.elements.filter(e => e.id !== deletedId);
             }
         }
     }
@@ -288,12 +288,12 @@ const smartReorderElements = allElements => {
     }
 
     // Update the elements array order to match
-    window.wisk.editor.elements.sort((a, b) => allElements.indexOf(a.id) - allElements.indexOf(b.id));
+    wisk.editor.elements.sort((a, b) => allElements.indexOf(a.id) - allElements.indexOf(b.id));
 };
 
 async function initEditor(doc) {
     console.log('INIT EDITOR', doc);
-    window.wisk.editor.data = doc.data;
+    wisk.editor.data = doc.data;
     document.title = doc.name;
 
     // Load plugins
@@ -303,14 +303,14 @@ async function initEditor(doc) {
 
     await Promise.all(
         doc.data.config.plugins
-            .filter(plugin => !window.wisk.plugins.loadedPlugins.includes(plugin))
-            .map(plugin => window.wisk.plugins.loadPlugin(plugin))
+            .filter(plugin => !wisk.plugins.loadedPlugins.includes(plugin))
+            .map(plugin => wisk.plugins.loadPlugin(plugin))
     );
 
     // once plugins are loaded we load the data of plugins using their identifiers
     // loop through all loadedPlugins and loop through their contents and load their dat.
-    for (const plugin of window.wisk.plugins.loadedPlugins) {
-        var tempPlugin = window.wisk.plugins.getPluginGroupDetail(plugin);
+    for (const plugin of wisk.plugins.loadedPlugins) {
+        var tempPlugin = wisk.plugins.getPluginGroupDetail(plugin);
         for (const content of tempPlugin.contents) {
             if (content.identifier && doc.data.pluginData[content.identifier] && document.getElementById(content.identifier)) {
                 document.getElementById(content.identifier).loadData(doc.data.pluginData[content.identifier]);
@@ -318,27 +318,27 @@ async function initEditor(doc) {
         }
     }
 
-    window.wisk.theme.setTheme(doc.data.config.theme);
+    wisk.theme.setTheme(doc.data.config.theme);
 
     const page = doc.data;
     deletedElements = page.deletedElements;
-    window.wisk.editor.elements = page.elements;
+    wisk.editor.elements = page.elements;
 
-    if (!window.wisk.editor.wiskSite) {
+    if (!wisk.editor.wiskSite) {
         document.getElementById('last-space').addEventListener('click', handleEditorClick);
     }
 
     await initializeElements();
 
-    window.wisk.utils.hideLoading();
+    wisk.utils.hideLoading();
 }
 
 async function initializeElements() {
-    if (window.wisk.editor.elements.length > 1) {
+    if (wisk.editor.elements.length > 1) {
         document.getElementById('getting-started').style.display = 'none';
     }
 
-    const firstElement = window.wisk.editor.elements[0];
+    const firstElement = wisk.editor.elements[0];
     const container = createBlockContainer(firstElement.id, firstElement.component);
     const block = createBlockElement(firstElement.id, firstElement.component);
     const imageContainer = document.createElement('div');
@@ -367,8 +367,8 @@ async function initializeElements() {
                 });
         }
 
-        if (window.wisk.editor.elements.length === 1) {
-            window.wisk.editor.focusBlock(firstElement.id, {
+        if (wisk.editor.elements.length === 1) {
+            wisk.editor.focusBlock(firstElement.id, {
                 x: firstElement.value.textContent.length,
             });
             return;
@@ -379,8 +379,8 @@ async function initializeElements() {
 }
 
 async function initializeRemainingElements() {
-    for (let i = 1; i < window.wisk.editor.elements.length; i++) {
-        const element = window.wisk.editor.elements[i];
+    for (let i = 1; i < wisk.editor.elements.length; i++) {
+        const element = wisk.editor.elements[i];
 
         const container = createBlockContainer(element.id, element.component);
         const block = createBlockElement(element.id, element.component);
@@ -399,7 +399,7 @@ async function initializeRemainingElements() {
     }
 }
 
-window.wisk.editor.htmlToMarkdown = function (html) {
+wisk.editor.htmlToMarkdown = function (html) {
     const temp = document.createElement('div');
     temp.innerHTML = html;
 
@@ -451,53 +451,53 @@ window.wisk.editor.htmlToMarkdown = function (html) {
 };
 
 // Element Navigation/Management Functions
-window.wisk.editor.getElement = function (elementId) {
-    return window.wisk.editor.elements.find(e => e.id === elementId);
+wisk.editor.getElement = function (elementId) {
+    return wisk.editor.elements.find(e => e.id === elementId);
 };
 
-window.wisk.editor.prevElement = function (elementId) {
-    if (elementId === window.wisk.editor.elements[0].id) {
+wisk.editor.prevElement = function (elementId) {
+    if (elementId === wisk.editor.elements[0].id) {
         return null;
     }
 
-    const index = window.wisk.editor.elements.findIndex(e => e.id === elementId);
-    return index > 0 ? window.wisk.editor.elements[index - 1] : null;
+    const index = wisk.editor.elements.findIndex(e => e.id === elementId);
+    return index > 0 ? wisk.editor.elements[index - 1] : null;
 };
 
-window.wisk.editor.nextElement = function (elementId) {
-    const index = window.wisk.editor.elements.findIndex(e => e.id === elementId);
-    return index < window.wisk.editor.elements.length - 1 ? window.wisk.editor.elements[index + 1] : null;
+wisk.editor.nextElement = function (elementId) {
+    const index = wisk.editor.elements.findIndex(e => e.id === elementId);
+    return index < wisk.editor.elements.length - 1 ? wisk.editor.elements[index + 1] : null;
 };
 
-window.wisk.editor.showSelector = function (elementId, focusIdentifier) {
+wisk.editor.showSelector = function (elementId, focusIdentifier) {
     const selector = byQuery('selector-element');
     selector.show(elementId);
 };
 
-window.wisk.editor.deleteBlock = function (elementId, rec) {
+wisk.editor.deleteBlock = function (elementId, rec) {
     deletedElements.push(elementId);
     const element = document.getElementById(`div-${elementId}`);
     if (element) {
         document.getElementById('editor').removeChild(element);
-        window.wisk.editor.elements = window.wisk.editor.elements.filter(e => e.id !== elementId);
+        wisk.editor.elements = wisk.editor.elements.filter(e => e.id !== elementId);
         deletedElementsLeft.push(elementId);
 
         window.dispatchEvent(new CustomEvent('block-deleted', { detail: { id: elementId } }));
 
         if (rec == undefined) {
-            window.wisk.editor.justUpdates();
+            wisk.editor.justUpdates();
         }
     }
 };
 
-window.wisk.editor.focusBlock = function (elementId, identifier) {
+wisk.editor.focusBlock = function (elementId, identifier) {
     const element = document.getElementById(elementId);
     if (element) {
         element.focus(identifier);
     }
 };
 
-window.wisk.editor.updateBlock = function (elementId, path, newValue, rec) {
+wisk.editor.updateBlock = function (elementId, path, newValue, rec) {
     const element = document.getElementById(elementId);
     if (element) {
         element.setValue(path, newValue);
@@ -510,39 +510,39 @@ window.wisk.editor.updateBlock = function (elementId, path, newValue, rec) {
     }
 };
 
-window.wisk.editor.changeBlockType = function (elementId, value, newType, rec) {
-    const prevElement = window.wisk.editor.prevElement(elementId);
+wisk.editor.changeBlockType = function (elementId, value, newType, rec) {
+    const prevElement = wisk.editor.prevElement(elementId);
     if (!prevElement) {
         return;
     }
 
-    window.wisk.editor.deleteBlock(elementId, rec);
-    window.wisk.editor.createNewBlock(prevElement.id, newType, value, { x: 0 }, rec);
+    wisk.editor.deleteBlock(elementId, rec);
+    wisk.editor.createNewBlock(prevElement.id, newType, value, { x: 0 }, rec);
 
     window.dispatchEvent(new CustomEvent('block-changed', { detail: { id: prevElement.id } }));
 };
 
-window.wisk.editor.runBlockFunction = function (elementId, functionName, arg) {
+wisk.editor.runBlockFunction = function (elementId, functionName, arg) {
     const element = document.getElementById(elementId);
     if (element && typeof element[functionName] === 'function') {
         element[functionName](arg);
     }
 };
 
-window.wisk.editor.useTemplate = async function (template) {
+wisk.editor.useTemplate = async function (template) {
     if (this.elements.length > 1) {
         alert('You need to clear the current document before using a template.');
         return;
     }
 
     for (const plugin of template.plugins) {
-        await window.wisk.plugins.loadPlugin(plugin);
-        await window.wisk.editor.addConfigChange([{ path: 'document.config.plugins.add', values: { plugin } }]);
+        await wisk.plugins.loadPlugin(plugin);
+        await wisk.editor.addConfigChange([{ path: 'document.config.plugins.add', values: { plugin } }]);
     }
 
     // delete all elements
-    for (const element of window.wisk.editor.elements) {
-        if (element.id !== 'abcdefABCDEFxyz') window.wisk.editor.deleteBlock(element.id);
+    for (const element of wisk.editor.elements) {
+        if (element.id !== 'abcdefABCDEFxyz') wisk.editor.deleteBlock(element.id);
     }
 
     for (const element of template.elements) {
@@ -550,33 +550,33 @@ window.wisk.editor.useTemplate = async function (template) {
             document.getElementById('abcdefABCDEFxyz').setValue('', element.value);
             document.getElementById('abcdefABCDEFxyz').sendUpdates();
         }
-        if (element.id !== 'abcdefABCDEFxyz') window.wisk.editor.createNewBlock('', element.component, element.value, { x: 0 });
+        if (element.id !== 'abcdefABCDEFxyz') wisk.editor.createNewBlock('', element.component, element.value, { x: 0 });
     }
 
     wisk.theme.setTheme(template.theme);
     await wisk.editor.addConfigChange([{ path: 'document.config.theme', values: { theme: template.theme } }]);
 
-    window.wisk.editor.justUpdates();
+    wisk.editor.justUpdates();
 
     // focus on the first element
     setTimeout(() => {
-        const firstElement = window.wisk.editor.elements[0];
-        window.wisk.editor.focusBlock(firstElement.id, { x: firstElement.value.textContent.length });
+        const firstElement = wisk.editor.elements[0];
+        wisk.editor.focusBlock(firstElement.id, { x: firstElement.value.textContent.length });
     }, 0);
 };
 
 // Event Handler Functions
 function whenPlusClicked(elementId) {
-    window.wisk.editor.createNewBlock(elementId, 'text-element', { textContent: '' }, { x: 0 });
-    const nextElement = window.wisk.editor.nextElement(elementId);
+    wisk.editor.createNewBlock(elementId, 'text-element', { textContent: '' }, { x: 0 });
+    const nextElement = wisk.editor.nextElement(elementId);
     if (nextElement) {
-        window.wisk.editor.showSelector(nextElement.id, { x: 0 });
+        wisk.editor.showSelector(nextElement.id, { x: 0 });
     }
 }
 
 function whenTrashClicked(elementId) {
     console.log('TRASH CLICKED', elementId);
-    window.wisk.editor.deleteBlock(elementId);
+    wisk.editor.deleteBlock(elementId);
 }
 
 function handleEditorClick(event) {
@@ -584,27 +584,27 @@ function handleEditorClick(event) {
         return;
     }
 
-    const lastElement = window.wisk.editor.elements[window.wisk.editor.elements.length - 1];
+    const lastElement = wisk.editor.elements[wisk.editor.elements.length - 1];
 
     if (lastElement.component === 'text-element') {
-        window.wisk.editor.focusBlock(lastElement.id, {
+        wisk.editor.focusBlock(lastElement.id, {
             x: lastElement.value.textContent.length,
         });
     } else {
-        window.wisk.editor.createNewBlock(lastElement.id, 'text-element', { textContent: '' }, { x: 0 });
+        wisk.editor.createNewBlock(lastElement.id, 'text-element', { textContent: '' }, { x: 0 });
     }
 }
 
-window.wisk.editor.justUpdates = async function (elementId) {
+wisk.editor.justUpdates = async function (elementId) {
     window.dispatchEvent(new CustomEvent('something-updated', { detail: { id: elementId } }));
 
     if (elementId) {
-        if (elementId === window.wisk.editor.elements[0].id) {
+        if (elementId === wisk.editor.elements[0].id) {
             document.title = byQuery('#' + elementId).getTextContent().text;
-            window.wisk.editor.addConfigChange([{ path: 'document.name', values: { name: byQuery('#' + elementId).getTextContent().text } }]);
+            wisk.editor.addConfigChange([{ path: 'document.name', values: { name: byQuery('#' + elementId).getTextContent().text } }]);
         }
 
-        const element = window.wisk.editor.getElement(elementId);
+        const element = wisk.editor.getElement(elementId);
         if (element) {
             const domElement = document.getElementById(elementId);
             if (domElement) {
@@ -625,7 +625,7 @@ window.wisk.editor.justUpdates = async function (elementId) {
     debounceTimer = setTimeout(async () => {
         const changed = elementUpdatesLeft
             .map(elementId => {
-                const element = window.wisk.editor.getElement(elementId);
+                const element = wisk.editor.getElement(elementId);
                 if (element) {
                     return {
                         path: 'document.elements',
@@ -641,7 +641,7 @@ window.wisk.editor.justUpdates = async function (elementId) {
             })
             .filter(Boolean);
 
-        const elementIds = window.wisk.editor.elements.map(e => e.id);
+        const elementIds = wisk.editor.elements.map(e => e.id);
 
         await saveUpdates(changed, elementIds, deletedElementsLeft);
 

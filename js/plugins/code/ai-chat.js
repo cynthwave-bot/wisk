@@ -261,7 +261,7 @@ class AIChat extends LitElement {
                 category: 'Page',
             },
         ];
-        window.wisk.plugins.AIChatSetSelection = this.setSelection.bind(this);
+        wisk.plugins.AIChatSetSelection = this.setSelection.bind(this);
         this.showFileUploadDialog = false;
         this.isInputEmpty = true;
     }
@@ -308,8 +308,8 @@ class AIChat extends LitElement {
 
         var md = '';
 
-        for (var i = 0; i < window.wisk.editor.elements.length; i++) {
-            var element = window.wisk.editor.elements[i];
+        for (var i = 0; i < wisk.editor.elements.length; i++) {
+            var element = wisk.editor.elements[i];
             var e = document.getElementById(element.id);
             if ('getTextContent' in e) {
                 var textContent = e.getTextContent();
