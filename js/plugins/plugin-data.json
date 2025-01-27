@@ -1131,7 +1131,7 @@
             "description": "Divider just got super",
             "contents": [
                 {
-                    "title": "Divider",
+                    "title": "Super Divider",
                     "icon": "scribble.svg",
                     "category": "component",
                     "component": "super-divider",
