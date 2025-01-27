@@ -551,7 +551,7 @@ class BaseTextElement extends HTMLElement {
         return {
             html: this.editable.innerHTML,
             text: this.editable.innerText,
-            markdown: '# ' + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML),
+            markdown: '# ' + wisk.editor.htmlToMarkdown(this.editable.innerHTML),
         };
     }
 
@@ -669,14 +669,14 @@ class BaseTextElement extends HTMLElement {
             *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
             </style>
         `;
-        const content = `<div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div><div class="emoji-suggestions"></div>`;
+        const content = `<div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div><div class="emoji-suggestions"></div>`;
         this.shadowRoot.innerHTML = style + content;
     }
 
     handleBeforeInput(event) {
         if (event.inputType === 'insertText' && event.data === '/' && this.editable.innerText.trim() === '') {
             event.preventDefault();
-            window.wisk.editor.showSelector(this.id);
+            wisk.editor.showSelector(this.id);
         }
     }
 
@@ -970,43 +970,43 @@ class BaseTextElement extends HTMLElement {
         this.editable.innerHTML = beforeContainer.innerHTML;
         this.sendUpdates();
 
-        window.wisk.editor.createNewBlock(this.id, 'text-element', { textContent: afterContainer.innerHTML }, { x: 0 });
+        wisk.editor.createNewBlock(this.id, 'text-element', { textContent: afterContainer.innerHTML }, { x: 0 });
     }
 
     handleBackspace(event) {
         if (this.getFocus() === 0) {
             event.preventDefault();
-            const prevElement = window.wisk.editor.prevElement(this.id);
+            const prevElement = wisk.editor.prevElement(this.id);
             const prevDomElement = document.getElementById(prevElement.id);
             if (!prevElement) return;
 
-            const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
+            const prevComponentDetail = wisk.plugins.getPluginDetail(prevElement.component);
             if (prevComponentDetail.textual) {
                 const len = prevDomElement.getTextContent().text.length;
-                window.wisk.editor.updateBlock(prevElement.id, 'value.append', { textContent: this.editable.innerHTML, references: this.references });
-                window.wisk.editor.focusBlock(prevElement.id, { x: len });
+                wisk.editor.updateBlock(prevElement.id, 'value.append', { textContent: this.editable.innerHTML, references: this.references });
+                wisk.editor.focusBlock(prevElement.id, { x: len });
             }
-            window.wisk.editor.deleteBlock(this.id);
+            wisk.editor.deleteBlock(this.id);
         }
     }
 
     handleTab(event) {
         event.preventDefault();
         document.execCommand('insertText', false, '    ');
-        window.wisk.editor.justUpdates(this.id);
+        wisk.editor.justUpdates(this.id);
     }
 
     handleArrowKey(event, direction, targetOffset) {
         const pos = this.getFocus();
         if (pos === targetOffset) {
             event.preventDefault();
-            const adjacentElement = direction === 'next-up' ? window.wisk.editor.prevElement(this.id) : window.wisk.editor.nextElement(this.id);
+            const adjacentElement = direction === 'next-up' ? wisk.editor.prevElement(this.id) : wisk.editor.nextElement(this.id);
 
             if (adjacentElement) {
-                const componentDetail = window.wisk.plugins.getPluginDetail(adjacentElement.component);
+                const componentDetail = wisk.plugins.getPluginDetail(adjacentElement.component);
                 if (componentDetail.textual) {
                     const focusPos = direction === 'next-up' ? adjacentElement.value.textContent.length : 0;
-                    window.wisk.editor.focusBlock(adjacentElement.id, { x: focusPos });
+                    wisk.editor.focusBlock(adjacentElement.id, { x: focusPos });
                 }
             }
         }
@@ -1145,12 +1145,12 @@ class BaseTextElement extends HTMLElement {
             const newPos = this.getFocus();
             if ((direction === 'next-up' && newPos === 0) || (direction === 'next-down' && newPos === this.editable.innerText.length)) {
                 console.log('Moving to adjacent element');
-                const adjacentElement = direction === 'next-up' ? window.wisk.editor.prevElement(this.id) : window.wisk.editor.nextElement(this.id);
+                const adjacentElement = direction === 'next-up' ? wisk.editor.prevElement(this.id) : wisk.editor.nextElement(this.id);
 
                 if (adjacentElement) {
-                    const componentDetail = window.wisk.plugins.getPluginDetail(adjacentElement.component);
+                    const componentDetail = wisk.plugins.getPluginDetail(adjacentElement.component);
                     if (componentDetail.textual) {
-                        window.wisk.editor.focusBlock(adjacentElement.id, { x: pos });
+                        wisk.editor.focusBlock(adjacentElement.id, { x: pos });
                     }
                 }
             }
@@ -1199,7 +1199,7 @@ class BaseTextElement extends HTMLElement {
 
     sendUpdates() {
         setTimeout(() => {
-            window.wisk.editor.justUpdates(this.id);
+            wisk.editor.justUpdates(this.id);
         }, 0);
     }
 

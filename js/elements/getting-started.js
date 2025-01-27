@@ -768,7 +768,7 @@ class GettingStarted extends LitElement {
             console.log('Lines:', lines);
             for (let i = 0; i < lines.length; i++) {
                 console.log(i, '--', lines.length, 'Creating block:', lines[i]);
-                window.wisk.editor.createNewBlock(
+                wisk.editor.createNewBlock(
                     '',
                     'text-element',
                     {

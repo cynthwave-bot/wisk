@@ -261,7 +261,7 @@ class LeftMenu extends LitElement {
     }
 
     opened() {
-        if (window.wisk.editor.wiskSite) return;
+        if (wisk.editor.wiskSite) return;
         this.setList();
     }
 
@@ -317,7 +317,7 @@ class LeftMenu extends LitElement {
             console.error('Error deleting document:', error);
         }
 
-        if (id == window.wisk.editor.pageId) {
+        if (id == wisk.editor.pageId) {
             window.location.href = '/';
         }
     }
@@ -374,7 +374,7 @@ class LeftMenu extends LitElement {
     }
 
     openInEditor() {
-        var url = 'https://app.wisk.cc?id=' + window.wisk.editor.pageId;
+        var url = 'https://app.wisk.cc?id=' + wisk.editor.pageId;
         window.open(url, '_blank');
     }
 
@@ -389,7 +389,7 @@ class LeftMenu extends LitElement {
     }
 
     render() {
-        if (window.wisk.editor.wiskSite) {
+        if (wisk.editor.wiskSite) {
             return html`
                 <div class="outer">
                     <button @click=${this.openInEditor} class="new" style="cursor: pointer;">Open in Editor</button>

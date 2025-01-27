@@ -164,13 +164,13 @@ class LuaCodeBlock extends LitElement {
 
     handleCodeChange(e) {
         this.code = e.target.value;
-        if (window.wisk?.editor?.justUpdates) {
-            window.wisk.editor.justUpdates(this.id);
+        if (wisk?.editor?.justUpdates) {
+            wisk.editor.justUpdates(this.id);
         }
     }
 
     executeCode() {
-        if (window.wisk.editor.wiskSite) return;
+        if (wisk.editor.wiskSite) return;
 
         if (!this.L) {
             this.output = 'Lua runtime is not initialized yet';
@@ -234,8 +234,8 @@ class LuaCodeBlock extends LitElement {
             this.code = newValue;
             textarea.selectionStart = textarea.selectionEnd = start + 4;
 
-            if (window.wisk?.editor?.justUpdates) {
-                window.wisk.editor.justUpdates(this.id);
+            if (wisk?.editor?.justUpdates) {
+                wisk.editor.justUpdates(this.id);
             }
         }
     }
@@ -246,7 +246,7 @@ class LuaCodeBlock extends LitElement {
                 <button
                     class="btn btnx"
                     @click=${() => {
-                        if (window.wisk.editor.wiskSite) return;
+                        if (wisk.editor.wiskSite) return;
                         this.executeCode();
                     }}
                 >
@@ -259,7 +259,7 @@ class LuaCodeBlock extends LitElement {
                     .value=${this.code}
                     spellcheck="false"
                     placeholder="print('Hello from Lua!')"
-                    ${window.wisk.editor.wiskSite ? 'readonly' : ''}
+                    ${wisk.editor.wiskSite ? 'readonly' : ''}
                 ></textarea>
 
                 <div class="output ${this.output ? 'has-content' : ''} ${this.outputType}">${this.output}</div>

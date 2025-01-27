@@ -17,7 +17,7 @@ class AccordionElement extends BaseTextElement {
     connectedCallback() {
         super.connectedCallback();
         window.addEventListener('emoji-selector', this.handleEmojiSelection);
-        if (window.wisk.editor.wiskSite) {
+        if (wisk.editor.wiskSite) {
             this.addEventListener('click', this.handleClick);
         }
     }
@@ -25,13 +25,13 @@ class AccordionElement extends BaseTextElement {
     disconnectedCallback() {
         super.disconnectedCallback();
         window.removeEventListener('emoji-selector', this.handleEmojiSelection);
-        if (window.wisk.editor.wiskSite) {
+        if (wisk.editor.wiskSite) {
             this.removeEventListener('click', this.handleClick);
         }
     }
 
     handleClick(event) {
-        if (window.wisk.editor.wiskSite) {
+        if (wisk.editor.wiskSite) {
             const editable = this.shadowRoot.querySelector('#editable');
             const toggleBtn = this.shadowRoot.querySelector('.toggle-btn');
             editable.classList.toggle('visible');
@@ -189,14 +189,14 @@ class AccordionElement extends BaseTextElement {
         const content = `
             <div style="display: flex">
                 <div style="padding: var(--padding-4); padding-right: 0; padding-top: var(--padding-3); padding-left: 0;">
-                    <button class="emoji-button" ?disabled="${window.wisk.editor.wiskSite}">${this.value?.emoji || '📌'}</button>
+                    <button class="emoji-button" ?disabled="${wisk.editor.wiskSite}">${this.value?.emoji || '📌'}</button>
                 </div>
                 <div style="flex: 1">
                     <div class="accordion-header">
-                        <div class="question" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false">${this.question || ''}</div>
+                        <div class="question" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false">${this.question || ''}</div>
                         <img src="/a7/plugins/accordion/down.svg" class="toggle-btn" />
                     </div>
-                    <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
+                    <div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
                     <div class="emoji-suggestions"></div>
                 </div>
             </div>
@@ -276,7 +276,7 @@ class AccordionElement extends BaseTextElement {
             html: this.shadowRoot.querySelector('.question').innerHTML + '?<br>' + this.editable.innerHTML,
             text: this.shadowRoot.querySelector('.question').textContent + '? ' + this.editable.textContent,
             markdown:
-                '# ' + this.shadowRoot.querySelector('.question').textContent + '?\n' + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML),
+                '# ' + this.shadowRoot.querySelector('.question').textContent + '?\n' + wisk.editor.htmlToMarkdown(this.editable.innerHTML),
         };
     }
 }

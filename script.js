@@ -7,7 +7,7 @@ function hideMenu() {
 }
 
 function toggleMenu() {
-    window.wisk.editor.toggleLeftSidebar('left-menu', 'Menu');
+    wisk.editor.toggleLeftSidebar('left-menu', 'Menu');
 }
 
 function getURLParam(str) {
@@ -44,7 +44,7 @@ async function initScript() {
         // TODO https://stackoverflow.com/a/52171480
         console.log(u);
 
-        window.wisk.utils.showLoading('Creating new document...');
+        wisk.utils.showLoading('Creating new document...');
 
         var fetchUrl = 'https://cloud.wisk.cc/v1/new';
         var fetchOptions = {
@@ -62,7 +62,7 @@ async function initScript() {
         setURLParam(data.id);
     }
 
-    window.wisk.editor.pageId = getURLParam('id');
+    wisk.editor.pageId = getURLParam('id');
 
     document.addEventListener('mousemove', function () {
         document.getElementById('nav').classList.remove('nav-disappear');

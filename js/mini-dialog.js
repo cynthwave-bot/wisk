@@ -37,6 +37,6 @@ function toggleMiniDialogNew(component, title) {
     }
 }
 
-window.wisk.editor.showMiniDialog = showMiniDialog;
-window.wisk.editor.hideMiniDialog = hideMiniDialog;
-window.wisk.editor.toggleMiniDialog = toggleMiniDialogNew;
+wisk.editor.showMiniDialog = showMiniDialog;
+wisk.editor.hideMiniDialog = hideMiniDialog;
+wisk.editor.toggleMiniDialog = toggleMiniDialogNew;

@@ -1,7 +1,7 @@
 var defaultTheme = localStorage.getItem('webapp-theme') || 'Light';
 
-window.wisk.theme.setTheme = async function (themeName) {
-    if (window.wisk.editor.wiskSite) {
+wisk.theme.setTheme = async function (themeName) {
+    if (wisk.editor.wiskSite) {
         if (themeName === 'default') {
             themeName = 'Light';
         }
@@ -11,14 +11,14 @@ window.wisk.theme.setTheme = async function (themeName) {
         }
     }
 
-    console.log('Setting theme:', themeName, window.wisk.theme.themeObject);
-    let theme = window.wisk.theme.themeObject.themes.find(t => t.name === themeName);
+    console.log('Setting theme:', themeName, wisk.theme.themeObject);
+    let theme = wisk.theme.themeObject.themes.find(t => t.name === themeName);
 
     if (theme === undefined) {
         console.error('Theme not found:', themeName);
         console.error(
             'Available themes:',
-            window.wisk.theme.themeObject.themes.map(t => t.name)
+            wisk.theme.themeObject.themes.map(t => t.name)
         );
         return;
     }
@@ -58,7 +58,7 @@ window.wisk.theme.setTheme = async function (themeName) {
     window.dispatchEvent(event);
 };
 
-window.wisk.theme.addTheme = function (themeData) {
+wisk.theme.addTheme = function (themeData) {
     try {
         themeData = JSON.parse(themeData);
     } catch (error) {
@@ -78,13 +78,13 @@ window.wisk.theme.addTheme = function (themeData) {
         return false;
     }
 
-    if (window.wisk.theme.themeObject.themes.some(theme => theme.name === themeData.name)) {
+    if (wisk.theme.themeObject.themes.some(theme => theme.name === themeData.name)) {
         console.error('Theme with name "' + themeData.name + '" already exists');
         wisk.utils.showToast('Theme with name "' + themeData.name + '" already exists', 3000);
         return false;
     }
 
-    const lightTheme = window.wisk.theme.themeObject.themes.find(t => t.name === 'Light');
+    const lightTheme = wisk.theme.themeObject.themes.find(t => t.name === 'Light');
     const requiredVariables = Object.keys(lightTheme).filter(key => key.startsWith('--'));
     const missingVariables = requiredVariables.filter(variable => !(variable in themeData));
     if (missingVariables.length > 0) {
@@ -93,26 +93,26 @@ window.wisk.theme.addTheme = function (themeData) {
         return false;
     }
 
-    window.wisk.theme.themeObject.themes.push(themeData);
+    wisk.theme.themeObject.themes.push(themeData);
 
-    window.wisk.editor.registerCommand(themeData.name, '', 'Theme', () => window.wisk.theme.setTheme(themeData.name), '');
+    wisk.editor.registerCommand(themeData.name, '', 'Theme', () => wisk.theme.setTheme(themeData.name), '');
 
     console.log('Theme "' + themeData.name + '" added successfully');
-    window.wisk.theme.setTheme(themeData.name);
+    wisk.theme.setTheme(themeData.name);
 
     return true;
 };
 
-window.wisk.theme.getTheme = function () {
+wisk.theme.getTheme = function () {
     return localStorage.getItem('webapp-theme');
 };
 
-window.wisk.theme.getThemes = function () {
-    return window.wisk.theme.themeObject.themes;
+wisk.theme.getThemes = function () {
+    return wisk.theme.themeObject.themes;
 };
 
-window.wisk.theme.getThemeData = function (theme) {
-    return window.wisk.theme.themeObject.themes.find(t => t.name === theme);
+wisk.theme.getThemeData = function (theme) {
+    return wisk.theme.themeObject.themes.find(t => t.name === theme);
 };
 
 async function initTheme() {
@@ -120,11 +120,11 @@ async function initTheme() {
     try {
         const response = await fetch(jsonUrl);
         const data = await response.json();
-        window.wisk.theme.themeObject = data;
+        wisk.theme.themeObject = data;
         for (let i = 0; i < data.themes.length; i++) {
-            window.wisk.editor.registerCommand(data.themes[i].name, '', 'Theme', () => window.wisk.theme.setTheme(data.themes[i].name), '');
+            wisk.editor.registerCommand(data.themes[i].name, '', 'Theme', () => wisk.theme.setTheme(data.themes[i].name), '');
         }
-        await window.wisk.theme.setTheme(defaultTheme);
+        await wisk.theme.setTheme(defaultTheme);
     } catch (error) {
         console.error('Error loading CSS variables:', error);
     }

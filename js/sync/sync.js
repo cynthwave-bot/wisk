@@ -3,15 +3,15 @@ let socket;
 let firstMsg = true;
 
 async function sync() {
-    window.wisk.utils.showLoading('Syncing with server...');
-    console.log('PAGE', window.wisk.editor.pageId);
+    wisk.utils.showLoading('Syncing with server...');
+    console.log('PAGE', wisk.editor.pageId);
 
-    var pages = await window.wisk.db.getAllKeys();
+    var pages = await wisk.db.getAllKeys();
     // upload all offline pages and update their IDs
     var offlinePages = [];
     for (var i = 0; i < pages.length; i++) {
         if (pages[i].startsWith('of-')) {
-            var offlinePage = await window.wisk.db.getItem(pages[i]);
+            var offlinePage = await wisk.db.getItem(pages[i]);
             offlinePages.push(offlinePage);
         }
     }
@@ -66,16 +66,16 @@ async function sendAuth() {
     var user = await document.querySelector('auth-component').getUserInfo();
     sendMessage(
         JSON.stringify({
-            id: window.wisk.editor.pageId,
+            id: wisk.editor.pageId,
             token: user.token,
         })
     );
 }
 
 async function live() {
-    console.log('PAGE LIVE', window.wisk.editor.pageId);
+    console.log('PAGE LIVE', wisk.editor.pageId);
 
-    if (window.wisk.editor.wiskSite) {
+    if (wisk.editor.wiskSite) {
         // TODO
         // FIXX THIS THIS IS REALLY BAD
         // the way im adding wisk.site
@@ -110,10 +110,10 @@ async function live() {
 
 function saveUpdates(changes, allElements, newDeletedElements) {
     // save to db -- for now
-    // window.wisk.db.setItem(window.wisk.editor.pageId, {
-    //     name: window.wisk.editor.elements[0].value.textContent,
+    // wisk.db.setItem(wisk.editor.pageId, {
+    //     name: wisk.editor.elements[0].value.textContent,
     //     lastUpdated: Math.floor(Date.now() / 1000).toString(),
-    //     elements: window.wisk.editor.elements,
+    //     elements: wisk.editor.elements,
     //     deletedElements: deletedElements,
     // });
 
@@ -137,7 +137,7 @@ function handleIncomingMessage(message) {
     }
 
     if (!('uuid' in m)) {
-        window.wisk.editor.handleChanges(m);
+        wisk.editor.handleChanges(m);
     }
 }
 

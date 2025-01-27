@@ -131,7 +131,7 @@ class ExportComponent extends LitElement {
         super();
         this.selectedTemplate = 'default';
 
-        window.wisk.editor.registerCommand(
+        wisk.editor.registerCommand(
             'Download as PDF',
             '',
             'Plugin',
@@ -141,7 +141,7 @@ class ExportComponent extends LitElement {
             },
             ''
         );
-        window.wisk.editor.registerCommand(
+        wisk.editor.registerCommand(
             'Download as DOCX',
             '',
             'Plugin',
@@ -161,12 +161,12 @@ class ExportComponent extends LitElement {
         var user = await document.querySelector('auth-component').getUserInfo();
         var token = user.token;
 
-        window.wisk.utils.showLoading('Downloading file...');
+        wisk.utils.showLoading('Downloading file...');
 
         var elms = [];
 
-        for (var i = 0; i < window.wisk.editor.elements.length; i++) {
-            var element = window.wisk.editor.elements[i];
+        for (var i = 0; i < wisk.editor.elements.length; i++) {
+            var element = wisk.editor.elements[i];
             var e = document.getElementById(element.id);
             if ('getTextContent' in e) {
                 var textContent = e.getTextContent();
@@ -217,7 +217,7 @@ class ExportComponent extends LitElement {
 
         if (response.status !== 200) {
             window.showToast('Error downloading file', 5000);
-            window.wisk.utils.hideLoading();
+            wisk.utils.hideLoading();
             return;
         }
 
@@ -234,7 +234,7 @@ class ExportComponent extends LitElement {
         a.click();
 
         URL.revokeObjectURL(url);
-        window.wisk.utils.hideLoading();
+        wisk.utils.hideLoading();
     }
 
     render() {

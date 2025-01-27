@@ -947,7 +947,7 @@ class ImageElement extends BaseTextElement {
                     </div>
                 </div>
             </div>
-            <p id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></p>
+            <p id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></p>
             <div class="emoji-suggestions"></div>
         `;
         this.shadowRoot.innerHTML = style + content;

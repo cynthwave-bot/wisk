@@ -48,7 +48,7 @@ class CheckboxElement extends BaseTextElement {
     }
 
     onCheckboxChange(event) {
-        if (window.wisk.editor.wiskSite) return;
+        if (wisk.editor.wiskSite) return;
 
         this.checked = event.target.checked;
         this.sendUpdates();
@@ -107,9 +107,9 @@ class CheckboxElement extends BaseTextElement {
         this.sendUpdates();
 
         if (this.editable.innerText.trim().length === 0) {
-            window.wisk.editor.changeBlockType(this.id, { textContent: afterContainer.innerHTML }, 'text-element');
+            wisk.editor.changeBlockType(this.id, { textContent: afterContainer.innerHTML }, 'text-element');
         } else {
-            window.wisk.editor.createNewBlock(
+            wisk.editor.createNewBlock(
                 this.id,
                 'checkbox-element',
                 {
@@ -131,19 +131,19 @@ class CheckboxElement extends BaseTextElement {
                 this.updateIndent();
                 this.sendUpdates();
             } else {
-                const prevElement = window.wisk.editor.prevElement(this.id);
+                const prevElement = wisk.editor.prevElement(this.id);
                 const prevDomElement = document.getElementById(prevElement.id);
                 if (prevElement) {
-                    const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
+                    const prevComponentDetail = wisk.plugins.getPluginDetail(prevElement.component);
                     if (prevComponentDetail.textual) {
                         const len = prevDomElement.getTextContent().text.length;
-                        window.wisk.editor.updateBlock(prevElement.id, 'value.append', {
+                        wisk.editor.updateBlock(prevElement.id, 'value.append', {
                             textContent: this.editable.innerHTML,
                             references: this.references,
                         });
-                        window.wisk.editor.focusBlock(prevElement.id, { x: len });
+                        wisk.editor.focusBlock(prevElement.id, { x: len });
                     }
-                    window.wisk.editor.deleteBlock(this.id);
+                    wisk.editor.deleteBlock(this.id);
                 }
             }
         }
@@ -163,7 +163,7 @@ class CheckboxElement extends BaseTextElement {
     handleBeforeInput(event) {
         if (event.inputType === 'insertText' && event.data === '/' && this.editable.innerText.trim() === '') {
             event.preventDefault();
-            window.wisk.editor.showSelector(this.id);
+            wisk.editor.showSelector(this.id);
         } else if (event.inputType === 'insertText' && event.data === ' ' && this.getFocus() === 0) {
             event.preventDefault();
             this.indent++;
@@ -273,8 +273,8 @@ class CheckboxElement extends BaseTextElement {
         `;
         const content = `
             <div id="list-outer">
-                <input type="checkbox" id="checkbox" name="checkbox" value="checkbox" ${window.wisk.editor.wiskSite ? 'onclick="return false"' : ''} />
-                <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a task...'}"></div>
+                <input type="checkbox" id="checkbox" name="checkbox" value="checkbox" ${wisk.editor.wiskSite ? 'onclick="return false"' : ''} />
+                <div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a task...'}"></div>
                 </div><div class="emoji-suggestions"></div>
             </div>
         `;
@@ -284,7 +284,7 @@ class CheckboxElement extends BaseTextElement {
     getTextContent() {
         const indentation = '  '.repeat(this.indent); // Two spaces per indent level
         const checkboxMarker = this.checked ? '[x]' : '[ ]';
-        const markdown = indentation + `- ${checkboxMarker} ` + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML);
+        const markdown = indentation + `- ${checkboxMarker} ` + wisk.editor.htmlToMarkdown(this.editable.innerHTML);
 
         return {
             html: this.editable.innerHTML,

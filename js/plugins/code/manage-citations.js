@@ -516,7 +516,7 @@ class ManageCitations extends LitElement {
     }
 
     savePluginData() {
-        window.wisk.editor.savePluginData(this.identifier, JSON.stringify({ references: this.references }));
+        wisk.editor.savePluginData(this.identifier, JSON.stringify({ references: this.references }));
     }
 
     editReference(id) {

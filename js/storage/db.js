@@ -1,6 +1,5 @@
 // db.js
-window.wisk = window.wisk || {};
-window.wisk.db = (function () {
+wisk.db = (function () {
     const dbName = 'WiskDatabase';
     const dataStoreName = 'WiskStore';
     const assetStoreName = 'WiskAssetStore';

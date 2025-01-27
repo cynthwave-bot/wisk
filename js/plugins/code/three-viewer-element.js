@@ -108,7 +108,7 @@ class ThreeViewerElement extends LitElement {
         super();
         this.modelUrl = null;
         this.error = '';
-        this._theme = window.wisk.theme.getThemeData(window.wisk.theme.getTheme());
+        this._theme = wisk.theme.getThemeData(wisk.theme.getTheme());
         this.scene = null;
         this.camera = null;
         this.renderer = null;
@@ -479,7 +479,7 @@ class ThreeViewerElement extends LitElement {
 
     sendUpdates() {
         setTimeout(() => {
-            window.wisk.editor.justUpdates(this.id);
+            wisk.editor.justUpdates(this.id);
         }, 0);
     }
 }

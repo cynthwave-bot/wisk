@@ -381,8 +381,8 @@ class PyInterpreter extends LitElement {
             this.showDialog = false;
             this.packageName = '';
 
-            if (window.wisk?.editor?.justUpdates) {
-                window.wisk.editor.justUpdates(this.id);
+            if (wisk?.editor?.justUpdates) {
+                wisk.editor.justUpdates(this.id);
             }
         } catch (error) {
             this.addToHistory(`Error importing ${packageName}: ${error}`, 'error');
@@ -403,8 +403,8 @@ class PyInterpreter extends LitElement {
         await this.executePythonCode(this.code);
 
         this.code = '';
-        if (window.wisk?.editor?.justUpdates) {
-            window.wisk.editor.justUpdates(this.id);
+        if (wisk?.editor?.justUpdates) {
+            wisk.editor.justUpdates(this.id);
         }
 
         const textarea = this.shadowRoot.querySelector('textarea');
@@ -429,11 +429,11 @@ class PyInterpreter extends LitElement {
                         @click=${() => {
                             this.history = [];
                             this.requestUpdate();
-                            if (window.wisk?.editor?.justUpdates) {
-                                window.wisk.editor.justUpdates(this.id);
+                            if (wisk?.editor?.justUpdates) {
+                                wisk.editor.justUpdates(this.id);
                             }
                         }}
-                        style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}"
+                        style="${wisk.editor.wiskSite ? 'display: none;' : ''}"
                     >
                         Clear History
                     </button>
@@ -443,13 +443,13 @@ class PyInterpreter extends LitElement {
                             this.showDialog = true;
                             this.requestUpdate();
                         }}
-                        style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}"
+                        style="${wisk.editor.wiskSite ? 'display: none;' : ''}"
                     >
                         Import Package
                     </button>
                 </div>
             </div>
-            <div class="uwu" style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}">
+            <div class="uwu" style="${wisk.editor.wiskSite ? 'display: none;' : ''}">
                 <textarea
                     placeholder="print('hello world')"
                     rows="2"
@@ -462,7 +462,7 @@ class PyInterpreter extends LitElement {
                     id="run"
                     @click=${this.evaluatePython}
                     ?disabled=${this.isInitializing}
-                    style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}"
+                    style="${wisk.editor.wiskSite ? 'display: none;' : ''}"
                 >
                     ${this.isInitializing ? 'Initializing...' : 'Run'}
                 </button>

@@ -597,9 +597,9 @@ class OptionsComponent extends LitElement {
     }
 
     loadPlugins() {
-        if (window.wisk.plugins.pluginData && window.wisk.plugins.pluginData.list) {
-            this.plugins = Object.values(window.wisk.plugins.pluginData.list).filter(
-                plugin => !window.wisk.plugins.defaultPlugins.includes(plugin.name)
+        if (wisk.plugins.pluginData && wisk.plugins.pluginData.list) {
+            this.plugins = Object.values(wisk.plugins.pluginData.list).filter(
+                plugin => !wisk.plugins.defaultPlugins.includes(plugin.name)
             );
         }
     }
@@ -643,13 +643,13 @@ class OptionsComponent extends LitElement {
     }
 
     async handlePluginInstall(plugin) {
-        await window.wisk.plugins.loadPlugin(plugin.name);
-        await window.wisk.editor.addConfigChange([{ path: 'document.config.plugins.add', values: { plugin: plugin.name } }]);
+        await wisk.plugins.loadPlugin(plugin.name);
+        await wisk.editor.addConfigChange([{ path: 'document.config.plugins.add', values: { plugin: plugin.name } }]);
         this.requestUpdate();
     }
 
     isPluginInstalled(pluginName) {
-        return window.wisk.plugins.loadedPlugins.includes(pluginName);
+        return wisk.plugins.loadedPlugins.includes(pluginName);
     }
 
     opened() {
@@ -662,13 +662,13 @@ class OptionsComponent extends LitElement {
 
     async changeTheme(theme) {
         this.selectedTheme = theme;
-        window.wisk.theme.setTheme(theme);
-        await window.wisk.editor.addConfigChange([{ path: 'document.config.theme', values: { theme: theme } }]);
+        wisk.theme.setTheme(theme);
+        await wisk.editor.addConfigChange([{ path: 'document.config.theme', values: { theme: theme } }]);
         this.requestUpdate();
     }
 
     setTheme(theme) {
-        window.wisk.theme.setTheme(theme);
+        wisk.theme.setTheme(theme);
     }
 
     showDeveloperView() {
@@ -739,7 +739,7 @@ class OptionsComponent extends LitElement {
                                 plugin => html`
                                     <div class="plugin-item" @click="${() => this.togglePlugin(plugin)}" style="cursor: pointer;">
                                         <img
-                                            src="${SERVER + window.wisk.plugins.pluginData['icon-path'] + plugin.icon}"
+                                            src="${SERVER + wisk.plugins.pluginData['icon-path'] + plugin.icon}"
                                             alt="${plugin.title}"
                                             class="plugin-icon"
                                             draggable="false"
@@ -774,7 +774,7 @@ class OptionsComponent extends LitElement {
 
                                   <div class="installer-confirm__header">
                                       <img
-                                          src="${SERVER + window.wisk.plugins.pluginData['icon-path'] + this.selectedPlugin.icon}"
+                                          src="${SERVER + wisk.plugins.pluginData['icon-path'] + this.selectedPlugin.icon}"
                                           class="plugin-icon"
                                           draggable="false"
                                       />
@@ -937,7 +937,7 @@ class OptionsComponent extends LitElement {
 
                     <div class="options-section options-section--animated">
                         <label>Sign Out</label>
-                        <button id="signOut" class="btn-danger" @click="${() => window.wisk.auth.logOut()}">Sign Out</button>
+                        <button id="signOut" class="btn-danger" @click="${() => wisk.auth.logOut()}">Sign Out</button>
                     </div>
 
                     <div class="options-section options-section--animated" id="check-update" style="display: ${window.location.href.includes('30007') ? 'flex' : 'none'}">
@@ -972,10 +972,10 @@ class OptionsComponent extends LitElement {
                     </div>
 
                     <div class="themes-grid">
-                        ${window.wisk.theme.getThemes().map(
+                        ${wisk.theme.getThemes().map(
                             theme => html`
                                 <div
-                                    class="theme-card ${window.wisk.theme.getTheme() == theme.name ? 'selected' : ''}"
+                                    class="theme-card ${wisk.theme.getTheme() == theme.name ? 'selected' : ''}"
                                     @click="${() => this.changeTheme(theme.name)}"
                                 >
                                     <div class="theme-preview" style="background-color: ${theme['--bg-1']};">

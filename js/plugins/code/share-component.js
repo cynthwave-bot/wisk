@@ -153,17 +153,17 @@ class ShareComponent extends LitElement {
         }
         var data = await response.json();
 
-        return 'https://' + data.username + '.wisk.site/' + window.wisk.editor.pageId;
+        return 'https://' + data.username + '.wisk.site/' + wisk.editor.pageId;
     }
 
     async opened() {
-        this.isPublished = window.wisk.editor.data.config.public;
+        this.isPublished = wisk.editor.data.config.public;
 
         if (this.isPublished) {
             this.url = await this.liveUrl();
         }
 
-        this.users = window.wisk.editor.data.config.access || [];
+        this.users = wisk.editor.data.config.access || [];
         await this.requestUpdate();
         if (this.activeTab === 'share') {
             this.shadowRoot.querySelector('.email')?.focus();
@@ -178,17 +178,17 @@ class ShareComponent extends LitElement {
             return;
         }
 
-        await window.wisk.editor.addConfigChange([{ path: 'document.config.access.add', values: { email: email } }]);
+        await wisk.editor.addConfigChange([{ path: 'document.config.access.add', values: { email: email } }]);
 
         this.shadowRoot.querySelector('.email').value = '';
         this.users = [...this.users, email];
-        window.wisk.editor.data.config.access = this.users;
+        wisk.editor.data.config.access = this.users;
         this.requestUpdate();
     }
 
     async removeUser(user) {
         window.showToast('Removing user...', 3000);
-        await window.wisk.editor.addConfigChange([{ path: 'document.config.access.remove', values: { email: user } }]);
+        await wisk.editor.addConfigChange([{ path: 'document.config.access.remove', values: { email: user } }]);
         window.showToast('User removed!', 3000);
 
         this.users = this.users.filter(u => u !== user);
@@ -198,8 +198,8 @@ class ShareComponent extends LitElement {
     async togglePublish() {
         this.isPublished = !this.isPublished;
 
-        await window.wisk.editor.addConfigChange([{ path: 'document.config.access.public', values: { public: this.isPublished } }]);
-        window.wisk.editor.data.config.public = this.isPublished;
+        await wisk.editor.addConfigChange([{ path: 'document.config.access.public', values: { public: this.isPublished } }]);
+        wisk.editor.data.config.public = this.isPublished;
 
         if (this.isPublished) {
             this.url = await this.liveUrl();

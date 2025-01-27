@@ -222,7 +222,7 @@ class LatexElement extends LitElement {
 
     sendUpdates() {
         setTimeout(() => {
-            window.wisk.editor.justUpdates(this.id);
+            wisk.editor.justUpdates(this.id);
         }, 0);
     }
 
@@ -385,7 +385,7 @@ class LatexElement extends LitElement {
             <div class="latex-container">
                 <div class="latex-display"></div>
                 ${this.error ? html`<div class="error">${this.error}</div>` : ''}
-                <button class="button edit-button" style="${window.wisk.editor.wiskSite ? 'display: none;' : ''}" @click=${this.handleEdit}>
+                <button class="button edit-button" style="${wisk.editor.wiskSite ? 'display: none;' : ''}" @click=${this.handleEdit}>
                     <img src="/a7/plugins/latex-element/pencil.svg" alt="Edit" style="filter: var(--themed-svg);" />
                 </button>
             </div>

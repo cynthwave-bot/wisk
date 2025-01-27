@@ -93,7 +93,7 @@ class MainElement extends BaseTextElement {
             }
         }
 
-        if (window.wisk.editor.wiskSite) return;
+        if (wisk.editor.wiskSite) return;
 
         const bannerSizeButton = this.shadowRoot.querySelector('#banner-size-button');
         bannerSizeButton.textContent = `${this.bannerSize.charAt(0).toUpperCase() + this.bannerSize.slice(1)} Banner`;
@@ -103,7 +103,7 @@ class MainElement extends BaseTextElement {
         if (wisk.editor.wiskSite) return;
         // Emoji picker click handler
         this.emojiElement.addEventListener('click', () => {
-            if (window.wisk.editor.wiskSite) return;
+            if (wisk.editor.wiskSite) return;
 
             // Get the emoji selector component and show it
             const emojiSelector = document.querySelector('emoji-selector');
@@ -113,7 +113,7 @@ class MainElement extends BaseTextElement {
         });
 
         // Background image upload handlers
-        if (!window.wisk.editor.wiskSite) {
+        if (!wisk.editor.wiskSite) {
             this.fileInput.addEventListener('change', this.onBackgroundSelected.bind(this));
             this.backgroundUploadButton.addEventListener('click', e => {
                 e.stopPropagation();
@@ -490,7 +490,7 @@ class MainElement extends BaseTextElement {
         const content = `
             <div class="header-container">
                 ${
-                    !window.wisk.editor.wiskSite
+                    !wisk.editor.wiskSite
                         ? `
                     <input type="file" id="background-file" accept="image/*" />
                 `
@@ -499,7 +499,7 @@ class MainElement extends BaseTextElement {
                 <div class="header-content">
                     <div id="emoji">${this.emoji && this.emoji.trim() ? this.emoji : '<span class="add-emoji-text">add emoji</span>'}</div>
                     ${
-                        !window.wisk.editor.wiskSite
+                        !wisk.editor.wiskSite
                             ? `
                         <button id="background-upload-button">Add Cover</button>
                         <button id="banner-size-button">Small Banner</button>
@@ -508,7 +508,7 @@ class MainElement extends BaseTextElement {
                     }
                 </div>
             </div>
-            <h1 id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></h1>
+            <h1 id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></h1>
             <div class="emoji-suggestions"></div>`;
         this.shadowRoot.innerHTML = style + content;
     }

@@ -1,5 +1,5 @@
 // TODO change naming such that plugin group and plugin name are separate
-window.wisk.plugins = {
+wisk.plugins = {
     defaultPlugins: [
         // editor elements
         'main-element',
@@ -54,25 +54,25 @@ async function fetchDataJSON() {
 
 function elementReady(elementName) {
     return new Promise(resolve => {
-        if (window.wisk.plugins.readyElements.has(elementName)) {
+        if (wisk.plugins.readyElements.has(elementName)) {
             resolve();
         } else {
-            window.wisk.plugins.readyElements.set(elementName, resolve);
+            wisk.plugins.readyElements.set(elementName, resolve);
         }
     });
 }
 
 async function loadPlugin(pluginName, inx) {
     if (!inx) {
-        inx = window.wisk.plugins.loadedPlugins.length;
+        inx = wisk.plugins.loadedPlugins.length;
     }
 
-    if (window.wisk.plugins.loadedPlugins.includes(pluginName)) {
+    if (wisk.plugins.loadedPlugins.includes(pluginName)) {
         console.log(`Plugin ${pluginName} is already loaded.`);
         return;
     }
 
-    const pluginData = window.wisk.plugins.pluginData.list[pluginName];
+    const pluginData = wisk.plugins.pluginData.list[pluginName];
     if (!pluginData) {
         console.error(`Plugin ${pluginName} not found in PluginData.`);
         return;
@@ -96,46 +96,46 @@ async function loadPlugin(pluginName, inx) {
         }
 
         // Add to nav bar if necessary
-        if (content.nav === true && !window.wisk.editor.wiskSite) {
+        if (content.nav === true && !wisk.editor.wiskSite) {
             addToNavBar(content, inx);
         }
     });
 
     await Promise.all(loadPromises);
-    window.wisk.plugins.loadedPlugins.push(pluginName);
+    wisk.plugins.loadedPlugins.push(pluginName);
     console.log(`Plugin loaded: ${pluginName}`);
 }
 
-window.wisk.plugins.loadPlugin = loadPlugin;
+wisk.plugins.loadPlugin = loadPlugin;
 
-window.wisk.plugins.getPluginDetail = function (pluginName) {
-    for (let key in window.wisk.plugins.pluginData.list) {
-        for (let i = 0; i < window.wisk.plugins.pluginData.list[key].contents.length; i++) {
+wisk.plugins.getPluginDetail = function (pluginName) {
+    for (let key in wisk.plugins.pluginData.list) {
+        for (let i = 0; i < wisk.plugins.pluginData.list[key].contents.length; i++) {
             if (
-                window.wisk.plugins.pluginData.list[key].contents[i].category === 'component' &&
-                window.wisk.plugins.pluginData.list[key].contents[i].component === pluginName
+                wisk.plugins.pluginData.list[key].contents[i].category === 'component' &&
+                wisk.plugins.pluginData.list[key].contents[i].component === pluginName
             ) {
-                return window.wisk.plugins.pluginData.list[key].contents[i];
+                return wisk.plugins.pluginData.list[key].contents[i];
             }
         }
     }
 };
 
-window.wisk.plugins.getPluginGroupDetail = function (pluginName) {
-    return window.wisk.plugins.pluginData.list[pluginName];
+wisk.plugins.getPluginGroupDetail = function (pluginName) {
+    return wisk.plugins.pluginData.list[pluginName];
 };
 
 async function loadComponent(componentName) {
-    for (let key in window.wisk.plugins.pluginData.list) {
-        for (let i = 0; i < window.wisk.plugins.pluginData.list[key].contents.length; i++) {
-            if (window.wisk.plugins.pluginData.list[key].contents[i].component === componentName) {
-                return loadPlugin(key, window.wisk.plugins.loadedPlugins.length);
+    for (let key in wisk.plugins.pluginData.list) {
+        for (let i = 0; i < wisk.plugins.pluginData.list[key].contents.length; i++) {
+            if (wisk.plugins.pluginData.list[key].contents[i].component === componentName) {
+                return loadPlugin(key, wisk.plugins.loadedPlugins.length);
             }
         }
     }
 }
 
-window.wisk.plugins.loadComponent = loadComponent;
+wisk.plugins.loadComponent = loadComponent;
 
 function addToNavBar(content, inx) {
     const nav = document.querySelector('.nav-plugins');
@@ -147,7 +147,7 @@ function addToNavBar(content, inx) {
     const icon = document.createElement('img');
     icon.classList.add('plugin-icon');
     icon.draggable = false;
-    icon.src = `${SERVER}${window.wisk.plugins.pluginData['icon-path']}${content.icon}`;
+    icon.src = `${SERVER}${wisk.plugins.pluginData['icon-path']}${content.icon}`;
     button.appendChild(icon);
 
     if (content.title == 'Options') {
@@ -198,7 +198,7 @@ function addToNavBar(content, inx) {
         }
     };
 
-    window.wisk.editor.registerCommand(
+    wisk.editor.registerCommand(
         'Toggle ' + content.title,
         '',
         'Plugin',
@@ -211,21 +211,21 @@ function addToNavBar(content, inx) {
 }
 
 async function loadAllPlugins() {
-    window.wisk.utils.showLoading('Loading plugins...');
+    wisk.utils.showLoading('Loading plugins...');
     try {
-        await Promise.all(window.wisk.plugins.defaultPlugins.map(loadPlugin));
+        await Promise.all(wisk.plugins.defaultPlugins.map(loadPlugin));
         console.log('All plugins loaded');
     } catch (error) {
         console.error('Error loading plugins:', error);
     } finally {
-        // window.wisk.utils.hideLoading();
+        // wisk.utils.hideLoading();
     }
 }
 
 async function init() {
     try {
-        window.wisk.plugins.pluginData = await fetchDataJSON();
-        console.log('Plugin data loaded:', window.wisk.plugins.pluginData);
+        wisk.plugins.pluginData = await fetchDataJSON();
+        console.log('Plugin data loaded:', wisk.plugins.pluginData);
         await loadAllPlugins();
         // await sync();
     } catch (error) {
