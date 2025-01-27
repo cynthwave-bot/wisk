@@ -562,6 +562,14 @@ class OptionsComponent extends LitElement {
             color: var(--text-1);
             border: 2px solid var(--text-1);
         }
+        @media (max-width: 768px) {
+            .plugins-toggle {
+                padding: var(--padding-3) 0;
+            }
+            .plugin-list {
+                margin-top: var(--gap-1);
+            }
+        }
     `;
 
     static properties = {

@@ -26,8 +26,8 @@
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
-    max-width: 950px;
-    max-height: 700px;
+    max-width: 780px;
+    max-height: 580px;
     filter: var(--drop-shadow);
     display: flex;
     flex-direction: column;
