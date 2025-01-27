@@ -275,8 +275,7 @@ class AccordionElement extends BaseTextElement {
         return {
             html: this.shadowRoot.querySelector('.question').innerHTML + '?<br>' + this.editable.innerHTML,
             text: this.shadowRoot.querySelector('.question').textContent + '? ' + this.editable.textContent,
-            markdown:
-                '# ' + this.shadowRoot.querySelector('.question').textContent + '?\n' + wisk.editor.htmlToMarkdown(this.editable.innerHTML),
+            markdown: '# ' + this.shadowRoot.querySelector('.question').textContent + '?\n' + wisk.editor.htmlToMarkdown(this.editable.innerHTML),
         };
     }
 }
