@@ -73,7 +73,6 @@ class OptionsComponent extends LitElement {
             flex-wrap: wrap;
             gap: var(--gap-1);
             flex-direction: row;
-            display: none; /* hidden for now */
         }
         .tags-div-inner {
             color: var(--fg-blue);
@@ -82,6 +81,7 @@ class OptionsComponent extends LitElement {
             background-color: var(--bg-blue);
             border-radius: var(--radius);
             margin-right: 5px;
+            cursor: pointer;
         }
         .plugin-title {
             font-weight: bold;
@@ -648,10 +648,34 @@ class OptionsComponent extends LitElement {
         this.currentView = 'plugin-details';
     }
 
+    installButtonClicked() {
+        if (this.isPluginInstalled(this.selectedPlugin.name)) {
+            this.handlePluginUninstall(this.selectedPlugin)
+        } else {
+            this.handlePluginInstall(this.selectedPlugin)
+        }
+    }
+
     async handlePluginInstall(plugin) {
         await wisk.plugins.loadPlugin(plugin.name);
         await wisk.editor.addConfigChange([{ path: 'document.config.plugins.add', values: { plugin: plugin.name } }]);
         this.requestUpdate();
+    }
+
+    async handlePluginUninstall(plugin) {
+        // check if plugin is currently getting used, if yes, don't uninstall and show a toast
+        var pluginContents = wisk.plugins.pluginData.list[plugin.name].contents;
+        console.log(pluginContents);
+        for (const element in wisk.editor.elements) {
+            if (pluginContents.some(content => content.component.includes(element.component))) {
+                wisk.utils.showToast('Plugin is currently being used, please remove the block first', 3000);
+                return;
+            }
+        }
+
+        // if no then uninstall and reload the page
+        await wisk.editor.addConfigChange([{ path: 'document.config.plugins.remove', values: { plugin: plugin.name } }]);
+        window.location.reload();
     }
 
     isPluginInstalled(pluginName) {
@@ -679,6 +703,12 @@ class OptionsComponent extends LitElement {
 
     showDeveloperView() {
         this.currentView = 'developer';
+    }
+
+    tagClicked(tag) {
+        this.shadowRoot.querySelector('#pluginSearch').value = tag;
+        this.searchTerm = tag;
+        this.currentView = 'plugins';
     }
 
     render() {
@@ -797,10 +827,8 @@ class OptionsComponent extends LitElement {
                                       <div style="padding: var(--padding-3); display: flex; align-items: center; justify-content: center;">
                                           <button
                                               class="toggle-switch btn-primary"
-                                              @click="${() => this.handlePluginInstall(this.selectedPlugin)}"
-                                              ?disabled="${this.isPluginInstalled(this.selectedPlugin.name)}"
-                                          >
-                                              ${this.isPluginInstalled(this.selectedPlugin.name) ? 'Installed' : 'Install'}
+                                              @click="${this.installButtonClicked}">
+                                              ${this.isPluginInstalled(this.selectedPlugin.name) ? 'Uninstall' : 'Install'}
                                           </button>
                                       </div>
                                   </div>
@@ -884,7 +912,7 @@ class OptionsComponent extends LitElement {
                                           : ''}
 
                                       <div class="tags-div">
-                                          ${this.selectedPlugin.tags.map(tag => html`<span class="tags-div-inner">#${tag}</span>`)}
+                                          ${this.selectedPlugin.tags.map(tag => html`<span class="tags-div-inner" @click="${() => this.tagClicked(tag)}">#${tag}</span>`)}
                                       </div>
 
                                       <p>

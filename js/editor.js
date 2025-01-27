@@ -170,6 +170,9 @@ wisk.editor.handleChanges = async function (updateObject) {
             if (change.path.includes('add')) {
                 wisk.plugins.loadPlugin(change.values.plugin);
             }
+            if (change.path.includes('remove')) {
+                window.location.reload();
+            }
         }
         if (change.path.startsWith('document.config.theme')) {
             wisk.theme.setTheme(change.values.theme);
