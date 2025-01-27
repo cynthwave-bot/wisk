@@ -50,11 +50,8 @@ Licensed under the Functional Source License (FSL), Version 1.1, with Apache Lic
 
 ## Contributing
 
-> [!NOTE]
-> We're working on improving the mobile experience! Our current drag-and-drop and click interactions aren't optimal for touch devices. If you have experience with mobile web development and accessibility, we'd love your contributions.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details. We welcome contributions!
 
 ---
 
-Built with ❤️ by [Cynthwave](https://cynthwave.com) • Contact: hey@cynthwave.com
+Made with ❤️ by [Cynthwave](https://cynthwave.com) | Contact: hey@cynthwave.com
