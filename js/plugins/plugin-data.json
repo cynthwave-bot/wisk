@@ -1032,6 +1032,27 @@
             ]
         },
 
+        "emacs": {
+            "name": "emacs",
+            "title": "Emacs",
+            "author": "Wisk Team",
+            "contact": "https://wisk.cc",
+            "icon": "emacs.svg",
+            "tags": ["emacs", "editor", "text", "code"],
+            "description": "Emacs is a experimantal plugin that brings emacs keybindings to the editor",
+            "contents": [
+                {
+                    "title": "Emacs",
+                    "icon": "emacs.svg",
+                    "category": "auto",
+                    "component": "emacs",
+                    "nav": false,
+                    "loadAsModule": false,
+                    "experimental": true
+                }
+            ]
+        },
+
         "accordion-element": {
             "name": "accordion-element",
             "title": "Accordion",
