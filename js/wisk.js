@@ -27,6 +27,7 @@ wisk.theme = {
 };
 
 wisk.editor = {
+backendUrl: wisk.editor.backendUrl,
     showSelector: function (elementId) {},
     generateNewId: function () {},
     pageId: '',
