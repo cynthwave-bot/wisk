@@ -98,9 +98,9 @@ class WorkdCount extends LitElement {
     render() {
         return html`
             <div class="x">
-                <div>Words <span> ${this.countWords(window.wisk.editor.elements)} </span></div>
-                <div>Characters <span> ${this.countCharacters(window.wisk.editor.elements)} </span></div>
-                <div>Characters (excluding spaces) <span> ${this.countCharactersExcludingSpaces(window.wisk.editor.elements)} </span></div>
+                <div>Words <span> ${this.countWords(wisk.editor.elements)} </span></div>
+                <div>Characters <span> ${this.countCharacters(wisk.editor.elements)} </span></div>
+                <div>Characters (excluding spaces) <span> ${this.countCharactersExcludingSpaces(wisk.editor.elements)} </span></div>
             </div>
         `;
     }

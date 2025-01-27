@@ -139,6 +139,6 @@ window.addEventListener('resize', () => {
     }
 });
 
-window.wisk.editor.showLeftSidebar = showLeftSidebar;
-window.wisk.editor.hideLeftSidebar = hideLeftSidebar;
-window.wisk.editor.toggleLeftSidebar = toggleLeftSidebarNew;
+wisk.editor.showLeftSidebar = showLeftSidebar;
+wisk.editor.hideLeftSidebar = hideLeftSidebar;
+wisk.editor.toggleLeftSidebar = toggleLeftSidebarNew;

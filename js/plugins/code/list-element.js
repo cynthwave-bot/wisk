@@ -52,7 +52,7 @@ class ListElement extends BaseTextElement {
     handleBeforeInput(event) {
         if (event.inputType === 'insertText' && event.data === '/' && this.editable.innerText.trim() === '') {
             event.preventDefault();
-            window.wisk.editor.showSelector(this.id);
+            wisk.editor.showSelector(this.id);
         } else if (event.inputType === 'insertText' && event.data === ' ' && this.getFocus() === 0) {
             event.preventDefault();
             this.indent++;
@@ -84,9 +84,9 @@ class ListElement extends BaseTextElement {
         this.sendUpdates();
 
         if (this.editable.innerText.trim().length === 0) {
-            window.wisk.editor.changeBlockType(this.id, { textContent: afterContainer.innerHTML }, 'text-element');
+            wisk.editor.changeBlockType(this.id, { textContent: afterContainer.innerHTML }, 'text-element');
         } else {
-            window.wisk.editor.createNewBlock(
+            wisk.editor.createNewBlock(
                 this.id,
                 'list-element',
                 {
@@ -107,19 +107,19 @@ class ListElement extends BaseTextElement {
                 this.updateIndent();
                 this.sendUpdates();
             } else {
-                const prevElement = window.wisk.editor.prevElement(this.id);
+                const prevElement = wisk.editor.prevElement(this.id);
                 const prevDomElement = document.getElementById(prevElement.id);
                 if (prevElement) {
-                    const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
+                    const prevComponentDetail = wisk.plugins.getPluginDetail(prevElement.component);
                     if (prevComponentDetail.textual) {
                         const len = prevDomElement.getTextContent().text.length;
-                        window.wisk.editor.updateBlock(prevElement.id, 'value.append', {
+                        wisk.editor.updateBlock(prevElement.id, 'value.append', {
                             textContent: this.editable.innerHTML,
                             references: this.references,
                         });
-                        window.wisk.editor.focusBlock(prevElement.id, { x: len });
+                        wisk.editor.focusBlock(prevElement.id, { x: len });
                     }
-                    window.wisk.editor.deleteBlock(this.id);
+                    wisk.editor.deleteBlock(this.id);
                 }
             }
         }
@@ -226,7 +226,7 @@ class ListElement extends BaseTextElement {
         const content = `
             <div id="container">
                 <div id="dot"></div>
-                <div id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a list item...'}" ></div>
+                <div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a list item...'}" ></div>
                 <div class="emoji-suggestions"></div>
             </div>
         `;
@@ -235,7 +235,7 @@ class ListElement extends BaseTextElement {
 
     getTextContent() {
         const indentation = '  '.repeat(this.indent);
-        const markdown = indentation + '- ' + window.wisk.editor.htmlToMarkdown(this.editable.innerHTML);
+        const markdown = indentation + '- ' + wisk.editor.htmlToMarkdown(this.editable.innerHTML);
         return {
             html: this.editable.innerHTML,
             text: this.editable.innerText,

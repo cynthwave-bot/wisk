@@ -847,7 +847,7 @@ class ToolbarElement extends LitElement {
     }
 
     showToolbar(x, y, elementId, selectedText, elementText) {
-        if (window.wisk.editor.wiskSite) {
+        if (wisk.editor.wiskSite) {
             return;
         }
 
@@ -871,7 +871,7 @@ class ToolbarElement extends LitElement {
         event?.preventDefault();
         event?.stopPropagation();
 
-        window.wisk.utils.showLoading('Adding source...');
+        wisk.utils.showLoading('Adding source...');
 
         try {
             const user = await document.getElementById('auth').getUserInfo();
@@ -886,7 +886,7 @@ class ToolbarElement extends LitElement {
 
             if (!response.ok) {
                 window.showToast('Failed to load sources', 3000);
-                window.wisk.utils.hideLoading();
+                wisk.utils.hideLoading();
                 return;
             }
 
@@ -926,7 +926,7 @@ class ToolbarElement extends LitElement {
             const citationsManager = document.querySelector('manage-citations');
             if (!citationsManager) {
                 window.showToast('Citations manager not found', 3000);
-                window.wisk.utils.hideLoading();
+                wisk.utils.hideLoading();
                 return;
             }
 
@@ -950,7 +950,7 @@ class ToolbarElement extends LitElement {
             console.error('Error creating reference:', error);
             window.showToast('Failed to create reference', 3000);
         } finally {
-            window.wisk.utils.hideLoading();
+            wisk.utils.hideLoading();
         }
     }
 

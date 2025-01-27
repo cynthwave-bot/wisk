@@ -98,7 +98,7 @@ class EmbedElement extends HTMLElement {
     handleEnterKey(event) {
         if (!this.isVirtualKeyboard) {
             event.preventDefault();
-            window.wisk.editor.createNewBlock(this.id, 'text-element', { textContent: '' }, { x: 0 });
+            wisk.editor.createNewBlock(this.id, 'text-element', { textContent: '' }, { x: 0 });
             return true;
         }
         return false;
@@ -107,7 +107,7 @@ class EmbedElement extends HTMLElement {
     handleBackspace(event) {
         if (this.editable.innerText.length === 0) {
             event.preventDefault();
-            window.wisk.editor.deleteBlock(this.id);
+            wisk.editor.deleteBlock(this.id);
             return true;
         }
         return false;
@@ -120,19 +120,19 @@ class EmbedElement extends HTMLElement {
 
     handleVerticalArrow(event, direction) {
         if (direction === 'next-up') {
-            var prevElement = window.wisk.editor.prevElement(this.id);
+            var prevElement = wisk.editor.prevElement(this.id);
             if (prevElement != null) {
-                const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
+                const prevComponentDetail = wisk.plugins.getPluginDetail(prevElement.component);
                 if (prevComponentDetail.textual) {
-                    window.wisk.editor.focusBlock(prevElement.id, { x: prevElement.value.textContent.length });
+                    wisk.editor.focusBlock(prevElement.id, { x: prevElement.value.textContent.length });
                 }
             }
         } else if (direction === 'next-down') {
-            var nextElement = window.wisk.editor.nextElement(this.id);
+            var nextElement = wisk.editor.nextElement(this.id);
             if (nextElement != null) {
-                const nextComponentDetail = window.wisk.plugins.getPluginDetail(nextElement.component);
+                const nextComponentDetail = wisk.plugins.getPluginDetail(nextElement.component);
                 if (nextComponentDetail.textual) {
-                    window.wisk.editor.focusBlock(nextElement.id, { x: 0 });
+                    wisk.editor.focusBlock(nextElement.id, { x: 0 });
                 }
             }
         }
@@ -143,19 +143,19 @@ class EmbedElement extends HTMLElement {
         if (currentOffset === targetOffset) {
             event.preventDefault();
             if (direction === 'next-up') {
-                var prevElement = window.wisk.editor.prevElement(this.id);
+                var prevElement = wisk.editor.prevElement(this.id);
                 if (prevElement != null) {
-                    const prevComponentDetail = window.wisk.plugins.getPluginDetail(prevElement.component);
+                    const prevComponentDetail = wisk.plugins.getPluginDetail(prevElement.component);
                     if (prevComponentDetail.textual) {
-                        window.wisk.editor.focusBlock(prevElement.id, { x: prevElement.value.textContent.length });
+                        wisk.editor.focusBlock(prevElement.id, { x: prevElement.value.textContent.length });
                     }
                 }
             } else if (direction === 'next-down') {
-                var nextElement = window.wisk.editor.nextElement(this.id);
+                var nextElement = wisk.editor.nextElement(this.id);
                 if (nextElement != null) {
-                    const nextComponentDetail = window.wisk.plugins.getPluginDetail(nextElement.component);
+                    const nextComponentDetail = wisk.plugins.getPluginDetail(nextElement.component);
                     if (nextComponentDetail.textual) {
-                        window.wisk.editor.focusBlock(nextElement.id, { x: 0 });
+                        wisk.editor.focusBlock(nextElement.id, { x: 0 });
                     }
                 }
             }
@@ -171,7 +171,7 @@ class EmbedElement extends HTMLElement {
 
     sendUpdates() {
         setTimeout(() => {
-            window.wisk.editor.justUpdates(this.id);
+            wisk.editor.justUpdates(this.id);
         }, 0);
     }
 
@@ -267,7 +267,7 @@ class EmbedElement extends HTMLElement {
                     </div>
                     <div class="address-bar">
                         <span class="https-text">https://</span>
-                        <div class="link" id="editable" contenteditable="${!window.wisk.editor.wiskSite}" spellcheck="false">${this.link}</div>
+                        <div class="link" id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false">${this.link}</div>
                     </div>
                 </div>
                 <iframe src="https://${this.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

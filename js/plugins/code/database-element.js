@@ -946,7 +946,7 @@ class DatabaseElement extends LitElement {
     }
 
     onUpdate() {
-        window.wisk.editor.justUpdates(this.id);
+        wisk.editor.justUpdates(this.id);
     }
 
     startEditing(entry) {
@@ -1392,7 +1392,7 @@ class DatabaseElement extends LitElement {
         const dependencyMessage = this.checkPropertyDependencies(propertyName);
 
         if (dependencyMessage) {
-            window.wisk.showToast(`Cannot remove property: ${dependencyMessage}`);
+            wisk.showToast(`Cannot remove property: ${dependencyMessage}`);
             return;
         }
 
@@ -1461,7 +1461,7 @@ class DatabaseElement extends LitElement {
         for (let removedProp of removedProperties) {
             const dependencyMessage = this.checkPropertyDependencies(removedProp.name);
             if (dependencyMessage) {
-                window.wisk.showToast(`Cannot remove property "${removedProp.name}": ${dependencyMessage}`);
+                wisk.showToast(`Cannot remove property "${removedProp.name}": ${dependencyMessage}`);
                 return;
             }
         }

@@ -55,17 +55,17 @@ class SelectorElement extends HTMLElement {
 
     selectButton(btn) {
         var element = document.getElementById(this.elementId);
-        var elementData = window.wisk.editor.getElement(this.elementId);
-        var callingDetail = window.wisk.plugins.getPluginDetail(elementData.component);
+        var elementData = wisk.editor.getElement(this.elementId);
+        var callingDetail = wisk.plugins.getPluginDetail(elementData.component);
 
         var dataPluginId = btn.getAttribute('data-plugin-id');
         var dataContentId = btn.getAttribute('data-content-id');
-        var newDetail = window.wisk.plugins.pluginData.list[dataPluginId].contents[dataContentId];
+        var newDetail = wisk.plugins.pluginData.list[dataPluginId].contents[dataContentId];
 
-        window.wisk.editor.changeBlockType(this.elementId, element.getValue(), newDetail.component);
+        wisk.editor.changeBlockType(this.elementId, element.getValue(), newDetail.component);
         if (callingDetail.textual && newDetail.textual) {
             // TODO see why this is not working
-            // window.wisk.editor.focusBlock(this.elementId, { x: elementData.value.textContent.length });
+            // wisk.editor.focusBlock(this.elementId, { x: elementData.value.textContent.length });
         }
 
         this.hide();
@@ -122,19 +122,19 @@ class SelectorElement extends HTMLElement {
         const buttonsContainer = this.shadowRoot.querySelector('.buttons');
         buttonsContainer.innerHTML = '';
 
-        for (let key in window.wisk.plugins.pluginData.list) {
+        for (let key in wisk.plugins.pluginData.list) {
             if (wisk.plugins.pluginData.list[key].hide) {
                 continue;
             }
 
-            for (let i = 0; i < window.wisk.plugins.pluginData.list[key].contents.length; i++) {
-                if (window.wisk.plugins.pluginData.list[key].contents[i].category === 'component') {
+            for (let i = 0; i < wisk.plugins.pluginData.list[key].contents.length; i++) {
+                if (wisk.plugins.pluginData.list[key].contents[i].category === 'component') {
                     // check if it is loaded
-                    if (!window.wisk.plugins.loadedPlugins.includes(window.wisk.plugins.pluginData.list[key].contents[i].component)) {
+                    if (!wisk.plugins.loadedPlugins.includes(wisk.plugins.pluginData.list[key].contents[i].component)) {
                         continue;
                     }
 
-                    let title = window.wisk.plugins.pluginData.list[key].contents[i].title;
+                    let title = wisk.plugins.pluginData.list[key].contents[i].title;
 
                     if (query && !this.fuzzySearch(query, title)) {
                         continue;
@@ -149,7 +149,7 @@ class SelectorElement extends HTMLElement {
 
                     const img = document.createElement('img');
                     img.classList.add('plugin-icon');
-                    img.src = SERVER + window.wisk.plugins.pluginData['icon-path'] + window.wisk.plugins.pluginData.list[key].contents[i].icon;
+                    img.src = SERVER + wisk.plugins.pluginData['icon-path'] + wisk.plugins.pluginData.list[key].contents[i].icon;
 
                     const p = document.createElement('p');
                     p.innerText = title;

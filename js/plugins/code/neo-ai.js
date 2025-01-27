@@ -785,7 +785,7 @@ class NeoAI extends LitElement {
                     case 'deleteBlock':
                         const deleteId = params.trim();
                         if (deleteId) {
-                            window.wisk.editor.deleteBlock(deleteId);
+                            wisk.editor.deleteBlock(deleteId);
                         }
                         break;
 
@@ -797,7 +797,7 @@ class NeoAI extends LitElement {
                                 .trim()
                                 .replace(/^["'](.*)["']$/, '$1');
 
-                            var newId = window.wisk.editor.createNewBlock(
+                            var newId = wisk.editor.createNewBlock(
                                 afterId.trim(),
                                 blockType.trim(),
                                 { textContent: value },

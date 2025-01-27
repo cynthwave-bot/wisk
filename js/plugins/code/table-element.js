@@ -52,7 +52,7 @@ class TableElement extends HTMLElement {
     }
 
     onValueUpdated() {
-        window.wisk.editor.justUpdates(this.id);
+        wisk.editor.justUpdates(this.id);
     }
 
     updateCell(rowIndex, colIndex, value) {
@@ -131,14 +131,14 @@ class TableElement extends HTMLElement {
                     width: auto;
                 }
             </style>
-            <div class="table-controls" ${window.wisk.editor.wiskSite ? 'style="display: none;"' : ''}>
+            <div class="table-controls" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''}>
                 <button id="add-row">Add Row</button>
                 <button id="add-column">Add Column</button>
             </div>
             <table id="table">
                 <thead>
                     <tr>
-                        ${headers.map((header, i) => `<th contenteditable="${!window.wisk.editor.wiskSite}" data-row="-1" data-col="${i}">${header}</th>`).join('')}
+                        ${headers.map((header, i) => `<th contenteditable="${!wisk.editor.wiskSite}" data-row="-1" data-col="${i}">${header}</th>`).join('')}
                     </tr>
                 </thead>
                 <tbody>
@@ -146,7 +146,7 @@ class TableElement extends HTMLElement {
                         .map(
                             (row, i) => `
                         <tr>
-                            ${row.map((cell, j) => `<td contenteditable="${!window.wisk.editor.wiskSite}" data-row="${i}" data-col="${j}">${cell}</td>`).join('')}
+                            ${row.map((cell, j) => `<td contenteditable="${!wisk.editor.wiskSite}" data-row="${i}" data-col="${j}">${cell}</td>`).join('')}
                         </tr>
                     `
                         )

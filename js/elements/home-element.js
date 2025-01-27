@@ -483,7 +483,7 @@ class HomeElement extends LitElement {
             this.filteredFiles = this.filteredFiles.filter(item => item.id !== id);
             this.requestUpdate();
 
-            if (id === window.wisk?.editor?.pageId) {
+            if (id === wisk?.editor?.pageId) {
                 window.location.href = '/';
             }
         } catch (error) {
