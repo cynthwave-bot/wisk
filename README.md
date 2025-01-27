@@ -55,3 +55,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details. We welcome contributions!
 ---
 
 Made with ❤️ by [Cynthwave](https://cynthwave.com) | Contact: hey@cynthwave.com
+ 
