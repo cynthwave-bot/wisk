@@ -146,7 +146,7 @@ class ShareComponent extends LitElement {
         }
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: var(--gap-2);
             padding: var(--padding-2);
         }
@@ -158,7 +158,6 @@ class ShareComponent extends LitElement {
             transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
-            gap: var(--gap-2);
             align-items: center;
             text-align: center;
         }
@@ -219,7 +218,7 @@ class ShareComponent extends LitElement {
 
     constructor() {
         super();
-        this.activeTab = 'share';
+        this.activeTab = 'download';
         this.users = [];
         this.isPublished = false;
         this.url = '';
@@ -466,7 +465,7 @@ class ShareComponent extends LitElement {
                     </div>
                 </div>
 
-                <div style="flex-direction: column; align-items: normal; gap: var(--gap-3);">
+                <div style="height: 100%; overflow: auto;">
                     <label style="padding: 0 var(--padding-3)">Templates</label>
                     <div class="template-grid">
                         ${templates.map(
@@ -481,7 +480,8 @@ class ShareComponent extends LitElement {
                                             style="width: 100%; height: 100%; object-fit: cover;"
                                             loading="lazy"
                                         />
-                                        <button class="view-btn" @click=${() => window.open(`/a7/export-templates/${template.id}.jpg`)}>
+                                        <button class="view-btn" @click=${() => window.open(`/a7/export-templates/${template.id}.jpg`)}
+                                            style="background-color: black; filter: none">
                                             <img src="/a7/forget/open1.svg" style="width: 20px; height: 20px;" />
                                         </button>
                                     </div>
@@ -533,9 +533,9 @@ class ShareComponent extends LitElement {
         return html`
             <div style="height: 100%; overflow: hidden;">
                 <div class="tabs">
+                    <div class="tab ${this.activeTab === 'download' ? 'active' : ''}" @click=${() => (this.activeTab = 'download')}>Download</div>
                     <div class="tab ${this.activeTab === 'share' ? 'active' : ''}" @click=${() => (this.activeTab = 'share')}>Share</div>
                     <div class="tab ${this.activeTab === 'publish' ? 'active' : ''}" @click=${() => (this.activeTab = 'publish')}>Publish</div>
-                    <div class="tab ${this.activeTab === 'download' ? 'active' : ''}" @click=${() => (this.activeTab = 'download')}>Download</div>
                 </div>
 
                 ${this.activeTab === 'share'

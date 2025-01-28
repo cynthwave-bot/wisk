@@ -45,6 +45,7 @@ wisk.editor = {
 
 wisk.utils = {
     showToast: function (message, duration) {},
+    showDialog: function (message, title, callback) {},
     showInfo: function (message) {},
     showLoading: function (message) {},
     hideLoading: function () {},
