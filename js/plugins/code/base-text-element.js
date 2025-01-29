@@ -521,6 +521,11 @@ class BaseTextElement extends HTMLElement {
             }
 
             wisk.editor.changeBlockType(this.id, val, newType);
+
+            const elementToFocus = document.getElementById(this.id);
+            if (elementToFocus) {
+                elementToFocus.focus();
+            }
         }
     }
 
@@ -1013,6 +1018,10 @@ class BaseTextElement extends HTMLElement {
     }
 
     focus(identifier) {
+        if (!identifier) {
+            this.editable.focus();
+            return;
+        }
         console.log('Focus called with identifier', identifier, this.id);
         if (typeof identifier.x != 'number') {
             identifier.x = 0;

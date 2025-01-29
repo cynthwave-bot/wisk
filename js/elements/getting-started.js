@@ -508,6 +508,66 @@ class GettingStarted extends LitElement {
         }
     }
 
+    async generateDraft(e) {
+        const whatInput = this.shadowRoot.getElementById('ol1').value;
+        const audienceInput = this.shadowRoot.getElementById('ol2').value;
+        const goalInput = this.shadowRoot.getElementById('ol3').value;
+        const categorySelect = this.shadowRoot.getElementById('ol4').value;
+        const onlyOutline = this.shadowRoot.getElementById('checkbox-outline').checked;
+
+        if (!whatInput || !audienceInput || !goalInput || !categorySelect) {
+            wisk.utils.showToast('Please fill all fields', 5000);
+            return;
+        }
+
+        const user = await document.querySelector('auth-component').getUserInfo();
+        const token = user.token;
+
+        wisk.utils.showLoading('Generating draft...');
+
+        try {
+            const response = await fetch('https://cloud.wisk.cc/v2/outline', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    whatAreYouWriting: whatInput,
+                    whoIsTheAudience: audienceInput,
+                    whatIsTheGoal: goalInput,
+                    category: categorySelect,
+                    generateOnlyOutline: onlyOutline,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.text(); // Get response as text
+
+            // Create text blocks with the returned content
+            var elements = wisk.editor.convertMarkdownToElements(data);
+            console.log('----- Elements:', elements);
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i].component != 'main-element') {
+                    wisk.editor.createBlockNoFocus('', elements[i].component, elements[i].value);
+                } else {
+                    document.getElementById('abcdefABCDEFxyz').setValue('', elements[i].value);
+                    document.getElementById('abcdefABCDEFxyz').sendUpdates();
+                }
+            }
+
+            this.closeDialog();
+        } catch (error) {
+            console.error('Generation error:', error);
+            wisk.utils.showToast('Error generating draft', 5000);
+        } finally {
+            wisk.utils.hideLoading();
+        }
+    }
+
     renderDraftAnythingDialog() {
         return html`
             <div class="dialog-content thin-dialog-content">
@@ -520,6 +580,7 @@ class GettingStarted extends LitElement {
                     <div class="input-group">
                         <label class="input-label">What are you writing?</label>
                         <textarea
+                            id="ol1"
                             class="text-input textarea"
                             placeholder="For example, 'A blog post about gardening.' or 'A product description for a new app.'"
                         ></textarea>
@@ -528,6 +589,7 @@ class GettingStarted extends LitElement {
                     <div class="input-group">
                         <label class="input-label">Who is the intended audience?</label>
                         <textarea
+                            id="ol2"
                             class="text-input textarea"
                             placeholder="For example, 'People interested in gardening.' or 'Tech-savvy users.'"
                         ></textarea>
@@ -536,6 +598,7 @@ class GettingStarted extends LitElement {
                     <div class="input-group">
                         <label class="input-label">What is your goal?</label>
                         <textarea
+                            id="ol3"
                             class="text-input textarea"
                             placeholder="For example, 'To inform readers about the benefits of organic gardening.' or 'To persuade users to download the app.'"
                         ></textarea>
@@ -543,7 +606,7 @@ class GettingStarted extends LitElement {
 
                     <div class="input-group">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--gap-2 gap: var(--gap-2))">
-                            <select class="text-input">
+                            <select class="text-input" id="ol4">
                                 <option value="" disabled selected>Select a category...</option>
                                 <option value="blog">Blog Post</option>
                                 <option value="article">Article</option>
@@ -570,7 +633,7 @@ class GettingStarted extends LitElement {
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--gap-1)">
                         <p class="warning-text">AI can make mistakes—please review carefully for accuracy!</p>
 
-                        <button class="generate-button">
+                        <button class="generate-button" @click=${this.generateDraft}>
                             <img src="/a7/forget/gs-ai.svg" alt="Generate" style="width: 22px; filter: var(--accent-svg)" />
                             Generate
                         </button>
@@ -702,6 +765,105 @@ class GettingStarted extends LitElement {
             </div>
         `;
     }
+
+    async convertFile() {
+        if (!this.selectedFile) return;
+
+        const user = await document.querySelector('auth-component').getUserInfo();
+        const token = user.token;
+
+        wisk.utils.showLoading('Converting file...');
+
+        // Create FormData and append the file
+        const formData = new FormData();
+        formData.append('fileContent', await this.fileToBase64(this.selectedFile));
+        formData.append('fileName', this.selectedFile.name);
+        formData.append('fileType', this.selectedFile.name.split('.').pop().toLowerCase());
+
+        try {
+            const response = await fetch('https://cloud.wisk.cc/v2/convert', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    fileContent: await this.fileToBase64(this.selectedFile),
+                    fileName: this.selectedFile.name,
+                    fileType: this.selectedFile.name.split('.').pop().toLowerCase(),
+                }),
+            });
+
+            if (response.status !== 200) {
+                wisk.utils.showToast('Error converting file', 5000);
+                console.error('Conversion error:', response);
+            } else {
+                const data = await response.json();
+                console.log('Conversion response:', data);
+                // We'll handle the response later
+            }
+        } catch (error) {
+            console.error('Conversion error:', error);
+            wisk.utils.showToast('Error converting file', 5000);
+        } finally {
+            wisk.utils.hideLoading();
+        }
+    }
+
+    async fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
+                resolve(encoded);
+            };
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    async importMd() {
+        if (!this.selectedFile) {
+            wisk.utils.showToast('No file selected', 5000);
+            return;
+        }
+
+        try {
+            // Show loading state
+            wisk.utils.showLoading('Importing markdown...');
+
+            // Read the file content
+            const fileContent = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = e => reject(e);
+                reader.readAsText(this.selectedFile);
+            });
+
+            // Convert markdown to elements
+            const elements = wisk.editor.convertMarkdownToElements(fileContent);
+            console.log('----- Elements:', elements);
+
+            // Create blocks for each element
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i].component !== 'main-element') {
+                    wisk.editor.createBlockNoFocus('', elements[i].component, elements[i].value);
+                } else {
+                    document.getElementById('abcdefABCDEFxyz').setValue('', elements[i].value);
+                    document.getElementById('abcdefABCDEFxyz').sendUpdates();
+                }
+            }
+
+            // Close the dialog and show success message
+            this.closeDialog();
+            wisk.utils.showToast('File imported successfully', 5000);
+        } catch (error) {
+            console.error('Error importing markdown:', error);
+            wisk.utils.showToast('Error importing file', 5000);
+        } finally {
+            wisk.utils.hideLoading();
+        }
+    }
+
     renderImportDialog() {
         return html`
             <div class="dialog-content thin-dialog-content">
@@ -723,6 +885,17 @@ class GettingStarted extends LitElement {
                                       <img src="/a7/forget/x.svg" alt="Remove" style="width: 16px; height: 16px; filter: var(--themed-svg)" />
                                   </button>
                               </div>
+
+                              <div style="display: flex; gap: var(--gap-2); margin-top: var(--gap-3)">
+                                  <button class="generate-button" @click=${this.convertFile} style="display: none">
+                                      <img src="/a7/forget/gs-ai.svg" alt="Convert" style="width: 22px; filter: var(--accent-svg)" />
+                                      Convert to Markdown
+                                  </button>
+                                  <button class="generate-button" @click=${this.importMd}>
+                                      <img src="/a7/forget/gs-import.svg" alt="Import" style="width: 22px; filter: var(--accent-svg)" />
+                                      Import Raw
+                                  </button>
+                              </div>
                           `
                         : html`
                               <div class="drop-zone" @dragover=${this.handleDragOver} @drop=${this.handleDrop} @dragleave=${this.handleDragLeave}>
@@ -732,25 +905,13 @@ class GettingStarted extends LitElement {
                                       style="width: 48px; height: 48px; filter: var(--themed-svg); margin-bottom: var(--gap-3)"
                                   />
                                   <p class="drop-text">Drag and drop your file here</p>
-                                  <p class="supported-formats">Supported formats: PDF, DOCX, Markdown</p>
-                                  <input
-                                      type="file"
-                                      id="fileInput"
-                                      accept=".pdf,.docx,.md,.markdown"
-                                      style="display: none;"
-                                      @change=${this.handleFileSelect}
-                                  />
+                                  <p class="supported-formats">Supported formats: Markdown (pdf and docx support coming soon)</p>
+                                  <input type="file" id="fileInput" accept=".md,.markdown" style="display: none;" @change=${this.handleFileSelect} />
                                   <button class="browse-button" @click=${this.triggerFileInput}>Browse Files</button>
                               </div>
                           `}
 
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--gap-1); margin-top: var(--gap-3)"
-                    >
-                        <button class="generate-button" ?disabled=${!this.selectedFile} @click=${this.importFile}>
-                            <img src="/a7/forget/gs-import.svg" alt="Import" style="width: 22px; filter: var(--accent-svg)" />
-                            Import
-                        </button>
+                    <div style="margin-top: var(--gap-3)">
                         <p class="warning-text">Note: Format conversion may not be perfect</p>
                     </div>
                 </div>

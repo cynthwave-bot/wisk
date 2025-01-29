@@ -447,13 +447,13 @@ class TemplateDialog extends LitElement {
             </div>
             <div
                 class="img-full"
-                style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; margin: auto; background: var(--bg-1); border-radius: var(--radius); border: 1px solid var(--border-1); z-index: 10001; align-items: center; justify-content: center; padding: calc(var(--padding-4)* 3);"
+                style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; margin: auto; background: var(--bg-1); border-radius: var(--radius); border: 1px solid var(--border-1); z-index: 10001; align-items: center; justify-content: center; padding: calc(var(--padding-4)* 3); transform: translateZ(0)"
                 @click=${() => (this.shadowRoot.querySelector('.img-full').style.display = 'none')}
             >
                 <img
                     src=""
                     alt="Full Screen Image"
-                    style="max-width: 100%; max-height: 100%; cursor: pointer; border-radius: var(--radius-large); border: 1px solid var(--border-1)"
+                    style="max-width: 100%; max-height: 100%; cursor: pointer; border-radius: var(--radius-large); border: 1px solid var(--border-1);filter: var(--drop-shadow) var(--drop-shadow) var(--drop-shadow); transform: translateZ(0)"
                 />
             </div>
         `;

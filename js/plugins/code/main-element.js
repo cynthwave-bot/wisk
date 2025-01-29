@@ -544,6 +544,14 @@ class MainElement extends BaseTextElement {
             this.hideEmojiSuggestions();
         }
     }
+
+    getTextContent() {
+        return {
+            html: this.editable.innerHTML,
+            text: this.editable.innerText,
+            markdown: '# ' + wisk.editor.htmlToMarkdown(this.editable.innerHTML),
+        };
+    }
 }
 
 customElements.define('main-element', MainElement);

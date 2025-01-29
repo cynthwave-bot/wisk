@@ -327,83 +327,124 @@ class ShareComponent extends LitElement {
     }
 
     async download() {
-        var user = await document.querySelector('auth-component').getUserInfo();
-        var token = user.token;
+        try {
+            var user = await document.querySelector('auth-component').getUserInfo();
+            var token = user.token;
+            wisk.utils.showLoading('Downloading file...');
 
-        wisk.utils.showLoading('Downloading file...');
+            // Array to store base64 images and their IDs
+            const imageData = [];
+            let markdownContent = '';
 
-        var elms = [];
+            for (var i = 0; i < wisk.editor.elements.length; i++) {
+                var element = wisk.editor.elements[i];
+                var e = document.getElementById(element.id);
 
-        for (var i = 0; i < wisk.editor.elements.length; i++) {
-            var element = wisk.editor.elements[i];
-            var e = document.getElementById(element.id);
-            if ('getTextContent' in e) {
-                var textContent = e.getTextContent();
-                var valueContent = e.getValue();
-                var elm = {
-                    type: element.component,
-                    value: {
-                        text: textContent.html,
-                    },
-                };
-                if (element.component === 'image-element') {
-                    elm.value.url = textContent.url;
-                }
+                if (!('getTextContent' in e)) continue;
+
+                // Handle main text elements that support markdown
                 if (
-                    element.component === 'list-element' ||
-                    element.component === 'numbered-list-element' ||
-                    element.component === 'checkbox-element'
+                    [
+                        'main-element',
+                        'text-element',
+                        'heading1-element',
+                        'heading2-element',
+                        'heading3-element',
+                        'heading4-element',
+                        'heading5-element',
+                    ].includes(element.component)
                 ) {
-                    elm.value.indent = valueContent.indent;
+                    const content = e.getTextContent().markdown;
+                    markdownContent += content + '\n\n';
+                    continue;
                 }
-                if (element.component === 'checkbox-element') {
-                    elm.value.checked = valueContent.checked;
-                }
+
+                // Handle special elements
                 if (element.component === 'image-element') {
-                    elm.value.url = valueContent.imageUrl;
+                    const valueContent = e.getValue();
+                    const imgUrl = valueContent.imageUrl;
+                    markdownContent += `![${valueContent.altText || ''}](${imgUrl})\n\n`;
                 }
+
+                if (element.component === 'list-element') {
+                    const valueContent = e.getValue();
+                    const content = e.getTextContent().markdown;
+                    const indent = valueContent.indent || 0;
+                    const indentStr = '  '.repeat(indent);
+                    markdownContent +=
+                        content
+                            .split('\n')
+                            .map(line => indentStr + line)
+                            .join('\n') + '\n\n';
+                }
+
+                if (element.component === 'numbered-list-element') {
+                    const valueContent = e.getValue();
+                    const content = e.getTextContent().markdown;
+                    const indent = valueContent.indent || 0;
+                    const indentStr = '  '.repeat(indent);
+                    markdownContent +=
+                        content
+                            .split('\n')
+                            .map(line => indentStr + line)
+                            .join('\n') + '\n\n';
+                }
+
+                if (element.component === 'checkbox-element') {
+                    const valueContent = e.getValue();
+                    const content = e.getTextContent().markdown;
+                    const indent = valueContent.indent || 0;
+                    const indentStr = '  '.repeat(indent);
+                    const checkbox = valueContent.checked ? '[x]' : '[ ]';
+                    markdownContent += `${indentStr}- ${checkbox} ${content}\n\n`;
+                }
+
                 if (element.component === 'latex-element') {
-                    elm.value.latexCode = valueContent.latex;
+                    const valueContent = e.getValue();
+                    markdownContent += `$$\n${valueContent.latex}\n$$\n\n`;
                 }
 
                 if (element.component === 'mermaid-element') {
-                    elm.value.svgContent = await e.getSvgString();
+                    const svgContent = await e.getSvgString();
+                    markdownContent += `\`\`\`mermaid\n${svgContent}\n\`\`\`\n\n`;
                 }
-                elms.push(elm);
             }
-        }
 
-        var response = await fetch('https://cloud.wisk.cc/v2/download', {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                template: this.selectedTemplate,
-                elements: elms,
-            }),
-        });
+            const response = await fetch('https://cloud.wisk.cc/v2/download', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    markdown: markdownContent,
+                    template: this.selectedTemplate,
+                    ids: imageData,
+                }),
+            });
 
-        if (response.status !== 200) {
+            if (response.status !== 200) {
+                window.showToast('Error downloading file', 5000);
+                wisk.utils.hideLoading();
+                return;
+            }
+
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+
+            const sel = this.shadowRoot.querySelector('select');
+            a.download = sel.value === 'pdf' ? 'file.pdf' : 'file.docx';
+
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Download error:', error);
             window.showToast('Error downloading file', 5000);
+        } finally {
             wisk.utils.hideLoading();
-            return;
         }
-
-        var blob = await response.blob();
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        var sel = this.shadowRoot.querySelector('select');
-        if (sel.value === 'pdf') {
-            a.download = 'file.pdf';
-        } else {
-            a.download = 'file.docx';
-        }
-        a.click();
-
-        URL.revokeObjectURL(url);
-        wisk.utils.hideLoading();
     }
 
     renderShareTab() {
@@ -443,14 +484,7 @@ class ShareComponent extends LitElement {
     }
 
     renderDownloadTab() {
-        const templates = [
-            { id: 'default', name: 'Default', description: 'Clean and simple layout' },
-            { id: 'academic', name: 'Academic', description: 'Perfect for research papers' },
-            { id: 'business', name: 'Business', description: 'Professional business documents' },
-            { id: 'newsletter', name: 'Newsletter', description: 'Engaging newsletter format' },
-            { id: 'compact', name: 'Two Column', description: 'Two column layout for articles and reports' },
-            { id: 'minimalist', name: 'Minimalist', description: 'Simple and clean design' },
-        ];
+        const templates = [{ id: 'default', name: 'Default', description: 'Clean and simple layout' }];
 
         return html`
             <div class="option-section">
@@ -480,8 +514,11 @@ class ShareComponent extends LitElement {
                                             style="width: 100%; height: 100%; object-fit: cover;"
                                             loading="lazy"
                                         />
-                                        <button class="view-btn" @click=${() => window.open(`/a7/export-templates/${template.id}.jpg`)}
-                                            style="background-color: black; filter: none">
+                                        <button
+                                            class="view-btn"
+                                            @click=${() => window.open(`/a7/export-templates/${template.id}.jpg`)}
+                                            style="background-color: black; filter: none"
+                                        >
                                             <img src="/a7/forget/open1.svg" style="width: 20px; height: 20px;" />
                                         </button>
                                     </div>

@@ -137,6 +137,20 @@ wisk.editor.createNewBlock = function (elementId, blockType, value, focusIdentif
     return id;
 };
 
+wisk.editor.createBlockNoFocus = function (elementId, blockType, value, rec, animate) {
+    const { id, blockElement } = this.createBlockBase(elementId, blockType, value, null, false);
+
+    setTimeout(() => {
+        if (animate) {
+            document.getElementById(id).setTextContent({ text: value.textContent });
+        } else {
+            wisk.editor.updateBlock(id, '', value, rec);
+        }
+    }, 0);
+
+    return id;
+};
+
 wisk.editor.handleChanges = async function (updateObject) {
     // Handle case where updateObject might be undefined or null
     if (!updateObject) return;
@@ -548,7 +562,7 @@ wisk.editor.useTemplate = async function (template) {
             document.getElementById('abcdefABCDEFxyz').setValue('', element.value);
             document.getElementById('abcdefABCDEFxyz').sendUpdates();
         }
-        if (element.id !== 'abcdefABCDEFxyz') wisk.editor.createNewBlock('', element.component, element.value, { x: 0 });
+        if (element.id !== 'abcdefABCDEFxyz') wisk.editor.createBlockNoFocus('', element.component, element.value);
     }
 
     wisk.theme.setTheme(template.theme);
@@ -556,14 +570,196 @@ wisk.editor.useTemplate = async function (template) {
 
     wisk.editor.justUpdates();
 
-    // focus on the first element
     setTimeout(() => {
         const firstElement = wisk.editor.elements[0];
         wisk.editor.focusBlock(firstElement.id, { x: firstElement.value.textContent.length });
     }, 0);
 };
 
-// Event Handler Functions
+wisk.editor.convertMarkdownToElements = function (markdown) {
+    // Remove code block wrapping if present
+    markdown = markdown.replace(/^```markdown\n([\s\S]*)\n```$/m, '$1');
+
+    // Remove YAML frontmatter if present
+    markdown = markdown.replace(/^---\n[\s\S]*?\n---\n/, '');
+    // Initialize elements array with the main element
+    const elements = [
+        {
+            id: 'abcdefABCDEFxyz',
+            lastEdited: Math.floor(Date.now() / 1000),
+            component: 'main-element',
+            value: {
+                textContent: '',
+                emoji: '',
+                backgroundUrl: '',
+                bannerSize: 'small',
+            },
+        },
+    ];
+
+    // Split markdown into lines
+    const lines = markdown.split('\n').filter(line => line.trim());
+    let currentList = null;
+    let listNumber = 1;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const nextLine = lines[i + 1];
+        let element = null;
+
+        // Reset list tracking when encountering non-list items
+        if (!line.trim().startsWith('-') && !line.trim().startsWith('*') && !line.trim().match(/^\d+\./)) {
+            currentList = null;
+            listNumber = 1;
+        }
+
+        // Heading patterns
+        if (line.startsWith('# ')) {
+            element = createHeadingElement(line.slice(2), 'heading1-element');
+        } else if (line.startsWith('## ')) {
+            element = createHeadingElement(line.slice(3), 'heading2-element');
+        } else if (line.startsWith('### ')) {
+            element = createHeadingElement(line.slice(4), 'heading3-element');
+        } else if (line.startsWith('#### ')) {
+            element = createHeadingElement(line.slice(5), 'heading4-element');
+        } else if (line.startsWith('##### ')) {
+            element = createHeadingElement(line.slice(6), 'heading5-element');
+        }
+        // Code block
+        else if (line.startsWith('```')) {
+            const language = line.slice(3).trim();
+            let codeContent = '';
+            i++;
+            while (i < lines.length && !lines[i].startsWith('```')) {
+                codeContent += lines[i] + '\n';
+                i++;
+            }
+            element = {
+                id: wisk.editor.generateNewId(),
+                lastEdited: Math.floor(Date.now() / 1000),
+                component: 'code-element',
+                value: {
+                    textContent: codeContent.trim(),
+                    language: language || 'plain',
+                },
+            };
+        }
+        // Blockquote
+        else if (line.startsWith('> ')) {
+            element = {
+                id: wisk.editor.generateNewId(),
+                lastEdited: Math.floor(Date.now() / 1000),
+                component: 'quote-element',
+                value: {
+                    textContent: convertInlineMarkdown(line.slice(2)),
+                },
+            };
+        }
+        // Checkbox list
+        else if (line.match(/^- \[[ x]\] /)) {
+            element = {
+                id: wisk.editor.generateNewId(),
+                lastEdited: Math.floor(Date.now() / 1000),
+                component: 'checkbox-element',
+                value: {
+                    textContent: convertInlineMarkdown(line.slice(6)),
+                    checked: line[3] === 'x',
+                    indent: 0,
+                    references: [],
+                },
+            };
+        }
+        // Numbered list
+        else if (line.match(/^\d+\. /)) {
+            element = {
+                id: wisk.editor.generateNewId(),
+                lastEdited: Math.floor(Date.now() / 1000),
+                component: 'numbered-list-element',
+                value: {
+                    textContent: convertInlineMarkdown(line.replace(/^\d+\. /, '')),
+                    number: listNumber++,
+                    indent: 0,
+                    references: [],
+                },
+            };
+        }
+        // Unordered list
+        else if (line.startsWith('- ') || line.startsWith('* ')) {
+            element = {
+                id: wisk.editor.generateNewId(),
+                lastEdited: Math.floor(Date.now() / 1000),
+                component: 'list-element',
+                value: {
+                    textContent: convertInlineMarkdown(line.slice(2)),
+                    indent: 0,
+                    references: [],
+                },
+            };
+        }
+        // Horizontal rule
+        else if (line.match(/^[-*_]{3,}$/)) {
+            element = {
+                id: wisk.editor.generateNewId(),
+                lastEdited: Math.floor(Date.now() / 1000),
+                component: 'divider-element',
+                value: {},
+            };
+        }
+        // Regular text
+        else {
+            element = {
+                id: wisk.editor.generateNewId(),
+                lastEdited: Math.floor(Date.now() / 1000),
+                component: 'text-element',
+                value: {
+                    textContent: convertInlineMarkdown(line),
+                },
+            };
+        }
+
+        if (element) {
+            elements.push(element);
+        }
+    }
+
+    elements[0].value.textContent = elements[1].value.textContent;
+    elements.splice(1, 1);
+
+    return elements;
+};
+
+function createHeadingElement(text, component) {
+    return {
+        id: wisk.editor.generateNewId(),
+        lastEdited: Math.floor(Date.now() / 1000),
+        component: component,
+        value: {
+            textContent: convertInlineMarkdown(text),
+        },
+    };
+}
+
+function convertInlineMarkdown(text) {
+    // Bold
+    text = text.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    text = text.replace(/__(.+?)__/g, '<b>$1</b>');
+
+    // Italic
+    text = text.replace(/\*(.+?)\*/g, '<i>$1</i>');
+    text = text.replace(/_(.+?)_/g, '<i>$1</i>');
+
+    // Strikethrough
+    text = text.replace(/~~(.+?)~~/g, '<strike>$1</strike>');
+
+    // Links
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
+    // Reference numbers
+    text = text.replace(/\[ref_(\d+)\]/g, '<span class="reference-number">[$1]</span>');
+
+    return text;
+}
+
 function whenPlusClicked(elementId) {
     wisk.editor.createNewBlock(elementId, 'text-element', { textContent: '' }, { x: 0 });
     const nextElement = wisk.editor.nextElement(elementId);

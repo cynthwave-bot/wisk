@@ -83,6 +83,14 @@ class TextElement extends BaseTextElement {
         `;
         this.shadowRoot.innerHTML = style + content;
     }
+
+    getTextContent() {
+        return {
+            html: this.editable.innerHTML,
+            text: this.editable.innerText,
+            markdown: wisk.editor.htmlToMarkdown(this.editable.innerHTML),
+        };
+    }
 }
 
 customElements.define('text-element', TextElement);
