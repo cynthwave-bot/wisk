@@ -154,7 +154,8 @@ class NeoAI extends LitElement {
             padding-bottom: var(--padding-3);
         }
         .i-action-button,
-        .c-action-button {
+        .c-action-button,
+        .horz-action-button {
             display: flex;
             padding: var(--padding-w2);
             border: none;
@@ -164,10 +165,15 @@ class NeoAI extends LitElement {
             cursor: pointer;
             border-radius: 100px;
             opacity: 0.8;
+            white-space: nowrap;
             color: var(--text-1);
         }
+        .horz-action-button {
+            padding: var(--padding-w1);
+        }
         .i-action-button:hover,
-        .c-action-button:hover {
+        .c-action-button:hover,
+        .horz-action-button:hover {
             opacity: 1;
             color: var(--accent-text);
             background-color: var(--accent-bg);
@@ -181,13 +187,25 @@ class NeoAI extends LitElement {
             filter: var(--accent-svg);
         }
         .i-input,
-        .c-input {
+        .c-input,
+        .c-horz {
             display: flex;
             justify-content: center;
             padding: var(--padding-w2);
             margin: var(--padding-4);
             border-radius: 100px;
             border: 2px solid var(--border-1);
+        }
+        .c-input {
+            margin-top: 0;
+        }
+        .c-horz {
+            border: none;
+            justify-content: unset;
+            overflow: auto;
+            border-radius: unset;
+            padding: 0;
+            margin: 0 var(--padding-4);
         }
         .i-inp,
         .c-inp {
@@ -320,10 +338,20 @@ class NeoAI extends LitElement {
         }
 
         @media (hover: hover) {
-            *::-webkit-scrollbar { width: 15px; }
-            *::-webkit-scrollbar-track { background: var(--bg-1); }
-            *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-            *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+            *::-webkit-scrollbar {
+                width: 15px;
+            }
+            *::-webkit-scrollbar-track {
+                background: var(--bg-1);
+            }
+            *::-webkit-scrollbar-thumb {
+                background-color: var(--bg-3);
+                border-radius: 20px;
+                border: 4px solid var(--bg-1);
+            }
+            *::-webkit-scrollbar-thumb:hover {
+                background-color: var(--text-1);
+            }
         }
 
         ::-webkit-input-placeholder {
@@ -653,8 +681,18 @@ class NeoAI extends LitElement {
         this.iContent = [
             { category: 'Talk', image: 'summarize', text: 'Summarize', 'text-2': 'this page', arg: 'summarize' },
             { category: 'Talk', image: 'ask', text: 'Ask about', 'text-2': 'this page', arg: 'ask-about' },
-            { category: 'Talk', image: 'translate', text: 'Translate page', 'text-2': '', arg: 'translate' },
-            { category: 'More', image: 'more', text: 'What can Neo do?', 'text-2': '', arg: 'more' },
+            { category: 'Talk', image: 'weak-arg', text: 'Identify weak arguments', 'text-2': 'in this page', arg: 'identify-weak-arg' },
+            { category: 'Talk', image: 'flag', text: 'Flag confusing parts', 'text-2': 'in this page', arg: 'flag-confusing-parts' },
+            { category: 'Talk', image: 'writers-block', text: "Overcome writer's block", 'text-2': '', arg: 'overcome-writers-block' },
+            { category: 'Talk', image: 'brainstorm', text: 'Brainstorm into ideas', 'text-2': '', arg: 'brainstorm-into-ideas' },
+
+            { category: 'Other', image: 'more', text: 'Improve structure', 'text-2': 'and flow', arg: 'improve-structure' },
+            { category: 'Other', image: 'more', text: 'Adjust tone', 'text-2': 'and style', arg: 'adjust-tone' },
+            { category: 'Other', image: 'more', text: 'Grammar check', 'text-2': 'detailed review', arg: 'grammar-check' },
+            { category: 'Other', image: 'more', text: 'Strengthen conclusion', 'text-2': '', arg: 'strengthen-conclusion' },
+            { category: 'Other', image: 'more', text: 'Optimize keywords', 'text-2': 'and SEO', arg: 'optimize-keywords' },
+
+            { category: 'More', image: 'wand', text: 'What can Neo do?', 'text-2': '', arg: 'more' },
             { category: 'More', image: 'help', text: 'Help', 'text-2': '', arg: 'help' },
             { category: 'More', image: 'support', text: 'Get support', 'text-2': '', arg: 'support' },
         ];
@@ -961,24 +999,61 @@ class NeoAI extends LitElement {
 
     runArg(arg) {
         console.log(arg);
+        var icInp = this.shadowRoot.querySelector(this.view === 'i-container' ? '.i-inp' : '.c-inp');
 
         switch (arg) {
             case '':
                 return;
 
             case 'summarize':
-                this.shadowRoot.querySelector('.i-inp').value = 'Summarize this page';
-                this.shadowRoot.querySelector('.i-inp').focus();
+                icInp.value = 'Go section by section and summarize the page';
+                icInp.focus();
                 break;
 
             case 'ask-about':
-                this.shadowRoot.querySelector('.i-inp').value = 'So can you tell me about ...';
-                this.shadowRoot.querySelector('.i-inp').focus();
+                icInp.value = 'So can you tell me about ...';
+                icInp.focus();
                 break;
 
-            case 'translate':
-                this.shadowRoot.querySelector('.i-inp').value = 'Translate this page to ...';
-                this.shadowRoot.querySelector('.i-inp').focus();
+            case 'identify-weak-arg':
+                icInp.value = 'Can you go through the arguments and identify the weak ones';
+                icInp.focus();
+                break;
+
+            case 'flag-confusing-parts':
+                icInp.value = 'Go through the page and flag the confusing parts';
+                icInp.focus();
+                break;
+
+            case 'overcome-writers-block':
+                icInp.value = "Help me overcome writer's block";
+                icInp.focus();
+                break;
+
+            case 'brainstorm-into-ideas':
+                icInp.value = 'Can you give me honest feedback on my piece? What can I do to improve it?';
+                icInp.focus();
+                break;
+
+            case 'improve-structure':
+                icInp.value = 'Analyze the document structure and suggest improvements for better flow and organization';
+                icInp.focus();
+                break;
+            case 'adjust-tone':
+                icInp.value = 'Analyze the tone of my writing and suggest adjustments to better match my intended audience';
+                icInp.focus();
+                break;
+            case 'grammar-check':
+                icInp.value = 'Perform a detailed grammar and style check, focusing on clarity and consistency';
+                icInp.focus();
+                break;
+            case 'strengthen-conclusion':
+                icInp.value = 'Review my conclusion and suggest ways to make it more impactful and memorable';
+                icInp.focus();
+                break;
+            case 'optimize-keywords':
+                icInp.value = 'Analyze my keyword usage and suggest improvements for better SEO while maintaining readability';
+                icInp.focus();
                 break;
 
             case 'more':
@@ -1006,6 +1081,7 @@ class NeoAI extends LitElement {
             wisk.utils.showToast('Chat cleared!', 6000);
             this.requestUpdate();
         }
+        this.setView('i-container');
     }
 
     setView(view) {
@@ -1273,6 +1349,17 @@ class NeoAI extends LitElement {
                 </div>
                 <div class="c-content">${this.renderChatContainer()}</div>
                 <div class="c-footer">
+                    <div class="c-horz">
+                        ${this.iContent
+                            .filter(item => item.category != 'More')
+                            .map(
+                                item => html`
+                                    <button @click=${() => this.runArg(item.arg)} class="horz-action-button">
+                                        <span class="i-action-text">${item.text}</span>
+                                    </button>
+                                `
+                            )}
+                    </div>
                     <div class="c-input">
                         <input
                             class="c-inp"

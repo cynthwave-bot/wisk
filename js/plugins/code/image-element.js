@@ -997,6 +997,28 @@ class ImageElement extends BaseTextElement {
             }
         }
     }
+
+    async moveImageToServer(imageUrl) {
+        try {
+            // Fetch the image
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const file = new File([blob], 'image.' + imageUrl.split('.').pop(), { type: blob.type });
+
+            // Upload to server
+            const uploadedUrl = await this.uploadToServer(file);
+
+            // Set the new URL
+            this.imageUrl = uploadedUrl;
+            this.updateImage();
+            this.sendUpdates();
+
+            return uploadedUrl;
+        } catch (error) {
+            console.error('Error moving image to server:', error);
+            throw error;
+        }
+    }
 }
 
 customElements.define('image-element', ImageElement);

@@ -16,11 +16,13 @@ const urlsToCache = [
 
 // Function to check if we're on localhost
 const isLocalhost = () => {
-    return self.location.hostname === 'localhost' || 
-           self.location.hostname === '127.0.0.1' ||
-           self.location.hostname.startsWith('192.168.') ||
-           self.location.hostname.startsWith('10.') ||
-           self.location.hostname.includes('::1');
+    return (
+        self.location.hostname === 'localhost' ||
+        self.location.hostname === '127.0.0.1' ||
+        self.location.hostname.startsWith('192.168.') ||
+        self.location.hostname.startsWith('10.') ||
+        self.location.hostname.includes('::1')
+    );
 };
 
 // Function to clear all caches
@@ -42,7 +44,7 @@ self.addEventListener('install', event => {
         // Skip caching on localhost
         return;
     }
-    
+
     event.waitUntil(
         caches.open(CACHE_NAME).then(cache => {
             return cache.addAll(urlsToCache);

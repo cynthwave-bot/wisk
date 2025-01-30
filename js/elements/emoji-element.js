@@ -50,10 +50,20 @@ class EmojiSelector extends LitElement {
         }
 
         @media (hover: hover) {
-            *::-webkit-scrollbar { width: 15px; }
-            *::-webkit-scrollbar-track { background: var(--bg-1); }
-            *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-            *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+            *::-webkit-scrollbar {
+                width: 15px;
+            }
+            *::-webkit-scrollbar-track {
+                background: var(--bg-1);
+            }
+            *::-webkit-scrollbar-thumb {
+                background-color: var(--bg-3);
+                border-radius: 20px;
+                border: 4px solid var(--bg-1);
+            }
+            *::-webkit-scrollbar-thumb:hover {
+                background-color: var(--text-1);
+            }
         }
 
         .header button {
@@ -1987,10 +1997,16 @@ class EmojiSelector extends LitElement {
                     <button @click=${() => this.changeCategory('nature')} class="${this.selectedCategory === this.animalsAndNature ? 'active' : ''}">
                         <img src="/a7/forget/emoji-leaf.svg" alt="nature" draggable="false" />
                     </button>
-                    <button @click=${() => this.changeCategory('foodAndDrink')} class="${this.selectedCategory === this.foodAndDrink ? 'active' : ''}">
+                    <button
+                        @click=${() => this.changeCategory('foodAndDrink')}
+                        class="${this.selectedCategory === this.foodAndDrink ? 'active' : ''}"
+                    >
                         <img src="/a7/forget/emoji-pizza.svg" alt="food" draggable="false" />
                     </button>
-                    <button @click=${() => this.changeCategory('travelAndPlaces')} class="${this.selectedCategory === this.travelAndPlaces ? 'active' : ''}">
+                    <button
+                        @click=${() => this.changeCategory('travelAndPlaces')}
+                        class="${this.selectedCategory === this.travelAndPlaces ? 'active' : ''}"
+                    >
                         <img src="/a7/forget/emoji-truck.svg" alt="travel" draggable="false" />
                     </button>
                     <button @click=${() => this.changeCategory('activities')} class="${this.selectedCategory === this.activities ? 'active' : ''}">
