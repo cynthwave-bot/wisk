@@ -265,7 +265,6 @@ class CommandPalette extends HTMLElement {
             .buttons {
                 display: flex;
                 flex-direction: column;
-                gap: var(--gap-1);
                 max-height: 350px;
                 overflow-y: auto;
                 padding: var(--padding-4);
@@ -275,7 +274,7 @@ class CommandPalette extends HTMLElement {
                 border: 1px solid transparent;
                 background-color: var(--bg-1);
                 color: var(--text-1);
-                padding: var(--padding-w2);
+                padding: var(--padding-3) var(--padding-4);
                 border-radius: var(--radius);
                 cursor: pointer;
                 display: flex;
@@ -305,15 +304,15 @@ class CommandPalette extends HTMLElement {
                 border-radius: var(--radius-large);
                 background-color: var(--bg-1);
                 border: none;
-                border-bottom: 1px solid var(--border-1);
+                border-bottom: 1px solid var(--bg-3);
                 border-bottom-left-radius: 0;
                 border-bottom-right-radius: 0;
-                padding: var(--padding-4);
+                padding: var(--padding-4) calc(var(--padding-4) * 2);
             }
             .command-title {
                 font-family: var(--font);
                 flex: 1;
-                font-size: 14px;
+                font-size: 13px;
             }
             .command-description {
                 color: var(--text-2);

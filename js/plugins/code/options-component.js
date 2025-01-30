@@ -125,10 +125,6 @@ class OptionsComponent extends LitElement {
             align-items: center;
             gap: var(--gap-2);
         }
-        .icon {
-            cursor: pointer;
-            padding: var(--padding-3);
-        }
         .hidden {
             display: none;
         }
