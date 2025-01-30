@@ -45,7 +45,7 @@ class EmojiSelector extends LitElement {
             display: flex;
             justify-content: space-around;
             padding: var(--padding-3);
-            border-bottom: 1px solid var(--border-1);
+            border-top: 1px solid var(--border-1);
         }
         *::-webkit-scrollbar {
             width: 15px;
@@ -69,7 +69,16 @@ class EmojiSelector extends LitElement {
             height: 27px;
             padding: 0px;
             cursor: pointer;
+            opacity: 0.5;
+            padding: 2px;
+            border-radius: 4px;
         }
+
+        .header button.active {
+            background: var(--bg-3);
+            opacity: 1;
+        }
+
         .emojis {
             display: flex;
             flex-wrap: wrap;
@@ -96,12 +105,11 @@ class EmojiSelector extends LitElement {
         :host {
         }
         .search {
-            padding: var(--padding-4);
+            padding: var(--padding-3) var(--padding-4);
             border-bottom: 1px solid var(--border-1);
             display: flex;
             align-items: center;
             gap: var(--gap-2);
-            justify-content: center;
         }
         .search img {
             width: 16px;
@@ -114,6 +122,24 @@ class EmojiSelector extends LitElement {
             border: none;
             color: var(--text-1);
             outline: none;
+            flex: 1;
+            min-width: 100px;
+        }
+        .search-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            padding: var(--padding-w1);
+            border-radius: var(--radius);
+            color: var(--text-2);
+        }
+        .search-button1 {
+            opacity: 1;
+            display: flex;
+        }
+        .search-button:hover {
+            background-color: var(--bg-3);
         }
         .search:has(input:focus) {
             background-color: var(--bg-2);
@@ -1925,6 +1951,11 @@ class EmojiSelector extends LitElement {
         this.requestUpdate();
     }
 
+    randomEmoji() {
+        const randomIndex = Math.floor(Math.random() * this.allEmojis.length);
+        return this.allEmojis[randomIndex].emoji;
+    }
+
     render() {
         return html`
             <div class="outer" @click=${() => this.hide()}></div>
@@ -1932,36 +1963,14 @@ class EmojiSelector extends LitElement {
                 <div class="search">
                     <img src="/a7/forget/emoji-search.svg" alt="search" />
                     <input type="text" placeholder="Search emoji" @input=${this.onSearch} />
+
+                    <button @click=${() => this.dispatch(this.randomEmoji())} class="search-button search-button1">
+                        <img src="/a7/forget/emoji-shuffle.svg" alt="smiley" draggable="false" />
+                    </button>
+
+                    <button @click=${() => this.dispatch('')} class="search-button" class="search-button">Remove</button>
                 </div>
-                <div class="header">
-                    <button @click=${() => this.changeCategory('smiley')}>
-                        <img src="/a7/forget/emoji-smile.svg" alt="smiley" draggable="false" />
-                    </button>
-                    <button @click=${() => this.changeCategory('people')}>
-                        <img src="/a7/forget/emoji-person.svg" alt="people" draggable="false" />
-                    </button>
-                    <button @click=${() => this.changeCategory('nature')}>
-                        <img src="/a7/forget/emoji-leaf.svg" alt="nature" draggable="false" />
-                    </button>
-                    <button @click=${() => this.changeCategory('foodAndDrink')}>
-                        <img src="/a7/forget/emoji-pizza.svg" alt="food" draggable="false" />
-                    </button>
-                    <button @click=${() => this.changeCategory('travelAndPlaces')}>
-                        <img src="/a7/forget/emoji-truck.svg" alt="travel" draggable="false" />
-                    </button>
-                    <button @click=${() => this.changeCategory('activities')}>
-                        <img src="/a7/forget/emoji-basketball.svg" alt="activities" draggable="false" />
-                    </button>
-                    <button @click=${() => this.changeCategory('objects')}>
-                        <img src="/a7/forget/emoji-mac.svg" alt="objects" draggable="false" />
-                    </button>
-                    <button @click=${() => this.changeCategory('symbols')}>
-                        <img src="/a7/forget/emoji-heart.svg" alt="symbols" draggable="false" />
-                    </button>
-                    <button @click=${() => this.changeCategory('flags')}>
-                        <img src="/a7/forget/emoji-flag.svg" alt="flags" draggable="false" />
-                    </button>
-                </div>
+
                 <div class="emojis">
                     ${this.searchResults.length > 0
                         ? this.searchResults.map(
@@ -1972,6 +1981,36 @@ class EmojiSelector extends LitElement {
                               emojiObj =>
                                   html` <button @click=${() => this.dispatch(emojiObj.emoji)} title="${emojiObj.name}">${emojiObj.emoji}</button>`
                           )}
+                </div>
+
+                <div class="header">
+                    <button @click=${() => this.changeCategory('smiley')} class="${this.selectedCategory === this.smileysAndEmotion ? 'active' : ''}">
+                        <img src="/a7/forget/emoji-smile.svg" alt="smiley" draggable="false" />
+                    </button>
+                    <button @click=${() => this.changeCategory('people')} class="${this.selectedCategory === this.peopleAndBody ? 'active' : ''}">
+                        <img src="/a7/forget/emoji-person.svg" alt="people" draggable="false" />
+                    </button>
+                    <button @click=${() => this.changeCategory('nature')} class="${this.selectedCategory === this.animalsAndNature ? 'active' : ''}">
+                        <img src="/a7/forget/emoji-leaf.svg" alt="nature" draggable="false" />
+                    </button>
+                    <button @click=${() => this.changeCategory('foodAndDrink')} class="${this.selectedCategory === this.foodAndDrink ? 'active' : ''}">
+                        <img src="/a7/forget/emoji-pizza.svg" alt="food" draggable="false" />
+                    </button>
+                    <button @click=${() => this.changeCategory('travelAndPlaces')} class="${this.selectedCategory === this.travelAndPlaces ? 'active' : ''}">
+                        <img src="/a7/forget/emoji-truck.svg" alt="travel" draggable="false" />
+                    </button>
+                    <button @click=${() => this.changeCategory('activities')} class="${this.selectedCategory === this.activities ? 'active' : ''}">
+                        <img src="/a7/forget/emoji-basketball.svg" alt="activities" draggable="false" />
+                    </button>
+                    <button @click=${() => this.changeCategory('objects')} class="${this.selectedCategory === this.objects ? 'active' : ''}">
+                        <img src="/a7/forget/emoji-mac.svg" alt="objects" draggable="false" />
+                    </button>
+                    <button @click=${() => this.changeCategory('symbols')} class="${this.selectedCategory === this.symbols ? 'active' : ''}">
+                        <img src="/a7/forget/emoji-heart.svg" alt="symbols" draggable="false" />
+                    </button>
+                    <button @click=${() => this.changeCategory('flags')} class="${this.selectedCategory === this.flags ? 'active' : ''}">
+                        <img src="/a7/forget/emoji-flag.svg" alt="flags" draggable="false" />
+                    </button>
                 </div>
             </div>
         `;
