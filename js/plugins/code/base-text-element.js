@@ -37,6 +37,11 @@ class BaseTextElement extends HTMLElement {
             }
         });
         this.references = [];
+        window.addEventListener('cite-element-updated', e => {
+            if (this.editable.innerHTML.includes(e.detail.referenceId)) {
+                this.sendUpdates();
+            }
+        });
 
         // emoji support if its not obvious by name
         this.emojiSuggestions = [];

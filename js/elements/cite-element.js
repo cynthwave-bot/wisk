@@ -58,6 +58,7 @@ class CiteElement extends LitElement {
         this.addEventListener('click', this._handleClick);
         this.addEventListener('mouseenter', this._handleMouseEnter);
         this.addEventListener('mouseleave', this._handleMouseLeave);
+        window.addEventListener('citation-updated', this.updateCitation.bind(this));
     }
 
     disconnectedCallback() {
@@ -90,6 +91,13 @@ class CiteElement extends LitElement {
         }
     }
 
+    async updateCitation() {
+        var cm = document.querySelector('manage-citations');
+        this.citation = cm.formatInlineCitation(cm.getCitationData(this.referenceId));
+        await this.requestUpdate();
+        window.dispatchEvent(new CustomEvent('cite-element-updated', { detail: { referenceId: this.referenceId } }));
+    }
+
     _handleMouseLeave() {
         this._hideTimeout = setTimeout(() => {
             this._showDialog = false;
@@ -101,6 +109,7 @@ class CiteElement extends LitElement {
         return html`
             ${this.citation}
             <div
+                style="font-size: 14px; font-weight: bold;"
                 class="hover-dialog ${this._showDialog ? 'visible' : ''}"
                 @mouseenter=${() => {
                     if (this._hideTimeout) {

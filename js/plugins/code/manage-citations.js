@@ -550,6 +550,7 @@ class ManageCitations extends LitElement {
             id: this.editingId,
         };
         this.references = this.references.map(ref => (ref.id === this.editingId ? updatedReference : ref));
+        window.dispatchEvent(new CustomEvent('citation-updated', { detail: { id: this.editingId } }));
 
         this.savePluginData();
         this.editingId = null;
