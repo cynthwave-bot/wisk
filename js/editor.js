@@ -113,7 +113,7 @@ wisk.editor.createBlockBase = function (elementId, blockType, value, remoteId, i
     wisk.editor.elements.splice(elementIndex + 1, 0, obj);
 
     // TODO quick fix? idk if this is the best way to do it
-    if (blockType === "divider-element" || blockType === "super-divider") {
+    if (blockType === 'divider-element' || blockType === 'super-divider') {
         wisk.editor.createNewBlock(id, 'text-element', { textContent: '' }, { x: 0 });
     }
 

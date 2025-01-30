@@ -318,6 +318,12 @@ class NeoAI extends LitElement {
             display: flex;
             flex-direction: column;
             gap: var(--gap-3);
+            transition: all 0.5s;
+        }
+        @starting-style {
+            .message-bubble {
+                opacity: 0;
+            }
         }
 
         .message.user .message-bubble {

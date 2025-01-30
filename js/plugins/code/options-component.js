@@ -560,12 +560,22 @@ class OptionsComponent extends LitElement {
             border: 2px solid var(--text-1);
         }
         @media (max-width: 768px) {
-            .plugins-toggle {
+            .plugins-toggle,
+            .options-section {
                 padding: var(--padding-3) 0;
             }
             .plugin-list {
                 margin-top: var(--gap-1);
             }
+        }
+        .plugins-toggle label {
+            display: inline-flex;
+            cursor: pointer;
+            align-items: center;
+            gap: var(--gap-1);
+        }
+        .plugins-toggle label img {
+            filter: var(--themed-svg);
         }
     `;
 
@@ -611,6 +621,10 @@ class OptionsComponent extends LitElement {
         this.searchTerm = e.target.value.toLowerCase();
     }
 
+    handleIntegrationSearch(e) {
+        // TODO
+    }
+
     // TODO: unhardcode the server url, also should have a better way to detect electron
     async checkForUpdatesX() {
         const response = await fetch('http://localhost:30007/app-nav/check-update');
@@ -634,6 +648,10 @@ class OptionsComponent extends LitElement {
 
     showPluginsManager() {
         this.currentView = 'plugins';
+    }
+
+    showIntegrationsManager() {
+        this.currentView = 'integrations';
     }
 
     showMainView() {
@@ -735,17 +753,22 @@ class OptionsComponent extends LitElement {
                 <div class="view ${this.currentView === 'main' ? 'active' : ''}">
 
                     <div class="plugins-toggle options-section" @click="${this.showThemesView}">
-                        <label>Themes</label>
+                        <label> <img src="/a7/plugins/options-element/theme.svg" alt="Themes" class="icon" draggable="false"/> Themes</label>
                         <img src="/a7/iconoir/right.svg" alt="Themes" class="icon" draggable="false"/>
                     </div>
 
                     <div class="plugins-toggle options-section" @click="${this.showPluginsManager}">
-                        <label>Plugins</label>
+                        <label> <img src="/a7/plugins/options-element/plug.svg" alt="Plugins" class="icon" draggable="false"/> Plugins</label>
                         <img src="/a7/iconoir/right.svg" alt="Plugins" class="icon" draggable="false"/>
                     </div>
 
+                    <div class="plugins-toggle options-section" @click="${this.showIntegrationsManager}">
+                        <label> <img src="/a7/plugins/options-element/integrations.svg" alt="Integrations" class="icon" draggable="false"/> Integrations</label>
+                        <img src="/a7/iconoir/right.svg" alt="Integrations" class="icon" draggable="false"/>
+                    </div>
+
                     <div class="plugins-toggle options-section" @click="${this.showSettingsView}">
-                        <label>Settings</label>
+                        <label> <img src="/a7/plugins/options-element/settings.svg" alt="Settings" class="icon" draggable="false"/> Settings</label>
                         <img src="/a7/iconoir/right.svg" alt="About" class="icon" draggable="false"/>
                     </div>
 
@@ -786,6 +809,22 @@ class OptionsComponent extends LitElement {
                                     </div>
                                 `
                             )}
+                    </div>
+                </div>
+
+                <!-- Integrations View -->
+                <div class="view ${this.currentView === 'integrations' ? 'active' : ''}">
+                    <div class="plugins-header" style="margin-bottom: 10px">
+                        <div class="plugins-header">
+                            <img src="/a7/iconoir/left.svg" alt="Back" @click="${this.showMainView}" class="icon" draggable="false"/>
+                            <label for="pluginSearch">Integrations</label>
+                        </div>
+
+                        <input id="pluginSearch" type="text" placeholder="Search Integrations" class="plugin-search" @input="${this.handleIntegrationSearch}" style="flex: 1"/>
+                    </div>
+
+                    <div class="plugin-list">
+                        <p>Integrations coming soon...</p>
                     </div>
                 </div>
 

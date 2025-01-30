@@ -99,7 +99,6 @@ class FeedbackDialog extends LitElement {
             display: flex;
             flex-direction: column;
             gap: calc(var(--gap-3) * 2);
-            justify-content: flex-end;
         }
 
         .input-group {
@@ -145,9 +144,10 @@ class FeedbackDialog extends LitElement {
         }
 
         .rating-button.selected {
-            background: var(--accent-bg);
-            color: var(--accent-text);
+            background: var(--accent-text);
+            color: var(--accent-bg);
             border-color: transparent;
+            font-weight: 500;
         }
 
         .submit-button {
@@ -306,6 +306,8 @@ class FeedbackDialog extends LitElement {
                                 <input type="checkbox" id="attach-logs" name="attach-logs" />
                             </div>
                         </div>
+
+                        <div style="flex: 1"></div>
 
                         <button class="submit-button" @click=${this.handleSubmit} ?disabled=${!this.rating && !this.feedback}>Submit Feedback</button>
                     </div>
