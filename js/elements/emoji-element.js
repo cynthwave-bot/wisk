@@ -8,6 +8,7 @@ class EmojiSelector extends LitElement {
             margin: 0px;
             padding: 0px;
             transition: 0.3s;
+            outline: none;
         }
         .outer {
             position: fixed;
@@ -47,19 +48,12 @@ class EmojiSelector extends LitElement {
             padding: var(--padding-3);
             border-top: 1px solid var(--border-1);
         }
-        *::-webkit-scrollbar {
-            width: 15px;
-        }
-        *::-webkit-scrollbar-track {
-            background: var(--bg-1);
-        }
-        *::-webkit-scrollbar-thumb {
-            background-color: var(--bg-3);
-            border-radius: 20px;
-            border: 4px solid var(--bg-1);
-        }
-        *::-webkit-scrollbar-thumb:hover {
-            background-color: var(--text-1);
+
+        @media (hover: hover) {
+            *::-webkit-scrollbar { width: 15px; }
+            *::-webkit-scrollbar-track { background: var(--bg-1); }
+            *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
+            *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
         }
 
         .header button {
@@ -70,15 +64,13 @@ class EmojiSelector extends LitElement {
             padding: 0px;
             cursor: pointer;
             opacity: 0.5;
-            padding: 2px;
+            padding: 3px;
             border-radius: 4px;
         }
-
         .header button.active {
             background: var(--bg-3);
             opacity: 1;
         }
-
         .emojis {
             display: flex;
             flex-wrap: wrap;
@@ -86,6 +78,8 @@ class EmojiSelector extends LitElement {
             gap: var(--gap-3);
             overflow-y: auto;
             justify-content: center;
+            flex: 1;
+            align-items: flex-start;
         }
         .emojis button {
             background: none;
@@ -1968,7 +1962,7 @@ class EmojiSelector extends LitElement {
                         <img src="/a7/forget/emoji-shuffle.svg" alt="smiley" draggable="false" />
                     </button>
 
-                    <button @click=${() => this.dispatch('')} class="search-button" class="search-button">Remove</button>
+                    <button @click=${() => this.dispatch(undefined)} class="search-button" class="search-button">Remove</button>
                 </div>
 
                 <div class="emojis">

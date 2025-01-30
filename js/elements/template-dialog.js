@@ -274,19 +274,12 @@ class TemplateDialog extends LitElement {
             color: var(--fg-blue);
         }
 
-        *::-webkit-scrollbar {
-            width: 15px;
-        }
-        *::-webkit-scrollbar-track {
-            background: var(--bg-1);
-        }
-        *::-webkit-scrollbar-thumb {
-            background-color: var(--bg-3);
-            border-radius: 20px;
-            border: 4px solid var(--bg-1);
-        }
-        *::-webkit-scrollbar-thumb:hover {
-            background-color: var(--text-1);
+
+        @media (hover: hover) {
+            *::-webkit-scrollbar { width: 15px; }
+            *::-webkit-scrollbar-track { background: var(--bg-1); }
+            *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
+            *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
         }
     `;
 
