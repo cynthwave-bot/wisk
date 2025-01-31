@@ -10,8 +10,7 @@ Thank you for your interest in contributing to Wisk! As an open-source project f
 4. Make your changes
 5. Test your changes locally using a simple HTTP server:
     ```bash
-    python -m http.server 8000
-    # Visit http://localhost:8000
+    python -m http.server 8000     # Visit http://localhost:8000
     ```
 
 ## Development Guidelines
@@ -51,7 +50,7 @@ Thank you for your interest in contributing to Wisk! As an open-source project f
 
 ## Need Help?
 
-- Check existing [issues](https://github.com/yourusername/wisk/issues)
+- Check existing [issues](https://github.com/cynthwave/wisk/issues)
 - Join our community discussions on [Discord](https://discord.gg/YyqXEey4JS)
 - Email us at hey@cynthwave.com
 

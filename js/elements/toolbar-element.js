@@ -19,7 +19,7 @@ class ToolbarElement extends LitElement {
             background: var(--bg-1);
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
-            filter: drop-shadow(1px 1px 5px var(--accent-bg));
+            filter: var(--drop-shadow);
             padding: var(--padding-2);
             gap: var(--gap-2);
             z-index: 99;

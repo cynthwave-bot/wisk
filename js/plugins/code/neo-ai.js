@@ -387,6 +387,18 @@ class NeoAI extends LitElement {
             padding: 0 calc((100% - 1000px) / 2);
         }
 
+        .clear-chatx {
+            padding: var(--padding-w1);
+            width: fit-content;
+            border-radius: var(--radius);
+            outline: none;
+            border: none;
+            background: var(--fg-red);
+            color: var(--bg-red);
+            font-weight: bold;
+            cursor: pointer;
+        }
+
         .logo-bubble {
             display: flex;
             flex-direction: row-reverse;
@@ -918,6 +930,7 @@ class NeoAI extends LitElement {
                     <div class="message-bubble status" style="background-color: ${statusStyle.background}; color: ${statusStyle.color};">
                         ${message.text}
                     </div>
+                    ${message.color == 'error' ? html`<button class="clear-chatx" @click=${this.clearChat}>Clear chat</button>` : ''}
                 `;
 
             case 'image-results':
@@ -1087,7 +1100,9 @@ class NeoAI extends LitElement {
             wisk.utils.showToast('Chat cleared!', 6000);
             this.requestUpdate();
         }
+        this.shadowRoot.querySelector('.i-inp').value = '';
         this.setView('i-container');
+        this.shadowRoot.querySelector('.i-inp').focus();
     }
 
     setView(view) {

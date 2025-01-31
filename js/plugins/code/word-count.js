@@ -35,7 +35,7 @@ class WordCount extends LitElement {
             transform: translateX(-50%);
             background-color: var(--bg-3);
             padding: 8px;
-            border-radius: 4px;
+            border-radius: var(--radius);
             filter: var(--drop-shadow);
             z-index: 1000;
             white-space: nowrap;
