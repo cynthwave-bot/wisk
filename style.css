@@ -67,6 +67,10 @@ nav {
 .nav-button:hover {
     background-color: var(--bg-3);
 }
+.nav-button-dont-hover:hover {
+    background-color: transparent;
+    cursor: unset;
+}
 
 .hidden {
     display: none;

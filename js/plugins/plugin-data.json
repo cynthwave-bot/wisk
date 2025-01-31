@@ -13,7 +13,7 @@
                 {
                     "title": "Example",
                     "icon": "example.svg",
-                    "category": "mini-dialog full-dialog (not implemented) right-sidebar left-sidebar component auto context-box (not implemented)",
+                    "category": "mini-dialog full-dialog (not implemented) right-sidebar left-sidebar component auto nav-mini context-box (not implemented)",
                     "component": "example",
                     "nav": false,
                     "loadAsModule": false
@@ -794,7 +794,7 @@
                 {
                     "title": "Nightwave Plaza Radio",
                     "icon": "nightwave-plaza-2.svg",
-                    "category": "mini-dialog",
+                    "category": "nav-mini",
                     "component": "nightwave-plaza-radio",
                     "nav": true,
                     "loadAsModule": true
@@ -875,7 +875,7 @@
                 {
                     "title": "Word Count",
                     "icon": "word-count-2.svg",
-                    "category": "mini-dialog",
+                    "category": "nav-mini",
                     "component": "word-count",
                     "nav": true,
                     "textual": false,

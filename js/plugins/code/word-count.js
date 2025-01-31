@@ -1,12 +1,14 @@
 import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
-class WorkdCount extends LitElement {
+class WordCount extends LitElement {
     static styles = css`
         * {
             box-sizing: border-box;
             font-family: var(--font);
             margin: 0px;
             padding: 0px;
+            cursor: unset;
+            font-weight: 600;
         }
         :host {
             display: block;
@@ -14,17 +16,38 @@ class WorkdCount extends LitElement {
             background-color: var(--bg-1);
         }
         .x {
-            height: 100%;
             display: flex;
             flex-direction: column;
             gap: var(--gap-3);
+            position: relative;
         }
         .x > div {
             display: flex;
             justify-content: space-between;
             color: var(--text-1);
         }
-
+        .hover-stats {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 150%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--bg-3);
+            padding: 8px;
+            border-radius: 4px;
+            filter: var(--drop-shadow);
+            z-index: 1000;
+            white-space: nowrap;
+            transition:
+                visibility 0s,
+                opacity 0.2s ease-in-out;
+            pointer-events: none;
+        }
+        .x:hover .hover-stats {
+            visibility: visible;
+            opacity: 1;
+        }
         @media (hover: hover) {
             *::-webkit-scrollbar {
                 width: 15px;
@@ -46,10 +69,50 @@ class WorkdCount extends LitElement {
         }
     `;
 
-    static properties = {};
+    static properties = {
+        wordCount: { type: Number },
+        charCount: { type: Number },
+        charNoSpaces: { type: Number },
+    };
 
     constructor() {
         super();
+        this.wordCount = 0;
+        this.charCount = 0;
+        this.charNoSpaces = 0;
+        this.updateTimer = null;
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.startUpdateTimer();
+        this.updateCounts();
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.stopUpdateTimer();
+    }
+
+    startUpdateTimer() {
+        this.updateCounts(); // Initial update
+        this.updateTimer = setInterval(() => {
+            this.updateCounts();
+        }, 5000);
+    }
+
+    stopUpdateTimer() {
+        if (this.updateTimer) {
+            clearInterval(this.updateTimer);
+            this.updateTimer = null;
+        }
+    }
+
+    updateCounts() {
+        this.wordCount = this.countWords(wisk.editor.elements);
+        this.charCount = this.countCharacters(wisk.editor.elements);
+        this.charNoSpaces = this.countCharactersExcludingSpaces(wisk.editor.elements);
+        this.requestUpdate();
     }
 
     getWords(text) {
@@ -93,19 +156,19 @@ class WorkdCount extends LitElement {
         return characters;
     }
 
-    opened() {
-        this.requestUpdate();
-    }
-
     render() {
         return html`
             <div class="x">
-                <div>Words <span> ${this.countWords(wisk.editor.elements)} </span></div>
-                <div>Characters <span> ${this.countCharacters(wisk.editor.elements)} </span></div>
-                <div>Characters (excluding spaces) <span> ${this.countCharactersExcludingSpaces(wisk.editor.elements)} </span></div>
+                ${this.wordCount === 1
+                    ? html`<div style="white-space: nowrap;"><span style="margin-right: 4px">${this.wordCount}</span>word</div>`
+                    : html` <div style="white-space: nowrap;"><span style="margin-right: 4px">${this.wordCount}</span>words</div>`}
+                <div class="hover-stats">
+                    characters: ${this.charCount}<br />
+                    characters (no spaces): ${this.charNoSpaces}
+                </div>
             </div>
         `;
     }
 }
 
-customElements.define('word-count', WorkdCount);
+customElements.define('word-count', WordCount);

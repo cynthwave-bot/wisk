@@ -28,7 +28,7 @@ wisk.plugins = {
         // other elements
         'neo-ai',
         'manage-citations',
-        'general-chat',
+        // 'general-chat',
         'share-manager',
         'more',
         'left-menu',
@@ -142,58 +142,71 @@ function addToNavBar(content, inx) {
     button.classList.add('nav-button');
     button.title = content.title;
 
-    // Create icon
-    const icon = document.createElement('img');
-    icon.classList.add('plugin-icon');
-    icon.draggable = false;
-    icon.src = `${SERVER}${wisk.plugins.pluginData['icon-path']}${content.icon}`;
-    button.appendChild(icon);
+    // Create icon only if not nav-mini
+    if (content.category !== 'nav-mini') {
+        const icon = document.createElement('img');
+        icon.classList.add('plugin-icon');
+        icon.draggable = false;
+        icon.src = `${SERVER}${wisk.plugins.pluginData['icon-path']}${content.icon}`;
+        button.style.order = inx + 500;
+        button.appendChild(icon);
+    } else {
+        button.classList.add('nav-button-dont-hover');
+        button.style.order = inx;
+        button.title = '';
+    }
 
     if (content.title == 'Options') {
         inx = 999;
         button.classList.add('options-button');
     }
-    button.style.order = inx;
 
-    // Create the component container and add it to the appropriate parent
+    // Create the component container
     const componentElement = document.createElement(content.component);
-
     if (content.identifier) {
         componentElement.id = content.identifier;
     }
-
-    componentElement.style.display = 'none';
     componentElement.dataset.pluginComponent = 'true';
 
-    // Add component to appropriate container based on category
-    let containerSelector;
-    switch (content.category) {
-        case 'mini-dialog':
-            containerSelector = '.mini-dialog-body';
-            break;
-        case 'right-sidebar':
-            containerSelector = '.right-sidebar-body';
-            break;
-        case 'left-sidebar':
-            containerSelector = '.left-sidebar-body';
-            break;
+    // Handle nav-mini category differently
+    if (content.category === 'nav-mini') {
+        button.appendChild(componentElement);
+    } else {
+        // For other categories, add to appropriate container
+        componentElement.style.display = 'none';
+        let containerSelector;
+        switch (content.category) {
+            case 'mini-dialog':
+                containerSelector = '.mini-dialog-body';
+                break;
+            case 'right-sidebar':
+                containerSelector = '.right-sidebar-body';
+                break;
+            case 'left-sidebar':
+                containerSelector = '.left-sidebar-body';
+                break;
+        }
+        const container = document.querySelector(containerSelector);
+        container.appendChild(componentElement);
     }
-
-    const container = document.querySelector(containerSelector);
-    container.appendChild(componentElement);
 
     button.onclick = () => {
         console.log(`Toggling ${content.category}:`, content.title, content.component);
-        switch (content.category) {
-            case 'mini-dialog':
-                toggleMiniDialogNew(content.component, content.title);
-                break;
-            case 'right-sidebar':
-                toggleRightSidebarNew(content.component, content.title);
-                break;
-            case 'left-sidebar':
-                toggleLeftSidebarNew(content.component, content.title);
-                break;
+        if (content.category === 'nav-mini') {
+            // do nothing
+        } else {
+            // Handle other categories as before
+            switch (content.category) {
+                case 'mini-dialog':
+                    toggleMiniDialogNew(content.component, content.title);
+                    break;
+                case 'right-sidebar':
+                    toggleRightSidebarNew(content.component, content.title);
+                    break;
+                case 'left-sidebar':
+                    toggleLeftSidebarNew(content.component, content.title);
+                    break;
+            }
         }
     };
 
@@ -206,6 +219,7 @@ function addToNavBar(content, inx) {
         },
         ''
     );
+
     nav.appendChild(button);
 }
 

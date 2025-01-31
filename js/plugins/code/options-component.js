@@ -873,6 +873,7 @@ class OptionsComponent extends LitElement {
                                       ${this.selectedPlugin.contents.some(
                                           content =>
                                               content.category.includes('mini-dialog') ||
+                                              content.category.includes('nav-mini') ||
                                               content.category.includes('full-dialog') ||
                                               content.category.includes('right-sidebar') ||
                                               content.category.includes('left-sidebar') ||
@@ -901,6 +902,11 @@ class OptionsComponent extends LitElement {
                                                     <ul style="color: var(--text-2); display: flex; flex-direction: column; gap: var(--gap-1)">
                                                         ${this.selectedPlugin.contents.some(content => content.category.includes('mini-dialog'))
                                                             ? html` <p style="font-size: 14px;">• opens as a small dialog box</p> `
+                                                            : ''}
+                                                        ${this.selectedPlugin.contents.some(content => content.category.includes('nav-mini'))
+                                                            ? html`
+                                                                  <p style="font-size: 14px;">• adds a interactive button to the navigation bar</p>
+                                                              `
                                                             : ''}
                                                         ${this.selectedPlugin.contents.some(content => content.category.includes('full-dialog'))
                                                             ? html`
