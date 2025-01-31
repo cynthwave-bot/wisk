@@ -573,7 +573,7 @@ class OptionsComponent extends LitElement {
         }
         .quick-options {
             display: flex;
-            gap: var(--gap-1);
+            gap: var(--gap-2);
             flex-wrap: wrap;
             padding: var(--padding-w2);
         }
@@ -767,6 +767,12 @@ class OptionsComponent extends LitElement {
         this.requestUpdate();
     }
 
+    toggleGPTZero() {
+        wisk.editor.gptZero = !wisk.editor.gptZero;
+        wisk.utils.showToast('GPTZero Protection Mode ' + (wisk.editor.gptZero ? 'On' : 'Off'), 3000);
+        this.requestUpdate();
+    }
+
     render() {
         var filteredPlugins = this.plugins.filter(
             plugin =>
@@ -793,10 +799,17 @@ class OptionsComponent extends LitElement {
 
                     <div class="quick-options">
                         <button class="quick-button" @click="${this.toggleAIAutocomplete}">
-                            <img src="/a7/plugins/options-element/autocomplete.svg" alt="Settings" class="icon" draggable="false"/>
+                            <img src="/a7/plugins/options-element/autocomplete.svg" alt="Settings" class="icon" draggable="false" width="24"/>
                             <label>AI Autocomplete</label>
                             <img src="/a7/plugins/options-element/check.svg" class="quick-button-check" draggable="false" style="display: ${wisk.editor.aiAutocomplete ? 'block' : 'none'}"/>
                             <img src="/a7/plugins/options-element/x.svg" class="quick-button-check" draggable="false" style="display: ${wisk.editor.aiAutocomplete ? 'none' : 'block'}"/>
+                        </button>
+
+                        <button class="quick-button" @click="${this.toggleGPTZero}">
+                            <img src="/a7/plugins/options-element/shield.svg" alt="Settings" class="icon" draggable="false" width="24"/>
+                            <label>GPTZero Protection</label>
+                            <img src="/a7/plugins/options-element/check.svg" class="quick-button-check" draggable="false" style="display: ${wisk.editor.gptZero ? 'block' : 'none'}"/>
+                            <img src="/a7/plugins/options-element/x.svg" class="quick-button-check" draggable="false" style="display: ${wisk.editor.gptZero ? 'none' : 'block'}"/>
                         </button>
                     </div>
 

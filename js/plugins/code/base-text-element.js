@@ -100,7 +100,7 @@ class BaseTextElement extends HTMLElement {
                     Authorization: `Bearer ${user.token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ before, after }),
+                body: JSON.stringify({ before, after, gpt_zero: wisk.editor.gptZero }),
             });
 
             if (!response.ok) throw new Error('Network response was not ok');
@@ -141,20 +141,16 @@ class BaseTextElement extends HTMLElement {
         var textEl = document.createElement('span');
         textEl.classList.add('suggestion-text');
 
-        // insert where the cursor is
-        // TODO
         const selection = this.shadowRoot.getSelection();
 
         if (selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
             range.insertNode(textEl);
 
-            // Optionally, place the cursor after the inserted span:
-            range.collapse(false); // Collapse to the end
+            range.collapse(false);
             selection.removeAllRanges();
             selection.addRange(range);
         } else {
-            // Handle case where there's no selection (e.g., empty div)
             this.editable.appendChild(textEl);
         }
 
