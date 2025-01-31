@@ -951,6 +951,9 @@ class GettingStarted extends LitElement {
             case 'student':
                 plugins = ['word-count', 'symbols', 'general-chat'];
                 break;
+            case 'student-but-cooler':
+                plugins = ['word-count', 'symbols', 'general-chat', 'nightwave-plaza-radio', 'brainrot', 'powerlevel'];
+                break;
             case 'blog':
                 plugins = ['table-of-contents', 'super-divider', 'accordion-element'];
                 break;
@@ -1004,6 +1007,7 @@ class GettingStarted extends LitElement {
                     Configure workspace for
                     <div style="display: flex; gap: var(--gap-2); flex-wrap: wrap">
                         <button class="gs-button" @click=${() => this.pluginPacks('student')}>Academic Assignment</button>
+                        <button class="gs-button" @click=${() => this.pluginPacks('student-but-cooler')}>Academic Assignment (Cool)</button>
                         <button class="gs-button" @click=${() => this.pluginPacks('blog')}>Blogging</button>
                     </div>
                 </div>
