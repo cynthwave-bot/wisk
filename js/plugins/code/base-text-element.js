@@ -5,6 +5,7 @@ class BaseTextElement extends HTMLElement {
         this.TYPING_DELAY = 1000;
         this.suggestionText = '';
         this.suggestionActive = false;
+        this.isEditableFocused = false;
 
         this.attachShadow({ mode: 'open' });
         this.render();
@@ -90,6 +91,8 @@ class BaseTextElement extends HTMLElement {
     async fetchAutoComplete(before, after) {
         const user = await document.querySelector('auth-component').getUserInfo();
 
+        if (before.trim() === '' && after.trim() === '') return null;
+
         try {
             const response = await fetch('https://cloud.wisk.cc/v2/autocomplete', {
                 method: 'POST',
@@ -113,6 +116,10 @@ class BaseTextElement extends HTMLElement {
 
         this.typingTimer = setTimeout(async () => {
             if (!wisk.editor.aiAutocomplete) return;
+            if (this.suggestionActive) return;
+            if (!this.isEditableFocused) return; // Add this check
+
+            this.suggestionActive = true;
 
             const surroundingText = this.getSurroundingText();
             if (!surroundingText) return;
@@ -120,12 +127,16 @@ class BaseTextElement extends HTMLElement {
             this.suggestionText = await this.fetchAutoComplete(surroundingText.before, surroundingText.after);
             if (!this.suggestionText) return;
 
-            this.showSuggestion(this.suggestionText);
+            // Double check focus state before showing
+            if (this.isEditableFocused) {
+                this.showSuggestion(this.suggestionText);
+            } else {
+                this.suggestionActive = false;
+            }
         }, this.TYPING_DELAY);
     };
 
     showSuggestion(suggestion) {
-        this.suggestionActive = true;
         const container = this.shadowRoot.querySelector('.suggestion-container');
         var textEl = document.createElement('span');
         textEl.classList.add('suggestion-text');
@@ -449,12 +460,16 @@ class BaseTextElement extends HTMLElement {
         this.editable.addEventListener('beforeinput', this.handleBeforeInput.bind(this));
         this.editable.addEventListener('input', this.onValueUpdated.bind(this));
         this.editable.addEventListener('keydown', this.handleKeyDown.bind(this));
+
         this.editable.addEventListener('focus', () => {
+            this.isEditableFocused = true;
             if (this.editable.innerText.trim() === '') {
                 this.editable.classList.add('empty');
             }
         });
+
         this.editable.addEventListener('blur', () => {
+            this.isEditableFocused = false;
             this.updatePlaceholder();
         });
 
@@ -577,6 +592,10 @@ class BaseTextElement extends HTMLElement {
             return;
         }
 
+        // Temporarily prevent blur from discarding suggestion
+        const tempFocused = this.isEditableFocused;
+        this.isEditableFocused = true;
+
         const selection = this.shadowRoot.getSelection();
         if (!selection.rangeCount) {
             // If no selection, append to the end
@@ -607,11 +626,14 @@ class BaseTextElement extends HTMLElement {
             }
         }
 
-        // Clean up
         this.shadowRoot.querySelector('.suggestion-container').style.display = 'none';
         this.suggestionActive = false;
         this.suggestionText = '';
+        this.updatePlaceholder();
         this.sendUpdates();
+
+        // Restore original focus state after suggestion is accepted
+        this.isEditableFocused = tempFocused;
     }
 
     handleMarkdown(event) {
@@ -857,7 +879,7 @@ class BaseTextElement extends HTMLElement {
             .suggestion-actions {
                 display: flex;
                 gap: var(--gap-2);
-                justify-content: center;
+                justify-content: flex-end;
             }
             .suggestion-button {
                 padding: var(--padding-2) var(--padding-3);
