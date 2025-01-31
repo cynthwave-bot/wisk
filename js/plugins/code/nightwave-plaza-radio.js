@@ -113,7 +113,7 @@ class NightwavePlazaRadioElement extends LitElement {
     render() {
         return html`
             <div class="radio-container">
-                <button @click=${this.togglePlay} aria-label=${this.isPlaying ? 'Pause' : 'Play'}>
+                <button @click=${this.togglePlay} aria-label=${this.isPlaying ? 'Pause' : 'Play'} title="Nightwave Plaza Radio">
                     ${this.isPlaying
                         ? html`<img src="/a7/plugins/nightwave-plaza/pause.svg" alt="Pause" />`
                         : html`<img src="/a7/plugins/nightwave-plaza/play.svg" alt="Play" />`}

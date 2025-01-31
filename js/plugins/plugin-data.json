@@ -45,12 +45,12 @@
 
         "general-chat": {
             "name": "general-chat",
-            "title": "general Chat",
+            "title": "Chat with friends",
             "author": "Wisk Team",
             "contact": "https://wisk.cc",
-            "icon": "general-chat.svg",
-            "tags": ["general", "chat", "bot", "gpt", "chatgpt"],
-            "description": "General chat",
+            "icon": "general-chat-2.svg",
+            "tags": ["chat", "friends", "social", "messaging", "video", "voice", "call", "group", "private", "public"],
+            "description": "Chat with your friends, each document has its own chat, currently only video and voice calls are supported",
             "contents": [
                 {
                     "title": "General Chat",
@@ -835,7 +835,7 @@
                 {
                     "title": "White Noise Player",
                     "icon": "whitenoise-2.svg",
-                    "category": "mini-dialog",
+                    "category": "nav-mini",
                     "component": "whitenoise-radio",
                     "nav": true,
                     "loadAsModule": true

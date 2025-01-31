@@ -95,10 +95,10 @@ class WordCount extends LitElement {
     }
 
     startUpdateTimer() {
-        this.updateCounts(); // Initial update
+        this.updateCounts();
         this.updateTimer = setInterval(() => {
             this.updateCounts();
-        }, 5000);
+        }, 1000);
     }
 
     stopUpdateTimer() {

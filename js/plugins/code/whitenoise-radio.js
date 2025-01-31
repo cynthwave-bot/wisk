@@ -1,3 +1,4 @@
+// TODO clean this element
 import { html, css, LitElement } from '/a7/cdn/lit-core-2.7.4.min.js';
 
 class WhitenoiseRadioElement extends LitElement {
@@ -7,6 +8,7 @@ class WhitenoiseRadioElement extends LitElement {
             font-family: var(--font);
             margin: 0px;
             padding: 0px;
+            font-weight: 500;
         }
         :host {
             display: inline-block;
@@ -14,9 +16,9 @@ class WhitenoiseRadioElement extends LitElement {
         .radio-container {
             display: flex;
             align-items: center;
-            gap: var(--gap-2);
-            padding: var(--padding-4);
-            background-color: var(--bg-2);
+            gap: var(--gap-1);
+            padding: 0;
+            background-color: transparent;
             border-radius: var(--radius-large);
             box-shadow: var(--drop-shadow);
         }
@@ -24,18 +26,20 @@ class WhitenoiseRadioElement extends LitElement {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 2.5rem;
-            height: 2.5rem;
             border: none;
             background-color: transparent;
             border-radius: var(--radius);
             cursor: pointer;
             transition: filter 0.2s;
-            padding: var(--padding-2);
+            padding: 0;
             color: var(--bg-1);
         }
         .station-name {
             font-family: var(--font-mono);
+            width: 7ch;
+            overflow: hidden;
+            user-select: text;
+            cursor: text;
         }
         img {
             filter: var(--themed-svg);
@@ -53,17 +57,45 @@ class WhitenoiseRadioElement extends LitElement {
 
     static properties = {
         isPlaying: { type: Boolean },
+        currentText: { type: String },
+        windowSize: { type: Number },
+        position: { type: Number },
     };
 
     constructor() {
         super();
         this.isPlaying = false;
         this.audioElement = null;
+        this.fullText = 'Nightwave Plaza ';
+        this.windowSize = 7;
+        this.position = 0;
+        this.currentText = this.fullText.slice(0, this.windowSize);
+        this.intervalId = null;
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.startRotation();
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+    }
+
+    startRotation() {
+        this.intervalId = setInterval(() => {
+            this.position = (this.position + 1) % this.fullText.length;
+            let text = this.fullText + this.fullText; // Double the text to handle wrap-around
+            this.currentText = text.slice(this.position, this.position + this.windowSize);
+            this.requestUpdate();
+        }, 500); // Adjust timing (milliseconds) as needed
     }
 
     firstUpdated() {
         this.audioElement = new Audio('/a7/forget/youtube_AslKWwxPNbY_audio.mp3');
-        this.audioElement.loop = true;
     }
 
     togglePlay() {
@@ -82,14 +114,12 @@ class WhitenoiseRadioElement extends LitElement {
     render() {
         return html`
             <div class="radio-container">
-                <button @click=${this.togglePlay} aria-label=${this.isPlaying ? 'Pause' : 'Play'}>
-                    ${this.isPlaying ? html`<img src="/a7/plugins/nightwave-plaza/pause.svg" alt="Pause" />` : html`<img src="/a7/plugins/nightwave-plaza/play.svg" alt="Play" />`}
+                <button @click=${this.togglePlay} aria-label=${this.isPlaying ? 'Pause' : 'Play'} title="Whitenoise">
+                    ${this.isPlaying
+                        ? html`<img src="/a7/plugins/nightwave-plaza/pause.svg" alt="Pause" />`
+                        : html`<img src="/a7/plugins/nightwave-plaza/play.svg" alt="Play" />`}
                 </button>
-
-                <span class="station-name">Whitenoise</span>
-            </div>
-            <div class="support">
-                <span>Sounds provided by <a href="https://youtu.be/AslKWwxPNbY" target="_blank" rel="noopener"> The manikin </a>
+                <span class="station-name" style="display: none">${this.currentText}</span>
             </div>
         `;
     }
