@@ -1,6 +1,11 @@
 class BaseTextElement extends HTMLElement {
     constructor() {
         super();
+        this.typingTimer = null;
+        this.TYPING_DELAY = 1000;
+        this.suggestionText = '';
+        this.suggestionActive = false;
+
         this.attachShadow({ mode: 'open' });
         this.render();
         this.updatePlaceholder();
@@ -48,6 +53,102 @@ class BaseTextElement extends HTMLElement {
         this.showingEmojiSuggestions = false;
         this.selectedEmojiIndex = 0;
         this.currentEmojiQuery = '';
+    }
+
+    getSurroundingText() {
+        const selection = this.shadowRoot.getSelection();
+        if (!selection.rangeCount) return null;
+
+        const cursorPosition = this.getFocus();
+        const text = this.editable.innerText;
+
+        // get the first 3 and after 3 elements text from this.id
+        var bef = [];
+        var aft = [];
+        for (const elm of wisk.editor.elements) {
+            if (elm.id === this.id) {
+                bef = wisk.editor.elements.slice(Math.max(0, wisk.editor.elements.indexOf(elm) - 3), wisk.editor.elements.indexOf(elm));
+                aft = wisk.editor.elements.slice(wisk.editor.elements.indexOf(elm) + 1, wisk.editor.elements.indexOf(elm) + 4);
+            }
+        }
+
+        var before = '';
+        var after = '';
+        for (const elm of bef) {
+            before += document.getElementById(elm.id).getTextContent().text + '\n';
+        }
+        for (const elm of aft) {
+            after += document.getElementById(elm.id).getTextContent().text + '\n';
+        }
+
+        return {
+            before: before + text.substring(0, cursorPosition),
+            after: text.substring(cursorPosition, text.length) + after,
+        };
+    }
+
+    async fetchAutoComplete(before, after) {
+        const user = await document.querySelector('auth-component').getUserInfo();
+
+        try {
+            const response = await fetch('https://cloud.wisk.cc/v2/autocomplete', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ before, after }),
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+            return await response.text();
+        } catch (error) {
+            console.error('Autocomplete error:', error);
+            return null;
+        }
+    }
+
+    handleTyping = async () => {
+        clearTimeout(this.typingTimer);
+
+        this.typingTimer = setTimeout(async () => {
+            if (!wisk.editor.aiAutocomplete) return;
+
+            const surroundingText = this.getSurroundingText();
+            if (!surroundingText) return;
+
+            this.suggestionText = await this.fetchAutoComplete(surroundingText.before, surroundingText.after);
+            if (!this.suggestionText) return;
+
+            this.showSuggestion(this.suggestionText);
+        }, this.TYPING_DELAY);
+    };
+
+    showSuggestion(suggestion) {
+        this.suggestionActive = true;
+        const container = this.shadowRoot.querySelector('.suggestion-container');
+        var textEl = document.createElement('span');
+        textEl.classList.add('suggestion-text');
+
+        // insert where the cursor is
+        // TODO
+        const selection = this.shadowRoot.getSelection();
+
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            range.insertNode(textEl);
+
+            // Optionally, place the cursor after the inserted span:
+            range.collapse(false); // Collapse to the end
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } else {
+            // Handle case where there's no selection (e.g., empty div)
+            this.editable.appendChild(textEl);
+        }
+
+        textEl.textContent = suggestion;
+        container.style.display = 'inline';
     }
 
     getSelectionPosition() {
@@ -455,6 +556,62 @@ class BaseTextElement extends HTMLElement {
         this.emojiSuggestionsContainer.addEventListener('mouseleave', () => {
             this.isMouseOverSuggestions = false;
         });
+
+        this.editable.addEventListener('input', this.handleTyping);
+        this.shadowRoot.querySelector('.accept-button').addEventListener('click', () => {
+            this.acceptSuggestion();
+        });
+        this.shadowRoot.querySelector('.discard-button').addEventListener('click', () => {
+            this.discardSuggestion();
+        });
+    }
+
+    discardSuggestion() {
+        this.shadowRoot.querySelector('.suggestion-container').style.display = 'none';
+        this.shadowRoot.querySelector('.suggestion-text').remove();
+        this.suggestionActive = false;
+    }
+
+    acceptSuggestion() {
+        if (!this.suggestionText || !this.suggestionActive) {
+            return;
+        }
+
+        const selection = this.shadowRoot.getSelection();
+        if (!selection.rangeCount) {
+            // If no selection, append to the end
+            const textNode = document.createTextNode(this.suggestionText);
+            this.editable.appendChild(textNode);
+        } else {
+            const range = selection.getRangeAt(0);
+            try {
+                // Remove existing suggestion text element if it exists
+                const existingSuggestion = this.shadowRoot.querySelector('.suggestion-text');
+                if (existingSuggestion) {
+                    existingSuggestion.remove();
+                }
+
+                // Insert the suggestion text
+                const textNode = document.createTextNode(this.suggestionText);
+                range.insertNode(textNode);
+
+                // Move cursor to end of inserted text
+                range.setStartAfter(textNode);
+                range.setEndAfter(textNode);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } catch (error) {
+                console.error('Error inserting suggestion:', error);
+                // Fallback: use execCommand
+                document.execCommand('insertText', false, this.suggestionText);
+            }
+        }
+
+        // Clean up
+        this.shadowRoot.querySelector('.suggestion-container').style.display = 'none';
+        this.suggestionActive = false;
+        this.suggestionText = '';
+        this.sendUpdates();
     }
 
     handleMarkdown(event) {
@@ -682,9 +839,55 @@ class BaseTextElement extends HTMLElement {
                 *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
                 *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
             }
+
+            .suggestion-text {
+                opacity: 0.8;
+                color: var(--accent-text);
+            }
+            .suggestion-container {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                padding: var(--padding-2);
+                margin-top: 4px;
+                display: none;
+                z-index: 1;
+            }
+            .suggestion-actions {
+                display: flex;
+                gap: var(--gap-2);
+                justify-content: center;
+            }
+            .suggestion-button {
+                padding: var(--padding-2) var(--padding-3);
+                border-radius: var(--radius);
+                border: none;
+                background: var(--bg-1);
+                outline: none;
+                color: var(--text-1);
+                cursor: pointer;
+            }
+            .suggestion-button:hover {
+                background: var(--bg-3);
+            }
+            .accept-button {
+                background: var(--accent-bg);
+                color: var(--accent-text);
+                font-weight: bold;
+            }
             </style>
         `;
-        const content = `<div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div><div class="emoji-suggestions"></div>`;
+        const content = `
+            <div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
+            <div class="suggestion-container">
+                <div class="suggestion-actions">
+                    <button class="suggestion-button discard-button">Discard</button>
+                    <button class="suggestion-button accept-button"> Accept [Tab or Enter] </button>
+                </div>
+            </div>
+            <div class="emoji-suggestions"></div>
+        `;
         this.shadowRoot.innerHTML = style + content;
     }
 
@@ -772,6 +975,7 @@ class BaseTextElement extends HTMLElement {
 
     handleKeyDown(event) {
         if (this.showingEmojiSuggestions) {
+            this.discardSuggestion();
             switch (event.key) {
                 case 'Enter':
                     event.preventDefault();
@@ -800,6 +1004,10 @@ class BaseTextElement extends HTMLElement {
             ArrowUp: () => this.handleVerticalArrow(event, 'next-up'),
             ArrowDown: () => this.handleVerticalArrow(event, 'next-down'),
         };
+
+        if (event.key !== 'Enter' && this.suggestionActive) {
+            this.discardSuggestion();
+        }
 
         const handler = keyHandlers[event.key];
         if (handler) {
@@ -965,6 +1173,10 @@ class BaseTextElement extends HTMLElement {
 
     handleEnterKey(event) {
         event.preventDefault();
+        if (this.suggestionActive) {
+            this.acceptSuggestion();
+            return;
+        }
         const selection = this.shadowRoot.getSelection();
         const range = selection.getRangeAt(0);
 

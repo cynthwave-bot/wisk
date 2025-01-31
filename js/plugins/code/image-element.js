@@ -891,6 +891,42 @@ class ImageElement extends BaseTextElement {
             .primary-button:hover {
                 opacity: 0.9;
             }
+            .suggestion-text {
+                opacity: 0.8;
+                color: var(--accent-text);
+            }
+            .suggestion-container {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                padding: var(--padding-2);
+                margin-top: 4px;
+                display: none;
+                z-index: 1;
+            }
+            .suggestion-actions {
+                display: flex;
+                gap: var(--gap-2);
+                justify-content: center;
+            }
+            .suggestion-button {
+                padding: var(--padding-2) var(--padding-3);
+                border-radius: var(--radius);
+                border: none;
+                background: var(--bg-1);
+                outline: none;
+                color: var(--text-1);
+                cursor: pointer;
+            }
+            .suggestion-button:hover {
+                background: var(--bg-3);
+            }
+            .accept-button {
+                background: var(--accent-bg);
+                color: var(--accent-text);
+                font-weight: bold;
+            }
             </style>
         `;
 
@@ -950,6 +986,12 @@ class ImageElement extends BaseTextElement {
                 </div>
             </div>
             <p id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></p>
+                <div class="suggestion-container">
+                    <div class="suggestion-actions">
+                        <button class="suggestion-button discard-button">Discard</button>
+                        <button class="suggestion-button accept-button"> Accept [Tab or Enter] </button>
+                    </div>
+                </div>
             <div class="emoji-suggestions"></div>
         `;
         this.shadowRoot.innerHTML = style + content;

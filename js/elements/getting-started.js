@@ -423,10 +423,11 @@ class GettingStarted extends LitElement {
     constructor() {
         super();
         this.tips = [
-            'You can use the command palette by pressing Ctrl+e or Cmd+e',
+            'You can use the command palette by pressing Ctrl+Shift+P or Cmd+Shift+P',
             'You can create and install plugins to extend the functionality of your editor',
             'You can create and use custom themes to personalize your editor',
             "When AI Chat gets too long, clear the chat by clicking the Clear Chat button, that'll improve the results",
+            "You can autocite your content by selecting text and clicking on the 'Find Sources' button",
         ];
         this.activeDialog = null;
     }
@@ -944,6 +945,30 @@ class GettingStarted extends LitElement {
         reader.readAsText(this.selectedFile);
     }
 
+    async pluginPacks(usecase) {
+        var plugins = [];
+        switch (usecase) {
+            case 'student':
+                plugins = ['word-count', 'symbols', 'general-chat'];
+                break;
+            case 'blog':
+                plugins = ['table-of-contents', 'super-divider', 'accordion-element'];
+                break;
+            default:
+                break;
+        }
+
+        var str = '';
+
+        for (let i = 0; i < plugins.length; i++) {
+            str += wisk.plugins.getPluginGroupDetail(plugins[i]).title + (i < plugins.length - 1 ? ', ' : '');
+            await wisk.plugins.loadPlugin(plugins[i]);
+            await wisk.editor.addConfigChange([{ path: 'document.config.plugins.add', values: { plugin: plugins[i] } }]);
+        }
+
+        wisk.utils.showDialog('Installed plugins: ' + str, 'Info');
+    }
+
     render() {
         if (wisk.editor.wiskSite) {
             return html``;
@@ -972,6 +997,14 @@ class GettingStarted extends LitElement {
                         <button class="gs-button" @click=${() => document.querySelector('help-dialog').show()}>
                             <img src="/a7/forget/gs-help.svg" alt="" /> Help
                         </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: var(--gap-3); flex-wrap: wrap; align-items: center;">
+                    Configure workspace for
+                    <div style="display: flex; gap: var(--gap-2); flex-wrap: wrap">
+                        <button class="gs-button" @click=${() => this.pluginPacks('student')}>Academic Assignment</button>
+                        <button class="gs-button" @click=${() => this.pluginPacks('blog')}>Blogging</button>
                     </div>
                 </div>
                 <p style="display: flex; margin-top: 20px; align-items: center; gap: var(--gap-1);">

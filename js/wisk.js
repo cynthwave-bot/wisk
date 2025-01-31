@@ -33,6 +33,7 @@ wisk.editor = {
     elements: [],
     data: {},
     wiskSite: false,
+    aiAutocomplete: true,
     createNewBlock: function (elementId, blockType, value, focusIdentifier) {},
     deleteBlock: function (elementId) {},
     focusBlock: function (elementId, identifier) {},

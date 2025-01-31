@@ -9,6 +9,9 @@ class OptionsComponent extends LitElement {
             padding: 0;
             user-select: none;
         }
+        button > * {
+            cursor: pointer;
+        }
         :host {
             display: block;
         }
@@ -559,15 +562,6 @@ class OptionsComponent extends LitElement {
             color: var(--text-1);
             border: 2px solid var(--text-1);
         }
-        @media (max-width: 768px) {
-            .plugins-toggle,
-            .options-section {
-                padding: var(--padding-3) 0;
-            }
-            .plugin-list {
-                margin-top: var(--gap-1);
-            }
-        }
         .plugins-toggle label {
             display: inline-flex;
             cursor: pointer;
@@ -576,6 +570,45 @@ class OptionsComponent extends LitElement {
         }
         .plugins-toggle label img {
             filter: var(--themed-svg);
+        }
+        .quick-options {
+            display: flex;
+            gap: var(--gap-1);
+            flex-wrap: wrap;
+            padding: var(--padding-w2);
+        }
+        .quick-button {
+            position: relative;
+            display: flex;
+            background: var(--bg-1);
+            flex-direction: row;
+            align-items: center;
+            outline: none;
+            gap: var(--gap-2);
+            cursor: pointer;
+            padding: var(--padding-w2);
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius);
+        }
+        .quick-button:hover {
+            background: var(--bg-2);
+        }
+        .quick-button img {
+            filter: var(--themed-svg);
+            padding: 0;
+        }
+        .quick-button-check {
+            filter: var(--themed-svg);
+        }
+        @media (max-width: 768px) {
+            .plugins-toggle,
+            .options-section,
+            .quick-options {
+                padding: var(--padding-3) 0;
+            }
+            .plugin-list {
+                margin-top: var(--gap-1);
+            }
         }
     `;
 
@@ -728,6 +761,12 @@ class OptionsComponent extends LitElement {
         this.currentView = 'plugins';
     }
 
+    toggleAIAutocomplete() {
+        wisk.editor.aiAutocomplete = !wisk.editor.aiAutocomplete;
+        wisk.utils.showToast('AI Autocomplete ' + (wisk.editor.aiAutocomplete ? 'enabled' : 'disabled'), 3000);
+        this.requestUpdate();
+    }
+
     render() {
         var filteredPlugins = this.plugins.filter(
             plugin =>
@@ -751,6 +790,15 @@ class OptionsComponent extends LitElement {
             <div class="view-container" data-view="${this.currentView}">
                 <!-- Main View -->
                 <div class="view ${this.currentView === 'main' ? 'active' : ''}">
+
+                    <div class="quick-options">
+                        <button class="quick-button" @click="${this.toggleAIAutocomplete}">
+                            <img src="/a7/plugins/options-element/autocomplete.svg" alt="Settings" class="icon" draggable="false"/>
+                            <label>AI Autocomplete</label>
+                            <img src="/a7/plugins/options-element/check.svg" class="quick-button-check" draggable="false" style="display: ${wisk.editor.aiAutocomplete ? 'block' : 'none'}"/>
+                            <img src="/a7/plugins/options-element/x.svg" class="quick-button-check" draggable="false" style="display: ${wisk.editor.aiAutocomplete ? 'none' : 'block'}"/>
+                        </button>
+                    </div>
 
                     <div class="plugins-toggle options-section" @click="${this.showThemesView}">
                         <label> <img src="/a7/plugins/options-element/theme.svg" alt="Themes" class="icon" draggable="false"/> Themes</label>
