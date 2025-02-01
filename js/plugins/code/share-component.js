@@ -371,7 +371,6 @@ class ShareComponent extends LitElement {
                 if (element.component === 'list-element') {
                     const valueContent = e.getValue();
                     const content = e.getTextContent().markdown;
-                    console.log(';;;;;;', content);
                     const indent = valueContent.indent || 0;
                     const indentStr = '  '.repeat(indent);
                     markdownContent +=
@@ -449,6 +448,30 @@ class ShareComponent extends LitElement {
 
                     markdownContent += `--id--image--${imageId}--end--\n\n`;
                 }
+            }
+
+            var refs = document.querySelector('manage-citations').getCitations();
+
+            var refNum = 1;
+            var refsAdded = [];
+
+            refs.forEach(ref => {
+                const citationPattern = new RegExp(`--citation-element--${ref.id}--`, 'g');
+                if (markdownContent.match(citationPattern)) {
+                    markdownContent = markdownContent.replace(citationPattern, `[${refNum}]`);
+                    refsAdded.push(ref.id);
+                    refNum++;
+                }
+            });
+
+            if (refsAdded.length != 0) {
+                markdownContent += '\n\n---\n\n## References\n\n';
+            }
+
+            // add a list of references at the end of the document
+            for (var i = 0; i < refsAdded.length; i++) {
+                var ref = refs.find(r => r.id === refsAdded[i]);
+                markdownContent += `[${i + 1}] ${document.querySelector('manage-citations').getFormattedCitation(refsAdded[i])}\n\n`;
             }
 
             const response = await fetch('https://cloud.wisk.cc/v2/download', {
@@ -542,7 +565,7 @@ class ShareComponent extends LitElement {
                 </div>
 
                 <div style="height: 100%; overflow: auto;">
-                    <label style="padding: 0 var(--padding-3)">Templates</label>
+                    <label style="padding: 0 var(--padding-3); padding-bottom: var(--padding-4); display: block">Templates</label>
                     <div class="template-grid">
                         ${templates.map(
                             template => html`

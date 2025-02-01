@@ -4,7 +4,6 @@ var elementUpdatesLeft = [];
 var deletedElementsLeft = [];
 var configChanges = [];
 
-// Utility functions
 const createHoverImageContainer = elementId => {
     const imageContainer = document.createElement('div');
     imageContainer.classList.add('hover-images');
@@ -430,12 +429,14 @@ wisk.editor.htmlToMarkdown = function (html) {
             result += processNode(child);
         }
 
-        // Skip empty elements
-        if (!result.trim()) {
+        if (!result.trim() && !node.getAttribute('reference-id')) {
             return '';
         }
 
         switch (node.nodeName.toLowerCase()) {
+            case 'cite-element':
+                const referenceId = node.getAttribute('reference-id');
+                return `--citation-element--${referenceId}--`;
             case 'a':
                 if (node.classList?.contains('reference-number')) {
                     const refNum = result.replace(/[\[\]]/g, '');
