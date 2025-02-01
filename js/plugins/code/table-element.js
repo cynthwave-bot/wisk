@@ -201,6 +201,54 @@ class TableElement extends HTMLElement {
             markdown: markdown,
         };
     }
+
+    // TODO remove one of these
+    getMarkdownText() {
+        const { headers, rows } = this.tableContent;
+
+        if (!headers.length || !rows.length) {
+            return '';
+        }
+
+        const colWidths = headers.map((h, i) => {
+            const columnCells = [h, ...rows.map(row => row[i] || '')];
+            return Math.max(
+                ...columnCells.map(cell => {
+                    const cellStr = (cell ?? '').toString();
+                    return cellStr.replace(/[|\\`*_{}[\]()#+\-.!]/g, '\\$&').length;
+                })
+            );
+        });
+
+        const headerRow =
+            '| ' +
+            headers
+                .map((h, i) => {
+                    const cell = (h ?? '').toString();
+                    const escaped = cell.replace(/[|\\`*_{}[\]()#+\-.!]/g, '\\$&');
+                    return escaped.padEnd(colWidths[i]);
+                })
+                .join(' | ') +
+            ' |';
+
+        const separatorRow = '|' + colWidths.map(w => '-'.repeat(w + 2)).join('|') + '|';
+
+        const dataRows = rows.map(row => {
+            return (
+                '| ' +
+                row
+                    .map((cell, i) => {
+                        const cellStr = (cell ?? '').toString();
+                        const escaped = cellStr.replace(/[|\\`*_{}[\]()#+\-.!]/g, '\\$&');
+                        return escaped.padEnd(colWidths[i]);
+                    })
+                    .join(' | ') +
+                ' |'
+            );
+        });
+
+        return [headerRow, separatorRow, ...dataRows].join('\n');
+    }
 }
 
 customElements.define('table-element', TableElement);

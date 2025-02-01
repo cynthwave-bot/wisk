@@ -428,6 +428,11 @@ class ShareComponent extends LitElement {
                     markdownContent += `--id--image--${imageId}--end--\n\n`;
                 }
 
+                if (element.component === 'table-element') {
+                    const valueContent = e.getTextContent().markdown;
+                    markdownContent += valueContent + '\n\n';
+                }
+
                 if (element.component === 'mermaid-element') {
                     var base64Data = await e.getPNGBase64();
                     base64Data = base64Data.replace(/^data:image\/jpeg;base64,/, '');
