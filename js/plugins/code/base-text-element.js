@@ -106,11 +106,11 @@ class BaseTextElement extends HTMLElement {
             if (!response.ok) throw new Error('Network response was not ok');
             return await response.text();
         } catch (error) {
+            this.discardSuggestion();
             console.error('Autocomplete error:', error);
             wisk.utils.showToast('Error fetching autocomplete suggestions', 3000);
             return null;
         } finally {
-            this.suggestionActive = false;
         }
     }
 
@@ -231,29 +231,23 @@ class BaseTextElement extends HTMLElement {
         const range = selection.getRangeAt(0);
 
         try {
-            // Create a space node to separate text and citation
             const spaceNode = document.createTextNode(' ');
 
-            // Create citation element with attributes
             const citeElement = document.createElement('cite-element');
             citeElement.contentEditable = 'false';
             citeElement.setAttribute('reference-id', detail.citation.id);
             citeElement.setAttribute('citation', detail.inlineCitation);
 
-            // Instead of deleting content, just collapse range to end
             range.collapse(false);
 
-            // Insert space and citation after the selected text
             range.insertNode(citeElement);
             range.insertNode(spaceNode);
 
-            // Move cursor after citation
             range.setStartAfter(citeElement);
             range.setEndAfter(citeElement);
             selection.removeAllRanges();
             selection.addRange(range);
 
-            // Update content
             this.sendUpdates();
         } catch (error) {
             console.error('Error creating citation:', error);
@@ -261,10 +255,8 @@ class BaseTextElement extends HTMLElement {
         }
     }
 
-    // Update the fallback handler as well
     handleReferenceFallback(detail, selection) {
         try {
-            // Fallback method using execCommand
             const text = selection.toString();
             document.execCommand('insertText', false, text);
 
@@ -284,7 +276,6 @@ class BaseTextElement extends HTMLElement {
     }
 
     handleCreateLink(url) {
-        // First restore the saved selection
         if (!this.restoreSelection()) {
             console.warn('No saved selection to create link from');
             return;
@@ -293,35 +284,28 @@ class BaseTextElement extends HTMLElement {
         const selection = this.shadowRoot.getSelection();
         const range = selection.getRangeAt(0);
 
-        // Ensure the selection is within our editable div
         if (!this.editable.contains(range.commonAncestorContainer)) {
             console.warn('Selection is outside the editable area');
             return;
         }
 
         try {
-            // Create and insert the link
             const link = document.createElement('a');
             link.href = this.normalizeUrl(url);
             link.target = '_blank';
             link.contentEditable = 'false';
 
-            // Extract the selected content and preserve formatting
             const fragment = range.extractContents();
             link.appendChild(fragment);
 
-            // Insert the link
             range.insertNode(link);
 
-            // Clean up selection
             range.collapse(false);
             selection.removeAllRanges();
             selection.addRange(range);
 
-            // Clear the saved selection
             this.clearSelection();
 
-            // Update the content
             this.sendUpdates();
         } catch (error) {
             console.error('Error creating link:', error);
@@ -331,7 +315,6 @@ class BaseTextElement extends HTMLElement {
 
     handleLinkFallback(url, selection) {
         try {
-            // Fallback method using execCommand
             const text = selection.toString();
             document.execCommand('insertText', false, text);
 
@@ -341,12 +324,10 @@ class BaseTextElement extends HTMLElement {
             link.target = '_blank';
             link.contentEditable = 'false';
 
-            // Create a new range for the just-inserted text
             const newRange = document.createRange();
             newRange.setStart(range.startContainer, range.startOffset - text.length);
             newRange.setEnd(range.startContainer, range.startOffset);
 
-            // Wrap the text in a link
             newRange.surroundContents(link);
 
             this.sendUpdates();
@@ -454,7 +435,6 @@ class BaseTextElement extends HTMLElement {
     }
 
     bindEvents() {
-        // Existing event listeners
         this.editable.addEventListener('beforeinput', this.handleBeforeInput.bind(this));
         this.editable.addEventListener('input', this.onValueUpdated.bind(this));
         this.editable.addEventListener('keydown', this.handleKeyDown.bind(this));
@@ -473,9 +453,7 @@ class BaseTextElement extends HTMLElement {
 
         this.editable.addEventListener('paste', this.handlePaste.bind(this));
 
-        // Enhanced selection change detection
         const handleSelectionChange = () => {
-            // Check if the selection is within our shadow root
             const selection = this.shadowRoot.getSelection();
             if (selection.rangeCount > 0) {
                 const range = selection.getRangeAt(0);
@@ -486,22 +464,18 @@ class BaseTextElement extends HTMLElement {
             }
         };
 
-        // Create a MutationObserver to watch for DOM changes that might affect selection
         const observer = new MutationObserver(() => {
             handleSelectionChange();
         });
 
-        // Observe changes to the editable content
         observer.observe(this.editable, {
             childList: true,
             subtree: true,
             characterData: true,
         });
 
-        // Listen for any selection changes in the shadow root
         this.shadowRoot.addEventListener('selectionchange', handleSelectionChange);
 
-        // Keep existing mouse and keyboard event listeners as fallbacks
         this.editable.addEventListener('mouseup', handleSelectionChange);
         this.editable.addEventListener('keyup', e => {
             if (e.key === 'Shift' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'a')) {
@@ -509,7 +483,6 @@ class BaseTextElement extends HTMLElement {
             }
         });
 
-        // Handle keyboard shortcuts
         this.editable.addEventListener('keydown', e => {
             if (e.ctrlKey || e.metaKey) {
                 switch (e.key.toLowerCase()) {
@@ -530,7 +503,6 @@ class BaseTextElement extends HTMLElement {
                         this.applyFormat('underline');
                         break;
                     case 'a':
-                        // Allow the selection to happen, then update toolbar
                         setTimeout(handleSelectionChange, 0);
                         break;
                 }
@@ -541,7 +513,6 @@ class BaseTextElement extends HTMLElement {
             this.handleMarkdown(e);
         });
 
-        // Clean up the observer when the element is disconnected
         this.disconnectedCallback = () => {
             observer.disconnect();
             this.shadowRoot.removeEventListener('selectionchange', handleSelectionChange);
@@ -581,7 +552,9 @@ class BaseTextElement extends HTMLElement {
 
     discardSuggestion() {
         this.shadowRoot.querySelector('.suggestion-container').style.display = 'none';
-        this.shadowRoot.querySelector('.suggestion-text').remove();
+        if (this.shadowRoot.querySelector('.suggestion-text')) {
+            this.shadowRoot.querySelector('.suggestion-text').remove();
+        }
         this.suggestionActive = false;
     }
 
@@ -590,47 +563,40 @@ class BaseTextElement extends HTMLElement {
             return;
         }
 
-        // Temporarily prevent blur from discarding suggestion
         const tempFocused = this.isEditableFocused;
         this.isEditableFocused = true;
 
         const selection = this.shadowRoot.getSelection();
         if (!selection.rangeCount) {
-            // If no selection, append to the end
             const textNode = document.createTextNode(this.suggestionText);
             this.editable.appendChild(textNode);
         } else {
             const range = selection.getRangeAt(0);
             try {
-                // Remove existing suggestion text element if it exists
                 const existingSuggestion = this.shadowRoot.querySelector('.suggestion-text');
                 if (existingSuggestion) {
                     existingSuggestion.remove();
                 }
 
-                // Insert the suggestion text
                 const textNode = document.createTextNode(this.suggestionText);
                 range.insertNode(textNode);
 
-                // Move cursor to end of inserted text
                 range.setStartAfter(textNode);
                 range.setEndAfter(textNode);
                 selection.removeAllRanges();
                 selection.addRange(range);
             } catch (error) {
                 console.error('Error inserting suggestion:', error);
-                // Fallback: use execCommand
                 document.execCommand('insertText', false, this.suggestionText);
             }
         }
 
         this.shadowRoot.querySelector('.suggestion-container').style.display = 'none';
-        this.suggestionActive = false;
+        this.discardSuggestion();
         this.suggestionText = '';
         this.updatePlaceholder();
         this.sendUpdates();
 
-        // Restore original focus state after suggestion is accepted
         this.isEditableFocused = tempFocused;
     }
 
@@ -941,7 +907,6 @@ class BaseTextElement extends HTMLElement {
         const selectedEmoji = this.emojiSuggestions[this.selectedEmojiIndex];
 
         try {
-            // Find the text node and offset where the ':' character starts
             const findColonPosition = (node, targetOffset) => {
                 if (node.nodeType === Node.TEXT_NODE) {
                     const text = node.textContent;
@@ -965,17 +930,14 @@ class BaseTextElement extends HTMLElement {
             const colonPos = findColonPosition(this.editable, range.startOffset);
             if (!colonPos) return;
 
-            // Create a range from the colon to the current cursor position
             const replaceRange = document.createRange();
             replaceRange.setStart(colonPos.node, colonPos.offset);
             replaceRange.setEnd(range.endContainer, range.endOffset);
 
-            // Replace the content with the emoji
             replaceRange.deleteContents();
             const emojiNode = document.createTextNode(selectedEmoji.emoji);
             replaceRange.insertNode(emojiNode);
 
-            // Set cursor position after the emoji
             const newRange = document.createRange();
             newRange.setStartAfter(emojiNode);
             newRange.setEndAfter(emojiNode);
@@ -986,7 +948,6 @@ class BaseTextElement extends HTMLElement {
             this.sendUpdates();
         } catch (error) {
             console.error('Error inserting emoji:', error);
-            // Fallback: just insert the emoji at cursor position
             document.execCommand('insertText', false, selectedEmoji.emoji);
             this.hideEmojiSuggestions();
             this.sendUpdates();
@@ -1025,7 +986,9 @@ class BaseTextElement extends HTMLElement {
             ArrowDown: () => this.handleVerticalArrow(event, 'next-down'),
         };
 
-        if (event.key !== 'Enter' && this.suggestionActive && event.key !== 'Tab' && this.suggestionActive) {
+        if ((event.key === 'Enter' || event.key === 'Tab') && this.suggestionActive) {
+            // my mind isn't working right now
+        } else {
             this.discardSuggestion();
         }
 
@@ -1048,7 +1011,6 @@ class BaseTextElement extends HTMLElement {
             return;
         }
 
-        // Save the selection when showing the toolbar
         this.saveSelection();
 
         const range = selection.getRangeAt(0);
@@ -1058,7 +1020,6 @@ class BaseTextElement extends HTMLElement {
 
         this.toolbar.showToolbar(Math.max(20, x), y, this.id, selectedText, this.editable.innerText);
 
-        // Check if selection is still valid after a short delay
         setTimeout(() => {
             const newSelection = this.shadowRoot.getSelection();
             if (newSelection.toString().trim() === '') {
@@ -1095,19 +1056,16 @@ class BaseTextElement extends HTMLElement {
                     document.execCommand('styleWithCSS', false, false);
                     break;
                 case 'backColor':
-                    // Try direct background-color application using a span
                     const selection = this.shadowRoot.getSelection();
                     if (selection.rangeCount > 0) {
                         const range = selection.getRangeAt(0);
                         const span = document.createElement('span');
                         span.style.backgroundColor = formatValue;
 
-                        // Preserve existing content
                         const content = range.extractContents();
                         span.appendChild(content);
                         range.insertNode(span);
 
-                        // Update selection
                         selection.removeAllRanges();
                         selection.addRange(range);
                     }
@@ -1117,7 +1075,6 @@ class BaseTextElement extends HTMLElement {
                 case 'fix-spelling-grammar':
                 case 'improve-writing':
                 case 'summarize':
-                    // These are handled by the toolbar's AI operations
                     break;
             }
         } catch (error) {
@@ -1125,12 +1082,10 @@ class BaseTextElement extends HTMLElement {
             this.handleFormatFallback(action, formatValue);
         }
 
-        // Clear selection and update content
         this.clearSelection();
         this.sendUpdates();
     }
 
-    // Also update the fallback handler for background color
     handleFormatFallback(action, formatValue) {
         try {
             const selection = this.shadowRoot.getSelection();
@@ -1140,20 +1095,16 @@ class BaseTextElement extends HTMLElement {
                 const span = document.createElement('span');
                 span.style.backgroundColor = formatValue;
 
-                // Get selected content
                 const fragment = range.extractContents();
                 span.appendChild(fragment);
                 range.insertNode(span);
 
-                // Cleanup any nested empty spans
                 const emptySpans = span.querySelectorAll('span:empty');
                 emptySpans.forEach(emptySpan => emptySpan.remove());
 
-                // Update selection
                 selection.removeAllRanges();
                 selection.addRange(range);
             } else {
-                // Original fallback code for other formats
                 const span = document.createElement('span');
                 switch (action) {
                     case 'foreColor':
@@ -1172,7 +1123,6 @@ class BaseTextElement extends HTMLElement {
             }
         } catch (fallbackError) {
             console.error('Format fallback failed:', fallbackError);
-            // Last resort fallback
             try {
                 const selection = this.shadowRoot.getSelection();
                 if (selection.toString()) {
@@ -1193,6 +1143,7 @@ class BaseTextElement extends HTMLElement {
 
     handleEnterKey(event) {
         event.preventDefault();
+        console.log('Enter key pressed, suggestion active:', this.suggestionActive);
         if (this.suggestionActive) {
             this.acceptSuggestion();
             return;
@@ -1275,16 +1226,13 @@ class BaseTextElement extends HTMLElement {
 
         this.editable.focus();
 
-        // Special handling for zero index - place cursor at the very beginning
         if (identifier.x === 0) {
             const selection = this.shadowRoot.getSelection();
             const range = document.createRange();
 
-            // Find the first valid position for cursor
             let firstNode = this.editable;
             let offset = 0;
 
-            // Find the first text node if it exists
             const findFirstTextNode = node => {
                 if (node.nodeType === Node.TEXT_NODE) {
                     return node;
@@ -1313,7 +1261,6 @@ class BaseTextElement extends HTMLElement {
             }
         }
 
-        // Rest of the focus logic for non-zero positions
         if (!this.editable.childNodes.length) {
             return;
         }
@@ -1419,14 +1366,12 @@ class BaseTextElement extends HTMLElement {
             const text = this.editable.textContent;
             const cursorPosition = this.getFocus();
 
-            // Find the last ':' before cursor
             const beforeCursor = text.substring(0, cursorPosition);
             const colonIndex = beforeCursor.lastIndexOf(':');
 
             if (colonIndex !== -1) {
                 const query = beforeCursor.substring(colonIndex + 1);
 
-                // If there's no space in the query, it's potentially an emoji shortcut
                 if (!query.includes(' ') && query.length > 0) {
                     this.currentEmojiQuery = query;
                     this.showEmojiSuggestions(query, range);
@@ -1435,10 +1380,8 @@ class BaseTextElement extends HTMLElement {
             }
         }
 
-        // Hide suggestions if we're not in an emoji query
         this.hideEmojiSuggestions();
 
-        // Keep existing update logic
         this.updatePlaceholder();
         this.sendUpdates();
     }
@@ -1447,7 +1390,6 @@ class BaseTextElement extends HTMLElement {
         if (this.editable) {
             const isEmpty = this.editable.innerText.trim() === '';
             this.editable.classList.toggle('empty', isEmpty);
-            // Update placeholder text if attribute changes
             this.editable.dataset.placeholder = this.getAttribute('placeholder') || this.placeholder;
         }
     }
@@ -1557,7 +1499,6 @@ class BaseTextElement extends HTMLElement {
         const selectedEmoji = this.emojiSuggestions[this.selectedEmojiIndex];
 
         try {
-            // Find the text node and offset where the ':' character starts
             const findColonPosition = (node, targetOffset) => {
                 if (node.nodeType === Node.TEXT_NODE) {
                     const text = node.textContent;
@@ -1581,17 +1522,14 @@ class BaseTextElement extends HTMLElement {
             const colonPos = findColonPosition(this.editable, range.startOffset);
             if (!colonPos) return;
 
-            // Create a range from the colon to the current cursor position
             const replaceRange = document.createRange();
             replaceRange.setStart(colonPos.node, colonPos.offset);
             replaceRange.setEnd(range.endContainer, range.endOffset);
 
-            // Replace the content with the emoji
             replaceRange.deleteContents();
             const emojiNode = document.createTextNode(selectedEmoji.emoji);
             replaceRange.insertNode(emojiNode);
 
-            // Set cursor position after the emoji
             const newRange = document.createRange();
             newRange.setStartAfter(emojiNode);
             newRange.setEndAfter(emojiNode);
@@ -1602,7 +1540,6 @@ class BaseTextElement extends HTMLElement {
             this.sendUpdates();
         } catch (error) {
             console.error('Error inserting emoji:', error);
-            // Fallback: just insert the emoji at cursor position
             document.execCommand('insertText', false, selectedEmoji.emoji);
             this.hideEmojiSuggestions();
             this.sendUpdates();
@@ -1700,7 +1637,6 @@ class BaseTextElement extends HTMLElement {
                         }
                         break;
                     case 'li':
-                        // Only process li if it's not part of an already processed list
                         if (!isPartOfProcessedList(node)) {
                             const isCheckbox =
                                 node.textContent.startsWith('[ ]') ||
@@ -1760,20 +1696,17 @@ class BaseTextElement extends HTMLElement {
                     structuredElements.push(element);
                 }
 
-                // Recursively process all child nodes
                 node.childNodes.forEach(childNode => {
                     processNode(childNode);
                 });
             };
 
-            // Start processing from body
             processNode(doc.body);
 
             const flattenedElements = [];
 
             structuredElements.forEach(element => {
                 if (Array.isArray(element.value)) {
-                    // Handle lists, checkboxes, and any other array-based elements
                     element.value.forEach(item => {
                         if (typeof item === 'object') {
                             const newElement = {
@@ -1784,7 +1717,6 @@ class BaseTextElement extends HTMLElement {
                                 },
                             };
 
-                            // Add checked if it's a checkbox
                             if (element.elementName === 'checkbox-element') {
                                 newElement.value.checked = !!item.checked;
                             }
@@ -1805,11 +1737,10 @@ class BaseTextElement extends HTMLElement {
                         elementName: element.elementName,
                         value: {
                             imageUrl: element.value,
-                            textContent: '', // Empty text content for images
+                            textContent: '',
                         },
                     });
                 } else {
-                    // Handle other elements (headings, text, etc.)
                     flattenedElements.push({
                         elementName: element.elementName,
                         value: {
