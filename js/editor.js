@@ -157,19 +157,15 @@ wisk.editor.createBlockNoFocus = function (elementId, blockType, value, rec, ani
 };
 
 wisk.editor.handleChanges = async function (updateObject) {
-    // Handle case where updateObject might be undefined or null
     if (!updateObject) return;
 
-    // If changes is a single object, convert it to an array
     const changes = Array.isArray(updateObject.changes) ? updateObject.changes : updateObject.changes ? [updateObject.changes] : [];
 
     const allElements = updateObject.allElements || [];
     const newDeletedElements = updateObject.newDeletedElements || [];
 
-    // Handle deletions first
     await handleElementDeletions(newDeletedElements);
 
-    // Handle updates and additions
     for (const change of changes) {
         if (change.path === 'document.elements') {
             await handleElementChange(change.values, allElements);
@@ -430,9 +426,13 @@ wisk.editor.htmlToMarkdown = function (html) {
         }
 
         let result = '';
-
         for (const child of node.childNodes) {
             result += processNode(child);
+        }
+
+        // Skip empty elements
+        if (!result.trim()) {
+            return '';
         }
 
         switch (node.nodeName.toLowerCase()) {

@@ -345,17 +345,17 @@ class ShareComponent extends LitElement {
                 if (!('getTextContent' in e)) continue;
 
                 // Handle main text elements that support markdown
-                if (
-                    [
-                        'main-element',
-                        'text-element',
-                        'heading1-element',
-                        'heading2-element',
-                        'heading3-element',
-                        'heading4-element',
-                        'heading5-element',
-                    ].includes(element.component)
-                ) {
+                var normalElms = [
+                    'main-element',
+                    'text-element',
+                    'heading1-element',
+                    'heading2-element',
+                    'heading3-element',
+                    'heading4-element',
+                    'heading5-element',
+                    'divider-element',
+                ];
+                if (normalElms.includes(element.component)) {
                     const content = e.getTextContent().markdown;
                     markdownContent += content + '\n\n';
                     continue;
@@ -371,6 +371,7 @@ class ShareComponent extends LitElement {
                 if (element.component === 'list-element') {
                     const valueContent = e.getValue();
                     const content = e.getTextContent().markdown;
+                    console.log(';;;;;;', content);
                     const indent = valueContent.indent || 0;
                     const indentStr = '  '.repeat(indent);
                     markdownContent +=
@@ -397,8 +398,7 @@ class ShareComponent extends LitElement {
                     const content = e.getTextContent().markdown;
                     const indent = valueContent.indent || 0;
                     const indentStr = '  '.repeat(indent);
-                    const checkbox = valueContent.checked ? '[x]' : '[ ]';
-                    markdownContent += `${indentStr}- ${checkbox} ${content}\n\n`;
+                    markdownContent += `${indentStr}${content}\n\n`;
                 }
 
                 if (element.component === 'latex-element') {
@@ -406,9 +406,43 @@ class ShareComponent extends LitElement {
                     markdownContent += `$$\n${valueContent.latex}\n$$\n\n`;
                 }
 
+                if (element.component === 'code-element') {
+                    var cval = e.getTextContent().markdown;
+                    markdownContent += cval + '\n\n';
+                }
+
+                if (element.component === 'chart-element') {
+                    var base64Data = await e.getBase64Png();
+                    base64Data = base64Data.replace(/^data:image\/png;base64,/, '');
+
+                    const imageId = Array(15)
+                        .fill(null)
+                        .map(() => String.fromCharCode(65 + Math.floor(Math.random() * 26)))
+                        .join('');
+
+                    imageData.push({
+                        id: imageId,
+                        base64: base64Data,
+                    });
+
+                    markdownContent += `--id--image--${imageId}--end--\n\n`;
+                }
+
                 if (element.component === 'mermaid-element') {
-                    const svgContent = await e.getSvgString();
-                    markdownContent += `\`\`\`mermaid\n${svgContent}\n\`\`\`\n\n`;
+                    var base64Data = await e.getPNGBase64();
+                    base64Data = base64Data.replace(/^data:image\/jpeg;base64,/, '');
+
+                    const imageId = Array(15)
+                        .fill(null)
+                        .map(() => String.fromCharCode(65 + Math.floor(Math.random() * 26)))
+                        .join('');
+
+                    imageData.push({
+                        id: imageId,
+                        base64: base64Data,
+                    });
+
+                    markdownContent += `--id--image--${imageId}--end--\n\n`;
                 }
             }
 
@@ -420,6 +454,7 @@ class ShareComponent extends LitElement {
                 },
                 body: JSON.stringify({
                     markdown: markdownContent,
+                    filetype: this.shadowRoot.querySelector('select').value,
                     template: this.selectedTemplate,
                     ids: imageData,
                 }),
@@ -495,7 +530,7 @@ class ShareComponent extends LitElement {
                     <div style="display: flex; gap: var(--gap-2); align-items: stretch">
                         <select>
                             <option value="pdf" selected>PDF</option>
-                            <option value="docx" disabled>DOCX</option>
+                            <option value="docx">DOCX</option>
                         </select>
                         <button class="download" @click=${this.download}>Download</button>
                     </div>

@@ -107,7 +107,10 @@ class BaseTextElement extends HTMLElement {
             return await response.text();
         } catch (error) {
             console.error('Autocomplete error:', error);
+            wisk.utils.showToast('Error fetching autocomplete suggestions', 3000);
             return null;
+        } finally {
+            this.suggestionActive = false;
         }
     }
 
@@ -117,7 +120,7 @@ class BaseTextElement extends HTMLElement {
         this.typingTimer = setTimeout(async () => {
             if (!wisk.editor.aiAutocomplete) return;
             if (this.suggestionActive) return;
-            if (!this.isEditableFocused) return; // Add this check
+            if (!this.isEditableFocused) return;
 
             this.suggestionActive = true;
 
@@ -127,7 +130,6 @@ class BaseTextElement extends HTMLElement {
             this.suggestionText = await this.fetchAutoComplete(surroundingText.before, surroundingText.after);
             if (!this.suggestionText) return;
 
-            // Double check focus state before showing
             if (this.isEditableFocused) {
                 this.showSuggestion(this.suggestionText);
             } else {
@@ -1023,7 +1025,7 @@ class BaseTextElement extends HTMLElement {
             ArrowDown: () => this.handleVerticalArrow(event, 'next-down'),
         };
 
-        if (event.key !== 'Enter' && this.suggestionActive) {
+        if (event.key !== 'Enter' && this.suggestionActive && event.key !== 'Tab' && this.suggestionActive) {
             this.discardSuggestion();
         }
 
@@ -1237,6 +1239,10 @@ class BaseTextElement extends HTMLElement {
 
     handleTab(event) {
         event.preventDefault();
+        if (this.suggestionActive) {
+            this.acceptSuggestion();
+            return;
+        }
         document.execCommand('insertText', false, '    ');
         wisk.editor.justUpdates(this.id);
     }

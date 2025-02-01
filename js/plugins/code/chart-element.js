@@ -179,6 +179,11 @@ class ChartElement extends LitElement {
         _selectedType: { type: String, state: true },
     };
 
+    async getBase64Png() {
+        var b64 = await this._chart.toBase64Image();
+        return b64;
+    }
+
     constructor() {
         super();
         this._chartConfig = JSON.stringify(

@@ -237,12 +237,11 @@ class CodeElement extends LitElement {
 
     getTextContent() {
         if (!this.editor) return { html: '', text: '', markdown: '' };
-        const code = this.editor.getValue();
 
         return {
-            html: `<pre><code class="language-${this.selectedLang}">${code}</code></pre>`,
-            text: code,
-            markdown: '```' + this.selectedLang + '\n' + code + '\n```',
+            html: `<pre><code class="language-${this.selectedLang}">${this.editor.getValue()}</code></pre>`,
+            text: this.editor.getValue(),
+            markdown: '```' + this.selectedLang + '\n' + this.editor.getValue() + '\n```',
         };
     }
 

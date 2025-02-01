@@ -630,6 +630,34 @@ class MermaidElement extends LitElement {
         }
     }
 
+    async getPNGBase64() {
+        try {
+            let encodedCode = btoa(unescape(encodeURIComponent(this._mermaid))).trim();
+            encodedCode = encodeURIComponent(encodedCode).trim();
+
+            // Use the mermaid.ink API to get the PNG directly
+            const imageUrl = `https://mermaid.ink/img/${encodedCode}`;
+
+            // Fetch the PNG image
+            const response = await fetch(imageUrl);
+            if (!response.ok) throw new Error('Failed to fetch PNG');
+
+            // Convert the response to a blob
+            const blob = await response.blob();
+
+            // Convert blob to base64
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        } catch (error) {
+            console.error('Error generating PNG:', error);
+            throw new Error(`Failed to generate PNG: ${error.message}`);
+        }
+    }
+
     render() {
         return html`
             <div class="mermaid-container">
