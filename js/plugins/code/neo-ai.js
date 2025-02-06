@@ -689,7 +689,7 @@ class NeoAI extends LitElement {
         super();
         this.expanded = false;
         this.showSettings = false;
-        this.modelName = 'neo';
+        this.modelName = 'neo-next';
 
         this.selectedElementId = '';
         this.selectedText = '';
@@ -1253,6 +1253,16 @@ class NeoAI extends LitElement {
                                   <div class="model-info">
                                       <div class="model-name">Neo</div>
                                       <div class="model-description">Excellent balance of speed and capability</div>
+                                  </div>
+                              </div>
+
+                              <div class="model-option ${this.modelName === 'neo-next' ? 'selected' : ''}" @click=${() => (this.modelName = 'neo-next')}>
+                                  <div class="model-icon">
+                                      <img src="${this.path}next.svg" draggable="false" />
+                                  </div>
+                                  <div class="model-info">
+                                      <div class="model-name">Neo Next</div>
+                                      <div class="model-description">Experimental version of Neo</div>
                                   </div>
                               </div>
 
