@@ -1256,7 +1256,10 @@ class NeoAI extends LitElement {
                                   </div>
                               </div>
 
-                              <div class="model-option ${this.modelName === 'neo-next' ? 'selected' : ''}" @click=${() => (this.modelName = 'neo-next')}>
+                              <div
+                                  class="model-option ${this.modelName === 'neo-next' ? 'selected' : ''}"
+                                  @click=${() => (this.modelName = 'neo-next')}
+                              >
                                   <div class="model-icon">
                                       <img src="${this.path}next.svg" draggable="false" />
                                   </div>
