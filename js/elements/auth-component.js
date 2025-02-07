@@ -166,8 +166,7 @@ class AuthComponent extends LitElement {
         window.addEventListener('focus', this.handleFocusChange.bind(this));
     }
 
-    show() {
-        if (this.wiskSite) {
+        if (this.readonly) {
             return;
         }
 
@@ -183,7 +182,7 @@ class AuthComponent extends LitElement {
     }
 
     async getUserInfo() {
-        if (this.wiskSite) {
+        if (this.readonly) {
             return {
                 token: 'wisk-site',
                 uuid: 'wisk-site',

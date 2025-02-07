@@ -32,7 +32,7 @@ const createFullWidthWrapper = (elementId, block, imageContainer) => {
     wrapper.classList.add('full-width-wrapper');
     wrapper.appendChild(block);
 
-    if (!wisk.editor.wiskSite) {
+    if (!wisk.editor.readonly) {
         wrapper.appendChild(imageContainer);
     }
     return wrapper;
@@ -336,7 +336,7 @@ async function initEditor(doc) {
     deletedElements = page.deletedElements;
     wisk.editor.elements = page.elements;
 
-    if (!wisk.editor.wiskSite) {
+    if (!wisk.editor.readonly) {
         document.getElementById('last-space').addEventListener('click', handleEditorClick);
     }
 
