@@ -876,7 +876,7 @@ class CanvasElement extends HTMLElement {
                     width: 10px;
                     height: 10px;
                     border-radius: var(--radius);
-                    background: var(--text-1);
+                    background: var(--fg-1);
                     cursor: pointer;
                     border: none;
                     transition: transform 0.1s;

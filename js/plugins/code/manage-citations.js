@@ -30,11 +30,11 @@ class ManageCitations extends LitElement {
         .field-label {
             font-weight: bold;
             font-size: 12px;
-            color: var(--text-2);
+            color: var(--fg-2);
         }
         .field-value {
             font-size: 14px;
-            color: var(--text-1);
+            color: var(--fg-1);
             line-height: 1.5;
         }
         .button {
@@ -42,7 +42,7 @@ class ManageCitations extends LitElement {
             background: var(--bg-2);
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
-            color: var(--text-1);
+            color: var(--fg-1);
             cursor: pointer;
             font-size: 14px;
             transition: all 0.2s;
@@ -52,15 +52,15 @@ class ManageCitations extends LitElement {
             background: var(--bg-3);
         }
         .button-primary {
-            background: var(--text-1);
+            background: var(--fg-1);
             color: var(--bg-1);
             border-radius: var(--radius);
-            border: 1px solid var(--text-1);
+            border: 1px solid var(--fg-1);
             padding: var(--padding-w1);
         }
         .button-primary:hover {
             background: var(--bg-1);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .actions {
             display: flex;
@@ -85,7 +85,7 @@ class ManageCitations extends LitElement {
             border-radius: var(--radius);
             font-size: 14px;
             background: var(--bg-1);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .format-select {
             margin-bottom: 0;
@@ -100,7 +100,7 @@ class ManageCitations extends LitElement {
             background: var(--bg-2);
             border-radius: var(--radius);
             font-size: 14px;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .field-group {
             margin-bottom: var(--gap-3);
@@ -111,12 +111,12 @@ class ManageCitations extends LitElement {
         .field-group-title {
             font-weight: bold;
             margin-bottom: var(--gap-2);
-            color: var(--text-2);
+            color: var(--fg-2);
         }
         .citation-text {
             font-size: 14px;
             line-height: 1.6;
-            color: var(--text-1);
+            color: var(--fg-1);
             margin-bottom: var(--gap-2);
         }
 
@@ -133,11 +133,11 @@ class ManageCitations extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
         ::placeholder {
-            color: var(--text-2);
+            color: var(--fg-2);
         }
 
         .paste-area {
@@ -148,7 +148,7 @@ class ManageCitations extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             background: var(--bg-1);
-            color: var(--text-1);
+            color: var(--fg-1);
             font-family: monospace;
             font-size: 14px;
         }
@@ -187,7 +187,7 @@ class ManageCitations extends LitElement {
         .modal-title {
             font-size: 18px;
             font-weight: bold;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
     `;
 

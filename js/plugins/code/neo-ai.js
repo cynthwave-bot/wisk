@@ -40,7 +40,7 @@ class NeoAI extends LitElement {
         }
 
         .logo {
-            background-color: var(--accent-bg);
+            background-color: var(--bg-accent);
             color: var(--accent-fg);
             border: 1px solid var(--accent-fg);
             border-radius: 50%;
@@ -92,7 +92,7 @@ class NeoAI extends LitElement {
             bottom: 10px;
             right: 10px;
             background-color: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             padding: var(--padding-w1);
             border-radius: var(--radius-large);
             cursor: pointer;
@@ -135,13 +135,13 @@ class NeoAI extends LitElement {
         .i-hx {
             font-size: 12px;
             font-weight: 500;
-            color: var(--text-2);
+            color: var(--fg-2);
         }
 
         .c-hx {
             font-size: 18px;
             font-weight: 500;
-            color: var(--text-2);
+            color: var(--fg-2);
             flex: 1;
             display: flex;
             align-items: center;
@@ -166,7 +166,7 @@ class NeoAI extends LitElement {
             border-radius: 100px;
             opacity: 0.8;
             white-space: nowrap;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .horz-action-button {
             padding: var(--padding-w1);
@@ -175,8 +175,8 @@ class NeoAI extends LitElement {
         .c-action-button:hover,
         .horz-action-button:hover {
             opacity: 1;
-            color: var(--accent-text);
-            background-color: var(--accent-bg);
+            color: var(--fg-accent);
+            background-color: var(--bg-accent);
         }
         .i-action-icon,
         .c-action-icon {
@@ -216,7 +216,7 @@ class NeoAI extends LitElement {
             background-color: transparent;
             border-radius: var(--radius);
             flex: 1;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .i-btn,
         .c-btn {
@@ -240,8 +240,8 @@ class NeoAI extends LitElement {
 
         .i-input:has(.i-inp:focus),
         .c-input:has(.c-inp:focus) {
-            border: 2px solid var(--accent-text);
-            background-color: var(--accent-bg);
+            border: 2px solid var(--fg-accent);
+            background-color: var(--bg-accent);
         }
 
         .i-input:has(.i-inp:focus) .i-btn,
@@ -293,7 +293,7 @@ class NeoAI extends LitElement {
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background-color: var(--accent-bg);
+            background-color: var(--bg-accent);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -314,7 +314,7 @@ class NeoAI extends LitElement {
             background-color: var(--bg-2);
             padding: var(--padding-3);
             border-radius: var(--radius);
-            color: var(--text-1);
+            color: var(--fg-1);
             display: flex;
             flex-direction: column;
             gap: var(--gap-3);
@@ -327,19 +327,19 @@ class NeoAI extends LitElement {
         }
 
         .message.user .message-bubble {
-            background-color: var(--accent-bg);
-            color: var(--accent-text);
+            background-color: var(--bg-accent);
+            color: var(--fg-accent);
         }
 
         .message.info .message-bubble {
             background-color: var(--bg-1);
             border: 1px solid var(--border-1);
-            color: var(--text-2);
+            color: var(--fg-2);
         }
 
         .message-time {
             font-size: 12px;
-            color: var(--text-2);
+            color: var(--fg-2);
             align-self: flex-end;
         }
 
@@ -356,12 +356,12 @@ class NeoAI extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
 
         ::-webkit-input-placeholder {
-            color: var(--text-2);
+            color: var(--fg-2);
         }
 
         @media (max-width: 768px) {
@@ -468,7 +468,7 @@ class NeoAI extends LitElement {
         }
 
         .logo-bubble-content {
-            color: var(--text-1);
+            color: var(--fg-1);
             font-weight: 500;
             cursor: pointer;
         }
@@ -587,8 +587,8 @@ class NeoAI extends LitElement {
         }
 
         .model-option.selected {
-            background-color: var(--accent-bg);
-            border: 1px solid var(--accent-text);
+            background-color: var(--bg-accent);
+            border: 1px solid var(--fg-accent);
         }
 
         .model-icon {
@@ -614,12 +614,12 @@ class NeoAI extends LitElement {
 
         .model-name {
             font-weight: 600;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .model-description {
             font-size: 13px;
-            color: var(--text-2);
+            color: var(--fg-2);
         }
 
         @media (max-width: 768px) {
@@ -906,13 +906,13 @@ class NeoAI extends LitElement {
             case 'warning':
                 return { background: 'var(--bg-yellow)', color: 'var(--fg-yellow)' };
             default:
-                return { background: 'var(--bg-2)', color: 'var(--text-1)' };
+                return { background: 'var(--bg-2)', color: 'var(--fg-1)' };
         }
     }
 
     renderMessageContent(message) {
         if (message.text === '<--Thinking-->') {
-            return html`<div class="message-bubble status" style="background-color: var(--bg-1); color: var(--text-2);">
+            return html`<div class="message-bubble status" style="background-color: var(--bg-1); color: var(--fg-2);">
                 <img src="${this.path}spin.svg" style="width: 44px; height: 44px; filter: var(--themed-svg);" />
             </div>`;
         }
@@ -1327,7 +1327,7 @@ class NeoAI extends LitElement {
                 </div>
                 <div class="i-content">
                     <div style="display: flex; flex-direction: column; gap: var(--gap-2); padding: var(--padding-4);">
-                        <div style="width: 52px; border-radius: 100px; height: 52px; background-color: var(--text-1);"></div>
+                        <div style="width: 52px; border-radius: 100px; height: 52px; background-color: var(--fg-1);"></div>
                         <p class="text">Hello! I am Neo. How can I help you today?</p>
                     </div>
 
@@ -1369,7 +1369,7 @@ class NeoAI extends LitElement {
                 <div class="c-header">
                     <p class="c-hx">
                         <span
-                            style="color: var(--text-1); height: 24px; width: 24px; display: inline-block; background-color: var(--text-1); border-radius: 100px; margin-right: var(--gap-2);"
+                            style="color: var(--fg-1); height: 24px; width: 24px; display: inline-block; background-color: var(--fg-1); border-radius: 100px; margin-right: var(--gap-2);"
                         ></span>
                         Neo
                     </p>

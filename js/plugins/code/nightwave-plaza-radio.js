@@ -44,7 +44,7 @@ class NightwavePlazaRadioElement extends LitElement {
             filter: var(--themed-svg);
         }
         a {
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .support {
             margin-top: var(--padding-4);

@@ -32,7 +32,7 @@ class MusicMaker extends LitElement {
             background: var(--bg-2);
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
-            color: var(--text-1);
+            color: var(--fg-1);
             font-weight: 500;
             font-size: 16px;
         }
@@ -50,8 +50,8 @@ class MusicMaker extends LitElement {
             transition: all 0.1s ease;
         }
         .step.active {
-            background: var(--text-1);
-            border-color: var(--text-2);
+            background: var(--fg-1);
+            border-color: var(--fg-2);
         }
         .step.playing {
             background: var(--text-3);
@@ -71,7 +71,7 @@ class MusicMaker extends LitElement {
             background: var(--bg-2);
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
-            color: var(--text-1);
+            color: var(--fg-1);
             cursor: pointer;
             font-size: 14px;
             min-width: 80px;
@@ -80,7 +80,7 @@ class MusicMaker extends LitElement {
             background: var(--bg-3);
         }
         button.playing {
-            background: var(--text-1);
+            background: var(--fg-1);
             color: var(--bg-1);
         }
         .slider-control {
@@ -92,7 +92,7 @@ class MusicMaker extends LitElement {
         }
         .slider-control label {
             font-size: 14px;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .slider-wrapper {
             flex: 1;
@@ -110,18 +110,18 @@ class MusicMaker extends LitElement {
             -webkit-appearance: none;
             width: 16px;
             height: 16px;
-            background: var(--text-1);
+            background: var(--fg-1);
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid var(--border-1);
             transition: all 0.2s ease;
         }
         input[type='range']::-webkit-slider-thumb:hover {
-            background: var(--text-2);
+            background: var(--fg-2);
         }
         .value-display {
             font-size: 14px;
-            color: var(--text-2);
+            color: var(--fg-2);
             min-width: 60px;
             text-align: right;
         }

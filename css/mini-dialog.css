@@ -9,7 +9,7 @@
 }
 
 .mini-dialog-bg {
-    background-color: var(--text-2);
+    background-color: var(--fg-2);
     opacity: 0.3;
     width: 100%;
     height: 100%;
@@ -74,7 +74,7 @@
     outline: none;
     border: none;
     background-color: transparent;
-    color: var(--text-1);
+    color: var(--fg-1);
     cursor: pointer;
     padding: var(--padding-2);
     border-radius: var(--radius);

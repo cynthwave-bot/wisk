@@ -239,7 +239,7 @@ class EmbedElement extends HTMLElement {
                 border: none;
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
                 font-size: 13px;
-                color: var(--text-1);
+                color: var(--fg-1);
             }
             #editable {
                 flex-grow: 1;
@@ -252,7 +252,7 @@ class EmbedElement extends HTMLElement {
                 background-color: white;
             }
             .https-text {
-                color: var(--text-2);
+                color: var(--fg-2);
                 font-size: 13px;
             }
             </style>

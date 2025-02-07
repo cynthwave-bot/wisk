@@ -75,7 +75,7 @@ class HelpDialog extends LitElement {
             border: none;
             border-radius: var(--radius);
             cursor: pointer;
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 1.5rem;
             align-items: center;
             justify-content: center;
@@ -88,7 +88,7 @@ class HelpDialog extends LitElement {
         .dialog-title {
             font-size: 1.5rem;
             margin-bottom: var(--gap-3);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .main-group {
@@ -98,15 +98,15 @@ class HelpDialog extends LitElement {
 
         .quick-link {
             padding: var(--padding-w1);
-            background: var(--accent-bg);
-            color: var(--accent-text);
+            background: var(--bg-accent);
+            color: var(--fg-accent);
             border-radius: var(--radius);
             cursor: pointer;
             text-decoration: none;
         }
 
         .input-label {
-            color: var(--text-1);
+            color: var(--fg-1);
             font-weight: 500;
         }
 
@@ -123,7 +123,7 @@ class HelpDialog extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
     `;

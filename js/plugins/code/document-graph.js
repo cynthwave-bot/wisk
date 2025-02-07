@@ -43,19 +43,19 @@ class DocumentGraphElement extends LitElement {
             transition: all 0.2s ease;
         }
         .home-btn:hover {
-            background: var(--accent-bg);
+            background: var(--bg-accent);
         }
         .node {
             cursor: pointer;
         }
         .node circle {
-            fill: var(--accent-bg);
-            stroke: var(--accent-text);
+            fill: var(--bg-accent);
+            stroke: var(--fg-accent);
             stroke-width: 2px;
             transition: all 0.3s ease;
         }
         .node text {
-            fill: var(--text-1);
+            fill: var(--fg-1);
             font-size: 12px;
             font-family: var(--font);
             opacity: 0.7;
@@ -68,16 +68,16 @@ class DocumentGraphElement extends LitElement {
             transition: all 0.3s ease;
         }
         .node.highlighted circle {
-            fill: var(--accent-text);
+            fill: var(--fg-accent);
             stroke-width: 3px;
         }
         .node.highlighted text {
-            fill: var(--text-1);
+            fill: var(--fg-1);
             font-weight: bold;
             opacity: 1;
         }
         .link.highlighted {
-            stroke: var(--accent-text);
+            stroke: var(--fg-accent);
             stroke-opacity: 0.8;
             stroke-width: 2.5px;
         }

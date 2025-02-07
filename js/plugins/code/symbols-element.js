@@ -20,7 +20,7 @@ class SymbolsElement extends LitElement {
             border-radius: var(--radius);
             outline: none;
             background-color: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .symbols-grid {
             display: grid;
@@ -44,7 +44,7 @@ class SymbolsElement extends LitElement {
         }
         .symbol-name {
             font-size: 12px;
-            color: var(--text-2);
+            color: var(--fg-2);
         }
 
         @media (hover: hover) {
@@ -60,11 +60,11 @@ class SymbolsElement extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
         ::placeholder {
-            color: var(--text-2);
+            color: var(--fg-2);
         }
     `;
 

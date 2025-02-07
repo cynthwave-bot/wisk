@@ -7,7 +7,7 @@ class HomeElement extends LitElement {
             font-family: var(--font);
             margin: 0px;
             padding: 0px;
-            color: var(--text-1);
+            color: var(--fg-1);
             transition: all 0.3s;
             user-select: none;
             outline: none;
@@ -31,7 +31,7 @@ class HomeElement extends LitElement {
 
         .section-title {
             font-size: 1.5rem;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .search-div {
@@ -47,7 +47,7 @@ class HomeElement extends LitElement {
 
         .search-input {
             width: 100%;
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 14px;
             outline: none;
             border: none;
@@ -55,9 +55,9 @@ class HomeElement extends LitElement {
         }
 
         .search-div:has(.search-input:focus-within) {
-            border: 1px solid var(--accent-text);
-            background-color: var(--accent-bg);
-            color: var(--accent-text);
+            border: 1px solid var(--fg-accent);
+            background-color: var(--bg-accent);
+            color: var(--fg-accent);
         }
 
         .search-div img {
@@ -112,14 +112,14 @@ class HomeElement extends LitElement {
         }
 
         .template-info h3 {
-            color: var(--text-1);
+            color: var(--fg-1);
             margin-bottom: var(--gap-1);
             margin-top: var(--gap-3);
             margin-left: var(--gap-3);
         }
 
         .template-by {
-            color: var(--text-2);
+            color: var(--fg-2);
             font-size: 12px;
             margin-left: var(--gap-3);
         }
@@ -137,14 +137,14 @@ class HomeElement extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
         .show-more {
             width: fit-content;
             margin-left: auto;
-            background: var(--accent-bg);
-            color: var(--accent-text);
+            background: var(--bg-accent);
+            color: var(--fg-accent);
             border: none;
             padding: var(--padding-w2);
             border-radius: var(--radius);
@@ -193,11 +193,11 @@ class HomeElement extends LitElement {
         }
 
         .file-card:hover {
-            background: var(--accent-bg);
+            background: var(--bg-accent);
         }
 
         .file-card:hover .file-content {
-            color: var(--accent-text);
+            color: var(--fg-accent);
         }
 
         .more-options:hover {
@@ -218,14 +218,14 @@ class HomeElement extends LitElement {
             }
         }
         .this-greet {
-            background-image: linear-gradient(to right, var(--fg-red), var(--accent-text));
+            background-image: linear-gradient(to right, var(--fg-red), var(--fg-accent));
             color: transparent;
             background-clip: text;
             font-weight: 500;
         }
 
         ::placeholder {
-            color: var(--text-2);
+            color: var(--fg-2);
         }
 
         *::-webkit-scrollbar {
@@ -240,15 +240,15 @@ class HomeElement extends LitElement {
             border: 4px solid var(--bg-1);
         }
         *::-webkit-scrollbar-thumb:hover {
-            background-color: var(--text-1);
+            background-color: var(--fg-1);
         }
         .xml {
-            stroke: var(--text-1);
+            stroke: var(--fg-1);
             fill: var(--bg-2);
         }
         .xml:hover {
-            stroke: var(--accent-text);
-            fill: var(--accent-bg);
+            stroke: var(--fg-accent);
+            fill: var(--bg-accent);
         }
         .your-files-header {
             display: flex;
@@ -300,7 +300,7 @@ class HomeElement extends LitElement {
         const interpolateColor = (x, elementWidth) => {
             const computedStyle = getComputedStyle(greeting);
             const redColor = computedStyle.getPropertyValue('--fg-red').trim();
-            const accentColor = computedStyle.getPropertyValue('--accent-text').trim();
+            const accentColor = computedStyle.getPropertyValue('--fg-accent').trim();
 
             const getRGB = color => {
                 if (color.startsWith('#')) {

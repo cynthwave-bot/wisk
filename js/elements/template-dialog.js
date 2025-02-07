@@ -112,7 +112,7 @@ class TemplateDialog extends LitElement {
         }
 
         .template-info h3 {
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .template-info-main {
@@ -126,7 +126,7 @@ class TemplateDialog extends LitElement {
         }
 
         .template-by {
-            color: var(--text-2);
+            color: var(--fg-2);
             font-size: 12px;
             font-weight: 400;
         }
@@ -172,7 +172,7 @@ class TemplateDialog extends LitElement {
             gap: var(--gap-2);
             background: none;
             border: none;
-            color: var(--text-1);
+            color: var(--fg-1);
             cursor: pointer;
             padding: var(--padding-2);
             border-radius: var(--radius);
@@ -197,9 +197,9 @@ class TemplateDialog extends LitElement {
         }
 
         .use-template-button {
-            background: var(--accent-text);
-            color: var(--accent-bg);
-            border: 2px solid var(--accent-text);
+            background: var(--fg-accent);
+            color: var(--bg-accent);
+            border: 2px solid var(--fg-accent);
             padding: var(--padding-w2);
             border-radius: var(--radius);
             cursor: pointer;
@@ -207,8 +207,8 @@ class TemplateDialog extends LitElement {
         }
 
         .use-template-button:hover {
-            background: var(--accent-bg);
-            color: var(--accent-text);
+            background: var(--bg-accent);
+            color: var(--fg-accent);
         }
 
         @media (max-width: 768px) {
@@ -249,7 +249,7 @@ class TemplateDialog extends LitElement {
             border: none;
             border-radius: var(--radius);
             cursor: pointer;
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 1.5rem;
             align-items: center;
             justify-content: center;
@@ -262,11 +262,11 @@ class TemplateDialog extends LitElement {
         .dialog-title {
             font-size: 1.5rem;
             margin-bottom: var(--gap-3);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .section-title {
-            color: var(--text-1);
+            color: var(--fg-1);
             margin-bottom: var(--gap-3);
         }
 
@@ -300,7 +300,7 @@ class TemplateDialog extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
     `;

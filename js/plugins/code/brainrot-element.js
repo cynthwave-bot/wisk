@@ -37,7 +37,7 @@ class BrainrotElement extends LitElement {
         button,
         select {
             padding: var(--padding-w2);
-            background-color: var(--text-1);
+            background-color: var(--fg-1);
             color: var(--bg-1);
             border: none;
             border-radius: var(--radius);
@@ -77,7 +77,7 @@ class BrainrotElement extends LitElement {
             cursor: move;
             padding: 4px;
             border-radius: var(--radius);
-            background: var(--text-1);
+            background: var(--fg-1);
             color: var(--bg-1);
             display: flex;
             align-items: center;

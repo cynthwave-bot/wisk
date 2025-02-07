@@ -294,11 +294,11 @@ class LinkElement extends HTMLElement {
             .link-preview-title {
                 word-break: break-word;
                 margin-bottom: 4px;
-                color: var(--text-1);
+                color: var(--fg-1);
             }
             .link-preview-description {
                 font-size: 0.9em;
-                color: var(--text-2);
+                color: var(--fg-2);
                 margin-bottom: 4px;
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
@@ -307,7 +307,7 @@ class LinkElement extends HTMLElement {
             }
             .link-preview-meta {
                 font-size: 0.8em;
-                color: var(--text-2);
+                color: var(--fg-2);
             }
             .table-controls {
                 display: flex;
@@ -317,7 +317,7 @@ class LinkElement extends HTMLElement {
             .open {
                 padding: var(--padding-w2);
                 background-color: var(--bg-2);
-                color: var(--text-1);
+                color: var(--fg-1);
                 border: 1px solid var(--border-1);
                 border-radius: var(--radius);
                 outline: none;

@@ -25,7 +25,7 @@ class PyInterpreter extends LitElement {
             margin: 0px;
             padding: 0px;
             font-size: 14px;
-            color: var(--text-1);
+            color: var(--fg-1);
             user-select: text;
         }
         :host {
@@ -63,7 +63,7 @@ class PyInterpreter extends LitElement {
             font-family: var(--font-mono);
             padding: var(--padding-4);
             background-color: transparent;
-            color: var(--text-1);
+            color: var(--fg-1);
             border: none;
             resize: vertical;
             tab-size: 4;
@@ -105,7 +105,7 @@ class PyInterpreter extends LitElement {
             outline: none;
             border: none;
             background: var(--bg-1);
-            color: var(--text-1);
+            color: var(--fg-1);
             padding: var(--padding-w1);
         }
         input {
@@ -114,16 +114,16 @@ class PyInterpreter extends LitElement {
             padding: var(--padding-w1);
             border-radius: var(--radius);
             background: transparent;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         #cancel {
-            color: var(--text-1);
+            color: var(--fg-1);
             border-radius: var(--radius);
             font-weight: 500;
         }
         #import {
             border: 1px solid var(--border-1);
-            color: var(--text-1);
+            color: var(--fg-1);
             border-radius: var(--radius);
             filter: var(--drop-shadow);
             font-weight: 500;
@@ -182,7 +182,7 @@ class PyInterpreter extends LitElement {
         .btn {
             padding: var(--padding-w1);
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             border-radius: var(--radius);
             border: 1px solid var(--border-1);
             cursor: pointer;

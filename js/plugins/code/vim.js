@@ -77,7 +77,7 @@ class VimEditor {
         this.statusIndicator.style.position = 'fixed';
         this.statusIndicator.style.backgroundColor = 'var(--bg-1)';
         this.statusIndicator.style.border = '1px solid var(--border-1)';
-        this.statusIndicator.style.color = 'var(--text-1)';
+        this.statusIndicator.style.color = 'var(--fg-1)';
         this.statusIndicator.style.borderRadius = 'var(--radius)';
         this.statusIndicator.style.padding = 'var(--padding-w2)';
         this.statusIndicator.style.fontFamily = 'monospace';

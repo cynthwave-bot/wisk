@@ -54,7 +54,7 @@ class MermaidElement extends LitElement {
             opacity: 0;
             transition: opacity 0.15s ease;
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid var(--bg-3);
             padding: var(--padding-w1);
             border-radius: var(--radius);
@@ -78,7 +78,7 @@ class MermaidElement extends LitElement {
         textarea {
             width: 100%;
             padding: var(--padding-3);
-            color: var(--text-1);
+            color: var(--fg-1);
             background: var(--bg-2);
             border-radius: var(--radius);
             font-size: 14px;
@@ -97,7 +97,7 @@ class MermaidElement extends LitElement {
         }
         .button {
             background: transparent;
-            color: var(--text-1);
+            color: var(--fg-1);
             border: none;
             padding: var(--padding-2);
             border-radius: var(--radius);
@@ -116,9 +116,9 @@ class MermaidElement extends LitElement {
         .loading-spinner {
             width: 24px;
             height: 24px;
-            border: 3px solid var(--accent-text);
+            border: 3px solid var(--fg-accent);
             border-radius: 50%;
-            border-top-color: var(--accent-bg);
+            border-top-color: var(--bg-accent);
             animation: spin 0.8s linear infinite;
             margin: calc(var(--padding-3) - 2px);
         }
@@ -134,12 +134,12 @@ class MermaidElement extends LitElement {
         }
         .primary-button {
             background: transparent;
-            color: var(--accent-text);
+            color: var(--fg-accent);
             border: none;
             font-weight: 600;
         }
         .primary-button:hover {
-            background: var(--accent-bg);
+            background: var(--bg-accent);
             border: none;
         }
         .inner-buttons {
@@ -217,25 +217,25 @@ class MermaidElement extends LitElement {
             themeVariables: {
                 // Primary elements
                 primaryColor: this._theme['--fg-blue'],
-                primaryTextColor: this._theme['--text-1'],
+                primaryTextColor: this._theme['--fg-1'],
                 primaryBorderColor: this._theme['--border-1'],
 
                 // Lines and secondary elements
-                lineColor: this._theme['--text-2'],
+                lineColor: this._theme['--fg-2'],
                 secondaryColor: this._theme['--fg-green'],
                 tertiaryColor: this._theme['--fg-red'],
 
                 // Additional state colors
                 successColor: this._theme['--fg-green'],
-                successTextColor: this._theme['--text-1'],
+                successTextColor: this._theme['--fg-1'],
                 successBorderColor: this._theme['--border-1'],
 
                 errorColor: this._theme['--fg-red'],
-                errorTextColor: this._theme['--text-1'],
+                errorTextColor: this._theme['--fg-1'],
                 errorBorderColor: this._theme['--border-1'],
 
                 warningColor: this._theme['--fg-yellow'],
-                warningTextColor: this._theme['--text-1'],
+                warningTextColor: this._theme['--fg-1'],
                 warningBorderColor: this._theme['--border-1'],
 
                 // Node colors
@@ -266,12 +266,12 @@ class MermaidElement extends LitElement {
                 clusterBorder: this._theme['--border-1'],
 
                 // Text elements
-                titleColor: this._theme['--text-1'],
+                titleColor: this._theme['--fg-1'],
                 edgeLabelBackground: this._theme['--bg-3'],
-                textColor: this._theme['--text-1'],
+                textColor: this._theme['--fg-1'],
 
                 // Node types
-                classText: this._theme['--text-1'],
+                classText: this._theme['--fg-1'],
                 relationColor: this._theme['--fg-purple'],
 
                 // Git graph colors
@@ -284,32 +284,32 @@ class MermaidElement extends LitElement {
                 git6: this._theme['--fg-yellow'],
                 git7: this._theme['--fg-black'],
 
-                gitInv0: this._theme['--text-1'],
-                gitInv1: this._theme['--text-1'],
-                gitInv2: this._theme['--text-1'],
-                gitInv3: this._theme['--text-1'],
-                gitInv4: this._theme['--text-1'],
-                gitInv5: this._theme['--text-1'],
-                gitInv6: this._theme['--text-1'],
-                gitInv7: this._theme['--text-1'],
+                gitInv0: this._theme['--fg-1'],
+                gitInv1: this._theme['--fg-1'],
+                gitInv2: this._theme['--fg-1'],
+                gitInv3: this._theme['--fg-1'],
+                gitInv4: this._theme['--fg-1'],
+                gitInv5: this._theme['--fg-1'],
+                gitInv6: this._theme['--fg-1'],
+                gitInv7: this._theme['--fg-1'],
 
                 // Sequence diagram
                 actorBorder: this._theme['--fg-blue'],
                 actorBkg: this._theme['--bg-blue'],
-                actorTextColor: this._theme['--text-1'],
+                actorTextColor: this._theme['--fg-1'],
                 actorLineColor: this._theme['--fg-grey'],
 
                 noteBkgColor: this._theme['--bg-yellow'],
                 noteBorderColor: this._theme['--fg-yellow'],
-                noteTextColor: this._theme['--text-1'],
+                noteTextColor: this._theme['--fg-1'],
 
                 activationBorderColor: this._theme['--fg-red'],
                 activationBkgColor: this._theme['--bg-red'],
 
-                sequenceNumberColor: this._theme['--text-2'],
+                sequenceNumberColor: this._theme['--fg-2'],
 
                 // State diagram
-                labelColor: this._theme['--text-1'],
+                labelColor: this._theme['--fg-1'],
                 altBackground: this._theme['--bg-3'],
 
                 // Journey diagram
@@ -344,11 +344,11 @@ class MermaidElement extends LitElement {
                 quadrant4Fill: this._theme['--bg-blue'],
                 quadrantPointFill: this._theme['--bg-3'],
 
-                quadrant1TextFill: this._theme['--text-1'],
-                quadrant2TextFill: this._theme['--text-1'],
-                quadrant3TextFill: this._theme['--text-1'],
-                quadrant4TextFill: this._theme['--text-1'],
-                quadrantPointTextFill: this._theme['--text-1'],
+                quadrant1TextFill: this._theme['--fg-1'],
+                quadrant2TextFill: this._theme['--fg-1'],
+                quadrant3TextFill: this._theme['--fg-1'],
+                quadrant4TextFill: this._theme['--fg-1'],
+                quadrantPointTextFill: this._theme['--fg-1'],
 
                 // Mindmap fixes
                 mindmapNodeBackgroundColor: this._theme['--bg-2'],

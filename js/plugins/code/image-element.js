@@ -182,7 +182,7 @@ class ImageElement extends BaseTextElement {
         } catch (error) {
             console.error('GIF search error:', error);
             this.shadowRoot.querySelector('.gif-results').innerHTML =
-                '<div style="color: var(--text-2); text-align: center; grid-column: 1/-1;">Error searching GIFs</div>';
+                '<div style="color: var(--fg-2); text-align: center; grid-column: 1/-1;">Error searching GIFs</div>';
         }
     }
 
@@ -191,7 +191,7 @@ class ImageElement extends BaseTextElement {
         resultsContainer.innerHTML = '';
 
         if (!gifs.gifs || !gifs.gifs.length) {
-            resultsContainer.innerHTML = '<div style="color: var(--text-2); text-align: center; grid-column: 1/-1;">No GIFs found</div>';
+            resultsContainer.innerHTML = '<div style="color: var(--fg-2); text-align: center; grid-column: 1/-1;">No GIFs found</div>';
             return;
         }
 
@@ -571,7 +571,7 @@ class ImageElement extends BaseTextElement {
                 border: none;
                 border-radius: var(--radius);
                 cursor: pointer;
-                color: var(--text-1);
+                color: var(--fg-1);
             }
             .dialog-option:hover {
                 background: var(--bg-2);
@@ -590,7 +590,7 @@ class ImageElement extends BaseTextElement {
             }
             #editable {
                 outline: none;
-                color: var(--text-2);
+                color: var(--fg-2);
                 font-size: 14px;
                 text-align: left;
                 line-height: 1.5;
@@ -605,7 +605,7 @@ class ImageElement extends BaseTextElement {
                 gap: var(--gap-1);
                 padding: var(--padding-3);
                 background-color: var(--bg-1);
-                color: var(--text-1);
+                color: var(--fg-1);
                 border: 1px solid var(--border-1);
                 border-radius: var(--radius);
                 cursor: pointer;
@@ -648,7 +648,7 @@ class ImageElement extends BaseTextElement {
                 background: var(--bg-3);
             }
             .emoji-name {
-                color: var(--text-2);
+                color: var(--fg-2);
                 font-size: 0.9em;
             }
             .emoji {
@@ -660,7 +660,7 @@ class ImageElement extends BaseTextElement {
                 *::-webkit-scrollbar { width: 15px; }
                 *::-webkit-scrollbar-track { background: var(--bg-1); }
                 *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-                *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+                *::-webkit-scrollbar-thumb:hover { background-color: var(--fg-1); }
             }
             .image-container {
                 position: relative;
@@ -687,7 +687,7 @@ class ImageElement extends BaseTextElement {
             }
 
             .resize-handle:hover {
-                background: var(--accent-text);
+                background: var(--fg-accent);
             }
 
             #img-editable {
@@ -746,14 +746,14 @@ class ImageElement extends BaseTextElement {
                 border: 1px solid var(--border-1);
                 border-radius: 100px;
                 background: var(--bg-2);
-                color: var(--text-1);
+                color: var(--fg-1);
             }
 
             #close-gif-search {
                 background: none;
                 border: none;
                 border-radius: 100px;
-                color: var(--text-1);
+                color: var(--fg-1);
                 font-size: 24px;
                 cursor: pointer;
                 padding: var(--padding-2);
@@ -829,7 +829,7 @@ class ImageElement extends BaseTextElement {
 
             .link-dialog-header h3 {
                 margin: 0;
-                color: var(--text-1);
+                color: var(--fg-1);
             }
 
             .link-dialog-header button {
@@ -857,7 +857,7 @@ class ImageElement extends BaseTextElement {
                 border-radius: var(--radius);
                 outline: none;
                 background: var(--bg-2);
-                color: var(--text-1);
+                color: var(--fg-1);
             }
 
             .link-dialog-buttons {
@@ -875,12 +875,12 @@ class ImageElement extends BaseTextElement {
 
             .secondary-button {
                 background: var(--bg-2);
-                color: var(--text-1);
+                color: var(--fg-1);
             }
 
             .primary-button {
-                background: var(--accent-bg);
-                color: var(--accent-text);
+                background: var(--bg-accent);
+                color: var(--fg-accent);
                 border: none;
             }
 
@@ -893,7 +893,7 @@ class ImageElement extends BaseTextElement {
             }
             .suggestion-text {
                 opacity: 0.8;
-                color: var(--accent-text);
+                color: var(--fg-accent);
             }
             .suggestion-container {
                 position: absolute;
@@ -916,15 +916,15 @@ class ImageElement extends BaseTextElement {
                 border: none;
                 background: var(--bg-1);
                 outline: none;
-                color: var(--text-1);
+                color: var(--fg-1);
                 cursor: pointer;
             }
             .suggestion-button:hover {
                 background: var(--bg-3);
             }
             .accept-button {
-                background: var(--accent-bg);
-                color: var(--accent-text);
+                background: var(--bg-accent);
+                color: var(--fg-accent);
                 font-weight: bold;
             }
             </style>
@@ -962,7 +962,7 @@ class ImageElement extends BaseTextElement {
                         <input type="text" id="gif-search-input" placeholder="Search GIFs..." autocomplete="off" />
                         <button id="close-gif-search"><img src="/a7/forget/close.svg" alt="Close" width="20" height="20"></button>
                     </div>
-                    <p style="text-align: end; color: var(--text-2); font-size: small;">Powered by Tenor</p>
+                    <p style="text-align: end; color: var(--fg-2); font-size: small;">Powered by Tenor</p>
                     <div class="gif-results">
                     </div>
                 </div>

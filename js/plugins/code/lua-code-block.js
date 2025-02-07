@@ -24,7 +24,7 @@ class LuaCodeBlock extends LitElement {
             margin: 0px;
             padding: 0px;
             font-size: 14px;
-            color: var(--text-1);
+            color: var(--fg-1);
             user-select: text;
         }
         :host {
@@ -44,7 +44,7 @@ class LuaCodeBlock extends LitElement {
             font-family: var(--font-mono);
             padding: 0;
             background-color: transparent;
-            color: var(--text-1);
+            color: var(--fg-1);
             border: none;
             resize: vertical;
             tab-size: 4;
@@ -77,7 +77,7 @@ class LuaCodeBlock extends LitElement {
         .btn {
             padding: var(--padding-w1);
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             border-radius: var(--radius);
             border: 1px solid var(--border-1);
             cursor: pointer;
@@ -85,7 +85,7 @@ class LuaCodeBlock extends LitElement {
         }
         .btnx {
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             border-radius: 200px;
             border: 1px solid var(--border-1);
             cursor: pointer;

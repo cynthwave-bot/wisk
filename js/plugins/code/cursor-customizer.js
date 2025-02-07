@@ -22,11 +22,11 @@ class CursorCustomizer extends LitElement {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         select {
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             padding: 0.5rem;
             border: 1px solid var(--bg-3);
             border-radius: 4px;

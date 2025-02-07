@@ -84,7 +84,7 @@ class TierList extends LitElement {
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 14px;
             padding: 0;
             line-height: 1;
@@ -121,7 +121,7 @@ class TierList extends LitElement {
         .upload-icon {
             width: 24px;
             height: 24px;
-            color: var(--text-2);
+            color: var(--fg-2);
         }
     `;
 
