@@ -80,7 +80,8 @@ async function live() {
         // FIXX THIS THIS IS REALLY BAD
         // the way im adding wisk.site
         // but i have to ship early
-        var fetchUrl = wisk.editor.backendUrl + '/v1/new?doc=' + getURLParam('uwu');
+        const subdomain = window.location.hostname.split('.')[0]; // Extract subdomain
+        var fetchUrl = wisk.editor.backendUrl + '/v1/new?doc=' + getURLParam('uwu') + '&subdomain=' + subdomain; // Add subdomain
         var fetchOptions = {
             method: 'GET',
             headers: {
