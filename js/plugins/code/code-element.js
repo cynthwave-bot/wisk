@@ -260,7 +260,7 @@ class CodeElement extends LitElement {
     render() {
         return html`
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" />
-            <select id="language-select">
+            <select id="language-select" style="${wisk.editor.readonly ? 'display: none' : ''}">
                 ${Object.entries(this.supportedLanguages).map(
                     ([value, label]) => html`<option value="${value}" ?selected=${value === this.selectedLang}>${label}</option>`
                 )}
