@@ -860,7 +860,7 @@ class GeneralChat extends LitElement {
     }
 
     connectSignalingServer() {
-        this.ws = new WebSocket('wss://cloud.wisk.cc/v2/plugins/call');
+        this.ws = new WebSocket('wss://' + wisk.editor.backendUrl.replace('https://', '').replace('http://', '') + '/v2/plugins/call');
         const roomId = wisk.editor.pageId;
 
         this.ws.onopen = () => {

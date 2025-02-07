@@ -170,7 +170,7 @@ class MiniAppEditor extends LitElement {
 
         try {
             const user = await document.querySelector('auth-component').getUserInfo();
-            const response = await fetch('https://cloud.wisk.cc/v1/files', {
+            const response = await fetch(wisk.editor.backendUrl + '/v1/files', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -265,7 +265,7 @@ class MiniAppEditor extends LitElement {
         try {
             this.loading = true;
             const user = await document.querySelector('auth-component').getUserInfo();
-            const response = await fetch('https://cloud.wisk.cc/v1/files', {
+            const response = await fetch(wisk.editor.backendUrl + '/v1/files', {
                 headers: {
                     Authorization: 'Bearer ' + user.token,
                 },

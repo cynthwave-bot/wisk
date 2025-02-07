@@ -21,7 +21,7 @@ async function sync() {
 
 function initializeWebSocket() {
     return new Promise((resolve, reject) => {
-        socket = new WebSocket('wss://cloud.wisk.cc/v1/live');
+        socket = new WebSocket('wss://' + wisk.editor.backendUrl.replace('https://', '').replace('http://', '') + '/v1/live');
 
         socket.addEventListener('open', event => {
             console.log('Connected to WebSocket server');
@@ -80,7 +80,7 @@ async function live() {
         // FIXX THIS THIS IS REALLY BAD
         // the way im adding wisk.site
         // but i have to ship early
-        var fetchUrl = 'https://cloud.wisk.cc/v1/new?doc=' + getURLParam('uwu');
+        var fetchUrl = wisk.editor.backendUrl + '/v1/new?doc=' + getURLParam('uwu');
         var fetchOptions = {
             method: 'GET',
             headers: {

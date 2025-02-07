@@ -736,7 +736,7 @@ class ToolbarElement extends LitElement {
 
         try {
             const auth = await document.getElementById('auth').getUserInfo();
-            const response = await fetch('https://cloud.wisk.cc/v2/ai/ops', {
+            const response = await fetch(wisk.editor.backendUrl + '/v2/ai/ops', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -792,7 +792,7 @@ class ToolbarElement extends LitElement {
         this.mode = 'loading';
         try {
             const auth = await document.getElementById('auth').getUserInfo();
-            const response = await fetch('https://cloud.wisk.cc/v1/source', {
+            const response = await fetch(wisk.editor.backendUrl + '/v1/source', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -876,7 +876,7 @@ class ToolbarElement extends LitElement {
 
         try {
             const user = await document.getElementById('auth').getUserInfo();
-            const response = await fetch('https://cloud.wisk.cc/v1/source', {
+            const response = await fetch(wisk.editor.backendUrl + '/v1/source', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1023,7 +1023,7 @@ class ToolbarElement extends LitElement {
         var user = await document.getElementById('auth').getUserInfo();
         var search = this.shadowRoot.getElementById('source-search').value;
 
-        var response = await fetch('https://cloud.wisk.cc/v1/source', {
+        var response = await fetch(wisk.editor.backendUrl + '/v1/source', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -272,7 +272,7 @@ class LeftMenu extends LitElement {
     async setList() {
         try {
             const auth = await document.getElementById('auth').getUserInfo();
-            const response = await fetch('https://cloud.wisk.cc/v1/document', {
+            const response = await fetch(wisk.editor.backendUrl + '/v1/document', {
                 method: 'GET',
                 headers: {
                     Authorization: 'Bearer ' + auth.token,
@@ -303,7 +303,7 @@ class LeftMenu extends LitElement {
 
         try {
             const auth = await document.getElementById('auth').getUserInfo();
-            const response = await fetch(`https://cloud.wisk.cc/v1/document?id=${id}`, {
+            const response = await fetch(`${wisk.editor.backendUrl}/v1/document?id=${id}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: 'Bearer ' + auth.token,

@@ -266,7 +266,7 @@ class LatexElement extends LitElement {
 
             const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
 
-            var response = await fetch('https://cloud.wisk.cc/v2/plugins/latex', {
+            const response = await fetch(wisk.editor.backendUrl + '/v2/plugins/latex', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
