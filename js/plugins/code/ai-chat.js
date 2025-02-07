@@ -323,7 +323,7 @@ class AIChat extends LitElement {
 
         try {
             const auth = await document.getElementById('auth').getUserInfo();
-            const response = await fetch('https://cloud.wisk.cc/v1/ai/chat', {
+            const response = await fetch(wisk.editor.backendUrl + '/v1/ai/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

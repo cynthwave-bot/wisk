@@ -33,6 +33,7 @@ wisk.editor = {
     elements: [],
     data: {},
     readonly: false,
+    backendUrl: 'https://cloud.wisk.cc',
     aiAutocomplete: false,
     gptZero: false,
     createNewBlock: function (elementId, blockType, value, focusIdentifier) {},

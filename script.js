@@ -46,7 +46,7 @@ async function initScript() {
 
         wisk.utils.showLoading('Creating new document...');
 
-        var fetchUrl = 'https://cloud.wisk.cc/v1/new';
+        var fetchUrl = wisk.editor.backendUrl + '/v1/new';
         var fetchOptions = {
             method: 'POST',
             headers: {

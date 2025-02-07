@@ -236,7 +236,7 @@ class FeedbackDialog extends LitElement {
                 logs: '', // TODO - Implement log attachment -- for that clear the logs that have personal information then we add it :)
             };
 
-            const response = await fetch('https://cloud.wisk.cc/v2/feedback', {
+            const response = await fetch(wisk.editor.backendUrl + '/v2/feedback', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

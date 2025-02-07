@@ -775,7 +775,7 @@ class NeoAI extends LitElement {
 
             // Prepare API request
             const docStr = JSON.stringify(processedDocs).replace(/"/g, "'");
-            const response = await fetch('https://cloud.wisk.cc/v2/neo', {
+            const response = await fetch(wisk.editor.backendUrl + '/v2/neo', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

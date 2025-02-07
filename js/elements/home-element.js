@@ -431,7 +431,7 @@ class HomeElement extends LitElement {
     async fetchFiles() {
         try {
             const auth = await document.getElementById('auth').getUserInfo();
-            const response = await fetch('https://cloud.wisk.cc/v1/document', {
+            const response = await fetch(wisk.editor.backendUrl + '/v1/document', {
                 method: 'GET',
                 headers: {
                     Authorization: 'Bearer ' + auth.token,
@@ -469,7 +469,7 @@ class HomeElement extends LitElement {
 
         try {
             const auth = await document.getElementById('auth').getUserInfo();
-            const response = await fetch(`https://cloud.wisk.cc/v1/document?id=${id}`, {
+            const response = await fetch(`${wisk.editor.backendUrl}/v1/document?id=${id}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: 'Bearer ' + auth.token,

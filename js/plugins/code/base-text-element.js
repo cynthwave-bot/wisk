@@ -94,7 +94,7 @@ class BaseTextElement extends HTMLElement {
         if (before.trim() === '' && after.trim() === '') return null;
 
         try {
-            const response = await fetch('https://cloud.wisk.cc/v2/autocomplete', {
+            const response = await fetch(wisk.editor.backendUrl + '/v2/autocomplete', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${user.token}`,

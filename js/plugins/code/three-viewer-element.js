@@ -124,7 +124,7 @@ class ThreeViewerElement extends LitElement {
         try {
             var user = await document.querySelector('auth-component').getUserInfo();
 
-            const response = await fetch('https://cloud.wisk.cc/v1/files', {
+            const response = await fetch(wisk.editor.backendUrl + '/v1/files', {
                 method: 'POST',
                 body: formData,
                 headers: {

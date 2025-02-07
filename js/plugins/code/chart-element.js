@@ -241,7 +241,7 @@ class ChartElement extends LitElement {
 
             const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
 
-            var response = await fetch('https://cloud.wisk.cc/v2/plugins/chartjs', {
+            var response = await fetch(wisk.editor.backendUrl + '/v2/plugins/chartjs', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,

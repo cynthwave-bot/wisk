@@ -528,7 +528,7 @@ class GettingStarted extends LitElement {
         wisk.utils.showLoading('Generating draft...');
 
         try {
-            const response = await fetch('https://cloud.wisk.cc/v2/outline', {
+            const response = await fetch(wisk.editor.backendUrl + '/v2/outline', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -783,7 +783,7 @@ class GettingStarted extends LitElement {
         formData.append('fileType', this.selectedFile.name.split('.').pop().toLowerCase());
 
         try {
-            const response = await fetch('https://cloud.wisk.cc/v2/convert', {
+            const response = await fetch(wisk.editor.backendUrl + '/v2/convert', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,

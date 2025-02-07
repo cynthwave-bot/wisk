@@ -250,7 +250,7 @@ class ShareComponent extends LitElement {
 
     async liveUrl() {
         var user = await document.querySelector('auth-component').getUserInfo();
-        var response = await fetch('https://cloud.wisk.cc/v1/user', {
+        var response = await fetch(wisk.editor.backendUrl + '/v1/user', {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${user.token}`,
@@ -474,7 +474,7 @@ class ShareComponent extends LitElement {
                 markdownContent += `[${i + 1}] ${document.querySelector('manage-citations').getFormattedCitation(refsAdded[i])}\n\n`;
             }
 
-            const response = await fetch('https://cloud.wisk.cc/v2/download', {
+            const response = await fetch(wisk.editor.backendUrl + '/v2/download', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,

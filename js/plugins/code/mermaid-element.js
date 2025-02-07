@@ -371,7 +371,7 @@ class MermaidElement extends LitElement {
 
             const aiPrompt = this.shadowRoot.querySelector('.ai-input').value;
 
-            var response = await fetch('https://cloud.wisk.cc/v2/plugins/mermaid', {
+            var response = await fetch(wisk.editor.backendUrl + '/v2/plugins/mermaid', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
