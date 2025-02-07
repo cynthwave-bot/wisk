@@ -1,4 +1,4 @@
-var defaultTheme = localStorage.getItem('webapp-theme') || 'Light';
+var defaultTheme = localStorage.getItem('webapp-theme') || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light');
 
 wisk.theme.setTheme = async function (themeName) {
     if (wisk.editor.readonly) {
