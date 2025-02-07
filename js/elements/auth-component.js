@@ -166,6 +166,7 @@ class AuthComponent extends LitElement {
         window.addEventListener('focus', this.handleFocusChange.bind(this));
     }
 
+    show() {
         if (this.readonly) {
             return;
         }
