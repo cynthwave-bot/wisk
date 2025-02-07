@@ -1,7 +1,7 @@
 class Heading1Element extends BaseTextElement {
     constructor() {
         super();
-        this.placeholder = this.getAttribute('placeholder') || wisk.editor.wiskSite ? '' : 'edit me';
+        this.placeholder = this.getAttribute('placeholder') || wisk.editor.readonly ? '' : 'edit me';
     }
 
     render() {
@@ -122,7 +122,7 @@ class Heading1Element extends BaseTextElement {
             </style>
         `;
         const content = `
-            <h1 id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></h1>
+            <h1 id="editable" contenteditable="${!wisk.editor.readonly}" spellcheck="false" data-placeholder="${this.placeholder}"></h1>
                 <div class="suggestion-container">
                     <div class="suggestion-actions">
                         <button class="suggestion-button discard-button">Discard</button>

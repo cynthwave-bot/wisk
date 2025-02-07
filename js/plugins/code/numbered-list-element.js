@@ -327,7 +327,7 @@ class NumberedListElement extends BaseTextElement {
         const content = `
             <div id="container">
                 <div id="number">1.</div>
-                <div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a list item...'}" ></div>
+                <div id="editable" contenteditable="${!wisk.editor.readonly}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a list item...'}" ></div>
                 <div class="suggestion-container">
                     <div class="suggestion-actions">
                         <button class="suggestion-button discard-button">Discard</button>

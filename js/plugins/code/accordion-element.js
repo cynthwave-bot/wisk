@@ -227,7 +227,7 @@ class AccordionElement extends BaseTextElement {
         const content = `
             <div style="display: flex">
                 <div style="padding: var(--padding-4); padding-right: 0; padding-top: var(--padding-3); padding-left: 0;">
-                    <button class="emoji-button" ?disabled="${wisk.editor.wiskSite}">${this.value?.emoji || '📌'}</button>
+                    <button class="emoji-button" ?disabled="${wisk.editor.readonly}">${this.value?.emoji || '📌'}</button>
                 </div>
                 <div style="flex: 1">
                     <div class="accordion-header">

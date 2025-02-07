@@ -32,7 +32,7 @@ wisk.editor = {
     pageId: '',
     elements: [],
     data: {},
-    wiskSite: false,
+    readonly: false,
     aiAutocomplete: false,
     gptZero: false,
     createNewBlock: function (elementId, blockType, value, focusIdentifier) {},
@@ -54,5 +54,5 @@ wisk.utils = {
 };
 
 if (location.href.includes('.wisk.site')) {
-    wisk.editor.wiskSite = true;
+    wisk.editor.readonly = true;
 }

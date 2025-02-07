@@ -139,10 +139,10 @@ class AuthComponent extends LitElement {
         this.mode = 'signin';
         this.visible = false;
         this.user = null;
-        this.wiskSite = false;
+        this.readonly = false;
 
         if (window.location.hostname.endsWith('wisk.site')) {
-            this.wiskSite = true;
+            this.readonly = true;
             return;
         }
 

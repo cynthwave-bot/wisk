@@ -265,7 +265,7 @@ class LeftMenu extends LitElement {
     }
 
     opened() {
-        if (wisk.editor.wiskSite) return;
+        if (wisk.editor.readonly) return;
         this.setList();
     }
 
@@ -393,7 +393,7 @@ class LeftMenu extends LitElement {
     }
 
     render() {
-        if (wisk.editor.wiskSite) {
+        if (wisk.editor.readonly) {
             return html`
                 <div class="outer">
                     <button @click=${this.openInEditor} class="new" style="cursor: pointer;">Open in Editor</button>

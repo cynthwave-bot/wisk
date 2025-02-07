@@ -95,7 +95,7 @@ async function loadPlugin(pluginName, inx) {
         }
 
         // Add to nav bar if necessary
-        if (content.nav === true && !wisk.editor.wiskSite) {
+        if (content.nav === true && !wisk.editor.readonly) {
             addToNavBar(content, inx);
         }
     });

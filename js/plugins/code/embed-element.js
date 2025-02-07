@@ -267,7 +267,7 @@ class EmbedElement extends HTMLElement {
                     </div>
                     <div class="address-bar">
                         <span class="https-text">https://</span>
-                        <div class="link" id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false">${this.link}</div>
+                        <div class="link" id="editable" contenteditable="${!wisk.editor.readonly}" spellcheck="false">${this.link}</div>
                     </div>
                 </div>
                 <iframe src="https://${this.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

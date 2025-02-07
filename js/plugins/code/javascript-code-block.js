@@ -162,7 +162,7 @@ class JavaScriptCodeBlock extends LitElement {
                 <button
                     class="btn btnx"
                     @click=${() => {
-                        if (wisk.editor.wiskSite) return;
+                        if (wisk.editor.readonly) return;
                         this.executeCode();
                     }}
                 >
@@ -175,7 +175,7 @@ class JavaScriptCodeBlock extends LitElement {
                     .value=${this.code}
                     spellcheck="false"
                     placeholder="console.log('Hello, World!')"
-                    ${wisk.editor.wiskSite ? 'readonly' : ''}
+                    ${wisk.editor.readonly ? 'readonly' : ''}
                 ></textarea>
 
                 <div class="output ${this.output ? 'has-content' : ''} ${this.outputType}">${this.output}</div>

@@ -229,7 +229,7 @@ class CalloutElement extends BaseTextElement {
         const content = `
             <div class="container">
                 <button class="emoji-button">${this.value?.emoji || '📌'}</button>
-                <div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
+                <div id="editable" contenteditable="${!wisk.editor.readonly}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
                 <div class="suggestion-container">
                     <div class="suggestion-actions">
                         <button class="suggestion-button discard-button">Discard</button>
@@ -243,7 +243,7 @@ class CalloutElement extends BaseTextElement {
 
         this.emojiButton = this.shadowRoot.querySelector('.emoji-button');
         this.emojiButton.addEventListener('click', e => {
-            if (wisk.editor.wiskSite) return;
+            if (wisk.editor.readonly) return;
 
             e.stopPropagation();
             // Get the emoji selector component and show it
