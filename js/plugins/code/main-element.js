@@ -2,7 +2,7 @@ class MainElement extends BaseTextElement {
     constructor() {
         super();
         this.placeholder = this.getAttribute('placeholder') || wisk.editor.wiskSite ? '' : 'edit me';
-        this.bannerSize = 'small'; // Can be 'small', 'big', 'bigger', 'biggest'
+        this.bannerSize = 'small'; // Can be 'smallest', 'small', 'big', 'bigger', 'biggest'
         this.emoji = this.getAttribute('emoji') || '';
         this.backgroundUrl = null;
         this.MAX_WIDTH = 1920;
@@ -74,7 +74,7 @@ class MainElement extends BaseTextElement {
     updateBannerSize() {
         if (this.headerContainer) {
             // Remove all size classes first
-            this.headerContainer.classList.remove('big-banner', 'bigger-banner', 'biggest-banner');
+            this.headerContainer.classList.remove('big-banner', 'bigger-banner', 'biggest-banner', 'smallest-banner');
 
             // Add appropriate class based on size
             if (this.bannerSize === 'big') {
@@ -83,6 +83,8 @@ class MainElement extends BaseTextElement {
                 this.headerContainer.classList.add('bigger-banner');
             } else if (this.bannerSize === 'biggest') {
                 this.headerContainer.classList.add('biggest-banner');
+            } else if (this.bannerSize === 'smallest') {
+                this.headerContainer.classList.add('smallest-banner');
             }
 
             // Toggle text overlay class
@@ -154,6 +156,9 @@ class MainElement extends BaseTextElement {
                     this.bannerSize = 'biggest';
                     break;
                 case 'biggest':
+                    this.bannerSize = 'smallest';
+                    break;
+                case 'smallest':
                     this.bannerSize = 'small';
                     break;
             }
@@ -305,6 +310,10 @@ class MainElement extends BaseTextElement {
                 padding-top: 357px;
             }
 
+            .has-background.smallest-banner {
+                padding-top: 40px;
+            }
+
             .has-background.biggest-banner {
                 padding-top: 486px;
             }
@@ -321,6 +330,9 @@ class MainElement extends BaseTextElement {
                 }
                 .has-background.bigger-banner {
                     padding-top: 197px;
+                }
+                .has-background.smallest-banner {
+                    padding-top: 20px;
                 }
                 .has-background.biggest-banner {
                     padding-top: 271px;

@@ -965,9 +965,6 @@ class ToolbarElement extends LitElement {
                 </button>
                 <div class="separator"></div>
                 <button @click=${() => this.handleToolbarAction('find-source')} title="Find Source" data-wide>
-                    <img src="/a7/forget/auto-cite.svg" alt="Source" /> AI Cite
-                </button>
-                <button @click=${() => this.handleToolbarAction('find-source')} title="Find Source" data-wide>
                     <img src="/a7/forget/source.svg" alt="Source" /> Find Source
                 </button>
                 <div class="separator"></div>

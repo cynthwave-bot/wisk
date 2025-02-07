@@ -18,6 +18,15 @@ class TemplateDialog extends LitElement {
             list-style-position: inside;
         }
 
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-weight: 500;
+        }
+
         .dialog-overlay {
             position: fixed;
             top: 0;
@@ -110,6 +119,10 @@ class TemplateDialog extends LitElement {
             display: flex;
             flex-direction: column;
             gap: var(--gap-2);
+        }
+
+        .template-info-main h1 {
+            font-weight: 500;
         }
 
         .template-by {
@@ -352,7 +365,6 @@ class TemplateDialog extends LitElement {
 
                     <div style="display: ${this.selectedTemplate ? 'none' : 'block'}">
                         <h2 class="dialog-title">Templates</h2>
-                        <h3 class="section-title">Default Templates</h3>
 
                         <div class="templates-grid">
                             ${this.templates.map(
@@ -397,7 +409,6 @@ class TemplateDialog extends LitElement {
                                               <span class="template-by"
                                                   >By <a href="${this.selectedTemplate.link}" target="_blank">${this.selectedTemplate.by}</a></span
                                               >
-                                              <p>${this.selectedTemplate.description}</p>
                                           </div>
                                           <div class="lrg">
                                               <img
@@ -427,6 +438,8 @@ class TemplateDialog extends LitElement {
                                                     `
                                                   : ''}
                                           </div>
+
+                                          <p>${this.selectedTemplate.description}</p>
 
                                           <div>
                                               <h3 style="margin-bottom: var(--gap-2)">Links</h3>

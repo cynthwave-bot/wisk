@@ -71,7 +71,7 @@ class LeftMenu extends LitElement {
         }
         .new {
             display: flex;
-            padding: var(--padding-w1);
+            padding: var(--padding-3);
             text-align: center;
             text-decoration: none;
             border-radius: var(--radius);
@@ -106,6 +106,7 @@ class LeftMenu extends LitElement {
         .search-div img {
             width: 20px;
             height: 20px;
+            opacity: 0.6;
         }
         .search-div {
             padding: var(--padding-w1);
@@ -403,6 +404,10 @@ class LeftMenu extends LitElement {
         return html`
             <div class="outer" @click=${this.closeDropdown}>
                 <div class="vert-nav">
+                    <div class="new-o">
+                        <a href="/" class="new"> <img src="/a7/forget/plus1.svg" alt="New Page" class="new-img" /> New Page</a>
+                    </div>
+
                     <button class="vert-nav-button" @click=${() => (window.location.href = '/home')}>
                         <img src="/a7/forget/home.svg" class="new-img" /> Home
                     </button>
@@ -420,11 +425,7 @@ class LeftMenu extends LitElement {
                     </button>
                 </div>
 
-                <div style="display: flex; gap: 10px; align-items: stretch;">
-                    <div class="new-o">
-                        <a href="/" class="new"> <img src="/a7/forget/plus1.svg" alt="New Page" class="new-img" /> New Page</a>
-                    </div>
-
+                <div style="display: flex; gap: 10px; align-items: stretch; padding: var(--padding-w1)">
                     <div class="search-div od">
                         <img src="/a7/forget/search.svg" alt="Search" />
                         <input type="text" id="search" name="search" class="srch" placeholder="Search Documents" @input=${this.filterList} />
