@@ -908,7 +908,7 @@ class CanvasElement extends HTMLElement {
             </style>
         `;
 
-        var x = wisk.editor.wiskSite;
+        var x = wisk.editor.readonly;
 
         const content = `
             <div id="toolbar">

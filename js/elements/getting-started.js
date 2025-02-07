@@ -433,7 +433,7 @@ class GettingStarted extends LitElement {
     }
 
     updated() {
-        if (wisk.editor.wiskSite) return;
+        if (wisk.editor.readonly) return;
         this.shadowRoot.getElementById('tip').innerText = this.tips[Math.floor(Math.random() * this.tips.length)];
     }
 
@@ -973,7 +973,7 @@ class GettingStarted extends LitElement {
     }
 
     render() {
-        if (wisk.editor.wiskSite) {
+        if (wisk.editor.readonly) {
             return html``;
         }
 

@@ -1217,7 +1217,7 @@ class NeoAI extends LitElement {
     }
 
     render() {
-        if (wisk.editor.wiskSite) {
+        if (wisk.editor.readonly) {
             return html``;
         }
 

@@ -848,7 +848,7 @@ class ToolbarElement extends LitElement {
     }
 
     showToolbar(x, y, elementId, selectedText, elementText) {
-        if (wisk.editor.wiskSite) {
+        if (wisk.editor.readonly) {
             return;
         }
 

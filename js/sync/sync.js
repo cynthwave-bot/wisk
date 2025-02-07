@@ -75,7 +75,7 @@ async function sendAuth() {
 async function live() {
     console.log('PAGE LIVE', wisk.editor.pageId);
 
-    if (wisk.editor.wiskSite) {
+    if (wisk.editor.readonly) {
         // TODO
         // FIXX THIS THIS IS REALLY BAD
         // the way im adding wisk.site

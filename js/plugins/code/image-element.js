@@ -985,7 +985,7 @@ class ImageElement extends BaseTextElement {
                     </div>
                 </div>
             </div>
-            <p id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></p>
+            <p id="editable" contenteditable="${!wisk.editor.readonly}" spellcheck="false" data-placeholder="${this.placeholder}"></p>
                 <div class="suggestion-container">
                     <div class="suggestion-actions">
                         <button class="suggestion-button discard-button">Discard</button>

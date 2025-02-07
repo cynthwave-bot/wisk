@@ -338,7 +338,7 @@ class LinkElement extends HTMLElement {
                         <img class="link-preview-image" src="https://via.placeholder.com/16" alt="Site Icon">
                         <div style="flex: 1; display: flex;">
                             <div class="link">https://</div>
-                            <div class="link" id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false">${this.link}</div>
+                            <div class="link" id="editable" contenteditable="${!wisk.editor.readonly}" spellcheck="false">${this.link}</div>
                         </div>
                         <button class="open">Open</button>
                     </div>

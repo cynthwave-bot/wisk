@@ -647,7 +647,7 @@ class MermaidElement extends LitElement {
             <div class="mermaid-container">
                 <div class="mermaid-display"></div>
                 ${this.error ? html`<div class="error">${this.error}</div>` : ''}
-                <button class="button edit-button" style="${wisk.editor.wiskSite ? 'display: none;' : ''}" @click=${this.handleEdit}>
+                <button class="button edit-button" style="${wisk.editor.readonly ? 'display: none;' : ''}" @click=${this.handleEdit}>
                     <img src="/a7/plugins/latex-element/pencil.svg" alt="Edit" style="filter: var(--themed-svg);" />
                 </button>
             </div>

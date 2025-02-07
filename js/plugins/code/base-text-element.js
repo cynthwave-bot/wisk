@@ -14,7 +14,7 @@ class BaseTextElement extends HTMLElement {
         this.isVirtualKeyboard = this.checkIfVirtualKeyboard();
         this.savedRange = null;
         this.savedSelection = null;
-        this.placeholder = this.getAttribute('placeholder') || wisk.editor.wiskSite ? '' : "Write something or press '/' for commands";
+        this.placeholder = this.getAttribute('placeholder') || wisk.editor.readonly ? '' : "Write something or press '/' for commands";
         this.toolbar = document.getElementById('formatting-toolbar');
         this.toolbar.addEventListener('toolbar-action', e => {
             if (e.detail.elementId === this.id) {
@@ -865,7 +865,7 @@ class BaseTextElement extends HTMLElement {
             </style>
         `;
         const content = `
-            <div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
+            <div id="editable" contenteditable="${!wisk.editor.readonly}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
             <div class="suggestion-container">
                 <div class="suggestion-actions">
                     <button class="suggestion-button discard-button">Discard</button>

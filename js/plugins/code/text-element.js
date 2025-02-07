@@ -117,7 +117,7 @@ class TextElement extends BaseTextElement {
             </style>
         `;
         const content = `
-            <div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
+            <div id="editable" contenteditable="${!wisk.editor.readonly}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
             <div class="suggestion-container">
                 <div class="suggestion-actions">
                     <button class="suggestion-button discard-button">Discard</button>

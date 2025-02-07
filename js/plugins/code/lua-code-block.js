@@ -259,7 +259,7 @@ class LuaCodeBlock extends LitElement {
                     .value=${this.code}
                     spellcheck="false"
                     placeholder="print('Hello from Lua!')"
-                    ${wisk.editor.wiskSite ? 'readonly' : ''}
+                    ${wisk.editor.readonly ? 'readonly' : ''}
                 ></textarea>
 
                 <div class="output ${this.output ? 'has-content' : ''} ${this.outputType}">${this.output}</div>

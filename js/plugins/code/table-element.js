@@ -131,7 +131,7 @@ class TableElement extends HTMLElement {
                     width: auto;
                 }
             </style>
-            <div class="table-controls" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''}>
+            <div class="table-controls" ${wisk.editor.readonly ? 'style="display: none;"' : ''}>
                 <button id="add-row">Add Row</button>
                 <button id="add-column">Add Column</button>
             </div>

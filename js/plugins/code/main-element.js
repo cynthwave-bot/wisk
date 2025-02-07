@@ -1,7 +1,7 @@
 class MainElement extends BaseTextElement {
     constructor() {
         super();
-        this.placeholder = this.getAttribute('placeholder') || wisk.editor.wiskSite ? '' : 'edit me';
+        this.placeholder = this.getAttribute('placeholder') || wisk.editor.readonly ? '' : 'edit me';
         this.bannerSize = 'small'; // Can be 'smallest', 'small', 'big', 'bigger', 'biggest'
         this.emoji = this.getAttribute('emoji') || '';
         this.backgroundUrl = null;
@@ -115,7 +115,7 @@ class MainElement extends BaseTextElement {
         });
 
         // Background image upload handlers
-        if (!wisk.editor.wiskSite) {
+        if (!wisk.editor.readonly) {
             this.fileInput.addEventListener('change', this.onBackgroundSelected.bind(this));
             this.backgroundUploadButton.addEventListener('click', e => {
                 e.stopPropagation();
@@ -558,7 +558,7 @@ class MainElement extends BaseTextElement {
                     }
                 </div>
             </div>
-            <h1 id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></h1>
+            <h1 id="editable" contenteditable="${!wisk.editor.readonly}" spellcheck="false" data-placeholder="${this.placeholder}"></h1>
             <div class="suggestion-container">
                 <div class="suggestion-actions">
                     <button class="suggestion-button accept-button">Accept</button>

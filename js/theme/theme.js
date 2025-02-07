@@ -1,7 +1,7 @@
 var defaultTheme = localStorage.getItem('webapp-theme') || 'Light';
 
 wisk.theme.setTheme = async function (themeName) {
-    if (wisk.editor.wiskSite) {
+    if (wisk.editor.readonly) {
         if (themeName === 'default') {
             themeName = 'Light';
         }

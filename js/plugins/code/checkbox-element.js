@@ -48,7 +48,7 @@ class CheckboxElement extends BaseTextElement {
     }
 
     onCheckboxChange(event) {
-        if (wisk.editor.wiskSite) return;
+        if (wisk.editor.readonly) return;
 
         this.checked = event.target.checked;
         this.sendUpdates();
@@ -339,8 +339,8 @@ class CheckboxElement extends BaseTextElement {
         `;
         const content = `
             <div id="list-outer">
-                <input type="checkbox" id="checkbox" name="checkbox" value="checkbox" ${wisk.editor.wiskSite ? 'onclick="return false"' : ''} />
-                <div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a task...'}"></div>
+                <input type="checkbox" id="checkbox" name="checkbox" value="checkbox" ${wisk.editor.readonly ? 'onclick="return false"' : ''} />
+                <div id="editable" contenteditable="${!wisk.editor.readonly}" spellcheck="false" data-placeholder="${this.placeholder || 'Add a task...'}"></div>
                 <div class="suggestion-container">
                     <div class="suggestion-actions">
                         <button class="suggestion-button discard-button">Discard</button>
