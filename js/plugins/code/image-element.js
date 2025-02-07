@@ -934,9 +934,9 @@ class ImageElement extends BaseTextElement {
             <div class="upload-img empty">
                 <input type="file" id="file" accept="image/*" />
                 <div class="image-container">
-                    <div class="resize-handle left-handle" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''}></div>
+                    <div class="resize-handle left-handle" ${wisk.editor.readonly ? 'style="display: none;"' : ''}></div>
                     <img src="" id="img-editable" alt="Uploaded image" />
-                    <div class="resize-handle right-handle" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''}></div>
+                    <div class="resize-handle right-handle" ${wisk.editor.readonly ? 'style="display: none;"' : ''}></div>
                 </div>
                 <button id="upload-button"><img src="/a7/plugins/image-element/upload.svg" width="30" height="30" style="filter: var(--themed-svg);">Upload Image</button>
                 <button id="link-button"><img src="/a7/plugins/image-element/link.svg" width="30" height="30" style="filter: var(--themed-svg);">Link Image</button>
@@ -946,12 +946,12 @@ class ImageElement extends BaseTextElement {
                 </button>
                 <!-- Modified options dialog -->
                 <div id="options-dialog">
-                    <button class="dialog-option" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''} id="change-image">Change Image</button>
+                    <button class="dialog-option" ${wisk.editor.readonly ? 'style="display: none;"' : ''} id="change-image">Change Image</button>
                     <button class="dialog-option" id="download-image">Download Image</button>
-                    <button class="dialog-option" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''} id="search-gif">Search GIFs</button>
-                    <button class="dialog-option" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''} id="add-link">Add Image URL</button>
+                    <button class="dialog-option" ${wisk.editor.readonly ? 'style="display: none;"' : ''} id="search-gif">Search GIFs</button>
+                    <button class="dialog-option" ${wisk.editor.readonly ? 'style="display: none;"' : ''} id="add-link">Add Image URL</button>
                     <button class="dialog-option" id="fullscreen">View Full Size</button>
-                    <div class="dialog-option border-toggle" ${wisk.editor.wiskSite ? 'style="display: none;"' : ''}>
+                    <div class="dialog-option border-toggle" ${wisk.editor.readonly ? 'style="display: none;"' : ''}>
                         <label for="border-toggle">Show Border</label>
                         <input type="checkbox" id="border-toggle" />
                     </div>

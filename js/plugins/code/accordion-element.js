@@ -17,7 +17,7 @@ class AccordionElement extends BaseTextElement {
     connectedCallback() {
         super.connectedCallback();
         window.addEventListener('emoji-selector', this.handleEmojiSelection);
-        if (wisk.editor.wiskSite) {
+        if (wisk.editor.readonly) {
             this.addEventListener('click', this.handleClick);
         }
     }
@@ -25,13 +25,13 @@ class AccordionElement extends BaseTextElement {
     disconnectedCallback() {
         super.disconnectedCallback();
         window.removeEventListener('emoji-selector', this.handleEmojiSelection);
-        if (wisk.editor.wiskSite) {
+        if (wisk.editor.readonly) {
             this.removeEventListener('click', this.handleClick);
         }
     }
 
     handleClick(event) {
-        if (wisk.editor.wiskSite) {
+        if (wisk.editor.readonly) {
             const editable = this.shadowRoot.querySelector('#editable');
             const toggleBtn = this.shadowRoot.querySelector('.toggle-btn');
             editable.classList.toggle('visible');
@@ -231,10 +231,10 @@ class AccordionElement extends BaseTextElement {
                 </div>
                 <div style="flex: 1">
                     <div class="accordion-header">
-                        <div class="question" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false">${this.question || ''}</div>
+                        <div class="question" contenteditable="${!wisk.editor.readonly}" spellcheck="false">${this.question || ''}</div>
                         <img src="/a7/plugins/accordion/down.svg" class="toggle-btn" />
                     </div>
-                    <div id="editable" contenteditable="${!wisk.editor.wiskSite}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
+                    <div id="editable" contenteditable="${!wisk.editor.readonly}" spellcheck="false" data-placeholder="${this.placeholder}"></div>
                     <div class="suggestion-container">
                         <div class="suggestion-actions">
                             <button class="suggestion-button discard-button">Discard</button>
@@ -250,7 +250,7 @@ class AccordionElement extends BaseTextElement {
 
         this.emojiButton = this.shadowRoot.querySelector('.emoji-button');
         this.emojiButton.addEventListener('click', e => {
-            if (!wisk.editor.wiskSite) {
+            if (!wisk.editor.readonly) {
                 e.stopPropagation();
                 const emojiSelector = document.querySelector('emoji-selector');
                 if (emojiSelector) {
@@ -259,7 +259,7 @@ class AccordionElement extends BaseTextElement {
             }
         });
 
-        if (!wisk.editor.wiskSite) {
+        if (!wisk.editor.readonly) {
             this.setupToggleListener();
         } else {
             for (const el of this.shadowRoot.querySelectorAll('*')) {

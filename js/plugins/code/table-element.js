@@ -138,7 +138,7 @@ class TableElement extends HTMLElement {
             <table id="table">
                 <thead>
                     <tr>
-                        ${headers.map((header, i) => `<th contenteditable="${!wisk.editor.wiskSite}" data-row="-1" data-col="${i}">${header}</th>`).join('')}
+                        ${headers.map((header, i) => `<th contenteditable="${!wisk.editor.readonly}" data-row="-1" data-col="${i}">${header}</th>`).join('')}
                     </tr>
                 </thead>
                 <tbody>
@@ -146,7 +146,7 @@ class TableElement extends HTMLElement {
                         .map(
                             (row, i) => `
                         <tr>
-                            ${row.map((cell, j) => `<td contenteditable="${!wisk.editor.wiskSite}" data-row="${i}" data-col="${j}">${cell}</td>`).join('')}
+                            ${row.map((cell, j) => `<td contenteditable="${!wisk.editor.readonly}" data-row="${i}" data-col="${j}">${cell}</td>`).join('')}
                         </tr>
                     `
                         )

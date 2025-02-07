@@ -95,17 +95,17 @@ class MainElement extends BaseTextElement {
             }
         }
 
-        if (wisk.editor.wiskSite) return;
+        if (wisk.editor.readonly) return;
 
         const bannerSizeButton = this.shadowRoot.querySelector('#banner-size-button');
         bannerSizeButton.textContent = `${this.bannerSize.charAt(0).toUpperCase() + this.bannerSize.slice(1)} Banner`;
     }
 
     bindHeaderEvents() {
-        if (wisk.editor.wiskSite) return;
+        if (wisk.editor.readonly) return;
         // Emoji picker click handler
         this.emojiElement.addEventListener('click', () => {
-            if (wisk.editor.wiskSite) return;
+            if (wisk.editor.readonly) return;
 
             // Get the emoji selector component and show it
             const emojiSelector = document.querySelector('emoji-selector');
@@ -540,7 +540,7 @@ class MainElement extends BaseTextElement {
         const content = `
             <div class="header-container">
                 ${
-                    !wisk.editor.wiskSite
+                    !wisk.editor.readonly
                         ? `
                     <input type="file" id="background-file" accept="image/*" />
                 `
@@ -549,7 +549,7 @@ class MainElement extends BaseTextElement {
                 <div class="header-content">
                     <div id="emoji">${this.emoji && this.emoji.trim() ? this.emoji : '<span class="add-emoji-text">add emoji</span>'}</div>
                     ${
-                        !wisk.editor.wiskSite
+                        !wisk.editor.readonly
                             ? `
                         <button id="background-upload-button">Add Cover</button>
                         <button id="banner-size-button">Small Banner</button>

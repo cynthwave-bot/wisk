@@ -433,7 +433,7 @@ class PyInterpreter extends LitElement {
                                 wisk.editor.justUpdates(this.id);
                             }
                         }}
-                        style="${wisk.editor.wiskSite ? 'display: none;' : ''}"
+                        style="${wisk.editor.readonly ? 'display: none;' : ''}"
                     >
                         Clear History
                     </button>
@@ -443,13 +443,13 @@ class PyInterpreter extends LitElement {
                             this.showDialog = true;
                             this.requestUpdate();
                         }}
-                        style="${wisk.editor.wiskSite ? 'display: none;' : ''}"
+                        style="${wisk.editor.readonly ? 'display: none;' : ''}"
                     >
                         Import Package
                     </button>
                 </div>
             </div>
-            <div class="uwu" style="${wisk.editor.wiskSite ? 'display: none;' : ''}">
+            <div class="uwu" style="${wisk.editor.readonly ? 'display: none;' : ''}">
                 <textarea
                     placeholder="print('hello world')"
                     rows="2"
@@ -462,7 +462,7 @@ class PyInterpreter extends LitElement {
                     id="run"
                     @click=${this.evaluatePython}
                     ?disabled=${this.isInitializing}
-                    style="${wisk.editor.wiskSite ? 'display: none;' : ''}"
+                    style="${wisk.editor.readonly ? 'display: none;' : ''}"
                 >
                     ${this.isInitializing ? 'Initializing...' : 'Run'}
                 </button>

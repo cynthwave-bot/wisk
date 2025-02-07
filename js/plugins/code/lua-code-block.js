@@ -170,7 +170,7 @@ class LuaCodeBlock extends LitElement {
     }
 
     executeCode() {
-        if (wisk.editor.wiskSite) return;
+        if (wisk.editor.readonly) return;
 
         if (!this.L) {
             this.output = 'Lua runtime is not initialized yet';
@@ -246,7 +246,7 @@ class LuaCodeBlock extends LitElement {
                 <button
                     class="btn btnx"
                     @click=${() => {
-                        if (wisk.editor.wiskSite) return;
+                        if (wisk.editor.readonly) return;
                         this.executeCode();
                     }}
                 >
