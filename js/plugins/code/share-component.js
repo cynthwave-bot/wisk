@@ -15,21 +15,21 @@ class ShareComponent extends LitElement {
         }
         .tab {
             padding: var(--padding-w2);
-            color: var(--text-2);
+            color: var(--fg-2);
             cursor: pointer;
             position: relative;
             user-select: none;
             border-radius: var(--radius);
         }
         .tab.active {
-            color: var(--accent-text);
-            background: var(--accent-bg);
+            color: var(--fg-accent);
+            background: var(--bg-accent);
             font-weight: 500;
         }
         .option-section {
             display: flex;
             flex-direction: column;
-            color: var(--text-1);
+            color: var(--fg-1);
             opacity: 1;
             transform: translateY(0px);
             transition:
@@ -41,9 +41,9 @@ class ShareComponent extends LitElement {
         }
         button {
             padding: var(--padding-w2);
-            background-color: var(--text-1);
+            background-color: var(--fg-1);
             color: var(--bg-1);
-            border: 1px solid var(--text-1);
+            border: 1px solid var(--fg-1);
             border-radius: var(--radius);
             cursor: pointer;
             outline: none;
@@ -53,17 +53,17 @@ class ShareComponent extends LitElement {
         }
         .secondary-button {
             background-color: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid var(--border-1);
         }
         button:hover:not(:disabled) {
             filter: brightness(1.1);
             background-color: var(--bg-1);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .od {
             padding: var(--padding-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             background-color: var(--bg-2);
             border-radius: var(--radius);
             outline: none;
@@ -76,7 +76,7 @@ class ShareComponent extends LitElement {
             border: none;
             flex: 1;
             background-color: transparent;
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 16px;
             font-weight: 500;
         }
@@ -88,7 +88,7 @@ class ShareComponent extends LitElement {
         .user {
             padding: var(--padding-w1);
             background-color: var(--bg-3);
-            color: var(--text-1);
+            color: var(--fg-1);
             border-radius: 400px;
             display: flex;
             align-items: center;
@@ -111,12 +111,12 @@ class ShareComponent extends LitElement {
             align-items: center;
         }
         .note {
-            color: var(--text-2);
+            color: var(--fg-2);
             font-size: 0.9em;
         }
         select {
             padding: var(--padding-w2);
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid var(--border-1);
             background-color: var(--bg-2);
             outline: none;
@@ -166,8 +166,8 @@ class ShareComponent extends LitElement {
             background-color: var(--bg-2);
         }
         .template-option.selected {
-            border-color: var(--accent-text);
-            background-color: var(--accent-bg);
+            border-color: var(--fg-accent);
+            background-color: var(--bg-accent);
         }
         .template-preview {
             width: 100%;
@@ -206,7 +206,7 @@ class ShareComponent extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
     `;
@@ -589,7 +589,7 @@ class ShareComponent extends LitElement {
                                     </div>
 
                                     <strong>${template.name}</strong>
-                                    <small style="color: var(--text-2)">${template.description}</small>
+                                    <small style="color: var(--fg-2)">${template.description}</small>
                                 </div>
                             `
                         )}

@@ -51,7 +51,7 @@ class ChartElement extends LitElement {
             opacity: 0;
             transition: opacity 0.15s ease;
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid var(--bg-3);
             padding: var(--padding-w1);
             border-radius: var(--radius);
@@ -75,7 +75,7 @@ class ChartElement extends LitElement {
         textarea {
             width: 100%;
             padding: var(--padding-3);
-            color: var(--text-1);
+            color: var(--fg-1);
             background: var(--bg-2);
             border-radius: var(--radius);
             font-size: 14px;
@@ -94,7 +94,7 @@ class ChartElement extends LitElement {
         }
         .button {
             background: transparent;
-            color: var(--text-1);
+            color: var(--fg-1);
             border: none;
             padding: var(--padding-2);
             border-radius: var(--radius);
@@ -113,9 +113,9 @@ class ChartElement extends LitElement {
         .loading-spinner {
             width: 24px;
             height: 24px;
-            border: 3px solid var(--accent-text);
+            border: 3px solid var(--fg-accent);
             border-radius: 50%;
-            border-top-color: var(--accent-bg);
+            border-top-color: var(--bg-accent);
             animation: spin 0.8s linear infinite;
             margin: calc(var(--padding-3) - 2px);
         }
@@ -131,12 +131,12 @@ class ChartElement extends LitElement {
         }
         .primary-button {
             background: transparent;
-            color: var(--accent-text);
+            color: var(--fg-accent);
             border: none;
             font-weight: 600;
         }
         .primary-button:hover {
-            background: var(--accent-bg);
+            background: var(--bg-accent);
             border: none;
         }
         .inner-buttons {
@@ -158,7 +158,7 @@ class ChartElement extends LitElement {
         select {
             padding: var(--padding-3);
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid var(--bg-3);
             border-radius: var(--radius);
             outline: none;

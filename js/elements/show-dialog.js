@@ -20,7 +20,7 @@ class ShowDialog extends LitElement {
             width: 100%;
             display: none;
             height: 100%;
-            background: var(--text-1);
+            background: var(--fg-1);
             opacity: 0.3;
             z-index: 99;
         }
@@ -41,7 +41,7 @@ class ShowDialog extends LitElement {
             border: 1px solid var(--border-1);
             display: none;
             z-index: 100;
-            color: var(--text-1);
+            color: var(--fg-1);
             flex-direction: column;
             gap: var(--gap-2);
         }
@@ -64,7 +64,7 @@ class ShowDialog extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         @media (hover: hover) {
@@ -80,7 +80,7 @@ class ShowDialog extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
     `;

@@ -85,7 +85,7 @@ class ThreeViewerElement extends LitElement {
         .upload-button {
             padding: var(--padding-w2);
             background-color: var(--bg-1);
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             cursor: pointer;

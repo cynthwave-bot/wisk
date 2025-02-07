@@ -42,7 +42,7 @@ class AIChat extends LitElement {
         }
         .message-header-user {
             font-size: 12px;
-            color: var(--text-2);
+            color: var(--fg-2);
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -50,14 +50,14 @@ class AIChat extends LitElement {
         }
         .message-content-user {
             font-size: 14px;
-            color: var(--text-1);
+            color: var(--fg-1);
             white-space: pre-wrap;
             user-select: text;
             line-height: 1.5;
         }
         .message-header-assistant {
             font-size: 12px;
-            color: var(--text-2);
+            color: var(--fg-2);
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -65,7 +65,7 @@ class AIChat extends LitElement {
         }
         .message-content-assistant {
             font-size: 14px;
-            color: var(--text-1);
+            color: var(--fg-1);
             white-space: pre-wrap;
             user-select: text;
             line-height: 1.5;
@@ -83,7 +83,7 @@ class AIChat extends LitElement {
         .sources-button {
             background-color: var(--bg-2);
             border: none;
-            color: var(--text-1);
+            color: var(--fg-1);
             cursor: pointer;
             display: flex;
             font-size: 14px;
@@ -123,7 +123,7 @@ class AIChat extends LitElement {
             border-radius: var(--radius);
             cursor: pointer;
             filter: var(--drop-shadow);
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid transparent;
             display: flex;
             align-items: center;
@@ -155,7 +155,7 @@ class AIChat extends LitElement {
             border: none;
             background: var(--bg-1);
             font-size: 14px;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .suggest {
             display: flex;
@@ -164,7 +164,7 @@ class AIChat extends LitElement {
             gap: var(--gap-1);
             padding: var(--padding-2);
             background: transparent;
-            color: var(--text-1);
+            color: var(--fg-1);
             border: none;
             border-radius: var(--radius);
             outline: none;
@@ -173,7 +173,7 @@ class AIChat extends LitElement {
         }
         .selected-text {
             font-size: 14px;
-            color: var(--text-2);
+            color: var(--fg-2);
             border-left: 2px solid var(--border-1);
             padding-left: var(--padding-2);
         }
@@ -198,7 +198,7 @@ class AIChat extends LitElement {
         }
         .neo-description {
             font-size: 16px;
-            color: var(--text-1);
+            color: var(--fg-1);
             margin: var(--padding-4);
             text-align: center;
             max-width: 500px;
@@ -223,12 +223,12 @@ class AIChat extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
         .input-textarea[data-empty='true']::before {
             content: attr(data-placeholder);
-            color: var(--text-2);
+            color: var(--fg-2);
             pointer-events: none;
             position: absolute;
         }

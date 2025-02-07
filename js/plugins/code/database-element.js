@@ -20,7 +20,7 @@ class DatabaseElement extends LitElement {
         :host {
             display: block;
             width: 100%;
-            color: var(--text-1);
+            color: var(--fg-1);
             overflow: auto;
         }
         .view-switcher {
@@ -288,7 +288,7 @@ class DatabaseElement extends LitElement {
         }
         button {
             background-color: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid var(--border-1);
             padding: var(--padding-w2);
             border-radius: var(--radius);
@@ -429,11 +429,11 @@ class DatabaseElement extends LitElement {
             cursor: pointer;
             font-family: var(--font);
             font-size: 1em;
-            color: var(--text-1);
+            color: var(--fg-1);
             border-bottom: 3px solid transparent;
             transition: border-color 0.3s ease;
             border-radius: 0;
-            color: var(--text-2);
+            color: var(--fg-2);
             display: flex;
             align-items: center;
             white-space: nowrap;
@@ -444,8 +444,8 @@ class DatabaseElement extends LitElement {
         }
 
         .view-tab.active {
-            border-bottom-color: var(--text-1);
-            color: var(--text-1);
+            border-bottom-color: var(--fg-1);
+            color: var(--fg-1);
         }
 
         .view-tab.add-view {
@@ -519,7 +519,7 @@ class DatabaseElement extends LitElement {
         }
 
         .add-entry-button:hover {
-            background-color: var(--text-1);
+            background-color: var(--fg-1);
         }
 
         .new-entry {
@@ -559,7 +559,7 @@ class DatabaseElement extends LitElement {
         }
 
         .add-entry-button {
-            background: var(--text-1);
+            background: var(--fg-1);
             border: none;
             cursor: pointer;
             padding: var(--padding-1);
@@ -697,7 +697,7 @@ class DatabaseElement extends LitElement {
             border-radius: var(--radius);
             background-color: var(--bg-2);
             padding: var(--padding-1);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .board-item {

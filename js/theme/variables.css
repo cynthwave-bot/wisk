@@ -2,8 +2,8 @@
     --bg-1: #ffffff;
     --bg-2: #f7f7f7;
     --bg-3: #e0e0e0;
-    --text-1: #333333;
-    --text-2: #666666;
+    --fg-1: #333333;
+    --fg-2: #666666;
     --border-1: #cccccc;
     --fg-red: #ff126d;
     --bg-red: #ffebf1;
@@ -41,7 +41,7 @@
     --gap-3: 20px;
     --drop-shadow: drop-shadow(0 0 20px rgba(0, 0, 0, 0.1));
     --accent-svg: brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(4354%) hue-rotate(242deg) brightness(92%) contrast(93%);
-    --accent-text: #5c35d9;
-    --accent-bg: #f2eeff;
+    --fg-accent: #5c35d9;
+    --bg-accent: #f2eeff;
     --themed-svg: none;
 }

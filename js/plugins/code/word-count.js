@@ -24,7 +24,7 @@ class WordCount extends LitElement {
         .x > div {
             display: flex;
             justify-content: space-between;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .hover-stats {
             visibility: hidden;
@@ -61,11 +61,11 @@ class WordCount extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
         ::placeholder {
-            color: var(--text-2);
+            color: var(--fg-2);
         }
     `;
 

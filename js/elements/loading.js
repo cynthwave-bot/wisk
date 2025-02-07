@@ -15,7 +15,7 @@ class CyLoading extends LitElement {
             --loader-thickness: 4px;
         }
         .loader {
-            border: var(--loader-thickness) solid var(--text-1);
+            border: var(--loader-thickness) solid var(--fg-1);
             border-top: var(--loader-thickness) solid transparent;
             border-radius: 50%;
             width: var(--loader-width);

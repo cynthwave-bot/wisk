@@ -29,12 +29,12 @@ class GeneralChat extends LitElement {
         .tab {
             padding: var(--padding-3) var(--padding-4);
             cursor: pointer;
-            color: var(--text-2);
+            color: var(--fg-2);
             border-bottom: 2px solid transparent;
             transition: all 0.2s ease;
         }
         .tab.active {
-            color: var(--text-1);
+            color: var(--fg-1);
             border-bottom: 2px solid var(--fg-blue);
         }
         .chat-container {
@@ -81,8 +81,8 @@ class GeneralChat extends LitElement {
             position: absolute;
             bottom: var(--padding-3);
             left: var(--padding-3);
-            color: var(--accent-text);
-            background-color: var(--accent-bg);
+            color: var(--fg-accent);
+            background-color: var(--bg-accent);
             font-size: 14px;
             padding: var(--padding-w1);
             border-radius: var(--radius);
@@ -105,7 +105,7 @@ class GeneralChat extends LitElement {
             border-radius: var(--radius);
             max-width: 70%;
             font-size: 14px;
-            color: var(--text-1);
+            color: var(--fg-1);
             white-space: break-spaces;
         }
         .message.sent .message-bubble {
@@ -131,7 +131,7 @@ class GeneralChat extends LitElement {
             border: 1px solid var(--border-1);
             border-right: none;
             background-color: var(--bg-3);
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 14px;
             resize: none;
             outline: none;
@@ -167,7 +167,7 @@ class GeneralChat extends LitElement {
             border: none;
             cursor: pointer;
             background-color: var(--bg-3);
-            color: var(--text-1);
+            color: var(--fg-1);
             width: 54px;
             height: 54px;
             display: flex;
@@ -196,9 +196,9 @@ class GeneralChat extends LitElement {
         }
         .join-button {
             padding: var(--padding-3) var(--padding-4);
-            background-color: var(--accent-text);
-            color: var(--accent-bg);
-            border: 2px solid var(--accent-text);
+            background-color: var(--fg-accent);
+            color: var(--bg-accent);
+            border: 2px solid var(--fg-accent);
             border-radius: var(--radius);
             cursor: pointer;
             font-size: 16px;
@@ -206,8 +206,8 @@ class GeneralChat extends LitElement {
         }
 
         .join-button:hover {
-            color: var(--accent-text);
-            background-color: var(--accent-bg);
+            color: var(--fg-accent);
+            background-color: var(--bg-accent);
         }
 
         .info {
@@ -216,7 +216,7 @@ class GeneralChat extends LitElement {
             border-radius: var(--radius-large);
             padding: var(--padding-4);
             font-size: 0.9em;
-            color: var(--text-2);
+            color: var(--fg-2);
             max-width: 400px;
         }
 
@@ -224,7 +224,7 @@ class GeneralChat extends LitElement {
             padding: var(--padding-2);
             border-radius: var(--radius);
             background-color: var(--bg-3);
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid var(--border-1);
             outline: none;
             font-size: 14px;
@@ -241,7 +241,7 @@ class GeneralChat extends LitElement {
             transform: translate(50%, -50%);
             padding: var(--padding-3);
             cursor: pointer;
-            color: var(--text-2);
+            color: var(--fg-2);
             display: none;
             background-color: var(--bg-1);
             border-radius: var(--radius);
@@ -266,12 +266,12 @@ class GeneralChat extends LitElement {
 
         .close-more {
             cursor: pointer;
-            color: var(--text-2);
+            color: var(--fg-2);
             background-color: transparent;
             outline: none;
             border: none;
             padding: 0;
-            color: var(--text-2);
+            color: var(--fg-2);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -296,7 +296,7 @@ class GeneralChat extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
     `;

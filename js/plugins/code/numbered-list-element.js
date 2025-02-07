@@ -213,7 +213,7 @@ class NumberedListElement extends BaseTextElement {
                 position: absolute;
                 top: 50%;
                 transform: translateY(-50%);
-                color: var(--text-1);
+                color: var(--fg-1);
                 font-size: 14px;
                 min-width: 20px;
                 text-align: right;
@@ -271,7 +271,7 @@ class NumberedListElement extends BaseTextElement {
                 background: var(--bg-3);
             }
             .emoji-name {
-                color: var(--text-2);
+                color: var(--fg-2);
                 font-size: 0.9em;
             }
             .emoji {
@@ -283,12 +283,12 @@ class NumberedListElement extends BaseTextElement {
                 *::-webkit-scrollbar { width: 15px; }
                 *::-webkit-scrollbar-track { background: var(--bg-1); }
                 *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-                *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+                *::-webkit-scrollbar-thumb:hover { background-color: var(--fg-1); }
             }
 
             .suggestion-text {
                 opacity: 0.8;
-                color: var(--accent-text);
+                color: var(--fg-accent);
             }
             .suggestion-container {
                 position: absolute;
@@ -311,15 +311,15 @@ class NumberedListElement extends BaseTextElement {
                 border: none;
                 background: var(--bg-1);
                 outline: none;
-                color: var(--text-1);
+                color: var(--fg-1);
                 cursor: pointer;
             }
             .suggestion-button:hover {
                 background: var(--bg-3);
             }
             .accept-button {
-                background: var(--accent-bg);
-                color: var(--accent-text);
+                background: var(--bg-accent);
+                color: var(--fg-accent);
                 font-weight: bold;
             }
             </style>

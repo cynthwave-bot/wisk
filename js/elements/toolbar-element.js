@@ -42,7 +42,7 @@ class ToolbarElement extends LitElement {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--accent-text);
+            color: var(--fg-accent);
             transition: background 0.2s ease-in-out;
             gap: var(--gap-1);
             opacity: 1;
@@ -56,7 +56,7 @@ class ToolbarElement extends LitElement {
         }
 
         .toolbar button:hover {
-            background: var(--accent-bg);
+            background: var(--bg-accent);
             opacity: 1;
         }
 
@@ -108,7 +108,7 @@ class ToolbarElement extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             cursor: pointer;
-            color: var(--text-1);
+            color: var(--fg-1);
             width: auto;
             height: auto;
         }
@@ -153,7 +153,7 @@ class ToolbarElement extends LitElement {
 
         .source-item p {
             font-size: 12px;
-            color: var(--text-2);
+            color: var(--fg-2);
             word-wrap: break-word;
             width: 100%;
         }
@@ -175,7 +175,7 @@ class ToolbarElement extends LitElement {
             width: 24px;
             height: 24px;
             border: 2px solid var(--bg-3);
-            border-top: 2px solid var(--text-1);
+            border-top: 2px solid var(--fg-1);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -205,7 +205,7 @@ class ToolbarElement extends LitElement {
         }
 
         .url {
-            color: var(--text-2);
+            color: var(--fg-2);
             font-size: 12px;
         }
 
@@ -222,7 +222,7 @@ class ToolbarElement extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
         .command-section {
@@ -232,7 +232,7 @@ class ToolbarElement extends LitElement {
 
         .command-section h3 {
             font-size: 11px;
-            color: var(--text-2);
+            color: var(--fg-2);
             margin-bottom: 4px;
             font-weight: 500;
         }
@@ -243,7 +243,7 @@ class ToolbarElement extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             background: var(--bg-1);
-            color: var(--text-1);
+            color: var(--fg-1);
             margin-bottom: 16px;
             flex: 1;
             width: auto;
@@ -261,7 +261,7 @@ class ToolbarElement extends LitElement {
             background: var(--bg-1);
             border: none;
             border-radius: 4px;
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 14px;
             cursor: pointer;
             transition: background 0.2s ease;
@@ -298,7 +298,7 @@ class ToolbarElement extends LitElement {
             text-align: left;
             border: none;
             background: transparent;
-            color: var(--text-1);
+            color: var(--fg-1);
             cursor: pointer;
         }
 
@@ -353,7 +353,7 @@ class ToolbarElement extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             cursor: pointer;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .preview-buttons button.accept {
@@ -370,7 +370,7 @@ class ToolbarElement extends LitElement {
             border: none;
         }
         .od {
-            color: var(--text-1);
+            color: var(--fg-1);
             background-color: var(--bg-2);
             border-radius: var(--radius);
             outline: none;
@@ -392,7 +392,7 @@ class ToolbarElement extends LitElement {
         .save {
             background: var(--bg-2);
             border: 1px solid var(--border-1);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .save:hover {
             background: var(--bg-3);
@@ -434,7 +434,7 @@ class ToolbarElement extends LitElement {
         .color-section h3 {
             font-size: 11px;
             text-transform: uppercase;
-            color: var(--text-2);
+            color: var(--fg-2);
             margin-bottom: 4px;
             font-weight: 500;
         }
@@ -510,11 +510,11 @@ class ToolbarElement extends LitElement {
             purple: { fg: 'var(--fg-purple)', bg: 'var(--bg-purple)', name: 'Purple' },
             cyan: { fg: 'var(--fg-cyan)', bg: 'var(--bg-cyan)', name: 'Cyan' },
             orange: { fg: 'var(--fg-orange)', bg: 'var(--bg-orange)', name: 'Orange' },
-            white: { fg: 'var(--text-1)', bg: 'var(--bg-1)', name: 'Default' },
+            white: { fg: 'var(--fg-1)', bg: 'var(--bg-1)', name: 'Default' },
             black: { fg: 'var(--fg-black)', bg: 'var(--bg-black)', name: 'Black' },
         };
 
-        this.activeTextColor = 'var(--text-1)';
+        this.activeTextColor = 'var(--fg-1)';
         this.activeBackgroundColor = 'var(--bg-1)';
 
         this.citations = [];
@@ -1070,7 +1070,7 @@ class ToolbarElement extends LitElement {
                                 ? html`<p style="line-height: 1.5; font-size: 14px">
                                       No citations available. Add citations using the Citations Manager. Or add new using
                                       <span
-                                          style="background: var(--bg-3); padding: 2px 4px; border-radius: 4px; color: var(--text-1); display: inline-flex
+                                          style="background: var(--bg-3); padding: 2px 4px; border-radius: 4px; color: var(--fg-1); display: inline-flex
 ; align-items: center;"
                                       >
                                           <img src="/a7/forget/source.svg" alt="Source" style="height: 14px; margin-right: 4px;" /> Find Source</span
@@ -1083,7 +1083,7 @@ class ToolbarElement extends LitElement {
                                               <div style="display: flex; justify-content: space-between; align-items: start; width: 100%;">
                                                   <div style="flex: 1;">
                                                       <h3 style="font-size: 14px; margin-bottom: var(--gap-1);">${citation.title}</h3>
-                                                      <p style="font-size: 12px; color: var(--text-2);">
+                                                      <p style="font-size: 12px; color: var(--fg-2);">
                                                           ${citation.authors.join(', ')}
                                                           ${citation.publish_date ? ` • ${new Date(citation.publish_date).getFullYear()}` : ''}
                                                       </p>
@@ -1250,7 +1250,7 @@ class ToolbarElement extends LitElement {
                                 @click=${() => this.handleToolbarAction('show-citations')}
                                 title="Add Existing Citation"
                                 data-wide
-                                style="border: none; color: var(--accent-text);"
+                                style="border: none; color: var(--fg-accent);"
                             >
                                 <img src="/a7/forget/list.svg" alt="Citation" style="filter: var(--accent-svg)" /> Show current citations
                             </button>
@@ -1269,7 +1269,7 @@ class ToolbarElement extends LitElement {
                                             >
                                             <button
                                                 @click=${() => this.handleCreateReference(source)}
-                                                style="border: 1px solid var(--border-1); color: var(--accent-text)"
+                                                style="border: 1px solid var(--border-1); color: var(--fg-accent)"
                                             >
                                                 Add Source
                                             </button>

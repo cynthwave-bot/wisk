@@ -273,7 +273,7 @@ class CommandPalette extends HTMLElement {
                 outline: none;
                 border: 1px solid transparent;
                 background-color: var(--bg-1);
-                color: var(--text-1);
+                color: var(--fg-1);
                 padding: var(--padding-3) var(--padding-4);
                 border-radius: var(--radius);
                 cursor: pointer;
@@ -285,12 +285,12 @@ class CommandPalette extends HTMLElement {
                 font-weight: 500;
             }
             .selector-button-focused {
-                background-color: var(--accent-bg);
-                color: var(--accent-text);
+                background-color: var(--bg-accent);
+                color: var(--fg-accent);
             }
             #selector-input {
                 width: 100%;
-                color: var(--text-1);
+                color: var(--fg-1);
                 outline: none;
                 border: none;
                 background-color: transparent;
@@ -315,7 +315,7 @@ class CommandPalette extends HTMLElement {
                 font-size: 13px;
             }
             .command-description {
-                color: var(--text-2);
+                color: var(--fg-2);
                 font-size: 0.9em;
             }
             .command-shortcut {
@@ -323,7 +323,7 @@ class CommandPalette extends HTMLElement {
                 font-size: 0.8em;
             }
             .category-header {
-                color: var(--text-2);
+                color: var(--fg-2);
                 font-size: 0.8em;
                 font-family: var(--font);
                 padding: var(--padding-w2);
@@ -333,7 +333,7 @@ class CommandPalette extends HTMLElement {
                 *::-webkit-scrollbar { width: 15px; }
                 *::-webkit-scrollbar-track { background: var(--bg-1); }
                 *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-                *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+                *::-webkit-scrollbar-thumb:hover { background-color: var(--fg-1); }
             }
 
             </style>

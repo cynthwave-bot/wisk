@@ -12,7 +12,7 @@ class CodeElement extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             cursor: pointer;
             position: absolute;
             top: var(--padding-2);
@@ -24,7 +24,7 @@ class CodeElement extends LitElement {
         }
         select:focus {
             outline: none;
-            border-color: var(--accent-text);
+            border-color: var(--fg-accent);
         }
         :host(:hover) select {
             opacity: 1;
@@ -38,11 +38,11 @@ class CodeElement extends LitElement {
             height: auto;
             font-family: var(--font-mono);
             background: var(--bg-1);
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             padding: var(--padding-3);
-            caret-color: var(--text-1);
+            caret-color: var(--fg-1);
             font-size: 14px;
         }
         .cm-matchingbracket {
@@ -54,10 +54,10 @@ class CodeElement extends LitElement {
             color: var(--fg-red) !important;
         }
         .CodeMirror-selected {
-            background-color: var(--accent-bg) !important;
+            background-color: var(--bg-accent) !important;
         }
         .cm-variable {
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .cm-keyword {
             color: var(--fg-purple);
@@ -72,19 +72,19 @@ class CodeElement extends LitElement {
             color: var(--fg-orange);
         }
         .cm-string {
-            color: var(--accent-text);
+            color: var(--fg-accent);
         }
         .cm-property {
             color: var(--fg-cyan);
         }
         .cm-comment {
-            color: var(--text-2);
+            color: var(--fg-2);
         }
         .CodeMirror-gutters {
             display: none;
         }
         .CodeMirror-cursor {
-            border-left: 1px solid var(--text-1);
+            border-left: 1px solid var(--fg-1);
         }
     `;
 

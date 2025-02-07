@@ -28,7 +28,7 @@
 }
 
 .toast {
-    background-color: var(--text-1);
+    background-color: var(--fg-1);
     color: var(--bg-1);
     padding: 16px;
     text-align: left;

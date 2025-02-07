@@ -32,7 +32,7 @@ class OptionsComponent extends LitElement {
         .plugins-header {
             display: flex;
             flex-direction: row;
-            color: var(--text-1);
+            color: var(--fg-1);
             gap: var(--gap-2);
             justify-content: space-between;
             align-items: center;
@@ -91,7 +91,7 @@ class OptionsComponent extends LitElement {
         }
         .plugin-description {
             font-size: 14px;
-            color: var(--text-2);
+            color: var(--fg-2);
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
@@ -103,11 +103,11 @@ class OptionsComponent extends LitElement {
             padding: var(--padding-w3);
             border-radius: var(--radius);
             background-color: var(--bg-3);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .plugin-search {
             padding: var(--padding-w2);
-            color: var(--text-1);
+            color: var(--fg-1);
             background-color: var(--bg-2);
             border-radius: var(--radius);
             outline: none;
@@ -170,7 +170,7 @@ class OptionsComponent extends LitElement {
         }
 
         .section-title {
-            color: var(--text-1);
+            color: var(--fg-1);
             font-weight: bold;
             margin-bottom: var(--gap-2);
         }
@@ -204,7 +204,7 @@ class OptionsComponent extends LitElement {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            color: var(--text-1);
+            color: var(--fg-1);
             align-items: center;
             opacity: 1;
             transform: translateY(0);
@@ -226,7 +226,7 @@ class OptionsComponent extends LitElement {
         }
         .options-select {
             padding: 5px;
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid var(--border-1);
             background-color: var(--bg-2);
             outline: none;
@@ -236,7 +236,7 @@ class OptionsComponent extends LitElement {
                 background-color 0.2s ease;
 
             scrollbar-width: thin;
-            scrollbar-color: var(--text-2) var(--bg-3);
+            scrollbar-color: var(--fg-2) var(--bg-3);
         }
         .options-select:hover {
             border-color: var(--border-2);
@@ -272,7 +272,7 @@ class OptionsComponent extends LitElement {
         .plugins-header {
             display: flex;
             flex-direction: row;
-            color: var(--text-1);
+            color: var(--fg-1);
             gap: var(--gap-2);
             justify-content: space-between;
             align-items: center;
@@ -319,14 +319,14 @@ class OptionsComponent extends LitElement {
         }
         .plugin-description {
             font-size: 14px;
-            color: var(--text-2);
+            color: var(--fg-2);
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
         }
         .plugin-search {
             padding: var(--padding-w2);
-            color: var(--text-1);
+            color: var(--fg-1);
             background-color: var(--bg-2);
             border-radius: var(--radius);
             outline: none;
@@ -348,7 +348,7 @@ class OptionsComponent extends LitElement {
             padding: var(--padding-w3);
             border-radius: var(--radius);
             background-color: var(--bg-3);
-            color: var(--text-1);
+            color: var(--fg-1);
             transition: all 0.2s ease;
         }
         .btn-primary {
@@ -408,7 +408,7 @@ class OptionsComponent extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
         .vgap {
@@ -419,10 +419,10 @@ class OptionsComponent extends LitElement {
         }
         li {
             padding-left: 10px;
-            color: var(--text-2);
+            color: var(--fg-2);
         }
         .tags {
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 14px;
             padding: var(--padding-w1);
             background-color: var(--bg-3);
@@ -464,7 +464,7 @@ class OptionsComponent extends LitElement {
             border-radius: var(--radius);
         }
         .options-select::-webkit-scrollbar-thumb {
-            background-color: var(--text-2);
+            background-color: var(--fg-2);
             border-radius: 20px;
             border: 4px solid var(--bg-3);
         }
@@ -509,7 +509,7 @@ class OptionsComponent extends LitElement {
             border-radius: var(--radius);
             margin-bottom: 7px;
             font-family: var(--font);
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 14px;
             display: flex;
             align-items: flex-end;
@@ -518,7 +518,7 @@ class OptionsComponent extends LitElement {
 
         .theme-name {
             font-weight: bold;
-            color: var(--text-1);
+            color: var(--fg-1);
             height: 27px;
         }
 
@@ -553,14 +553,14 @@ class OptionsComponent extends LitElement {
             padding: var(--padding-3);
         }
         .devops {
-            background-color: var(--text-1);
+            background-color: var(--fg-1);
             color: var(--bg-1);
-            border: 2px solid var(--text-1);
+            border: 2px solid var(--fg-1);
         }
         .devops:hover {
             background-color: var(--bg-1);
-            color: var(--text-1);
-            border: 2px solid var(--text-1);
+            color: var(--fg-1);
+            border: 2px solid var(--fg-1);
         }
         .plugins-toggle label {
             display: inline-flex;
@@ -834,7 +834,7 @@ class OptionsComponent extends LitElement {
                     </div>
 
                     <div style="flex: 1"></div>
-                    <p style="color: var(--text-2); padding: 10px 0">
+                    <p style="color: var(--fg-2); padding: 10px 0">
                         btw you can also create your own plugins and themes, check out the 
                         <a href="https://wisk.cc/docs" target="_blank" style="color: var(--fg-blue)">docs</a>
                     </p>
@@ -917,7 +917,7 @@ class OptionsComponent extends LitElement {
                                           <h4>${this.selectedPlugin.title}</h4>
                                           <p style="font-size: 14px">
                                               made by
-                                              <a href="${this.selectedPlugin.contact}" target="_blank" style="color: var(--text-2)">
+                                              <a href="${this.selectedPlugin.contact}" target="_blank" style="color: var(--fg-2)">
                                                   ${this.selectedPlugin.author}
                                               </a>
                                           </p>
@@ -960,7 +960,7 @@ class OptionsComponent extends LitElement {
                                                             : ''}
                                                     </div>
 
-                                                    <ul style="color: var(--text-2); display: flex; flex-direction: column; gap: var(--gap-1)">
+                                                    <ul style="color: var(--fg-2); display: flex; flex-direction: column; gap: var(--gap-1)">
                                                         ${this.selectedPlugin.contents.some(content => content.category.includes('mini-dialog'))
                                                             ? html` <p style="font-size: 14px;">• opens as a small dialog box</p> `
                                                             : ''}
@@ -1129,7 +1129,7 @@ class OptionsComponent extends LitElement {
                                         >
                                             <h1
                                                 style="
-                                            font-family: ${theme['--font']}; color: ${theme['--text-1']};
+                                            font-family: ${theme['--font']}; color: ${theme['--fg-1']};
 
                                             "
                                             >
@@ -1154,7 +1154,7 @@ class OptionsComponent extends LitElement {
                                             </h1>
                                             <span
                                                 style="
-                                            font-family: ${theme['--font']}; color: ${theme['--text-2']};
+                                            font-family: ${theme['--font']}; color: ${theme['--fg-2']};
                                             "
                                                 >Aa</span
                                             >
@@ -1179,11 +1179,11 @@ class OptionsComponent extends LitElement {
 
                     <div style="flex: 1; overflow-y: auto">
                         <div class="options-section options-section--column">
-                            <h1 style="color: var(--text-1); display: flex; width: 100%; align-items: center; justify-content: center; gap: 12px; font-weight: 500">
+                            <h1 style="color: var(--fg-1); display: flex; width: 100%; align-items: center; justify-content: center; gap: 12px; font-weight: 500">
                                 <img src="/a7/wisk-logo.svg" alt="Wisk" class="resp-img" style="width: 38px; filter: var(--themed-svg)" draggable="false"/> Wisk
                             </h1>
-                            <h3 style="color: var(--text-1); width: 100%; text-align: center;">Your Workspace, Built Your Way.</h3>
-                            <p style="color: var(--text-2); text-align: center; width: 100%">
+                            <h3 style="color: var(--fg-1); width: 100%; text-align: center;">Your Workspace, Built Your Way.</h3>
+                            <p style="color: var(--fg-2); text-align: center; width: 100%">
                                 Notes, reports, tasks, and collaboration — offline and customizable. (yes we have AI too!)
                             </p>
                         </div>
@@ -1191,9 +1191,9 @@ class OptionsComponent extends LitElement {
                         <hr style="border: 1px solid var(--border-1); margin: 20px 10px"/>
 
                         <div class="options-section options-section--column">
-                            <h3 style="color: var(--text-2)">License</h3>
+                            <h3 style="color: var(--fg-2)">License</h3>
                             <div style="display: flex; flex-direction: column; gap: var(--gap-1)">
-                                <p style="color: var(--text-2)">
+                                <p style="color: var(--fg-2)">
                                     Licensed under the Functional Source License (FSL), Version 1.1, with Apache License Version 2.0 as the Future License.
                                     See the <a href="https://app.wisk.cc/LICENSE.md" target="_blank" class="link-blue">LICENSE.md</a> for more details.
 
@@ -1204,9 +1204,9 @@ class OptionsComponent extends LitElement {
                         <hr style="border: 1px solid var(--border-1); margin: 20px 10px"/>
 
                         <div class="options-section options-section--column">
-                            <h3 style="color: var(--text-2)">Credits</h3>
+                            <h3 style="color: var(--fg-2)">Credits</h3>
                             <div style="display: flex; flex-direction: column; gap: var(--gap-1)">
-                                <p style="color: var(--text-2)">
+                                <p style="color: var(--fg-2)">
                                     All icons in the webapp are from
                                     <ul>
                                         <li> • <a href="https://iconoir.com/" target="_blank" class="link-blue">Iconoir</a>, An open source icons library with 1500+ icons. </li>
@@ -1215,7 +1215,7 @@ class OptionsComponent extends LitElement {
                                         <li> • <a href="https://github.com/sohzm" target="_blank" class="link-blue">Me</a>, I made some too!</li>
                                     </ul>
                                 </p>
-                                <p style="color: var(--text-2)">
+                                <p style="color: var(--fg-2)">
                                     Fonts are provided by <a href="https://fonts.google.com/" target="_blank" class="link-blue">Google Fonts</a>.
                                 </p>
                             </div>

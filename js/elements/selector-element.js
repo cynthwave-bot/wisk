@@ -254,7 +254,7 @@ class SelectorElement extends HTMLElement {
                 outline: none;
                 border: 1px solid transparent;
                 background-color: var(--bg-1);
-                color: var(--text-1);
+                color: var(--fg-1);
                 padding: var(--padding-2) var(--padding-4);
                 border-radius: 0;
                 cursor: pointer;
@@ -268,7 +268,7 @@ class SelectorElement extends HTMLElement {
             }
             #selector-input {
                 width: 100%;
-                color: var(--text-1);
+                color: var(--fg-1);
                 outline: none;
                 border: none;
                 background-color: transparent;
@@ -304,14 +304,14 @@ class SelectorElement extends HTMLElement {
                 *::-webkit-scrollbar { width: 15px; }
                 *::-webkit-scrollbar-track { background: var(--bg-1); }
                 *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-                *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+                *::-webkit-scrollbar-thumb:hover { background-color: var(--fg-1); }
             }
 
             </style>
             <div id="selector-bg" class="displayNone"></div>
             <div id="selector" class="displayNone font-1">
                 <div class="search-div font-1">
-                    <label class="font-1" for="selector-input" style="color: var(--text-1); font-size: 13px; background-color: transparent;">&gt;</label>
+                    <label class="font-1" for="selector-input" style="color: var(--fg-1); font-size: 13px; background-color: transparent;">&gt;</label>
                     <input type="text" id="selector-input" autocomplete="off" class="font-1"/>
                 </div>
                 <div class="buttons">

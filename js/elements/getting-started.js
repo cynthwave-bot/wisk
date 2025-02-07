@@ -22,9 +22,9 @@ class GettingStarted extends LitElement {
         .gs-button {
             padding: var(--padding-w2);
             border-radius: 100px;
-            background-color: var(--accent-bg);
+            background-color: var(--bg-accent);
             border: none;
-            color: var(--accent-text);
+            color: var(--fg-accent);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -41,7 +41,7 @@ class GettingStarted extends LitElement {
             background-color: var(--bg-2);
         }
         #tip {
-            color: var(--text-2);
+            color: var(--fg-2);
             pointer-events: none;
             font-size: 0.9rem;
         }
@@ -93,8 +93,8 @@ class GettingStarted extends LitElement {
         }
         .quick-link {
             padding: var(--padding-w1);
-            background: var(--accent-bg);
-            color: var(--accent-text);
+            background: var(--bg-accent);
+            color: var(--fg-accent);
             border-radius: var(--radius);
             cursor: pointer;
             text-decoration: none;
@@ -111,7 +111,7 @@ class GettingStarted extends LitElement {
             border: none;
             border-radius: var(--radius);
             cursor: pointer;
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 1.5rem;
             align-items: center;
             justify-content: center;
@@ -122,7 +122,7 @@ class GettingStarted extends LitElement {
         .dialog-title {
             font-size: 1.5rem;
             margin-bottom: var(--gap-3);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .input-group {
             display: flex;
@@ -138,12 +138,12 @@ class GettingStarted extends LitElement {
         }
 
         .input-label {
-            color: var(--text-1);
+            color: var(--fg-1);
             font-weight: 500;
         }
 
         .input-description {
-            color: var(--text-2);
+            color: var(--fg-2);
             margin-top: var(--gap-1);
         }
 
@@ -153,7 +153,7 @@ class GettingStarted extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .text-input:focus {
@@ -165,8 +165,8 @@ class GettingStarted extends LitElement {
         }
 
         .generate-button {
-            background: var(--accent-bg);
-            color: var(--accent-text);
+            background: var(--bg-accent);
+            color: var(--fg-accent);
             padding: var(--padding-w2);
             font-weight: 600;
             border: none;
@@ -182,7 +182,7 @@ class GettingStarted extends LitElement {
         }
 
         .warning-text {
-            color: var(--text-2);
+            color: var(--fg-2);
             font-size: 0.8rem;
             font-style: italic;
         }
@@ -249,7 +249,7 @@ class GettingStarted extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .bs-input {
@@ -260,7 +260,7 @@ class GettingStarted extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: 100px;
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .visualization-section {
@@ -274,8 +274,8 @@ class GettingStarted extends LitElement {
 
         .send-button {
             padding: var(--padding-2) var(--padding-4);
-            background: var(--accent-bg);
-            color: var(--accent-text);
+            background: var(--bg-accent);
+            color: var(--fg-accent);
             border: none;
             border-radius: var(--radius);
             cursor: pointer;
@@ -309,18 +309,18 @@ class GettingStarted extends LitElement {
         }
 
         .drop-zone.drag-over {
-            border-color: var(--accent-bg);
+            border-color: var(--bg-accent);
             background: var(--bg-3);
         }
 
         .drop-text {
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 1.1rem;
             margin-bottom: var(--gap-2);
         }
 
         .supported-formats {
-            color: var(--text-2);
+            color: var(--fg-2);
             font-size: 0.9rem;
             margin-bottom: var(--gap-3);
         }
@@ -328,7 +328,7 @@ class GettingStarted extends LitElement {
         .browse-button {
             padding: var(--padding-2) var(--padding-4);
             background: var(--bg-3);
-            color: var(--text-1);
+            color: var(--fg-1);
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             cursor: pointer;
@@ -366,7 +366,7 @@ class GettingStarted extends LitElement {
         }
 
         .file-name {
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 0.9rem;
             white-space: nowrap;
             overflow: hidden;
@@ -389,7 +389,7 @@ class GettingStarted extends LitElement {
         }
 
         .file-size {
-            color: var(--text-2);
+            color: var(--fg-2);
             font-size: 0.8rem;
             white-space: nowrap;
         }
@@ -407,7 +407,7 @@ class GettingStarted extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
         select {

@@ -105,7 +105,7 @@ class TableElement extends HTMLElement {
                     border: 1px solid var(--border-1);
                     border-radius: 4px;
                     cursor: pointer;
-                    color: var(--text-1);
+                    color: var(--fg-1);
                 }
                 table {
                     width: 100%;

@@ -29,7 +29,7 @@ class FileUploadDialog extends LitElement {
         }
         h2 {
             margin-top: 0;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .file-input {
             margin-bottom: var(--padding-3);
@@ -51,7 +51,7 @@ class FileUploadDialog extends LitElement {
         .remove-file {
             background: none;
             border: none;
-            color: var(--text-2);
+            color: var(--fg-2);
             cursor: pointer;
         }
         .actions {
@@ -70,7 +70,7 @@ class FileUploadDialog extends LitElement {
         }
         .cancel {
             background-color: var(--bg-3);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
         .upload {
             background-color: var(--fg-blue);
@@ -90,7 +90,7 @@ class FileUploadDialog extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
     `;

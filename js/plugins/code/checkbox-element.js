@@ -206,17 +206,17 @@ class CheckboxElement extends BaseTextElement {
                 -webkit-appearance: none;
                 width: 18px;
                 height: 18px;
-                border: 2px solid var(--text-2);
+                border: 2px solid var(--fg-2);
                 border-radius: var(--radius);
-                background: var(--accent-bg);
+                background: var(--bg-accent);
                 cursor: pointer;
                 position: relative;
                 margin-top: 3px;
                 transition: all 0.2s ease;
             }
             #checkbox:checked {
-                background: var(--accent-text);
-                border-color: var(--accent-text);
+                background: var(--fg-accent);
+                border-color: var(--fg-accent);
             }
             #checkbox:checked:after {
                 content: '';
@@ -225,7 +225,7 @@ class CheckboxElement extends BaseTextElement {
                 top: 2px;
                 width: 4px;
                 height: 8px;
-                border: solid var(--accent-bg);
+                border: solid var(--bg-accent);
                 border-width: 0 2px 2px 0;
                 transform: rotate(45deg);
             }
@@ -234,7 +234,7 @@ class CheckboxElement extends BaseTextElement {
                 opacity: 0.6;
             }
             #checkbox:hover {
-                border-color: var(--accent-text);
+                border-color: var(--fg-accent);
             }
             a {
                 color: var(--fg-blue);
@@ -285,7 +285,7 @@ class CheckboxElement extends BaseTextElement {
                 background: var(--bg-3);
             }
             .emoji-name {
-                color: var(--text-2);
+                color: var(--fg-2);
                 font-size: 0.9em;
             }
             .emoji {
@@ -297,11 +297,11 @@ class CheckboxElement extends BaseTextElement {
                 *::-webkit-scrollbar { width: 15px; }
                 *::-webkit-scrollbar-track { background: var(--bg-1); }
                 *::-webkit-scrollbar-thumb { background-color: var(--bg-3); border-radius: 20px; border: 4px solid var(--bg-1); }
-                *::-webkit-scrollbar-thumb:hover { background-color: var(--text-1); }
+                *::-webkit-scrollbar-thumb:hover { background-color: var(--fg-1); }
             }
             .suggestion-text {
                 opacity: 0.8;
-                color: var(--accent-text);
+                color: var(--fg-accent);
             }
             .suggestion-container {
                 position: absolute;
@@ -324,15 +324,15 @@ class CheckboxElement extends BaseTextElement {
                 border: none;
                 background: var(--bg-1);
                 outline: none;
-                color: var(--text-1);
+                color: var(--fg-1);
                 cursor: pointer;
             }
             .suggestion-button:hover {
                 background: var(--bg-3);
             }
             .accept-button {
-                background: var(--accent-bg);
-                color: var(--accent-text);
+                background: var(--bg-accent);
+                color: var(--fg-accent);
                 font-weight: bold;
             }
             </style>

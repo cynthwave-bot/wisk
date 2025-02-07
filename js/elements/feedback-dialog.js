@@ -77,7 +77,7 @@ class FeedbackDialog extends LitElement {
             border: none;
             border-radius: var(--radius);
             cursor: pointer;
-            color: var(--text-1);
+            color: var(--fg-1);
             font-size: 1.5rem;
             align-items: center;
             justify-content: center;
@@ -90,7 +90,7 @@ class FeedbackDialog extends LitElement {
         .dialog-title {
             font-size: 1.5rem;
             margin-bottom: var(--gap-3);
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .main-group {
@@ -108,12 +108,12 @@ class FeedbackDialog extends LitElement {
         }
 
         .input-label {
-            color: var(--text-1);
+            color: var(--fg-1);
             font-weight: 500;
         }
 
         .input-description {
-            color: var(--text-2);
+            color: var(--fg-2);
             font-size: 0.9rem;
         }
 
@@ -124,7 +124,7 @@ class FeedbackDialog extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             resize: vertical;
             font-size: 0.9rem;
         }
@@ -139,21 +139,21 @@ class FeedbackDialog extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             cursor: pointer;
         }
 
         .rating-button.selected {
-            background: var(--accent-text);
-            color: var(--accent-bg);
+            background: var(--fg-accent);
+            color: var(--bg-accent);
             border-color: transparent;
             font-weight: 500;
         }
 
         .submit-button {
             padding: var(--padding-3) var(--padding-4);
-            background: var(--accent-bg);
-            color: var(--accent-text);
+            background: var(--bg-accent);
+            color: var(--fg-accent);
             border: none;
             border-radius: var(--radius);
             cursor: pointer;
@@ -178,7 +178,7 @@ class FeedbackDialog extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
 
@@ -187,7 +187,7 @@ class FeedbackDialog extends LitElement {
             border: 1px solid var(--border-1);
             border-radius: var(--radius);
             background: var(--bg-2);
-            color: var(--text-1);
+            color: var(--fg-1);
             max-width: 300px;
         }
     `;

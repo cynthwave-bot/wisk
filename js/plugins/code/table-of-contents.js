@@ -32,7 +32,7 @@ class TableOfContents extends LitElement {
         }
 
         .toc-link {
-            color: var(--text-2);
+            color: var(--fg-2);
             text-decoration: none;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
@@ -44,13 +44,13 @@ class TableOfContents extends LitElement {
         }
 
         .toc-link:hover {
-            color: var(--accent-text);
-            background: var(--accent-bg);
+            color: var(--fg-accent);
+            background: var(--bg-accent);
         }
 
         .level-heading1-element {
             font-weight: 600;
-            color: var(--text-1);
+            color: var(--fg-1);
         }
 
         .level-heading2-element {
@@ -75,8 +75,8 @@ class TableOfContents extends LitElement {
 
         /* Active state */
         .toc-link.active {
-            color: var(--accent-text);
-            background: var(--accent-bg);
+            color: var(--fg-accent);
+            background: var(--bg-accent);
             font-weight: 500;
         }
     `;

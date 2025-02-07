@@ -16,7 +16,7 @@ class EmojiSelector extends LitElement {
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--text-1);
+            background: var(--fg-1);
             opacity: 0.3;
             display: none;
             justify-content: center;
@@ -62,7 +62,7 @@ class EmojiSelector extends LitElement {
                 border: 4px solid var(--bg-1);
             }
             *::-webkit-scrollbar-thumb:hover {
-                background-color: var(--text-1);
+                background-color: var(--fg-1);
             }
         }
 
@@ -124,7 +124,7 @@ class EmojiSelector extends LitElement {
         .search input {
             background: none;
             border: none;
-            color: var(--text-1);
+            color: var(--fg-1);
             outline: none;
             flex: 1;
             min-width: 100px;
@@ -136,7 +136,7 @@ class EmojiSelector extends LitElement {
             outline: none;
             padding: var(--padding-w1);
             border-radius: var(--radius);
-            color: var(--text-2);
+            color: var(--fg-2);
         }
         .search-button1 {
             opacity: 1;
