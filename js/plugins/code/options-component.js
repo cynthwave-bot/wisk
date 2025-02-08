@@ -800,14 +800,14 @@ class OptionsComponent extends LitElement {
                     <div class="quick-options">
                         <button class="quick-button" @click="${this.toggleAIAutocomplete}">
                             <img src="/a7/plugins/options-element/autocomplete.svg" alt="Settings" class="icon" draggable="false" width="24"/>
-                            <label>AI Autocomplete</label>
+                            <label style="color: var(--fg-1);">AI Autocomplete</label>
                             <img src="/a7/plugins/options-element/check.svg" class="quick-button-check" draggable="false" style="display: ${wisk.editor.aiAutocomplete ? 'block' : 'none'}"/>
                             <img src="/a7/plugins/options-element/x.svg" class="quick-button-check" draggable="false" style="display: ${wisk.editor.aiAutocomplete ? 'none' : 'block'}"/>
                         </button>
 
                         <button class="quick-button" @click="${this.toggleGPTZero}">
                             <img src="/a7/plugins/options-element/shield.svg" alt="Settings" class="icon" draggable="false" width="24"/>
-                            <label>GPTZero Protection</label>
+                            <label style="color: var(--fg-1);">GPTZero Protection</label>
                             <img src="/a7/plugins/options-element/check.svg" class="quick-button-check" draggable="false" style="display: ${wisk.editor.gptZero ? 'block' : 'none'}"/>
                             <img src="/a7/plugins/options-element/x.svg" class="quick-button-check" draggable="false" style="display: ${wisk.editor.gptZero ? 'none' : 'block'}"/>
                         </button>
