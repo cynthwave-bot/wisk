@@ -65,6 +65,7 @@ class GeneralChat extends LitElement {
             background-color: var(--bg-3);
             border-radius: var(--radius-large);
             display: flex;
+            position: relative; /* Required for absolute positioning of the canvas */
             align-items: center;
             justify-content: center;
             position: relative;
@@ -230,7 +231,16 @@ class GeneralChat extends LitElement {
             font-size: 14px;
         }
 
-        .hidden-canvas {
+        .audio-visualizer {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 20px;
+            pointer-events: none; /* Ensure it doesn't interfere with video interactions */
+        }
+
             display: none;
         }
 
@@ -654,8 +664,62 @@ class GeneralChat extends LitElement {
                 videoTrack.enabled = !videoTrack.enabled;
                 this.isCameraOn = videoTrack.enabled;
                 this.requestUpdate();
+                this.drawAudioVisualizer();
             }
         }
+    }
+
+    drawAudioVisualizer() {
+        const participant = this.participants.find(p => p.id === 'local');
+        if (!participant || !participant.stream) return;
+
+        const videoElement = this.shadowRoot.querySelector(`#local-video`);
+        const canvas = this.shadowRoot.querySelector('.audio-visualizer');
+        if (!videoElement || !canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        const WIDTH = canvas.width;
+        const HEIGHT = canvas.height;
+        const analyser = this.audioAnalyser || this.createAudioAnalyser(participant.stream);
+        this.audioAnalyser = analyser;
+
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+        const draw = () => {
+            analyser.getByteFrequencyData(dataArray);
+
+            ctx.fillStyle = 'rgb(0, 0, 0)';
+            ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+            const barWidth = (WIDTH / bufferLength) * 2.5;
+            let barHeight;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                barHeight = dataArray[i] * (HEIGHT / 255);
+
+                ctx.fillStyle = 'rgb(50,205,50)';
+                ctx.fillRect(x, HEIGHT - barHeight / 2, barWidth, barHeight / 2);
+
+                x += barWidth + 1;
+            }
+
+            requestAnimationFrame(draw);
+        };
+
+        draw();
+    }
+
+    createAudioAnalyser(stream) {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaStreamSource(stream);
+        source.connect(analyser);
+        return analyser;
     }
 
     toggleMic() {
@@ -1193,11 +1257,13 @@ class GeneralChat extends LitElement {
                                                             playsinline
                                                             .srcObject=${participant.stream}
                                                         ></video>
+                                                        <canvas class="audio-visualizer"></canvas>
                                                         <span class="participant-name">${participant.name}</span>
                                                     </div>
                                                 `
                                             )}
                                         </div>
+
 
                                         <div class="video-controls">
                                             <button class="control-button ${!this.localStream ? 'disabled' : ''}" @click=${this.toggleCamera}>
